@@ -74,4 +74,7 @@ swig -csharp storj_uplink_second.i
 
 Now copy all cs-files to the uplink.NET repository replacing all containing files. If you made changes to the SWIG-files, you may need to adjust the Visual Studio solution to include only the created cs-files. And if you compiled the DLL for different cpu-architectures you may need to alter the solution properties accordingly.
 
+In the file storj_uplinkPINVOKE.cs search for "free_string" and remove the "ref" from the parameter jarg1. This should be handled by SWIG, but I don't know how.
+In the file storj_uplink.cs also remove the "ref" from the call to storj_uplinkPINVOKE.free_string().
+
 Build the solution and include the uplink.net.dll and the storj_uplink.dll in your project.
