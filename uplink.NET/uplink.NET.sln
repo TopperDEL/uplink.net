@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET", "uplink.NET\uplink.NET.csproj", "{5BBE87EC-C89F-4676-84DB-3F6A2678DC53}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Test", "uplink.NET.Test\uplink.NET.Test.csproj", "{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5BBE87EC-C89F-4676-84DB-3F6A2678DC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BBE87EC-C89F-4676-84DB-3F6A2678DC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BBE87EC-C89F-4676-84DB-3F6A2678DC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
