@@ -15,7 +15,7 @@ There does not exist a working release, yet. Please come back later.
 
 ## Build
 
-** Prerequesits **
+**Prerequesits**
 
 Building everything by yourself is possible on Windows. You'll need the following tools:
 
@@ -25,12 +25,12 @@ Building everything by yourself is possible on Windows. You'll need the followin
 * MSYS/MingW (used by go to compile a Windows-DLL)
 * Visual Studio 2017 or higher to compile the uplink.NET-library
 
-** Noob-Disclaimer **
+**Noob-Disclaimer**
 
 The process described here is the way I was successfull so far. It might not be the simplest way or you might be successfull using different compilers, versions, systems and whatever. I'm open to any adjustments, enhancements or proposials. Just let me know!
 Furthermore this process involves some manual tasks that might be possible to automate by using a better SWIG-interface-file or some other build automation tools. I would love getting help by making this process better.
 
-** Building-steps **
+**Building-steps**
 
 First you need to pull the latest version of storj/uplink. Open a command prompt and enter:
 
