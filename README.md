@@ -44,7 +44,7 @@ Do this also for this repository in another directory:
 git clone https://github.com/topperdel/uplink.net.git
 ```
 
-Copy the files storj_uplink_first.i and storj_uplink_second.i to storj\lib\uplinkc of the local storj-repository and cd to that directory. Then run
+Copy the files storj_uplink_first.i and storj_uplink_second.i to storj\lib\uplinkc of the local storj-repository. Do the same for the file string_handling.go. cd to that directory. Then run
 
 ```
 swig -csharp storj_uplink_first.i
