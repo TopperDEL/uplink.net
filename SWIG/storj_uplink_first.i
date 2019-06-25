@@ -6,4 +6,4 @@
 %}
 		 
 /* Parse the header file to generate wrappers */
-%include "uplink-cgo.h"
+%include "uplink_definitions.h"

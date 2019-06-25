@@ -6,9 +6,13 @@ namespace uplink
 {
     public class Uplink:IDisposable
     {
-        private SWIG.UplinkRef _uplinkRef = null;
+        internal SWIG.UplinkRef _uplinkRef = null;
         private SWIG.UplinkConfig _uplinkConfig = null;
 
+        /// <summary>
+        /// Creates an Uplink-Instance
+        /// </summary>
+        /// <param name="uplinkConfig">The UplinkConfig to use</param>
         public Uplink(UplinkConfig uplinkConfig)
         {
             string error;

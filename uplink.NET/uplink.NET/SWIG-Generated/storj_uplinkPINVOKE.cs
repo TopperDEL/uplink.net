@@ -257,9 +257,6 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_api_key___")]
   public static extern void free_api_key(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
-  public static extern void free_string(ref global::System.IntPtr jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_create_bucket___")]
   public static extern global::System.IntPtr create_bucket(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, ref global::System.IntPtr jarg4);
 
@@ -346,6 +343,9 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_close_project___")]
   public static extern void close_project(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
+  public static extern void free_string(global::System.IntPtr jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_internal_UniverseIsEmpty___")]
   public static extern byte internal_UniverseIsEmpty();

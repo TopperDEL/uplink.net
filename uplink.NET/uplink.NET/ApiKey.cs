@@ -6,7 +6,7 @@ namespace uplink
 {
     public class ApiKey : IDisposable
     {
-        private SWIG.APIKeyRef _apiKeyRef = null;
+        internal SWIG.APIKeyRef _apiKeyRef = null;
 
         /// <summary>
         /// Creates an ApiKey-Instance by a given ApiKey-String.
