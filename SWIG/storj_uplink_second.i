@@ -21,9 +21,9 @@
 %{
 	/* Includes the header in the wrapper code */
 	#include "uplink_definitions.h"
-	#include "uplink-cgo.h"
+	#include "storj_uplink.h"
 %}
 		 
 /* Parse the header file to generate wrappers */
-%include "uplink-cgo.h"
+%include "storj_uplink.h"
 %include "uplink_definitions.h"

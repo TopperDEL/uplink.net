@@ -39,16 +39,6 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_string(out string p0) {
-global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.free_string(ref tmpp0);
-    } finally {
-p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
-			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
-    }
-  }
-
   public static BucketInfo create_bucket(ProjectRef p0, string p1, BucketConfig p2, out string p3) {
 global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
     try {
@@ -324,6 +314,16 @@ global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
     } finally {
 p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
 			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
+    }
+  }
+
+  public static void free_string(out string p0) {
+global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
+    try {
+      storj_uplinkPINVOKE.free_string(tmpp0);
+    } finally {
+p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
+			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
     }
   }
 
