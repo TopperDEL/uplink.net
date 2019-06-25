@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class UplinkConfig_Volatile_TLS : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -51,5 +52,7 @@ public class UplinkConfig_Volatile_TLS : global::System.IDisposable {
 
   public UplinkConfig_Volatile_TLS() : this(storj_uplinkPINVOKE.new_UplinkConfig_Volatile_TLS(), true) {
   }
+
+}
 
 }

@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class BucketListOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -75,5 +76,7 @@ public class BucketListOptions : global::System.IDisposable {
 
   public BucketListOptions() : this(storj_uplinkPINVOKE.new_BucketListOptions(), true) {
   }
+
+}
 
 }

@@ -6,7 +6,7 @@ namespace uplink
 {
     public class ApiKey : IDisposable
     {
-        private APIKeyRef _apiKeyRef = null;
+        private SWIG.APIKeyRef _apiKeyRef = null;
 
         /// <summary>
         /// Creates an ApiKey-Instance by a given ApiKey-String.
@@ -16,7 +16,7 @@ namespace uplink
         {
             string error;
 
-            _apiKeyRef = storj_uplink.parse_api_key(apiKeyString, out error);
+            _apiKeyRef = SWIG.storj_uplink.parse_api_key(apiKeyString, out error);
 
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);
@@ -28,7 +28,7 @@ namespace uplink
         {
             if(_apiKeyRef != null)
             {
-                storj_uplink.free_api_key(_apiKeyRef);
+                SWIG.storj_uplink.free_api_key(_apiKeyRef);
                 _apiKeyRef = null;
             }
         }

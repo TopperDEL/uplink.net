@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class storj_uplink {
   public static APIKeyRef parse_api_key(string p0, out string p1) {
@@ -41,7 +42,7 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
   public static void free_string(out string p0) {
 global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
     try {
-      storj_uplinkPINVOKE.free_string(tmpp0);
+      storj_uplinkPINVOKE.free_string(ref tmpp0);
     } finally {
 p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
 			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
@@ -353,5 +354,7 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
 			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
     }
   }
+
+}
 
 }

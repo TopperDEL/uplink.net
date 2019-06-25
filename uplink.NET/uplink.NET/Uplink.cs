@@ -6,13 +6,16 @@ namespace uplink
 {
     public class Uplink:IDisposable
     {
-        private UplinkRef _uplinkRef = null;
+        private SWIG.UplinkRef _uplinkRef = null;
+        private SWIG.UplinkConfig _uplinkConfig = null;
 
         public Uplink(UplinkConfig uplinkConfig)
         {
             string error;
 
-            _uplinkRef = storj_uplink.new_uplink(uplinkConfig, out error);
+            _uplinkConfig = new SWIG.UplinkConfig();
+            _uplinkConfig.Volatile.TLS.SkipPeerCAWhitelist = uplinkConfig.Volatile_TLS_SkipPeerCAWhitelist;
+            _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, out error);
 
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);
@@ -22,10 +25,15 @@ namespace uplink
 
         public void Dispose()
         {
-            if(_uplinkRef != null)
+            if (_uplinkConfig != null)
+            {
+                _uplinkConfig.Dispose();
+                _uplinkConfig = null;
+            }
+            if (_uplinkRef != null)
             {
                 string error;
-                storj_uplink.close_uplink(_uplinkRef, out error);
+                SWIG.storj_uplink.close_uplink(_uplinkRef, out error);
                 _uplinkRef = null;
             }
         }

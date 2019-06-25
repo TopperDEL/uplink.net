@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class ObjectMeta : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -163,5 +164,7 @@ public class ObjectMeta : global::System.IDisposable {
 
   public ObjectMeta() : this(storj_uplinkPINVOKE.new_ObjectMeta(), true) {
   }
+
+}
 
 }
