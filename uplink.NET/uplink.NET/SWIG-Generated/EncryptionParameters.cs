@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class EncryptionParameters : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -65,5 +66,7 @@ public class EncryptionParameters : global::System.IDisposable {
 
   public EncryptionParameters() : this(storj_uplinkPINVOKE.new_EncryptionParameters(), true) {
   }
+
+}
 
 }

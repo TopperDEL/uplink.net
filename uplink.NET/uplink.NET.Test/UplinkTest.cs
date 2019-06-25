@@ -7,9 +7,20 @@ namespace uplink.NET.Test
     public class UplinkTest
     {        
         [TestMethod]
-        public void CreateUplink()
+        public void CreateUplink_TLS_false()
         {
-            using (Uplink uplink = new Uplink(new UplinkConfig()))
+            UplinkConfig config = new UplinkConfig() { Volatile_TLS_SkipPeerCAWhitelist = false };
+            using (Uplink uplink = new Uplink(config))
+            {
+                Assert.IsNotNull(uplink);
+            }
+        }
+
+        [TestMethod]
+        public void CreateUplink_TLS_true()
+        {
+            UplinkConfig config = new UplinkConfig() { Volatile_TLS_SkipPeerCAWhitelist = true };
+            using (Uplink uplink = new Uplink(config))
             {
                 Assert.IsNotNull(uplink);
             }

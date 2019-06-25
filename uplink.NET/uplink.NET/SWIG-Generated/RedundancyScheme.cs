@@ -8,6 +8,7 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+namespace uplink.SWIG {
 
 public class RedundancyScheme : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -113,5 +114,7 @@ public class RedundancyScheme : global::System.IDisposable {
 
   public RedundancyScheme() : this(storj_uplinkPINVOKE.new_RedundancyScheme(), true) {
   }
+
+}
 
 }
