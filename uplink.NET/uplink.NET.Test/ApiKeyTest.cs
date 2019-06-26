@@ -34,5 +34,14 @@ namespace uplink.NET.Test
 
             Assert.IsTrue(false, "No exception on wrong API-Key thrown");
         }
+
+        [TestMethod]
+        public void GetApiKey()
+        {
+            using (ApiKey key = new ApiKey(TestConstants.VALID_API_KEY))
+            {
+                Assert.AreEqual(TestConstants.VALID_API_KEY, key.GetApiKey());
+            }
+        }
     }
 }

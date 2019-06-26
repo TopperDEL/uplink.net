@@ -24,6 +24,20 @@ namespace uplink
                 throw new NullReferenceException("No ApiKey-reference created");
         }
 
+        /// <summary>
+        /// Returns the used ApiKey as string
+        /// </summary>
+        /// <returns>The used ApiKey</returns>
+        public string GetApiKey()
+        {
+            string result = string.Empty;
+            string error;
+
+            result = SWIG.storj_uplink.serialize_api_key(_apiKeyRef, out error);
+
+            return result;
+        }
+
         public void Dispose()
         {
             if(_apiKeyRef != null)
