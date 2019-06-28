@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class BucketList : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -61,21 +60,17 @@ public class BucketList : global::System.IDisposable {
     } 
   }
 
-  public SWIGTYPE_p_int32_t length {
+  public int length {
     set {
-      storj_uplinkPINVOKE.BucketList_length_set(swigCPtr, SWIGTYPE_p_int32_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketList_length_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int32_t ret = new SWIGTYPE_p_int32_t(storj_uplinkPINVOKE.BucketList_length_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      int ret = storj_uplinkPINVOKE.BucketList_length_get(swigCPtr);
       return ret;
     } 
   }
 
   public BucketList() : this(storj_uplinkPINVOKE.new_BucketList(), true) {
   }
-
-}
 
 }

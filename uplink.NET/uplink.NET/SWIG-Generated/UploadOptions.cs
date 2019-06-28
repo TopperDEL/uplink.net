@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class UploadOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -61,21 +60,17 @@ public class UploadOptions : global::System.IDisposable {
     } 
   }
 
-  public SWIGTYPE_p_int64_t expires {
+  public long expires {
     set {
-      storj_uplinkPINVOKE.UploadOptions_expires_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.UploadOptions_expires_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.UploadOptions_expires_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.UploadOptions_expires_get(swigCPtr);
       return ret;
     } 
   }
 
   public UploadOptions() : this(storj_uplinkPINVOKE.new_UploadOptions(), true) {
   }
-
-}
 
 }

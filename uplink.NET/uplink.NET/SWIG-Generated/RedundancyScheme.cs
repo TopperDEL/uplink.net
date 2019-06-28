@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class RedundancyScheme : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -40,81 +39,67 @@ public class RedundancyScheme : global::System.IDisposable {
     }
   }
 
-  public SWIGTYPE_p_uint8_t algorithm {
+  public byte algorithm {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_algorithm_set(swigCPtr, SWIGTYPE_p_uint8_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_algorithm_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint8_t ret = new SWIGTYPE_p_uint8_t(storj_uplinkPINVOKE.RedundancyScheme_algorithm_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      byte ret = storj_uplinkPINVOKE.RedundancyScheme_algorithm_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int32_t share_size {
+  public int share_size {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_share_size_set(swigCPtr, SWIGTYPE_p_int32_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_share_size_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int32_t ret = new SWIGTYPE_p_int32_t(storj_uplinkPINVOKE.RedundancyScheme_share_size_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      int ret = storj_uplinkPINVOKE.RedundancyScheme_share_size_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int16_t required_shares {
+  public short required_shares {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_required_shares_set(swigCPtr, SWIGTYPE_p_int16_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_required_shares_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int16_t ret = new SWIGTYPE_p_int16_t(storj_uplinkPINVOKE.RedundancyScheme_required_shares_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      short ret = storj_uplinkPINVOKE.RedundancyScheme_required_shares_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int16_t repair_shares {
+  public short repair_shares {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_repair_shares_set(swigCPtr, SWIGTYPE_p_int16_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_repair_shares_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int16_t ret = new SWIGTYPE_p_int16_t(storj_uplinkPINVOKE.RedundancyScheme_repair_shares_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      short ret = storj_uplinkPINVOKE.RedundancyScheme_repair_shares_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int16_t optimal_shares {
+  public short optimal_shares {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_optimal_shares_set(swigCPtr, SWIGTYPE_p_int16_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_optimal_shares_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int16_t ret = new SWIGTYPE_p_int16_t(storj_uplinkPINVOKE.RedundancyScheme_optimal_shares_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      short ret = storj_uplinkPINVOKE.RedundancyScheme_optimal_shares_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int16_t total_shares {
+  public short total_shares {
     set {
-      storj_uplinkPINVOKE.RedundancyScheme_total_shares_set(swigCPtr, SWIGTYPE_p_int16_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.RedundancyScheme_total_shares_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int16_t ret = new SWIGTYPE_p_int16_t(storj_uplinkPINVOKE.RedundancyScheme_total_shares_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      short ret = storj_uplinkPINVOKE.RedundancyScheme_total_shares_get(swigCPtr);
       return ret;
     } 
   }
 
   public RedundancyScheme() : this(storj_uplinkPINVOKE.new_RedundancyScheme(), true) {
   }
-
-}
 
 }

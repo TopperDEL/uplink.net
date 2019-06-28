@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class BucketConfig : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -40,14 +39,12 @@ public class BucketConfig : global::System.IDisposable {
     }
   }
 
-  public SWIGTYPE_p_uint8_t path_cipher {
+  public byte path_cipher {
     set {
-      storj_uplinkPINVOKE.BucketConfig_path_cipher_set(swigCPtr, SWIGTYPE_p_uint8_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketConfig_path_cipher_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint8_t ret = new SWIGTYPE_p_uint8_t(storj_uplinkPINVOKE.BucketConfig_path_cipher_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      byte ret = storj_uplinkPINVOKE.BucketConfig_path_cipher_get(swigCPtr);
       return ret;
     } 
   }
@@ -76,7 +73,5 @@ public class BucketConfig : global::System.IDisposable {
 
   public BucketConfig() : this(storj_uplinkPINVOKE.new_BucketConfig(), true) {
   }
-
-}
 
 }
