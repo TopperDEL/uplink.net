@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class GoInterface : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -64,7 +63,5 @@ public class GoInterface : global::System.IDisposable {
 
   public GoInterface() : this(storj_uplinkPINVOKE.new_GoInterface(), true) {
   }
-
-}
 
 }

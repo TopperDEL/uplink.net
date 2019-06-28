@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class GoSlice : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -73,7 +72,5 @@ public class GoSlice : global::System.IDisposable {
 
   public GoSlice() : this(storj_uplinkPINVOKE.new_GoSlice(), true) {
   }
-
-}
 
 }

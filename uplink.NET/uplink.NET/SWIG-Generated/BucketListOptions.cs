@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class BucketListOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -50,33 +49,27 @@ public class BucketListOptions : global::System.IDisposable {
     } 
   }
 
-  public SWIGTYPE_p_int8_t direction {
+  public sbyte direction {
     set {
-      storj_uplinkPINVOKE.BucketListOptions_direction_set(swigCPtr, SWIGTYPE_p_int8_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketListOptions_direction_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int8_t ret = new SWIGTYPE_p_int8_t(storj_uplinkPINVOKE.BucketListOptions_direction_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      sbyte ret = storj_uplinkPINVOKE.BucketListOptions_direction_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int64_t limit {
+  public long limit {
     set {
-      storj_uplinkPINVOKE.BucketListOptions_limit_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketListOptions_limit_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.BucketListOptions_limit_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.BucketListOptions_limit_get(swigCPtr);
       return ret;
     } 
   }
 
   public BucketListOptions() : this(storj_uplinkPINVOKE.new_BucketListOptions(), true) {
   }
-
-}
 
 }
