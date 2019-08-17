@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.Contracts.Models
 {
-    public class UplinkConfig
+    public abstract class UplinkConfig
     {
         public bool Volatile_TLS_SkipPeerCAWhitelist { get; set; }
     }

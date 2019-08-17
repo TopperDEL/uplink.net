@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.LocalModels
 {
-    public class ApiKey : IDisposable
+    public class ApiKey : uplink.Net.Contracts.Models.ApiKey
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;
 
@@ -12,7 +12,7 @@ namespace uplink
         /// Creates an ApiKey-Instance by a given ApiKey-String.
         /// Throws ArgumentException if the ApiKey is not valid
         /// </summary>
-        public ApiKey(string apiKeyString)
+        public ApiKey(string apiKeyString):base(apiKeyString)
         {
             string error;
 
@@ -28,7 +28,7 @@ namespace uplink
         /// Returns the used ApiKey as string
         /// </summary>
         /// <returns>The used ApiKey</returns>
-        public string GetApiKey()
+        public override string GetApiKey()
         {
             string result = string.Empty;
             string error;
@@ -38,7 +38,7 @@ namespace uplink
             return result;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if(_apiKeyRef != null)
             {
