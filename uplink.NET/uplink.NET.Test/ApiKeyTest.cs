@@ -29,7 +29,7 @@ namespace uplink.NET.Test
             catch(Exception ex)
             {
                 Assert.IsNotNull(ex);
-                Assert.AreEqual("api key format error: invalid api key format", ex.Message); //Might be different if the message from uplink itself changed
+                Assert.IsTrue(ex.Message.Contains("api key format error")); //Might be different if the message from uplink itself changed
                 return;
             }
 

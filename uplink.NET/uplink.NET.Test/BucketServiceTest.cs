@@ -19,7 +19,7 @@ namespace uplink.NET.Test
             Uplink uplink = new Uplink(config);
             ApiKey apiKey = new ApiKey(TestConstants.VALID_API_KEY);
             ProjectOptions projectOptions = new ProjectOptions();
-            Project project = new Project(uplink, apiKey, "europe-west-1.tardigrade.io:7777", projectOptions);
+            Project project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
             BucketConfig bucketConfig = new BucketConfig();
 
             var result = service.CreateBucket(project, "testbucket", bucketConfig);
