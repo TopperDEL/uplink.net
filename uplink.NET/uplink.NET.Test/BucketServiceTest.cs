@@ -24,5 +24,19 @@ namespace uplink.NET.Test
 
             var result = service.CreateBucket(project, "testbucket", bucketConfig);
         }
+
+        [TestMethod]
+        public void ListBucketsTest()
+        {
+            IBucketService service = new BucketService();
+            UplinkConfig config = new UplinkConfig();
+            Uplink uplink = new Uplink(config);
+            ApiKey apiKey = new ApiKey(TestConstants.VALID_API_KEY);
+            ProjectOptions projectOptions = new ProjectOptions();
+            Project project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
+            BucketConfig bucketConfig = new BucketConfig();
+
+            var result = service.ListBuckets(project, new uplink.Net.LocalModels.BucketListOptions());
+        }
     }
 }
