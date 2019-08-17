@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class SWIGTYPE_p_void {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -24,6 +23,4 @@ public class SWIGTYPE_p_void {
   internal static global::System.Runtime.InteropServices.HandleRef getCPtr(SWIGTYPE_p_void obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
-}
-
 }
