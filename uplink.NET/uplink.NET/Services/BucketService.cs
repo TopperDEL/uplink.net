@@ -35,6 +35,12 @@ namespace uplink.Net.Services
 
         public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
         {
+            string error;
+            LocalModels.BucketListOptions _bucketListOptions = bucketListOptions as LocalModels.BucketListOptions;
+            LocalModels.Project _project = project as LocalModels.Project;
+
+            var res = SWIG.storj_uplink.list_buckets(_project._projectRef, _bucketListOptions.ToSWIG(), out error);
+            var items = res.items;
             throw new NotImplementedException();
         }
 
