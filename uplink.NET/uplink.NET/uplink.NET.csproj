@@ -15,4 +15,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SWIG-Generated\" />
+  </ItemGroup>
+
 </Project>
