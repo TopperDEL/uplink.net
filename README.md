@@ -22,7 +22,7 @@ Building everything by yourself is possible on Windows. You'll need the followin
 * Git (to get the storj-repository)
 * SWIG (to generate the C#-proxy)
 * Go (to build the C-Binding to storj/uplink)
-* [MSYS2](https://www.msys2.org/) (used by go to compile a Windows-DLL)
+* [MSYS2](https://www.msys2.org/) (used by go to compile a Windows-DLL) => see [here](https://github.com/orlp/dev-on-windows/wiki/Installing-GCC--&-MSYS2) for installation instructions
 * Visual Studio 2017 or higher to compile the uplink.NET-library
 
 **Noob-Disclaimer**
