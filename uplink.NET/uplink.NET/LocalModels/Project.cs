@@ -7,7 +7,6 @@ namespace uplink.Net.LocalModels
     public class Project : uplink.Net.Contracts.Models.Project
     {
         internal SWIG.ProjectRef _projectRef = null;
-        private SWIG.ProjectOptions _projectOptions = null;
 
         /// <summary>
         /// 
@@ -17,10 +16,7 @@ namespace uplink.Net.LocalModels
         {
             string error;
 
-            _projectOptions = new SWIG.ProjectOptions();
-            _projectOptions.key = projectOptions.Key;
-
-            _projectRef = SWIG.storj_uplink.open_project(uplink._uplinkRef, satelliteAddr, apiKey._apiKeyRef, _projectOptions, out error);
+            _projectRef = SWIG.storj_uplink.open_project(uplink._uplinkRef, satelliteAddr, apiKey._apiKeyRef, out error);
 
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);
@@ -30,11 +26,6 @@ namespace uplink.Net.LocalModels
 
         public override void Dispose()
         {
-            if (_projectOptions != null)
-            {
-                _projectOptions.Dispose();
-                _projectOptions = null;
-            }
             if (_projectRef != null)
             {
                 string error;
