@@ -15,8 +15,12 @@ namespace uplink.Net.Services
 
         public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
         {
-            //SWIG.storj_uplink.create_bucket(project.)
-            throw new NotImplementedException();
+            LocalModels.BucketConfig _bucketConfig = bucketConfig as LocalModels.BucketConfig;
+            LocalModels.Project _project = project as LocalModels.Project;
+            string error;
+            var res = SWIG.storj_uplink.create_bucket(_project._projectRef, bucketName, _bucketConfig.ToSWIG(), out error);
+
+            return null;
         }
 
         public void DeleteBucket(Project project, string bucketName)
