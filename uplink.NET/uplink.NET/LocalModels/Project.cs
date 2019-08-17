@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.LocalModels
 {
-    public class Project : IDisposable
+    public class Project : uplink.Net.Contracts.Models.Project
     {
-        private SWIG.ProjectRef _projectRef = null;
+        internal SWIG.ProjectRef _projectRef = null;
         private SWIG.ProjectOptions _projectOptions = null;
 
         /// <summary>
         /// 
         /// </summary>
-        public Project(Uplink uplink, ApiKey apiKey, string satelliteAddr, ProjectOptions projectOptions)
+        public Project(Uplink uplink, ApiKey apiKey, string satelliteAddr, ProjectOptions projectOptions) :
+            base(uplink, apiKey, satelliteAddr, projectOptions)
         {
             string error;
 
@@ -27,7 +28,7 @@ namespace uplink
                 throw new NullReferenceException("Could not open project");
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (_projectOptions != null)
             {

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\uplink.Net.Contracts\uplink.Net.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="storj_uplink.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

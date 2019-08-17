@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.LocalModels
 {
-    public class Uplink:IDisposable
+    public class Uplink : uplink.Net.Contracts.Models.Uplink
     {
         internal SWIG.UplinkRef _uplinkRef = null;
         private SWIG.UplinkConfig _uplinkConfig = null;
@@ -13,7 +13,7 @@ namespace uplink
         /// Creates an Uplink-Instance
         /// </summary>
         /// <param name="uplinkConfig">The UplinkConfig to use</param>
-        public Uplink(UplinkConfig uplinkConfig)
+        public Uplink(UplinkConfig uplinkConfig) : base(uplinkConfig)
         {
             string error;
 
@@ -27,7 +27,7 @@ namespace uplink
                 throw new NullReferenceException("No Uplink-reference created");
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (_uplinkConfig != null)
             {

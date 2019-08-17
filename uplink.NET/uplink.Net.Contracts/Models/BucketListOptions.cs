@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.Contracts.Models
 {
-    public class BucketListOptions
+    public abstract class BucketListOptions
     {
         public string Cursor { get; set; }
         public int Direction { get; set; }

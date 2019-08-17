@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink
+namespace uplink.Net.Contracts.Models
 {
-    public class ProjectOptions
+    public abstract class ProjectOptions
     {
         public string Key { get; set; }
     }
