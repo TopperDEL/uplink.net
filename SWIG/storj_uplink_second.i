@@ -17,8 +17,7 @@
 #include <shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 %}
-/*#include <stdint.i>*/
-/*	
+
 %define MAP_SPECIAL(CTYPE, CSTYPE, TYPECHECKPRECEDENCE)
 %typemap(ctype) CTYPE "CTYPE"
 %typemap(imtype) CTYPE "CSTYPE"
@@ -56,7 +55,7 @@ MAP_SPECIAL(uint8_t, byte, uint8_t)
 MAP_SPECIAL(uint16_t, ushort, uint16_t)
 MAP_SPECIAL(uint32_t, uint, uint32_t)
 MAP_SPECIAL(uint64_t, ulong, uint64_t)
-*/
+
 
 %{
 	/* Includes the header in the wrapper code */
