@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class ObjectInfo : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -40,14 +39,12 @@ public class ObjectInfo : global::System.IDisposable {
     }
   }
 
-  public SWIGTYPE_p_uint32_t version {
+  public uint version {
     set {
-      storj_uplinkPINVOKE.ObjectInfo_version_set(swigCPtr, SWIGTYPE_p_uint32_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.ObjectInfo_version_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint32_t ret = new SWIGTYPE_p_uint32_t(storj_uplinkPINVOKE.ObjectInfo_version_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      uint ret = storj_uplinkPINVOKE.ObjectInfo_version_get(swigCPtr);
       return ret;
     } 
   }
@@ -104,45 +101,37 @@ public class ObjectInfo : global::System.IDisposable {
     } 
   }
 
-  public SWIGTYPE_p_int64_t created {
+  public long created {
     set {
-      storj_uplinkPINVOKE.ObjectInfo_created_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.ObjectInfo_created_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.ObjectInfo_created_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.ObjectInfo_created_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int64_t modified {
+  public long modified {
     set {
-      storj_uplinkPINVOKE.ObjectInfo_modified_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.ObjectInfo_modified_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.ObjectInfo_modified_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.ObjectInfo_modified_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int64_t expires {
+  public long expires {
     set {
-      storj_uplinkPINVOKE.ObjectInfo_expires_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.ObjectInfo_expires_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.ObjectInfo_expires_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.ObjectInfo_expires_get(swigCPtr);
       return ret;
     } 
   }
 
   public ObjectInfo() : this(storj_uplinkPINVOKE.new_ObjectInfo(), true) {
   }
-
-}
 
 }

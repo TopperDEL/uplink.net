@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class EncryptionParameters : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -40,33 +39,27 @@ public class EncryptionParameters : global::System.IDisposable {
     }
   }
 
-  public SWIGTYPE_p_uint8_t cipher_suite {
+  public byte cipher_suite {
     set {
-      storj_uplinkPINVOKE.EncryptionParameters_cipher_suite_set(swigCPtr, SWIGTYPE_p_uint8_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.EncryptionParameters_cipher_suite_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint8_t ret = new SWIGTYPE_p_uint8_t(storj_uplinkPINVOKE.EncryptionParameters_cipher_suite_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      byte ret = storj_uplinkPINVOKE.EncryptionParameters_cipher_suite_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_int32_t block_size {
+  public int block_size {
     set {
-      storj_uplinkPINVOKE.EncryptionParameters_block_size_set(swigCPtr, SWIGTYPE_p_int32_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.EncryptionParameters_block_size_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int32_t ret = new SWIGTYPE_p_int32_t(storj_uplinkPINVOKE.EncryptionParameters_block_size_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      int ret = storj_uplinkPINVOKE.EncryptionParameters_block_size_get(swigCPtr);
       return ret;
     } 
   }
 
   public EncryptionParameters() : this(storj_uplinkPINVOKE.new_EncryptionParameters(), true) {
   }
-
-}
 
 }

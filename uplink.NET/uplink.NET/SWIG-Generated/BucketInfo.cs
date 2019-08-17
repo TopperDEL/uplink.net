@@ -8,7 +8,6 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
 
 public class BucketInfo : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
@@ -50,38 +49,32 @@ public class BucketInfo : global::System.IDisposable {
     } 
   }
 
-  public SWIGTYPE_p_int64_t created {
+  public long created {
     set {
-      storj_uplinkPINVOKE.BucketInfo_created_set(swigCPtr, SWIGTYPE_p_int64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketInfo_created_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_int64_t ret = new SWIGTYPE_p_int64_t(storj_uplinkPINVOKE.BucketInfo_created_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      long ret = storj_uplinkPINVOKE.BucketInfo_created_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_uint8_t path_cipher {
+  public byte path_cipher {
     set {
-      storj_uplinkPINVOKE.BucketInfo_path_cipher_set(swigCPtr, SWIGTYPE_p_uint8_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketInfo_path_cipher_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint8_t ret = new SWIGTYPE_p_uint8_t(storj_uplinkPINVOKE.BucketInfo_path_cipher_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      byte ret = storj_uplinkPINVOKE.BucketInfo_path_cipher_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SWIGTYPE_p_uint64_t segment_size {
+  public ulong segment_size {
     set {
-      storj_uplinkPINVOKE.BucketInfo_segment_size_set(swigCPtr, SWIGTYPE_p_uint64_t.getCPtr(value));
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      storj_uplinkPINVOKE.BucketInfo_segment_size_set(swigCPtr, value);
     } 
     get {
-      SWIGTYPE_p_uint64_t ret = new SWIGTYPE_p_uint64_t(storj_uplinkPINVOKE.BucketInfo_segment_size_get(swigCPtr), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      ulong ret = storj_uplinkPINVOKE.BucketInfo_segment_size_get(swigCPtr);
       return ret;
     } 
   }
@@ -110,7 +103,5 @@ public class BucketInfo : global::System.IDisposable {
 
   public BucketInfo() : this(storj_uplinkPINVOKE.new_BucketInfo(), true) {
   }
-
-}
 
 }
