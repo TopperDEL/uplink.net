@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using uplink.Net.Contracts.Models;
 
-namespace uplink.Net.LocalModels
+namespace uplink.Net.Models
 {
     public class BucketInfo:uplink.Net.Contracts.Models.IBucketInfo
     {
