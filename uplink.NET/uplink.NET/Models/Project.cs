@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class Project : uplink.Net.Contracts.Models.IProject
+    public class Project : uplink.NET.Contracts.Models.IProject
     {
         internal SWIG.ProjectRef _projectRef = null;
 

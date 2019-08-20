@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class Uplink : uplink.Net.Contracts.Models.IUplink
+    public class Uplink : uplink.NET.Contracts.Models.IUplink
     {
         internal SWIG.UplinkRef _uplinkRef = null;
         private SWIG.UplinkConfig _uplinkConfig = null;

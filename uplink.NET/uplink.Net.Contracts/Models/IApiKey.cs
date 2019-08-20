@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace uplink.Net.Contracts.Models
+namespace uplink.NET.Contracts.Models
 {
     public interface IApiKey:IDisposable
     {

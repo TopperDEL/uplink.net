@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using uplink.Net.Models;
+using uplink.NET.Models;
 
 namespace uplink.NET.Test
 {

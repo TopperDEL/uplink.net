@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class EncryptionAccess:uplink.Net.Contracts.Models.IEncryptionAccess
+    public class EncryptionAccess:uplink.NET.Contracts.Models.IEncryptionAccess
     {
         public string Key { get; set; }
     }

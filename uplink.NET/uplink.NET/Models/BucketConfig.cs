@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.Net.Contracts.Models;
+using uplink.NET.Contracts.Models;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class BucketConfig:uplink.Net.Contracts.Models.IBucketConfig
+    public class BucketConfig:uplink.NET.Contracts.Models.IBucketConfig
     {
         public int PathCipher { get; set; }
         public Contracts.Models.IEncryptionParameters EncryptionParameters { get; set; }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\uplink.NET.Contracts\uplink.NET.Contracts.csproj" />
     <ProjectReference Include="..\uplink.NET\uplink.NET.csproj" />
   </ItemGroup>
 
