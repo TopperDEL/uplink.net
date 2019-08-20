@@ -4,8 +4,12 @@ using System.Text;
 
 namespace uplink.Net.LocalModels
 {
-    public class BucketListOptions : uplink.Net.Contracts.Models.BucketListOptions
+    public class BucketListOptions : uplink.Net.Contracts.Models.IBucketListOptions
     {
+        public string Cursor { get; set; }
+        public int Direction { get; set; }
+        public int Limit { get; set; }
+
         //ToDo: finish Mapping
         internal SWIG.BucketListOptions ToSWIG()
         {

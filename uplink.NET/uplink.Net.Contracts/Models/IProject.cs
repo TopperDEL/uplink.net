@@ -4,8 +4,8 @@ using System.Text;
 
 namespace uplink.Net.Contracts.Models
 {
-    public abstract class ProjectOptions
+    public interface IProject : IDisposable
     {
-        public string Key { get; set; }
+        
     }
 }

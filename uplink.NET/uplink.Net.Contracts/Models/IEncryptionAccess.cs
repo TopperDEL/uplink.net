@@ -4,8 +4,8 @@ using System.Text;
 
 namespace uplink.Net.Contracts.Models
 {
-    public abstract class UplinkConfig
+    public interface IEncryptionAccess
     {
-        public bool Volatile_TLS_SkipPeerCAWhitelist { get; set; }
+        string Key { get; set; }
     }
 }

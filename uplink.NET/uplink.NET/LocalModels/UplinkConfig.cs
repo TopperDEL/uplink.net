@@ -4,7 +4,8 @@ using System.Text;
 
 namespace uplink.Net.LocalModels
 {
-    public class UplinkConfig:uplink.Net.Contracts.Models.UplinkConfig
+    public class UplinkConfig:uplink.Net.Contracts.Models.IUplinkConfig
     {
+        public bool Volatile_TLS_SkipPeerCAWhitelist { get; set; }
     }
 }

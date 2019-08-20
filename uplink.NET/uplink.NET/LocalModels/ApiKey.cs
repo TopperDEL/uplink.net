@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.Net.LocalModels
 {
-    public class ApiKey : uplink.Net.Contracts.Models.ApiKey
+    public class ApiKey : uplink.Net.Contracts.Models.IApiKey
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;
 
@@ -12,7 +12,7 @@ namespace uplink.Net.LocalModels
         /// Creates an ApiKey-Instance by a given ApiKey-String.
         /// Throws ArgumentException if the ApiKey is not valid
         /// </summary>
-        public ApiKey(string apiKeyString):base(apiKeyString)
+        public ApiKey(string apiKeyString)
         {
             string error;
 
@@ -28,7 +28,7 @@ namespace uplink.Net.LocalModels
         /// Returns the used ApiKey as string
         /// </summary>
         /// <returns>The used ApiKey</returns>
-        public override string GetApiKey()
+        public string GetApiKey()
         {
             string result = string.Empty;
             string error;
@@ -38,7 +38,7 @@ namespace uplink.Net.LocalModels
             return result;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             if(_apiKeyRef != null)
             {

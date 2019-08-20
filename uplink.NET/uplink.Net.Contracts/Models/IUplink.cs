@@ -4,8 +4,8 @@ using System.Text;
 
 namespace uplink.Net.Contracts.Models
 {
-    public abstract class EncryptionAccess
+    public interface IUplink : IDisposable
     {
-        public string Key { get; set; }
+        
     }
 }

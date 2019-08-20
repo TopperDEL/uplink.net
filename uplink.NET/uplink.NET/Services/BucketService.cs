@@ -8,12 +8,12 @@ namespace uplink.Net.Services
 {
     public class BucketService : IBucketService
     {
-        public void CloseBucket(BucketRef bucketRef)
+        public void CloseBucket(IBucketRef bucketRef)
         {
             throw new NotImplementedException();
         }
 
-        public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
+        public IBucketInfo CreateBucket(IProject project, string bucketName, IBucketConfig bucketConfig)
         {
             LocalModels.BucketConfig _bucketConfig = bucketConfig as LocalModels.BucketConfig;
             LocalModels.Project _project = project as LocalModels.Project;
@@ -23,17 +23,17 @@ namespace uplink.Net.Services
             return null;
         }
 
-        public void DeleteBucket(Project project, string bucketName)
+        public void DeleteBucket(IProject project, string bucketName)
         {
             throw new NotImplementedException();
         }
 
-        public BucketInfo GetBucketInfo(Project project, string bucketName)
+        public IBucketInfo GetBucketInfo(IProject project, string bucketName)
         {
             throw new NotImplementedException();
         }
 
-        public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
+        public IBucketList ListBuckets(IProject project, IBucketListOptions bucketListOptions)
         {
             string error;
             LocalModels.BucketListOptions _bucketListOptions = bucketListOptions as LocalModels.BucketListOptions;
@@ -44,7 +44,7 @@ namespace uplink.Net.Services
             throw new NotImplementedException();
         }
 
-        public BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess)
+        public IBucketRef OpenBucket(IProject project, string bucketName, IEncryptionAccess encryptionAccess)
         {
             throw new NotImplementedException();
         }

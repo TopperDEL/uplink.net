@@ -4,15 +4,14 @@ using System.Text;
 
 namespace uplink.Net.LocalModels
 {
-    public class Project : uplink.Net.Contracts.Models.Project
+    public class Project : uplink.Net.Contracts.Models.IProject
     {
         internal SWIG.ProjectRef _projectRef = null;
 
         /// <summary>
         /// 
         /// </summary>
-        public Project(Uplink uplink, ApiKey apiKey, string satelliteAddr, ProjectOptions projectOptions) :
-            base(uplink, apiKey, satelliteAddr, projectOptions)
+        public Project(Uplink uplink, ApiKey apiKey, string satelliteAddr, ProjectOptions projectOptions)
         {
             string error;
 
@@ -24,7 +23,7 @@ namespace uplink.Net.LocalModels
                 throw new NullReferenceException("Could not open project");
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             if (_projectRef != null)
             {
