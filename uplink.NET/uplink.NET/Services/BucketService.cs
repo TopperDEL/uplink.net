@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.Net.Contracts.Interfaces;
-using uplink.Net.Contracts.Models;
+using uplink.NET.Contracts.Interfaces;
+using uplink.NET.Contracts.Models;
 
-namespace uplink.Net.Services
+namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {

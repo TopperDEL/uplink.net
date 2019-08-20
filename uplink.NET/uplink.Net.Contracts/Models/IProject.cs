@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Contracts.Models
+namespace uplink.NET.Contracts.Models
 {
     public interface IProject : IDisposable
     {

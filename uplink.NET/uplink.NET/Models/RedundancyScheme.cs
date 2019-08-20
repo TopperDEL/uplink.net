@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class RedundancyScheme:uplink.Net.Contracts.Models.IRedundancyScheme
+    public class RedundancyScheme:uplink.NET.Contracts.Models.IRedundancyScheme
     {
         public int Algorithm { get; set; }
         public int ShareSize { get; set; }

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.Net.Contracts.Interfaces;
-using uplink.Net.Models;
-using uplink.Net.Services;
+using uplink.NET.Contracts.Interfaces;
+using uplink.NET.Models;
+using uplink.NET.Services;
 
 namespace uplink.NET.Test
 {

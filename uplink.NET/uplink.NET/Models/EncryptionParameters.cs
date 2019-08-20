@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class EncryptionParameters:uplink.Net.Contracts.Models.IEncryptionParameters
+    public class EncryptionParameters:uplink.NET.Contracts.Models.IEncryptionParameters
     {
         public int CipherSuite { get; set; }
         public int BlockSize { get; set; }

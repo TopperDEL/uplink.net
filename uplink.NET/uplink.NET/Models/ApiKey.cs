@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class ApiKey : uplink.Net.Contracts.Models.IApiKey
+    public class ApiKey : uplink.NET.Contracts.Models.IApiKey
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;
 

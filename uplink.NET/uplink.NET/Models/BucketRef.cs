@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.Models
+namespace uplink.NET.Models
 {
-    public class BucketRef:uplink.Net.Contracts.Models.IBucketRef
+    public class BucketRef:uplink.NET.Contracts.Models.IBucketRef
     {
         internal SWIG.BucketRef _bucketRef;
     }

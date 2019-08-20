@@ -1,13 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>uplink</RootNamespace>
+    <RootNamespace>uplink.NET</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\uplink.Net.Contracts\uplink.Net.Contracts.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="storj_uplink.dll">
@@ -17,6 +13,10 @@
 
   <ItemGroup>
     <Folder Include="SWIG-Generated\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\uplink.NET.Contracts\uplink.NET.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
