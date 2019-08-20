@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using uplink.Net.Contracts.Interfaces;
-using uplink.Net.LocalModels;
+using uplink.Net.Models;
 using uplink.Net.Services;
 
 namespace uplink.NET.Test
@@ -36,7 +36,7 @@ namespace uplink.NET.Test
             Project project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
             BucketConfig bucketConfig = new BucketConfig();
 
-            var result = service.ListBuckets(project, new uplink.Net.LocalModels.BucketListOptions());
+            var result = service.ListBuckets(project, new BucketListOptions());
         }
     }
 }

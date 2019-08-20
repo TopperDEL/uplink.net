@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace uplink.Net.LocalModels
+namespace uplink.Net.Models
 {
     public class ApiKey : uplink.Net.Contracts.Models.IApiKey
     {
