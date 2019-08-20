@@ -7,11 +7,11 @@ namespace uplink.Net.Contracts.Interfaces
 {
     public interface IBucketService
     {
-        BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig);
-        BucketInfo GetBucketInfo(Project project, string bucketName);
-        BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess);
-        BucketList ListBuckets(Project project, BucketListOptions bucketListOptions);
-        void DeleteBucket(Project project, string bucketName);
-        void CloseBucket(BucketRef bucketRef);
+        IBucketInfo CreateBucket(IProject project, string bucketName, IBucketConfig bucketConfig);
+        IBucketInfo GetBucketInfo(IProject project, string bucketName);
+        IBucketRef OpenBucket(IProject project, string bucketName, IEncryptionAccess encryptionAccess);
+        IBucketList ListBuckets(IProject project, IBucketListOptions bucketListOptions);
+        void DeleteBucket(IProject project, string bucketName);
+        void CloseBucket(IBucketRef bucketRef);
     }
 }

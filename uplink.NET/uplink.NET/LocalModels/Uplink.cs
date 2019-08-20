@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.Net.LocalModels
 {
-    public class Uplink : uplink.Net.Contracts.Models.Uplink
+    public class Uplink : uplink.Net.Contracts.Models.IUplink
     {
         internal SWIG.UplinkRef _uplinkRef = null;
         private SWIG.UplinkConfig _uplinkConfig = null;
@@ -13,7 +13,7 @@ namespace uplink.Net.LocalModels
         /// Creates an Uplink-Instance
         /// </summary>
         /// <param name="uplinkConfig">The UplinkConfig to use</param>
-        public Uplink(UplinkConfig uplinkConfig) : base(uplinkConfig)
+        public Uplink(UplinkConfig uplinkConfig)
         {
             string error;
 
@@ -27,7 +27,7 @@ namespace uplink.Net.LocalModels
                 throw new NullReferenceException("No Uplink-reference created");
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             if (_uplinkConfig != null)
             {

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.Net.Contracts.Models;
 
 namespace uplink.Net.LocalModels
 {
-    public class BucketConfig:uplink.Net.Contracts.Models.BucketConfig
+    public class BucketConfig:uplink.Net.Contracts.Models.IBucketConfig
     {
+        public int PathCipher { get; set; }
+        public Contracts.Models.IEncryptionParameters EncryptionParameters { get; set; }
+        public Contracts.Models.IRedundancyScheme RedundancyScheme { get; set; }
+
+
         //ToDo: finish Mapping
         internal SWIG.BucketConfig ToSWIG()
         {

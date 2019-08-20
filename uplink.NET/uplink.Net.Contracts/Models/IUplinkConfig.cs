@@ -4,7 +4,8 @@ using System.Text;
 
 namespace uplink.Net.Contracts.Models
 {
-    public abstract class BucketRef
+    public interface IUplinkConfig
     {
+        bool Volatile_TLS_SkipPeerCAWhitelist { get; set; }
     }
 }
