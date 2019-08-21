@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>uplink.NET.Android.Binding</id>
+    <version>0.1.0</version>
+    <authors>Tim Parth</authors>
+    <owners>Tim Parth</owners>
+    <!--<licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>-->
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <iconUrl>https://storj.io/press-kit/Storj-symbol.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package contains objects for using uplink.NET from Xamarin.Android</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>storj c# uplink .Net android</tags>
+    <dependencies>
+      <dependency id="uplink.NET.Contracts" version="0.1.0" include="all"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\release\uplink.NET.Android.Binding.dll" target="lib\MonoAndroid" />
+  </files>
+</package>
