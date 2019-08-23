@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.NET.Contracts.Interfaces;
+using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using uplink.NET.Services;
 

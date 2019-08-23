@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class RedundancyScheme:uplink.NET.Contracts.Models.IRedundancyScheme
+    public class RedundancyScheme
     {
         public int Algorithm { get; set; }
         public int ShareSize { get; set; }

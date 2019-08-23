@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.NET.Contracts.Models;
 
 namespace uplink.NET.Models
 {
-    public class BucketConfig:uplink.NET.Contracts.Models.IBucketConfig
+    public class BucketConfig
     {
         public int PathCipher { get; set; }
-        public Contracts.Models.IEncryptionParameters EncryptionParameters { get; set; }
-        public Contracts.Models.IRedundancyScheme RedundancyScheme { get; set; }
+        public EncryptionParameters EncryptionParameters { get; set; }
+        public RedundancyScheme RedundancyScheme { get; set; }
 
 
         //ToDo: finish Mapping
