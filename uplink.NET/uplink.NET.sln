@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET.Test", "uplink.N
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "uplink.NET.Shared", "uplink.NET.Shared\uplink.NET.Shared.shproj", "{A5A6FA4D-6FD1-48B1-86B1-0263262BC432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Android", "uplink.NET.Android\uplink.NET.Android.csproj", "{17D64967-6893-469F-8950-114A983D2A2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Droid", "uplink.NET.Droid\uplink.NET.Droid.csproj", "{17D64967-6893-469F-8950-114A983D2A2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Droid.TestApp", "uplink.NET.Droid.TestApp\uplink.NET.Droid.TestApp.csproj", "{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -33,6 +35,12 @@ Global
 		{17D64967-6893-469F-8950-114A983D2A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17D64967-6893-469F-8950-114A983D2A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17D64967-6893-469F-8950-114A983D2A2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
