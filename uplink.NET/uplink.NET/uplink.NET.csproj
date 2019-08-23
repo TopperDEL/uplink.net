@@ -11,10 +11,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="SWIG-Generated\" />
-  </ItemGroup>
-
   <Import Project="..\uplink.NET.Shared\uplink.NET.Shared.projitems" Label="Shared" />
 
 </Project>
