@@ -13,11 +13,6 @@
 %apply char **OUTPUT { char **p3 };
 %apply char **OUTPUT { char **p4 };
 
-%{
-#include <shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
-%}
-
 %define MAP_SPECIAL(CTYPE, CSTYPE, TYPECHECKPRECEDENCE)
 %typemap(ctype) CTYPE "CTYPE"
 %typemap(imtype) CTYPE "CSTYPE"
