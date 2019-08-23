@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("uplink.NET.Android.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("uplink.NET.Droid.Resource", IsApplication=false)]
 
-namespace uplink.NET.Android
+namespace uplink.NET.Droid
 {
 	
 	
