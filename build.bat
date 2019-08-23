@@ -60,7 +60,6 @@ copy .\storj\lib\uplinkc\*.cs .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Gen
 echo *** Generating Android-DLLs
 echo *** Go and get a coffee...
 cd .\storj\lib\uplinkc
-REM TODO: copy result to Android-Project
 
 echo *** Removing (hopefully) unnecessary reference to Shwlapi.h
 findstr /V "hlwapi" storj_uplink_second_wrap.c > storj_uplink_second_wrap2.c
@@ -81,6 +80,7 @@ set CXX=%TOOLCHAIN%\armv7a-linux-androideabi16-clang++
 set GOARM=7
 echo *** Target: armeabi-v7a
 go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\..\..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Android\libs\armeabi-v7a\ /Y
 
 set GOARM=
 
@@ -89,18 +89,21 @@ set CC=%TOOLCHAIN%\aarch64-linux-android21-clang
 set CXX=%TOOLCHAIN%\aarch64-linux-android21-clang++
 echo *** Target: arm64-v8a
 go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\..\..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Android\libs\arm64-v8a\ /Y
 
 set GOARCH=386
 set CC=%TOOLCHAIN%\i686-linux-android16-clang
 set CXX=%TOOLCHAIN%\i686-linux-android16-clang++
 echo *** Target: x86
 go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\..\..\Build-Results\Android\x86\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Android\libs\x86\ /Y
 
 set GOARCH=amd64
 set CC=%TOOLCHAIN%\x86_64-linux-android21-clang
 set CXX=%TOOLCHAIN%\x86_64-linux-android21-clang++
 echo *** Target: x86_64
 go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\..\..\Build-Results\Android\x86_64\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Android\libs\x86_64\ /Y
 
 cd ..\..\..
 %SystemRoot%\explorer.exe .\Build-Results\
