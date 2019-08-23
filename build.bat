@@ -47,15 +47,15 @@ mkdir Build-Results
 
 echo *** Copy Windows-x64-DLL
 copy .\storj\lib\uplinkc\*.dll .\Build-Results\ /Y
-copy .\storj\lib\uplinkc\*.dll .\uplink.net\uplink.NET\uplink.NET\ /Y
+copy .\storj\lib\uplinkc\*.dll .\uplink.net\uplink.NET\uplink.NET.Shared\ /Y
 
 echo *** Copy cs-files
 cd Build-Results
 mkdir cs-Files
 cd..
 copy .\storj\lib\uplinkc\*.cs .\Build-Results\cs-Files /Y
-del .\uplink.net\uplink.NET\uplink.NET\SWIG-Generated\*.cs
-copy .\storj\lib\uplinkc\*.cs .\uplink.net\uplink.NET\uplink.NET\SWIG-Generated\ /Y
+del .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Generated\*.cs
+copy .\storj\lib\uplinkc\*.cs .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Generated\ /Y
 
 echo *** Generating Android-DLLs
 echo *** Go and get a coffee...
