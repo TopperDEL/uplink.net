@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using uplink.NET.Contracts.Interfaces;
-using uplink.NET.Contracts.Models;
+using uplink.NET.Interfaces;
+using uplink.NET.Models;
 
 namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
-        public void CloseBucket(IBucketRef bucketRef)
+        public void CloseBucket(BucketRef bucketRef)
         {
             throw new NotImplementedException();
         }
 
-        public IBucketInfo CreateBucket(IProject project, string bucketName, IBucketConfig bucketConfig)
+        public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
         {
             Models.BucketConfig _bucketConfig = bucketConfig as Models.BucketConfig;
             Models.Project _project = project as Models.Project;
@@ -23,17 +23,17 @@ namespace uplink.NET.Services
             return null;
         }
 
-        public void DeleteBucket(IProject project, string bucketName)
+        public void DeleteBucket(Project project, string bucketName)
         {
             throw new NotImplementedException();
         }
 
-        public IBucketInfo GetBucketInfo(IProject project, string bucketName)
+        public BucketInfo GetBucketInfo(Project project, string bucketName)
         {
             throw new NotImplementedException();
         }
 
-        public IBucketList ListBuckets(IProject project, IBucketListOptions bucketListOptions)
+        public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
         {
             string error;
             Models.BucketListOptions _bucketListOptions = bucketListOptions as Models.BucketListOptions;
@@ -44,7 +44,7 @@ namespace uplink.NET.Services
             throw new NotImplementedException();
         }
 
-        public IBucketRef OpenBucket(IProject project, string bucketName, IEncryptionAccess encryptionAccess)
+        public BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess)
         {
             throw new NotImplementedException();
         }

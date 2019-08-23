@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class ApiKey : uplink.NET.Contracts.Models.IApiKey
+    public class ApiKey : IDisposable
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;
 
@@ -40,7 +40,7 @@ namespace uplink.NET.Models
 
         public void Dispose()
         {
-            if(_apiKeyRef != null)
+            if (_apiKeyRef != null)
             {
                 SWIG.storj_uplink.free_api_key(_apiKeyRef);
                 _apiKeyRef = null;

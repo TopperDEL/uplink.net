@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class Uplink : uplink.NET.Contracts.Models.IUplink
+    public class Uplink : IDisposable
     {
         internal SWIG.UplinkRef _uplinkRef = null;
         private SWIG.UplinkConfig _uplinkConfig = null;
@@ -18,7 +18,7 @@ namespace uplink.NET.Models
             string error;
 
             _uplinkConfig = new SWIG.UplinkConfig();
-            _uplinkConfig.Volatile.tls.skip_peer_ca_whitelist  = uplinkConfig.Volatile_TLS_SkipPeerCAWhitelist;
+            _uplinkConfig.Volatile.tls.skip_peer_ca_whitelist = uplinkConfig.Volatile_TLS_SkipPeerCAWhitelist;
             _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, out error);
 
             if (!string.IsNullOrEmpty(error))

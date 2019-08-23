@@ -7,9 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET", "uplink.NET\up
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET.Test", "uplink.NET.Test\uplink.NET.Test.csproj", "{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET.Contracts", "uplink.NET.Contracts\uplink.NET.Contracts.csproj", "{88C7EECB-C02D-4769-82C1-D1F474533FA8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "uplink.NET.Shared", "uplink.NET.Shared\uplink.NET.Shared.shproj", "{A5A6FA4D-6FD1-48B1-86B1-0263262BC432}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		uplink.NET.Shared\uplink.NET.Shared.projitems*{a5a6fa4d-6fd1-48b1-86b1-0263262bc432}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -23,10 +26,6 @@ Global
 		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88C7EECB-C02D-4769-82C1-D1F474533FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88C7EECB-C02D-4769-82C1-D1F474533FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88C7EECB-C02D-4769-82C1-D1F474533FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88C7EECB-C02D-4769-82C1-D1F474533FA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

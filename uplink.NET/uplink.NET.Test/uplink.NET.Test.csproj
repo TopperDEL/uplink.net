@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\uplink.NET.Contracts\uplink.NET.Contracts.csproj" />
     <ProjectReference Include="..\uplink.NET\uplink.NET.csproj" />
   </ItemGroup>
 

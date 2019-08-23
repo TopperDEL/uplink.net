@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class ProjectOptions:uplink.NET.Contracts.Models.IProjectOptions
+    public class EncryptionAccess
     {
         public string Key { get; set; }
     }

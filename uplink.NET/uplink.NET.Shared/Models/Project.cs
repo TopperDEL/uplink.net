@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class Project : uplink.NET.Contracts.Models.IProject
+    public class Project : IDisposable
     {
         internal SWIG.ProjectRef _projectRef = null;
 

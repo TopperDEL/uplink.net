@@ -4,7 +4,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class BucketListOptions : uplink.NET.Contracts.Models.IBucketListOptions
+    public class BucketListOptions
     {
         public string Cursor { get; set; }
         public int Direction { get; set; }

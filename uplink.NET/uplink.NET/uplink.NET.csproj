@@ -15,8 +15,6 @@
     <Folder Include="SWIG-Generated\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\uplink.NET.Contracts\uplink.NET.Contracts.csproj" />
-  </ItemGroup>
+  <Import Project="..\uplink.NET.Shared\uplink.NET.Shared.projitems" Label="Shared" />
 
 </Project>

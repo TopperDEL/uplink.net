@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a5a6fa4d-6fd1-48b1-86b1-0263262bc432</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>uplink.NET.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ApiKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\BucketConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\BucketInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\BucketListOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\BucketRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionAccess.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionParameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
+  </ItemGroup>
+</Project>
