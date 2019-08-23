@@ -37,7 +37,7 @@ First you need to pull the latest version of this repository. Open a command pro
 git clone https://github.com/topperdel/uplink.net.git
 ```
 
-The do
+Then do
 ```
 cd \uplink.net
 build
