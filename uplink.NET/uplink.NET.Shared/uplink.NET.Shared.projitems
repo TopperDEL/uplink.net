@@ -6,7 +6,7 @@
     <SharedGUID>a5a6fa4d-6fd1-48b1-86b1-0263262bc432</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>uplink.NET.Shared</Import_RootNamespace>
+    <Import_RootNamespace>uplink.NET</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\CypherSuite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />

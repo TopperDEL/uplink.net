@@ -20,7 +20,7 @@ namespace uplink.NET.Services
             string error;
             var res = SWIG.storj_uplink.create_bucket(_project._projectRef, bucketName, _bucketConfig.ToSWIG(), out error);
 
-            return null;
+            return BucketInfo.FromSWIG(res);
         }
 
         public void DeleteBucket(Project project, string bucketName)
@@ -40,8 +40,8 @@ namespace uplink.NET.Services
             Models.Project _project = project as Models.Project;
 
             var res = SWIG.storj_uplink.list_buckets(_project._projectRef, _bucketListOptions.ToSWIG(), out error);
-            var items = res.items;
-            throw new NotImplementedException();
+
+            return BucketList.FromSWIG(res);
         }
 
         public BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess)

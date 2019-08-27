@@ -11,5 +11,15 @@ namespace uplink.NET.Models
         public int Length { get; set; }
 
         //ToDo: Correct SWIG-Mapping
+
+        internal static BucketList FromSWIG(SWIG.BucketList original)
+        {
+            BucketList ret = new BucketList();
+            ret.Length = original.length;
+            ret.More = original.more;
+            //Todo: Map items
+
+            return ret;
+        }
     }
 }
