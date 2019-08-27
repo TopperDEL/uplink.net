@@ -11,4 +11,12 @@ namespace uplink.NET.Models
         STORJ_ENC_AESGCM = 2,
         STORJ_ENC_SECRET_BOX = 3
     }
+
+    internal static class CipherSuiteHelper
+    {
+        internal static CipherSuite FromSWIG(SWIG.CipherSuite original)
+        {
+           return (CipherSuite)Enum.Parse(typeof(CipherSuite), original.ToString());
+        }
+    }
 }

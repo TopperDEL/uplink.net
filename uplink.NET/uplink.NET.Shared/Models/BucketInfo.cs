@@ -19,7 +19,7 @@ namespace uplink.NET.Models
             ret.Created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
             ret.EncryptionParameters = EncryptionParameters.FromSWIG(original.encryption_parameters);
             ret.Name = original.name;
-            ret.PathCipher = (CipherSuite)Enum.Parse(typeof(CipherSuite), original.path_cipher.ToString());
+            ret.PathCipher = CipherSuiteHelper.FromSWIG(original.path_cipher);
             ret.RedundancyScheme = RedundancyScheme.FromSWIG(original.redundancy_scheme);
             ret.SegmentSize = original.segment_size;
 

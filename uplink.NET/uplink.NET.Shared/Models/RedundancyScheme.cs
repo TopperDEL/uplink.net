@@ -6,7 +6,7 @@ namespace uplink.NET.Models
 {
     public class RedundancyScheme
     {
-        public int Algorithm { get; set; }
+        public RedundancyAlgorithm Algorithm { get; set; }
         public int ShareSize { get; set; }
         public int RequiredShares { get; set; }
         public int RepairShares { get; set; }
@@ -16,7 +16,7 @@ namespace uplink.NET.Models
         internal static RedundancyScheme FromSWIG(SWIG.RedundancyScheme original)
         {
             RedundancyScheme ret = new RedundancyScheme();
-            //Todo: do mapping - ret.Algorithm = original.algorithm;
+            ret.Algorithm = RedundancyAlgorithmHelper.FromSWIG(original.algorithm);
             ret.OptimalShares = original.optimal_shares;
             ret.RepairShares = original.repair_shares;
             ret.RequiredShares = original.required_shares;
