@@ -161,6 +161,34 @@ namespace uplink.NET.Test
         public void ListBucketsTest()
         {
             var result = _service.ListBuckets(_project, new BucketListOptions());
+            //ToDo: implement Test
+        }
+
+        [TestMethod]
+        public void CloseBucket_Closes_Bucket()
+        {
+            string bucketname = "closebucket-closes-bucket";
+
+            var createdBucket = _service.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+
+            _service.CloseBucket(bucketHandle);
+        }
+
+        [TestMethod]
+        public void CloseBucket_Fails_OnNullBucketHandle()
+        {
+            try
+            {
+                _service.CloseBucket(null);
+            }
+            catch (BucketCloseException ex)
+            {
+                Assert.AreEqual("Bucket already closed", ex.Message);
+                return;
+            }
+
+            Assert.IsTrue(false, "CloseBucket did not throw exception on null BucketHandle");
         }
 
         [TestCleanup]
@@ -170,6 +198,7 @@ namespace uplink.NET.Test
             DeleteBucket("createbucket-fails-onbucketalreadyexisting");
             DeleteBucket("getbucketinfo-retrieves-bucketinfo");
             DeleteBucket("openbucket-returns-buckethandle");
+            DeleteBucket("closebucket-closes-bucket");
             DeleteBucket("deletebucket-deletes-bucket");
         }
 

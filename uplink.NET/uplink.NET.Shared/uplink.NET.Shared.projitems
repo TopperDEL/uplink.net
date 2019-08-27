@@ -9,6 +9,7 @@
     <Import_RootNamespace>uplink.NET</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketCloseException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketDeletionException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketCreationException.cs" />
