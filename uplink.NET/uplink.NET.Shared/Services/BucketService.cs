@@ -9,11 +9,6 @@ namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
-        public void CloseBucket(BucketRef bucketRef)
-        {
-            throw new NotImplementedException();
-        }
-
         public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
         {
             string error;
@@ -58,7 +53,21 @@ namespace uplink.NET.Services
 
         public BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess)
         {
-            throw new NotImplementedException();
+            string error;
+
+            var handle = SWIG.storj_uplink.open_bucket(project._projectRef, bucketName, encryptionAccess.ToBase58(), out error);
+
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketNotFoundException(bucketName, error);
+
+            return BucketRef.FromSWIG(handle);
+        }
+
+        public void CloseBucket(BucketRef bucketRef)
+        {
+            string error;
+
+            SWIG.storj_uplink.close_bucket(bucketRef._bucketRef, out error);
         }
     }
 }

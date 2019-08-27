@@ -88,6 +88,35 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public void OpenBucket_Returns_BucketHandle()
+        {
+            string bucketname = "openbucket-returns-buckethandle";
+
+            var createdBucket = _service.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+
+            Assert.IsNotNull(bucketHandle);
+        }
+
+        [TestMethod]
+        public void OpenBucket_Fails_OnNotExistingBucket()
+        {
+            string bucketname = "openbucket-fails-onnotexistingbucket";
+
+            try
+            {
+                var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            }
+            catch (BucketNotFoundException ex)
+            {
+                Assert.AreEqual(bucketname, ex.BucketName);
+                return;
+            }
+
+            Assert.IsTrue(false, "OpenBucket did not throw exception on not existing bucket");
+        }
+
+        [TestMethod]
         public void DeleteBucket_Deletes_Bucket()
         {
             string bucketname = "deletebucket-deletes-bucket";
@@ -140,6 +169,7 @@ namespace uplink.NET.Test
             DeleteBucket("createbucket-creates-newbucket");
             DeleteBucket("createbucket-fails-onbucketalreadyexisting");
             DeleteBucket("getbucketinfo-retrieves-bucketinfo");
+            DeleteBucket("openbucket-returns-buckethandle");
             DeleteBucket("deletebucket-deletes-bucket");
         }
 
