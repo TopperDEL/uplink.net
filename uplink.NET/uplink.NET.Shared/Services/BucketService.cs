@@ -66,8 +66,13 @@ namespace uplink.NET.Services
         public void CloseBucket(BucketRef bucketRef)
         {
             string error;
+            if (bucketRef == null || bucketRef._bucketRef == null)
+                throw new BucketCloseException("Bucket already closed");
 
             SWIG.storj_uplink.close_bucket(bucketRef._bucketRef, out error);
+
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketCloseException(error);
         }
     }
 }
