@@ -19,6 +19,8 @@ namespace uplink.NET.Models
             ret.More = original.more;
             //Todo: Map items
 
+            SWIG.storj_uplink.free_bucket_list(original);
+
             return ret;
         }
     }

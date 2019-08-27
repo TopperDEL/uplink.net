@@ -23,6 +23,8 @@ namespace uplink.NET.Models
             ret.RedundancyScheme = RedundancyScheme.FromSWIG(original.redundancy_scheme);
             ret.SegmentSize = original.segment_size;
 
+            SWIG.storj_uplink.free_bucket_info(original);
+
             return ret;
         }
     }
