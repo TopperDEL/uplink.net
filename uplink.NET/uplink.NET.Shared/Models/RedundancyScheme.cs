@@ -12,5 +12,18 @@ namespace uplink.NET.Models
         public int RepairShares { get; set; }
         public int OptimalShares { get; set; }
         public int TotalShares { get; set; }
+
+        internal static RedundancyScheme FromSWIG(SWIG.RedundancyScheme original)
+        {
+            RedundancyScheme ret = new RedundancyScheme();
+            //Todo: do mapping - ret.Algorithm = original.algorithm;
+            ret.OptimalShares = original.optimal_shares;
+            ret.RepairShares = original.repair_shares;
+            ret.RequiredShares = original.required_shares;
+            ret.ShareSize = original.share_size;
+            ret.TotalShares = original.total_shares;
+
+            return ret;
+        }
     }
 }
