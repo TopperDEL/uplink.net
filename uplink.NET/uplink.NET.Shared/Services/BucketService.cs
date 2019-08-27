@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 
@@ -20,12 +21,17 @@ namespace uplink.NET.Services
             string error;
             var res = SWIG.storj_uplink.create_bucket(_project._projectRef, bucketName, _bucketConfig.ToSWIG(), out error);
 
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketCreationException(error);
+
             return BucketInfo.FromSWIG(res);
         }
 
         public void DeleteBucket(Project project, string bucketName)
         {
-            throw new NotImplementedException();
+            string error;
+
+            SWIG.storj_uplink.delete_bucket(project._projectRef, bucketName, out error);
         }
 
         public BucketInfo GetBucketInfo(Project project, string bucketName)
