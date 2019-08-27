@@ -16,10 +16,8 @@ namespace uplink.NET.Services
 
         public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
         {
-            Models.BucketConfig _bucketConfig = bucketConfig as Models.BucketConfig;
-            Models.Project _project = project as Models.Project;
             string error;
-            var res = SWIG.storj_uplink.create_bucket(_project._projectRef, bucketName, _bucketConfig.ToSWIG(), out error);
+            var res = SWIG.storj_uplink.create_bucket(project._projectRef, bucketName, bucketConfig.ToSWIG(), out error);
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketCreationException(error);
@@ -42,10 +40,8 @@ namespace uplink.NET.Services
         public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
         {
             string error;
-            Models.BucketListOptions _bucketListOptions = bucketListOptions as Models.BucketListOptions;
-            Models.Project _project = project as Models.Project;
 
-            var res = SWIG.storj_uplink.list_buckets(_project._projectRef, _bucketListOptions.ToSWIG(), out error);
+            var res = SWIG.storj_uplink.list_buckets(project._projectRef, bucketListOptions.ToSWIG(), out error);
 
             return BucketList.FromSWIG(res);
         }
