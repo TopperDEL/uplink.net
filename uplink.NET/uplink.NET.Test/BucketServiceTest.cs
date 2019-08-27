@@ -58,6 +58,35 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public void GetBucketInfo_Retrieves_BucketInfo()
+        {
+            string bucketname = "getbucketinfo-retrieves-bucketinfo";
+
+            var createdResult = _service.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+
+            Assert.AreEqual(bucketname, bucketInfo.Name);
+        }
+
+        [TestMethod]
+        public void GetBucketInfo_Fails_OnNotExistingBucket()
+        {
+            string bucketname = "getbucketinfo-fails-onnotexistingbucket";
+
+            try
+            {
+                var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+            }
+            catch(BucketNotFoundException ex)
+            {
+                Assert.AreEqual(bucketname, ex.BucketName);
+                return;
+            }
+
+            Assert.IsTrue(false, "GetBucketInfo did not throw exception on not existing bucket");
+        }
+
+        [TestMethod]
         public void ListBucketsTest()
         {
             var result = _service.ListBuckets(_project, new BucketListOptions());
@@ -66,8 +95,19 @@ namespace uplink.NET.Test
         [TestCleanup]
         public void Cleanup()
         {
-            _service.DeleteBucket(_project, "createbucket-creates-newbucket");
-            _service.DeleteBucket(_project, "createbucket-fails-onbucketalreadyexisting");
+            DeleteBucket("createbucket-creates-newbucket");
+            DeleteBucket("createbucket-fails-onbucketalreadyexisting");
+            DeleteBucket("getbucketinfo-retrieves-bucketinfo");
+        }
+
+        private void DeleteBucket(string bucketName)
+        {
+            try
+            {
+                _service.DeleteBucket(_project, bucketName);
+            }
+            catch
+            { }
         }
     }
 }

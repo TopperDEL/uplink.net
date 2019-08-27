@@ -34,7 +34,14 @@ namespace uplink.NET.Services
 
         public BucketInfo GetBucketInfo(Project project, string bucketName)
         {
-            throw new NotImplementedException();
+            string error;
+
+            var bucketInfo = SWIG.storj_uplink.get_bucket_info(project._projectRef, bucketName, out error);
+
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketNotFoundException(bucketName, error);
+
+            return BucketInfo.FromSWIG(bucketInfo);
         }
 
         public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
