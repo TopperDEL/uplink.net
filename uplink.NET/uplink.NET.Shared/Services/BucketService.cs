@@ -20,7 +20,7 @@ namespace uplink.NET.Services
             var res = SWIG.storj_uplink.create_bucket(project._projectRef, bucketName, bucketConfig.ToSWIG(), out error);
 
             if (!string.IsNullOrEmpty(error))
-                throw new BucketCreationException(error);
+                throw new BucketCreationException(bucketName, error);
 
             return BucketInfo.FromSWIG(res);
         }
@@ -30,6 +30,9 @@ namespace uplink.NET.Services
             string error;
 
             SWIG.storj_uplink.delete_bucket(project._projectRef, bucketName, out error);
+
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketDeletionException(bucketName, error);
         }
 
         public BucketInfo GetBucketInfo(Project project, string bucketName)

@@ -51,6 +51,7 @@ namespace uplink.NET.Test
             }catch(BucketCreationException ex)
             {
                 Assert.IsTrue(ex.Message.Contains("already exists"));
+                Assert.AreEqual(bucketname, ex.BucketName);
                 return;
             }
 
@@ -87,6 +88,47 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public void DeleteBucket_Deletes_Bucket()
+        {
+            string bucketname = "deletebucket-deletes-bucket";
+
+            var createdResult = _service.CreateBucket(_project, bucketname, _bucketConfig);
+
+            _service.DeleteBucket(_project, bucketname);
+
+            try
+            {
+                var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+            }
+            catch (BucketNotFoundException ex)
+            {
+                Assert.AreEqual(bucketname, ex.BucketName);
+                return;
+            }
+
+            Assert.IsTrue(false, "DeleteBucket did not delete Bucket as it seems to still exist");
+        }
+
+        //Not implemented on the storj-side - activate if delete_bucket throws exception for not existing bucket
+        //[TestMethod]
+        //public void DeleteBucket_Fails_OnNotExistingBucket()
+        //{
+        //    string bucketname = "deletebucket-fails-onnotexistingbucket";
+
+        //    try
+        //    {
+        //        _service.DeleteBucket(_project, bucketname);
+        //    }
+        //    catch (BucketNotFoundException ex)
+        //    {
+        //        Assert.AreEqual(bucketname, ex.BucketName);
+        //        return;
+        //    }
+
+        //    Assert.IsTrue(false, "DeleteBucket did not throw exception on not existing bucket");
+        //}
+
+        [TestMethod]
         public void ListBucketsTest()
         {
             var result = _service.ListBuckets(_project, new BucketListOptions());
@@ -98,6 +140,7 @@ namespace uplink.NET.Test
             DeleteBucket("createbucket-creates-newbucket");
             DeleteBucket("createbucket-fails-onbucketalreadyexisting");
             DeleteBucket("getbucketinfo-retrieves-bucketinfo");
+            DeleteBucket("deletebucket-deletes-bucket");
         }
 
         private void DeleteBucket(string bucketName)

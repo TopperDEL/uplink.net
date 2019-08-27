@@ -4,10 +4,10 @@ using System.Text;
 
 namespace uplink.NET.Exceptions
 {
-    public class BucketCreationException : Exception
+    public class BucketDeletionException : Exception
     {
         public string BucketName { get; set; }
-        public BucketCreationException(string bucketName, string error):base(error)
+        public BucketDeletionException(string bucketName, string error):base(error)
         {
             BucketName = bucketName;
         }
