@@ -66,9 +66,6 @@ findstr /V "hlwapi" storj_uplink_second_wrap.c > storj_uplink_second_wrap2.c
 del storj_uplink_second_wrap.c
 ren storj_uplink_second_wrap2.c storj_uplink_second_wrap.c
 
-echo *** Temporary!! ***
-git checkout ee/lib-uplinkc
-echo *** Temporary!! ***
 set TOOLCHAIN=%ANDROID_HOME%\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin
 
 set GOOS=android
