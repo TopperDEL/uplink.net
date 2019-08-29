@@ -28,6 +28,7 @@ namespace uplink.NET.Models
         }
         public bool Completed { get; private set; }
         public bool Failed { get; set; }
+        public bool Cancelled { get; set; }
         private string _errorMessage;
         public string ErrorMessage
         {
@@ -65,31 +66,43 @@ namespace uplink.NET.Models
                     {
                         //Send 1024 bytes in next batch
                         var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip(BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
-                        if (sent != 1024)
+                        if (sent != 1024 && string.IsNullOrEmpty(_errorMessage))
                             continue; //try again?
-                        BytesSent += 1024;
+                        if (sent == 1024)
+                            BytesSent += 1024;
                     }
                     else
                     {
                         //Send only the remaining bytes
                         var remaining = _bytesToUpload.Length - BytesSent;
                         var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip(BytesSent).Take(remaining).ToArray(), (uint)remaining, out _errorMessage);
-                        if (sent != remaining)
+                        if (sent != remaining && string.IsNullOrEmpty(_errorMessage))
                             continue; //try again?
-                        BytesSent += remaining;
+                        if (sent == remaining)
+                            BytesSent += remaining;
                     }
                     if(_cancelled)
                     {
                         SWIG.storj_uplink.upload_cancel(_uploaderRef, out _errorMessage);
+                        if (string.IsNullOrEmpty(_errorMessage))
+                            Cancelled = true;
+                        else
+                            Failed = true;
                         return;
                     }
                     UploadOperationProgressChanged?.Invoke(this);
+                    if (!string.IsNullOrEmpty(_errorMessage))
+                    {
+                        Failed = true;
+                        return;
+                    }
                 }
                 SWIG.storj_uplink.upload_commit(_uploaderRef, out _errorMessage);
             }
-            if(!string.IsNullOrEmpty(_errorMessage))
+            if (!string.IsNullOrEmpty(_errorMessage))
             {
                 Failed = true;
+                return;
             }
 
             Completed = true;
