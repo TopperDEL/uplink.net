@@ -8,5 +8,6 @@ namespace uplink.NET.Interfaces
     public interface IObjectService
     {
         UploadOperation UploadObject(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
+        DownloadOperation DownloadObject(BucketRef bucket, string targetPath, bool immediateStart = true);
     }
 }

@@ -34,22 +34,22 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task UploadObject_Uploads_2500Bytes()
         {
-            await Upload_X_Bytes(2500, 3, new List<int>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
+            await Upload_X_Bytes(2500, 3, new List<ulong>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_2048Bytes()
         {
-            await Upload_X_Bytes(2048, 2, new List<int>() { 1024, 2048 }); //Two 1024 bytes packages
+            await Upload_X_Bytes(2048, 2, new List<ulong>() { 1024, 2048 }); //Two 1024 bytes packages
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_256Bytes()
         {
-            await Upload_X_Bytes(256, 1, new List<int>() { 256 }); //One 256 bytes package
+            await Upload_X_Bytes(256, 1, new List<ulong>() { 256 }); //One 256 bytes package
         }
 
-        private async Task Upload_X_Bytes(int bytes, int exptecedProgressCount, List<int> progressValues)
+        private async Task Upload_X_Bytes(ulong bytes, int exptecedProgressCount, List<ulong> progressValues)
         {
             string bucketname = "uploadtest";
 
@@ -73,7 +73,59 @@ namespace uplink.NET.Test
             Assert.AreEqual(bytes, uploadOperation.BytesSent);
         }
 
-        private byte[] GetRandomBytes(int length)
+        [TestMethod]
+        public async Task DownloadObject_Downloads_256Bytes()
+        {
+            await Download_X_Bytes(256, 1, new List<ulong>() { 256 }); //One 256 bytes package
+        }
+
+        [TestMethod]
+        public async Task DownloadObject_Downloads_2048Bytes()
+        {
+            await Download_X_Bytes(2048, 2, new List<ulong>() { 1024, 2048 }); //Two 1024 bytes package
+        }
+
+        [TestMethod]
+        public async Task DownloadObject_Downloads_2500Bytes()
+        {
+            await Download_X_Bytes(2500, 3, new List<ulong>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
+        }
+
+        private async Task Download_X_Bytes(ulong bytes, int exptecedProgressCount, List<ulong> progressValues)
+        {
+            string bucketname = "downloadtest";
+
+            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            byte[] bytesToUpload = GetRandomBytes(bytes);
+
+            
+            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var progressChangeCounter = 0;
+
+            var downloadOperation = _objectService.DownloadObject(bucket, "myfile.txt", false);
+            downloadOperation.DownloadOperationProgressChanged += (op) =>
+            {
+                Assert.AreEqual(downloadOperation.BytesReceived, progressValues[progressChangeCounter]);
+                progressChangeCounter++;
+            };
+
+            await downloadOperation.StartDownloadAsync();
+
+            Assert.AreEqual(exptecedProgressCount, progressChangeCounter);
+            Assert.IsTrue(downloadOperation.Completed);
+            Assert.AreEqual(bytes, downloadOperation.BytesReceived);
+            int index = 0;
+            foreach(var b in downloadOperation.DownloadedBytes)
+            {
+                Assert.AreEqual(bytesToUpload[index], b);
+                index++;
+            }
+        }
+
+        private byte[] GetRandomBytes(ulong length)
         {
             byte[] bytes = new byte[length];
             Random rand = new Random();
@@ -86,6 +138,7 @@ namespace uplink.NET.Test
         public void Cleanup()
         {
             DeleteBucket("uploadtest");
+            DeleteBucket("downloadtest");
         }
 
         private void DeleteBucket(string bucketName)
