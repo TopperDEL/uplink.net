@@ -128,15 +128,15 @@ p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
     }
   }
 
-  public static EncryptionAccessRef new_encryption_access_with_default_key(SWIGTYPE_p_uint8_t p0) {
-    EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key(SWIGTYPE_p_uint8_t.getCPtr(p0)), true);
+  public static EncryptionAccessRef new_encryption_access_with_default_key(byte[] p0) {
+    EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key(p0), true);
     return ret;
   }
 
-  public static void set_default_key(EncryptionAccessRef p0, SWIGTYPE_p_uint8_t p1, out string p2) {
+  public static void set_default_key(EncryptionAccessRef p0, byte[] p1, out string p2) {
 global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
     try {
-      storj_uplinkPINVOKE.set_default_key(EncryptionAccessRef.getCPtr(p0), SWIGTYPE_p_uint8_t.getCPtr(p1), ref tmpp2);
+      storj_uplinkPINVOKE.set_default_key(EncryptionAccessRef.getCPtr(p0), p1, ref tmpp2);
       if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     } finally {
 p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
@@ -219,10 +219,10 @@ p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
     }
   }
 
-  public static uint upload_write(UploaderRef p0, SWIGTYPE_p_uint8_t p1, uint p2, out string p3) {
+  public static uint upload_write(UploaderRef p0, byte[] p1, uint p2, out string p3) {
 global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
     try {
-      uint ret = storj_uplinkPINVOKE.upload_write(UploaderRef.getCPtr(p0), SWIGTYPE_p_uint8_t.getCPtr(p1), p2, ref tmpp3);
+      uint ret = storj_uplinkPINVOKE.upload_write(UploaderRef.getCPtr(p0), p1, p2, ref tmpp3);
       if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } finally {
@@ -277,10 +277,10 @@ p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
     }
   }
 
-  public static uint download_read(DownloaderRef p0, SWIGTYPE_p_uint8_t p1, uint p2, out string p3) {
+  public static uint download_read(DownloaderRef p0, byte[] p1, uint p2, out string p3) {
 global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
     try {
-      uint ret = storj_uplinkPINVOKE.download_read(DownloaderRef.getCPtr(p0), SWIGTYPE_p_uint8_t.getCPtr(p1), p2, ref tmpp3);
+      uint ret = storj_uplinkPINVOKE.download_read(DownloaderRef.getCPtr(p0), p1, p2, ref tmpp3);
       if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } finally {
@@ -420,6 +420,12 @@ global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
 p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
 			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
     }
+  }
+
+  public static BucketInfo get_bucketinfo_at(BucketList list, int index) {
+    BucketInfo ret = new BucketInfo(storj_uplinkPINVOKE.get_bucketinfo_at(BucketList.getCPtr(list), index), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
   }
 
 }

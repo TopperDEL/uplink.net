@@ -10,14 +10,16 @@ namespace uplink.NET.Models
         public List<BucketInfo> Items { get; set; }
         public int Length { get; set; }
 
-        //ToDo: Correct SWIG-Mapping
-
         internal static BucketList FromSWIG(SWIG.BucketList original)
         {
             BucketList ret = new BucketList();
             ret.Length = original.length;
             ret.More = original.more;
-            //Todo: Map items
+            ret.Items = new List<BucketInfo>();
+            for(int i = 0; i<= original.length;i++)
+            {
+                ret.Items.Add(BucketInfo.FromSWIG(SWIG.storj_uplink.get_bucketinfo_at(original, i)));
+            }
 
             SWIG.storj_uplink.free_bucket_list(original);
 
