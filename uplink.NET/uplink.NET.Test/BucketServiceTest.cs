@@ -158,10 +158,24 @@ namespace uplink.NET.Test
         //}
 
         [TestMethod]
-        public void ListBucketsTest()
+        public void ListBuckets_Lists_TwoNewlyCreatedBuckets()
         {
+            string bucketname1 = "listbucket-lists-mytwobuckets-bucket1";
+            string bucketname2 = "listbucket-lists-mytwobuckets-bucket2";
+
+            _service.CreateBucket(_project, bucketname1, _bucketConfig);
+            _service.CreateBucket(_project, bucketname2, _bucketConfig);
+
             var result = _service.ListBuckets(_project, new BucketListOptions());
-            //ToDo: implement Test
+
+            Assert.IsTrue(result.Length >= 2);
+            int foundBuckets = 0;
+            foreach(var bucketInfo in result.Items)
+            {
+                if (bucketInfo.Name == bucketname1 || bucketInfo.Name == bucketname2)
+                    foundBuckets++;
+            }
+            Assert.AreEqual(2, foundBuckets);
         }
 
         [TestMethod]
@@ -198,6 +212,8 @@ namespace uplink.NET.Test
             DeleteBucket("createbucket-fails-onbucketalreadyexisting");
             DeleteBucket("getbucketinfo-retrieves-bucketinfo");
             DeleteBucket("openbucket-returns-buckethandle");
+            DeleteBucket("listbucket-lists-mytwobuckets-bucket1");
+            DeleteBucket("listbucket-lists-mytwobuckets-bucket2");
             DeleteBucket("closebucket-closes-bucket");
             DeleteBucket("deletebucket-deletes-bucket");
         }
