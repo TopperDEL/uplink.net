@@ -16,12 +16,12 @@ namespace uplink.NET.Models
             ret.Length = original.length;
             ret.More = original.more;
             ret.Items = new List<BucketInfo>();
-            for(int i = 0; i<= original.length;i++)
+            for(int i = 0; i< original.length;i++)
             {
                 ret.Items.Add(BucketInfo.FromSWIG(SWIG.storj_uplink.get_bucketinfo_at(original, i)));
             }
 
-            SWIG.storj_uplink.free_bucket_list(original);
+            //ToDo: find out why this crashes: SWIG.storj_uplink.free_bucket_list(original);
 
             return ret;
         }
