@@ -15,13 +15,13 @@ namespace uplink.NET.Models
         private bool _cancelled;
 
         public event UploadOperationProgressChanged UploadOperationProgressChanged;
-        public int BytesSent { get; private set; }
-        public int TotalBytes
+        public ulong BytesSent { get; private set; }
+        public ulong TotalBytes
         {
             get
             {
                 if (_bytesToUpload != null)
-                    return _bytesToUpload.Length;
+                    return (ulong)_bytesToUpload.Length;
                 else
                     return 0;
             }
@@ -60,12 +60,12 @@ namespace uplink.NET.Models
         {
             if (_bytesToUpload != null)
             {
-                while (BytesSent < _bytesToUpload.Length)
+                while (BytesSent < (ulong)_bytesToUpload.Length)
                 {
-                    if(_bytesToUpload.Length - BytesSent > 1024)
+                    if((ulong)_bytesToUpload.Length - BytesSent > 1024)
                     {
                         //Send 1024 bytes in next batch
-                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip(BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
+                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
                         if (sent != 1024 && string.IsNullOrEmpty(_errorMessage))
                             continue; //try again?
                         if (sent == 1024)
@@ -74,8 +74,8 @@ namespace uplink.NET.Models
                     else
                     {
                         //Send only the remaining bytes
-                        var remaining = _bytesToUpload.Length - BytesSent;
-                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip(BytesSent).Take(remaining).ToArray(), (uint)remaining, out _errorMessage);
+                        var remaining = (ulong)_bytesToUpload.Length - BytesSent;
+                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), (uint)remaining, out _errorMessage);
                         if (sent != remaining && string.IsNullOrEmpty(_errorMessage))
                             continue; //try again?
                         if (sent == remaining)

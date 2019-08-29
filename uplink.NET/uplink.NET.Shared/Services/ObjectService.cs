@@ -20,5 +20,20 @@ namespace uplink.NET.Services
 
             return upload;
         }
+
+        public DownloadOperation DownloadObject(BucketRef bucket, string targetPath, bool immediateStart = true)
+        {
+            string error;
+
+            var objectRef = SWIG.storj_uplink.open_object(bucket._bucketRef, targetPath, out error);
+            var objectMeta = SWIG.storj_uplink.get_object_meta(objectRef, out error);
+            var downloaderRef = SWIG.storj_uplink.download(bucket._bucketRef, targetPath, out error);
+
+            DownloadOperation download = new DownloadOperation(downloaderRef, objectMeta.size);
+            if (immediateStart)
+                download.StartDownloadAsync();
+
+            return download;
+        }
     }
 }

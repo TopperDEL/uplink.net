@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyAlgorithm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CypherSuite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionAccess.cs" />
