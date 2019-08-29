@@ -7,6 +7,6 @@ namespace uplink.NET.Interfaces
 {
     public interface IObjectService
     {
-        void UploadObject(BucketRef bucket, string targetPath, UploadOptions uploadOptions);
+        UploadOperation UploadObject(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
     }
 }
