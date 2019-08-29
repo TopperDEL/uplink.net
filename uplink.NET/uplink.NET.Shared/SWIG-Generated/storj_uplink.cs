@@ -428,6 +428,11 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     return ret;
   }
 
+  public static EncryptionAccessRef new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t bytes) {
+    EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t.getCPtr(bytes)), true);
+    return ret;
+  }
+
 }
 
 }
