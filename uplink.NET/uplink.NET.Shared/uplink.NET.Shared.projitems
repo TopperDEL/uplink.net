@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\BucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ObjectService.cs" />
