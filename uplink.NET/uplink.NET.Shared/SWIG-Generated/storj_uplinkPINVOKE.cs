@@ -906,6 +906,9 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_bucketinfo_at___")]
   public static extern global::System.IntPtr get_bucketinfo_at(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_encryption_access_with_default_key2___")]
+  public static extern global::System.IntPtr new_encryption_access_with_default_key2(global::System.Runtime.InteropServices.HandleRef jarg1);
 }
 
 }
