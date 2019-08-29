@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketCreationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ApiKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketInfo.cs" />
@@ -29,7 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\BucketService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ObjectService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\APIKeyRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketInfo.cs" />
