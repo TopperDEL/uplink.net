@@ -428,6 +428,12 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     return ret;
   }
 
+  public static ObjectInfo get_objectinfo_at(ObjectList list, int index) {
+    ObjectInfo ret = new ObjectInfo(storj_uplinkPINVOKE.get_objectinfo_at(ObjectList.getCPtr(list), index), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public static EncryptionAccessRef new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t bytes) {
     EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t.getCPtr(bytes)), true);
     return ret;

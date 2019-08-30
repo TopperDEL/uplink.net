@@ -48,6 +48,9 @@ namespace uplink.NET.Services
 
             var res = SWIG.storj_uplink.list_buckets(project._projectRef, bucketListOptions.ToSWIG(), out error);
 
+            if (!string.IsNullOrEmpty(error))
+                throw new BucketListException(error);
+
             return BucketList.FromSWIG(res);
         }
 

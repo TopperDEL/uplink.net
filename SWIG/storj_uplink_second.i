@@ -63,6 +63,7 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 	#include "uplink_definitions.h"
 	#include "storj_uplink.h"
 	extern BucketInfo get_bucketinfo_at(BucketList list, int index);
+	extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
 	extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 %}
 		 
@@ -70,10 +71,15 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 %include "storj_uplink.h"
 %include "uplink_definitions.h"
 extern BucketInfo get_bucketinfo_at(BucketList list, int index);
+extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
 extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 
 %inline %{
 BucketInfo get_bucketinfo_at(BucketList list, int index){
+	return *(list.items+index);
+}
+
+extern ObjectInfo get_objectinfo_at(ObjectList list, int index){
 	return *(list.items+index);
 }
 
