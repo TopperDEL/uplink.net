@@ -131,7 +131,7 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-raiseserror";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
             var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
@@ -155,7 +155,7 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-existingobjects";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
             var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
@@ -175,7 +175,7 @@ namespace uplink.NET.Test
         {
             string bucketname = "getobjectmeta-gets-objectmeta";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
             var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
@@ -189,11 +189,11 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task GetObjectMeta_Fails_OnNotExistingObject()
+        public void GetObjectMeta_Fails_OnNotExistingObject()
         {
             string bucketname = "getobjectmeta-fails-onnotexistingobject";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
             var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
             try
