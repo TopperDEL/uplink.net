@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 
@@ -34,6 +35,18 @@ namespace uplink.NET.Services
                 download.StartDownloadAsync();
 
             return download;
+        }
+
+        public ObjectList ListObjects(BucketRef bucket, ListOptions listOptions)
+        {
+            string error;
+
+            var objectList = SWIG.storj_uplink.list_objects(bucket._bucketRef, listOptions.ToSWIG(), out error);
+
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectListException(error);
+
+            return ObjectList.FromSWIG(objectList);
         }
     }
 }

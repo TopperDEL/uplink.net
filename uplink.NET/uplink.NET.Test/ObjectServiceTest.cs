@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using uplink.NET.Services;
@@ -125,6 +126,50 @@ namespace uplink.NET.Test
             }
         }
 
+        [TestMethod]
+        public async Task ListObjects_Lists_RaisesError()
+        {
+            string bucketname = "listobject-lists-raiseserror";
+
+            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            try
+            {
+                _objectService.ListObjects(bucket, new ListOptions());
+            }catch(ObjectListException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("direction"));
+                return;
+            }
+
+            Assert.IsTrue(false, "Error message not raised");
+        }
+
+        [TestMethod]
+        public async Task ListObjects_Lists_ExistingObject()
+        {
+            string bucketname = "listobject-lists-existingobjects";
+
+            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = _objectService.UploadObject(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+            var uploadOperation2 = _objectService.UploadObject(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation2.StartUploadAsync();
+
+            var objectList = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+
+            Assert.AreEqual(2, objectList.Length);
+            Assert.AreEqual("myfile2.txt", objectList.Items[1].Path);
+        }
+
         private byte[] GetRandomBytes(ulong length)
         {
             byte[] bytes = new byte[length];
@@ -139,6 +184,8 @@ namespace uplink.NET.Test
         {
             DeleteBucket("uploadtest");
             DeleteBucket("downloadtest");
+            DeleteBucket("listobject-lists-raiseserror");
+            DeleteBucket("listobject-lists-existingobjects");
         }
 
         private void DeleteBucket(string bucketName)
