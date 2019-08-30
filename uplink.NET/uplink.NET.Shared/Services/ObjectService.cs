@@ -27,7 +27,13 @@ namespace uplink.NET.Services
             string error;
 
             var objectRef = SWIG.storj_uplink.open_object(bucket._bucketRef, targetPath, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
             var objectMeta = SWIG.storj_uplink.get_object_meta(objectRef, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
             var downloaderRef = SWIG.storj_uplink.download(bucket._bucketRef, targetPath, out error);
 
             DownloadOperation download = new DownloadOperation(downloaderRef, objectMeta.size);
@@ -47,6 +53,21 @@ namespace uplink.NET.Services
                 throw new ObjectListException(error);
 
             return ObjectList.FromSWIG(objectList);
+        }
+
+        public ObjectMeta GetObjectMeta(BucketRef bucket, string targetPath)
+        {
+            string error;
+
+            var objectRef = SWIG.storj_uplink.open_object(bucket._bucketRef, targetPath, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
+            var objectMeta = SWIG.storj_uplink.get_object_meta(objectRef, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
+            return ObjectMeta.FromSWIG(objectMeta);
         }
     }
 }
