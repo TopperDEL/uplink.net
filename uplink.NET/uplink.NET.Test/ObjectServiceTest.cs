@@ -170,6 +170,46 @@ namespace uplink.NET.Test
             Assert.AreEqual("myfile2.txt", objectList.Items[1].Path);
         }
 
+        [TestMethod]
+        public async Task GetObjectMeta_Gets_ObjectMeta()
+        {
+            string bucketname = "getobjectmeta-gets-objectmeta";
+
+            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+            
+            var objectMeta = _objectService.GetObjectMeta(bucket, "myfile.txt");
+
+            Assert.AreEqual("myfile.txt", objectMeta.Path);
+            Assert.AreEqual((ulong)2048, objectMeta.Size);
+        }
+
+        [TestMethod]
+        public async Task GetObjectMeta_Fails_OnNotExistingObject()
+        {
+            string bucketname = "getobjectmeta-fails-onnotexistingobject";
+
+            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+
+            try
+            {
+                var objectMeta = _objectService.GetObjectMeta(bucket, "notexisting.txt");
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                Assert.AreEqual("notexisting.txt", ex.TargetPath);
+                Assert.IsTrue(ex.Message.Contains("not found"));
+                return;
+            }
+
+            Assert.IsTrue(false, "GetObjectMeta does not throw exception of non existing object");
+        }
+
         private byte[] GetRandomBytes(ulong length)
         {
             byte[] bytes = new byte[length];
@@ -186,6 +226,8 @@ namespace uplink.NET.Test
             DeleteBucket("downloadtest");
             DeleteBucket("listobject-lists-raiseserror");
             DeleteBucket("listobject-lists-existingobjects");
+            DeleteBucket("getobjectmeta-gets-objectmeta");
+            DeleteBucket("getobjectmeta-fails-onnotexistingobject");
         }
 
         private void DeleteBucket(string bucketName)

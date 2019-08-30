@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketCreationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\BucketListException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ObjectListException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ApiKey.cs" />
@@ -28,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyAlgorithm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CypherSuite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionAccess.cs" />

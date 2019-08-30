@@ -9,6 +9,7 @@ namespace uplink.NET.Interfaces
     {
         UploadOperation UploadObject(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
         ObjectList ListObjects(BucketRef bucket, ListOptions listOptions);
+        ObjectMeta GetObjectMeta(BucketRef bucket, string targetPath);
         DownloadOperation DownloadObject(BucketRef bucket, string targetPath, bool immediateStart = true);
     }
 }
