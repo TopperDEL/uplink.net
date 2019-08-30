@@ -54,7 +54,7 @@ namespace uplink.NET.Droid.TestApp
             uplink.NET.Models.ProjectOptions projectOptions = new Models.ProjectOptions();
             uplink.NET.Models.Project project = new Models.Project(uplink, apikey, "europe-west-1.tardigrade.io:7777", projectOptions);
             uplink.NET.Models.BucketConfig bucketConfig = new Models.BucketConfig();
-            var result = service.CreateBucket(project, "androidBucket", bucketConfig);
+            var result = service.CreateBucket(project, "androidbucket", bucketConfig);
 
             Snackbar.Make(view, "Replace with your own action", Snackbar.LengthLong)
                 .SetAction("Action", (Android.Views.View.IOnClickListener)null).Show();
