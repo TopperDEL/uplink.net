@@ -5,13 +5,14 @@
 
 This library enables you to connect to the storj-network to upload and retrieve files to the distributed and secure cloud-storage.
 
-Currently this library is under heavy development and it is not yet ready to use. You'll be able to compile it for yourself or use a Nuget in your projects.
+The library is quite new and may contain bugs or missing documentation. Use at your own risk!
 
 If you want to help out, check the open issues, create some or open a PR.
 
 ## Use
 
-There does not exist a working release, yet. Please come back later.
+Search for "[uplink.NET](https://www.nuget.org/packages/uplink.NET)" on Nuget and install the latest version into your project.
+The wiki with tutorials is currently under development.
 
 ## Build
 
