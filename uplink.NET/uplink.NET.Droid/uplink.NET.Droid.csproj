@@ -50,12 +50,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="libs\arm64-v8a\libstorj_uplink.so">
+    <EmbeddedNativeLibrary Include="libs\arm64-v8a\libstorj_uplink.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="libs\x86_64\libstorj_uplink.so">
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="libs\x86_64\libstorj_uplink.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AndroidNativeLibrary>
+    </EmbeddedNativeLibrary>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
