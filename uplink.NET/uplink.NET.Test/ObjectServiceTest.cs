@@ -26,7 +26,7 @@ namespace uplink.NET.Test
             _objectService = new ObjectService();
             UplinkConfig config = new UplinkConfig();
             Uplink uplink = new Uplink(config);
-            ApiKey apiKey = new ApiKey(TestConstants.VALID_API_KEY);
+            APIKey apiKey = new APIKey(TestConstants.VALID_API_KEY);
             ProjectOptions projectOptions = new ProjectOptions();
             _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
             _bucketConfig = new BucketConfig();

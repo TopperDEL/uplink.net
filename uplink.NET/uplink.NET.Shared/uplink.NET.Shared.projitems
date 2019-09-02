@@ -18,7 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ApiKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\APIKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />

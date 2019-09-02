@@ -4,15 +4,17 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class ApiKey : IDisposable
+    public class APIKey : IDisposable
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;
 
         /// <summary>
-        /// Creates an ApiKey-Instance by a given ApiKey-String.
-        /// Throws ArgumentException if the ApiKey is not valid
+        /// Creates an APIKey-Instance by a given APIKey-String.
+        /// Throws ArgumentException if the APIKey is not valid or NullReferenceException if the APIKey could not be created.
+        /// 
+        /// Needs to be disposed after use!
         /// </summary>
-        public ApiKey(string apiKeyString)
+        public APIKey(string apiKeyString)
         {
             string error;
 
@@ -21,23 +23,28 @@ namespace uplink.NET.Models
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);
             if (_apiKeyRef == null)
-                throw new NullReferenceException("No ApiKey-reference created");
+                throw new NullReferenceException("No APIKey-reference created");
         }
 
         /// <summary>
-        /// Returns the used ApiKey as string
+        /// Returns the used APIKey as string
         /// </summary>
-        /// <returns>The used ApiKey</returns>
-        public string GetApiKey()
+        /// <returns>The used APIKey</returns>
+        public string GetAPIKey()
         {
             string result = string.Empty;
             string error;
 
             result = SWIG.storj_uplink.serialize_api_key(_apiKeyRef, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ArgumentException(error);
 
             return result;
         }
 
+        /// <summary>
+        /// Frees memory in use and disposes an APIKey
+        /// </summary>
         public void Dispose()
         {
             if (_apiKeyRef != null)

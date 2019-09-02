@@ -11,7 +11,7 @@ namespace uplink.NET.Models
         /// <summary>
         /// 
         /// </summary>
-        public Project(Uplink uplink, ApiKey apiKey, string satelliteAddr, ProjectOptions projectOptions)
+        public Project(Uplink uplink, APIKey apiKey, string satelliteAddr, ProjectOptions projectOptions)
         {
             string error;
 
