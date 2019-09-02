@@ -5,23 +5,23 @@ using uplink.NET.Models;
 namespace uplink.NET.Test
 {
     [TestClass]
-    public class ApiKeyTest
+    public class APIKeyTest
     {        
         [TestMethod]
-        public void CreateValidApiKey()
+        public void CreateValidAPIKey()
         {
-            using (ApiKey key = new ApiKey(TestConstants.VALID_API_KEY))
+            using (APIKey key = new APIKey(TestConstants.VALID_API_KEY))
             {
                 Assert.IsNotNull(key);
             }
         }
 
         [TestMethod]
-        public void CreateInvalidApiKey_ThrowsError()
+        public void CreateInvalidAPIKey_ThrowsError()
         {
             try
             {
-                using (ApiKey key = new ApiKey(TestConstants.INVALID_API_KEY))
+                using (APIKey key = new APIKey(TestConstants.INVALID_API_KEY))
                 {
                     //We should not reach this line - there should be an exception
                 }
@@ -37,11 +37,11 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void GetApiKey()
+        public void GetAPIKey()
         {
-            using (ApiKey key = new ApiKey(TestConstants.VALID_API_KEY))
+            using (APIKey key = new APIKey(TestConstants.VALID_API_KEY))
             {
-                Assert.AreEqual(TestConstants.VALID_API_KEY, key.GetApiKey());
+                Assert.AreEqual(TestConstants.VALID_API_KEY, key.GetAPIKey());
             }
         }
     }
