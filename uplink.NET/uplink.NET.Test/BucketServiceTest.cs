@@ -23,8 +23,7 @@ namespace uplink.NET.Test
             UplinkConfig config = new UplinkConfig();
             Uplink uplink = new Uplink(config);
             APIKey apiKey = new APIKey(TestConstants.VALID_API_KEY);
-            ProjectOptions projectOptions = new ProjectOptions();
-            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
+            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL);
             _bucketConfig = new BucketConfig();
         }
 

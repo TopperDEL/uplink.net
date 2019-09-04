@@ -27,8 +27,7 @@ namespace uplink.NET.Test
             UplinkConfig config = new UplinkConfig();
             Uplink uplink = new Uplink(config);
             APIKey apiKey = new APIKey(TestConstants.VALID_API_KEY);
-            ProjectOptions projectOptions = new ProjectOptions();
-            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions);
+            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL);
             _bucketConfig = new BucketConfig();
         }
 
@@ -210,6 +209,50 @@ namespace uplink.NET.Test
             Assert.IsTrue(false, "GetObjectMeta does not throw exception of non existing object");
         }
 
+        [TestMethod]
+        public void DeleteObject_Fails_OnNotExistingObject()
+        {
+            string bucketname = "deleteobject-fails-onnotexistingobject";
+
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+
+            try
+            {
+                _objectService.DeleteObject(bucket, "notexisting.txt");
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                Assert.AreEqual("notexisting.txt", ex.TargetPath);
+                Assert.IsTrue(ex.Message.Contains("not found"));
+                return;
+            }
+
+            Assert.IsTrue(false, "DeleteObject does not throw exception of non existing object");
+        }
+
+        [TestMethod]
+        public async Task DeleteObject_Deletes_Object()
+        {
+            string bucketname = "deleteobject-deletes-object";
+
+            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
+            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = _objectService.UploadObject(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var objectList = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            Assert.AreEqual(1, objectList.Length);
+
+            _objectService.DeleteObject(bucket, "myfile1.txt");
+
+            var objectList2 = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            Assert.AreEqual(0, objectList2.Length);
+        }
+
         private byte[] GetRandomBytes(ulong length)
         {
             byte[] bytes = new byte[length];
@@ -228,6 +271,8 @@ namespace uplink.NET.Test
             DeleteBucket("listobject-lists-existingobjects");
             DeleteBucket("getobjectmeta-gets-objectmeta");
             DeleteBucket("getobjectmeta-fails-onnotexistingobject");
+            DeleteBucket("deleteobject-fails-onnotexistingobject");
+            DeleteBucket("deleteobject-deletes-object");
         }
 
         private void DeleteBucket(string bucketName)

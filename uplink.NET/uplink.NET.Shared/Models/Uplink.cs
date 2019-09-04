@@ -4,10 +4,15 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// The uplink is the environment for connecting to the storj-network.
+    /// 
+    /// Needs to be disposed after use!
+    /// </summary>
     public class Uplink : IDisposable
     {
         internal SWIG.UplinkRef _uplinkRef = null;
-        private SWIG.UplinkConfig _uplinkConfig = null;
+        internal SWIG.UplinkConfig _uplinkConfig = null;
 
         /// <summary>
         /// Creates an Uplink-Instance

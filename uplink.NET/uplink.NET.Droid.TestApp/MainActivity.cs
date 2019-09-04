@@ -51,8 +51,7 @@ namespace uplink.NET.Droid.TestApp
             uplink.NET.Models.UplinkConfig uplinkconfig = new Models.UplinkConfig();
             uplink.NET.Models.Uplink uplink = new Models.Uplink(uplinkconfig);
             uplink.NET.Models.APIKey apikey = new Models.APIKey("13Yqe1K83MdaH7WJkR9qmsXaetDgQFzEiHmxCd3QMQfkZe1Hr2mYE8sbaoG6f74tYGQ7QmMt2bdaCJJy8dXLgJNyKKfzkeWkLa4ib9H");
-            uplink.NET.Models.ProjectOptions projectOptions = new Models.ProjectOptions();
-            uplink.NET.Models.Project project = new Models.Project(uplink, apikey, "europe-west-1.tardigrade.io:7777", projectOptions);
+            uplink.NET.Models.Project project = new Models.Project(uplink, apikey, "europe-west-1.tardigrade.io:7777");
             uplink.NET.Models.BucketConfig bucketConfig = new Models.BucketConfig();
             var result = service.CreateBucket(project, "androidbucket", bucketConfig);
 

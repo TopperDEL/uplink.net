@@ -4,14 +4,17 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class EncryptionAccess
+    /// <summary>
+    /// Holds the passphrase for encryption
+    /// </summary>
+    public class EncryptionAccess : IDisposable
     {
         internal SWIG.EncryptionAccessRef _handle;
         private EncryptionAccess()
         {
         }
 
-        public string ToBase58()
+        internal string ToBase58()
         {
             string error;
             var base58 = SWIG.storj_uplink.serialize_encryption_access(_handle, out error);
@@ -19,6 +22,12 @@ namespace uplink.NET.Models
             return base58;
         }
 
+        /// <summary>
+        /// Creates an EncryptionAccess from a given passphrase for a given project
+        /// </summary>
+        /// <param name="project">The handle to a project</param>
+        /// <param name="secret">The secret passphrase</param>
+        /// <returns>An EncryptionAccess</returns>
         public static EncryptionAccess FromPassphrase(Project project, string secret)
         {
             EncryptionAccess access = new EncryptionAccess();
@@ -29,6 +38,15 @@ namespace uplink.NET.Models
             access._handle = SWIG.storj_uplink.new_encryption_access_with_default_key2(key);
 
             return access;
+        }
+
+        public void Dispose()
+        {
+            if(_handle != null)
+            {
+                SWIG.storj_uplink.free_encryption_access(_handle);
+                _handle = null;
+            }
         }
     }
 }

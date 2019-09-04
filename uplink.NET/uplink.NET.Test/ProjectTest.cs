@@ -13,9 +13,8 @@ namespace uplink.NET.Test
             var uplinkConfig = new UplinkConfig();
             var uplink = new Uplink(uplinkConfig);
             var apiKey = new APIKey(TestConstants.VALID_API_KEY);
-            var projectOptions = new ProjectOptions();
 
-            using (Project project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL, projectOptions))
+            using (Project project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL))
             {
                 Assert.IsNotNull(project);
             }

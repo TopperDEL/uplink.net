@@ -35,7 +35,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionAccess.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
