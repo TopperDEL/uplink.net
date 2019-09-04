@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
@@ -28,25 +29,25 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void CreateBucket_Creates_NewBucket()
+        public async Task CreateBucket_Creates_NewBucket()
         {
             string bucketname = "createbucket-creates-newbucket";
 
-            var result = _service.CreateBucket(_project, bucketname, _bucketConfig);
+            var result = await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
 
             Assert.AreEqual(bucketname, result.Name);
         }
 
         [TestMethod]
-        public void CreateBucket_Fails_OnBucketAlreadyExisting()
+        public async Task CreateBucket_Fails_OnBucketAlreadyExisting()
         {
             string bucketname = "createbucket-fails-onbucketalreadyexisting";
 
-            var resultWorking = _service.CreateBucket(_project, bucketname, _bucketConfig); //Should work
+            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig); //Should work
 
             try
             {
-                var resultFailed = _service.CreateBucket(_project, bucketname, _bucketConfig); //Should fail
+                var resultFailed = await _service.CreateBucketAsync(_project, bucketname, _bucketConfig); //Should fail
             }catch(BucketCreationException ex)
             {
                 Assert.IsTrue(ex.Message.Contains("already exists"));
@@ -58,24 +59,24 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void GetBucketInfo_Retrieves_BucketInfo()
+        public async Task GetBucketInfo_Retrieves_BucketInfo()
         {
             string bucketname = "getbucketinfo-retrieves-bucketinfo";
 
-            var createdResult = _service.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucketInfo = await _service.GetBucketInfoAsync(_project, bucketname);
 
             Assert.AreEqual(bucketname, bucketInfo.Name);
         }
 
         [TestMethod]
-        public void GetBucketInfo_Fails_OnNotExistingBucket()
+        public async Task GetBucketInfo_Fails_OnNotExistingBucket()
         {
             string bucketname = "getbucketinfo-fails-onnotexistingbucket";
 
             try
             {
-                var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+                var bucketInfo = await _service.GetBucketInfoAsync(_project, bucketname);
             }
             catch(BucketNotFoundException ex)
             {
@@ -87,24 +88,24 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void OpenBucket_Returns_BucketHandle()
+        public async Task OpenBucket_Returns_BucketHandle()
         {
             string bucketname = "openbucket-returns-buckethandle";
 
-            var createdBucket = _service.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
             Assert.IsNotNull(bucketHandle);
         }
 
         [TestMethod]
-        public void OpenBucket_Fails_OnNotExistingBucket()
+        public async Task OpenBucket_Fails_OnNotExistingBucket()
         {
             string bucketname = "openbucket-fails-onnotexistingbucket";
 
             try
             {
-                var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+                var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             }
             catch (BucketNotFoundException ex)
             {
@@ -116,17 +117,17 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void DeleteBucket_Deletes_Bucket()
+        public async Task DeleteBucket_Deletes_Bucket()
         {
             string bucketname = "deletebucket-deletes-bucket";
 
-            var createdResult = _service.CreateBucket(_project, bucketname, _bucketConfig);
+            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
 
-            _service.DeleteBucket(_project, bucketname);
+            await _service.DeleteBucketAsync(_project, bucketname);
 
             try
             {
-                var bucketInfo = _service.GetBucketInfo(_project, bucketname);
+                await _service.GetBucketInfoAsync(_project, bucketname);
             }
             catch (BucketNotFoundException ex)
             {
@@ -157,15 +158,15 @@ namespace uplink.NET.Test
         //}
 
         [TestMethod]
-        public void ListBuckets_Lists_TwoNewlyCreatedBuckets()
+        public async Task ListBuckets_Lists_TwoNewlyCreatedBuckets()
         {
             string bucketname1 = "listbucket-lists-mytwobuckets-bucket1";
             string bucketname2 = "listbucket-lists-mytwobuckets-bucket2";
 
-            _service.CreateBucket(_project, bucketname1, _bucketConfig);
-            _service.CreateBucket(_project, bucketname2, _bucketConfig);
+            await _service.CreateBucketAsync(_project, bucketname1, _bucketConfig);
+            await _service.CreateBucketAsync(_project, bucketname2, _bucketConfig);
 
-            var result = _service.ListBuckets(_project, new BucketListOptions());
+            var result = await _service.ListBucketsAsync(_project, new BucketListOptions());
 
             Assert.IsTrue(result.Length >= 2);
             int foundBuckets = 0;
@@ -178,22 +179,22 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void CloseBucket_Closes_Bucket()
+        public async Task CloseBucket_Closes_Bucket()
         {
             string bucketname = "closebucket-closes-bucket";
 
-            var createdBucket = _service.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucketHandle = _service.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
-            _service.CloseBucket(bucketHandle);
+            await _service.CloseBucketAsync(bucketHandle);
         }
 
         [TestMethod]
-        public void CloseBucket_Fails_OnNullBucketHandle()
+        public async Task CloseBucket_Fails_OnNullBucketHandle()
         {
             try
             {
-                _service.CloseBucket(null);
+                await _service.CloseBucketAsync(null);
             }
             catch (BucketCloseException ex)
             {
@@ -205,23 +206,23 @@ namespace uplink.NET.Test
         }
 
         [TestCleanup]
-        public void Cleanup()
+        public async Task CleanupAsync()
         {
-            DeleteBucket("createbucket-creates-newbucket");
-            DeleteBucket("createbucket-fails-onbucketalreadyexisting");
-            DeleteBucket("getbucketinfo-retrieves-bucketinfo");
-            DeleteBucket("openbucket-returns-buckethandle");
-            DeleteBucket("listbucket-lists-mytwobuckets-bucket1");
-            DeleteBucket("listbucket-lists-mytwobuckets-bucket2");
-            DeleteBucket("closebucket-closes-bucket");
-            DeleteBucket("deletebucket-deletes-bucket");
+            await DeleteBucketAsync("createbucket-creates-newbucket");
+            await DeleteBucketAsync("createbucket-fails-onbucketalreadyexisting");
+            await DeleteBucketAsync("getbucketinfo-retrieves-bucketinfo");
+            await DeleteBucketAsync("openbucket-returns-buckethandle");
+            await DeleteBucketAsync("listbucket-lists-mytwobuckets-bucket1");
+            await DeleteBucketAsync("listbucket-lists-mytwobuckets-bucket2");
+            await DeleteBucketAsync("closebucket-closes-bucket");
+            await DeleteBucketAsync("deletebucket-deletes-bucket");
         }
 
-        private void DeleteBucket(string bucketName)
+        private async Task DeleteBucketAsync(string bucketName)
         {
             try
             {
-                _service.DeleteBucket(_project, bucketName);
+                await _service.DeleteBucketAsync(_project, bucketName);
             }
             catch
             { }

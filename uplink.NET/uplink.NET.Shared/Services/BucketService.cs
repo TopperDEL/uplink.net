@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
@@ -9,32 +10,33 @@ namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
-        public BucketInfo CreateBucket(Project project, string bucketName, BucketConfig bucketConfig)
+        public async Task<BucketInfo> CreateBucketAsync(Project project, string bucketName, BucketConfig bucketConfig)
         {
-            string error;
-            var res = SWIG.storj_uplink.create_bucket(project._projectRef, bucketName, bucketConfig.ToSWIG(), out error);
+            string error = string.Empty;
+
+            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.create_bucket(project._projectRef, bucketName, bucketConfig.ToSWIG(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketCreationException(bucketName, error);
 
-            return BucketInfo.FromSWIG(res);
+            return BucketInfo.FromSWIG(bucketInfo);
         }
 
-        public void DeleteBucket(Project project, string bucketName)
+        public async Task DeleteBucketAsync(Project project, string bucketName)
         {
-            string error;
+            string error = string.Empty;
 
-            SWIG.storj_uplink.delete_bucket(project._projectRef, bucketName, out error);
+            await Task.Run(() => SWIG.storj_uplink.delete_bucket(project._projectRef, bucketName, out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketDeletionException(bucketName, error);
         }
 
-        public BucketInfo GetBucketInfo(Project project, string bucketName)
+        public async Task<BucketInfo> GetBucketInfoAsync(Project project, string bucketName)
         {
-            string error;
+            string error = string.Empty;
 
-            var bucketInfo = SWIG.storj_uplink.get_bucket_info(project._projectRef, bucketName, out error);
+            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.get_bucket_info(project._projectRef, bucketName, out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketNotFoundException(bucketName, error);
@@ -42,11 +44,11 @@ namespace uplink.NET.Services
             return BucketInfo.FromSWIG(bucketInfo);
         }
 
-        public BucketList ListBuckets(Project project, BucketListOptions bucketListOptions)
+        public async Task<BucketList> ListBucketsAsync(Project project, BucketListOptions bucketListOptions)
         {
-            string error;
+            string error = string.Empty;
 
-            var res = SWIG.storj_uplink.list_buckets(project._projectRef, bucketListOptions.ToSWIG(), out error);
+            var res = await Task.Run<SWIG.BucketList>(() => SWIG.storj_uplink.list_buckets(project._projectRef, bucketListOptions.ToSWIG(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketListException(error);
@@ -54,11 +56,11 @@ namespace uplink.NET.Services
             return BucketList.FromSWIG(res);
         }
 
-        public BucketRef OpenBucket(Project project, string bucketName, EncryptionAccess encryptionAccess)
+        public async Task<BucketRef> OpenBucketAsync(Project project, string bucketName, EncryptionAccess encryptionAccess)
         {
-            string error;
+            string error = string.Empty;
 
-            var handle = SWIG.storj_uplink.open_bucket(project._projectRef, bucketName, encryptionAccess.ToBase58(), out error);
+            var handle = await Task.Run<SWIG.BucketRef>(() => SWIG.storj_uplink.open_bucket(project._projectRef, bucketName, encryptionAccess.ToBase58(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketNotFoundException(bucketName, error);
@@ -66,13 +68,14 @@ namespace uplink.NET.Services
             return BucketRef.FromSWIG(handle);
         }
 
-        public void CloseBucket(BucketRef bucketRef)
+        public async Task CloseBucketAsync(BucketRef bucketRef)
         {
-            string error;
             if (bucketRef == null || bucketRef._bucketRef == null)
                 throw new BucketCloseException("Bucket already closed");
 
-            SWIG.storj_uplink.close_bucket(bucketRef._bucketRef, out error);
+            string error = string.Empty;
+
+            await Task.Run(() => SWIG.storj_uplink.close_bucket(bucketRef._bucketRef, out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketCloseException(error);
