@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Droid", "uplink.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Droid.TestApp", "uplink.NET.Droid.TestApp\uplink.NET.Droid.TestApp.csproj", "{ACEB68B3-6981-4B74-8D55-00A2E6D54E72}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{DE9F92CC-DEE8-42A0-AA03-202FBB2158A2}"
+	ProjectSection(SolutionItems) = preProject
+		Package.nuspec = Package.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		uplink.NET.Shared\uplink.NET.Shared.projitems*{17d64967-6893-469f-8950-114a983d2a2f}*SharedItemsImports = 4

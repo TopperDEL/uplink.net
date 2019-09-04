@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>uplink.NET</id>
+    <version>1.0.0</version>
+    <authors>TopperDEL, Storj labs</authors>
+    <owners>TopperDEL, Storj labs</owners>
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <iconUrl>https://storj.io/press-kit/Storj-symbol.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This library provides access to the secure and decentralised Storj-network. It allows you to:
+- create and delete buckets
+- upload and download files
+
+It is - like Storj itself - open source and developed on GitHub.</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>(c) 2019 TopperDEL, Storj labs</copyright>
+    <tags>storj storage decentralised secure bucket file xamarin android</tags>
+    <contentFiles>
+      <files include="uplink.NET\bin\release\netstandard2.0\storj_uplink.dll" buildAction="None" copyToOutput="true" flatten="true" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="uplink.NET.Droid\bin\release\uplink.NET.Droid.dll" target="lib\MonoAndroid" />
+    <file src="uplink.NET\bin\release\netstandard2.0\uplink.NET.dll" target="lib\netstandard" />
+    <file src="uplink.NET\bin\release\netstandard2.0\storj_uplink.dll" target="Content" />
+  </files>
+  
+</package>

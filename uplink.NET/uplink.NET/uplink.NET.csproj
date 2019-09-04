@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>uplink.NET</RootNamespace>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <Version>0.1.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>TopperDEL, Storj labs</Authors>
     <Description>This library provides access to the secure and decentralised Storj-network. It allows you to:
 - create and delete buckets
@@ -18,7 +18,7 @@ It is - like Storj itself - open source and developed on github.</Description>
     <PackageIconUrl>https://storj.io/press-kit/Storj-symbol.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/TopperDEL/uplink.net</RepositoryUrl>
     <PackageTags>storj storage decentralised secure bucket file</PackageTags>
-    <PackageReleaseNotes>This is the first version of uplink.NET and may have missing documentation and errors. Use at own risk!</PackageReleaseNotes>
+    <PackageReleaseNotes>This is the first release!</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
