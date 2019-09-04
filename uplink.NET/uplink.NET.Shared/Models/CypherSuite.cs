@@ -4,6 +4,9 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// The cipher suite
+    /// </summary>
     public enum CipherSuite
     {
         STORJ_ENC_UNSPECIFIED = 0,
@@ -17,6 +20,11 @@ namespace uplink.NET.Models
         internal static CipherSuite FromSWIG(SWIG.CipherSuite original)
         {
            return (CipherSuite)Enum.Parse(typeof(CipherSuite), original.ToString());
+        }
+
+        internal static SWIG.CipherSuite ToSWIG(CipherSuite original)
+        {
+            return (SWIG.CipherSuite)Enum.Parse(typeof(SWIG.CipherSuite), original.ToString());
         }
     }
 }

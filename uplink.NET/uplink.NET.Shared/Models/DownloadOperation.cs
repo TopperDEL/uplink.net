@@ -5,11 +5,21 @@ using System.Threading.Tasks;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// Gets raised to inform about a change within the download-operation progress
+    /// </summary>
+    /// <param name="downloadOperation">The DownloadOperation that changed</param>
     public delegate void DownloadOperationProgressChanged(DownloadOperation downloadOperation);
 
-    public class DownloadOperation
+    /// <summary>
+    /// A DownloadOperation handles a file download in background and informs about progress changes.
+    /// </summary>
+    public class DownloadOperation : IDisposable
     {
-        private byte[] _bytesToDownload;
+        private readonly byte[] _bytesToDownload;
+        /// <summary>
+        /// The downloaded bytes - get's filled while the download progresses.
+        /// </summary>
         public byte[] DownloadedBytes //Maybe a Stream would be better?
         {
             get
@@ -21,13 +31,34 @@ namespace uplink.NET.Models
         private Task _downloadTask;
         private bool _cancelled;
 
+        /// <summary>
+        /// Informs about download-operation progress changes
+        /// </summary>
         public event DownloadOperationProgressChanged DownloadOperationProgressChanged;
+        /// <summary>
+        /// The - until now - received bytes
+        /// </summary>
         public ulong BytesReceived { get; private set; }
+        /// <summary>
+        /// The total bytes to download
+        /// </summary>
         public ulong TotalBytes { get; private set; }
+        /// <summary>
+        /// Is the download completed?
+        /// </summary>
         public bool Completed { get; private set; }
+        /// <summary>
+        /// Did the download fail? See ErrorMessage for details.
+        /// </summary>
         public bool Failed { get; set; }
+        /// <summary>
+        /// Got the download cancelled (by the user)?
+        /// </summary>
         public bool Cancelled { get; set; }
         private string _errorMessage;
+        /// <summary>
+        /// The possible error - only filled if "Failed" is true
+        /// </summary>
         public string ErrorMessage
         {
             get
@@ -43,13 +74,23 @@ namespace uplink.NET.Models
             _bytesToDownload = new byte[TotalBytes];
         }
 
+        /// <summary>
+        /// Starts the download if it is not yet running, completed, cancelled or failed.
+        /// </summary>
+        /// <returns></returns>
         public Task StartDownloadAsync()
         {
+            if (Completed || Failed || Cancelled)
+                return null;
+
             if (_downloadTask == null)
                 _downloadTask = Task.Run(DoDownload);
             return _downloadTask;
         }
 
+        /// <summary>
+        /// Cancelles the download progress
+        /// </summary>
         public void Cancel()
         {
             _cancelled = true;
@@ -114,6 +155,15 @@ namespace uplink.NET.Models
             }
 
             Completed = true;
+        }
+
+        public void Dispose()
+        {
+            if(_downloaderRef != null)
+            {
+                SWIG.storj_uplink.free_downloader(_downloaderRef);
+                _downloaderRef = null;
+            }
         }
     }
 }

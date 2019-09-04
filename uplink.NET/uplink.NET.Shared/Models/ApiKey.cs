@@ -4,6 +4,9 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// An API-key is necessary to connect to a satellite. It needs to be created manually on a specific satellite for a specific project.
+    /// </summary>
     public class APIKey : IDisposable
     {
         internal SWIG.APIKeyRef _apiKeyRef = null;

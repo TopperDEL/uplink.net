@@ -4,6 +4,9 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// The direction to do listings
+    /// </summary>
     public enum ListDirection
     {
         STORJ_BEFORE = -2,

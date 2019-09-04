@@ -12,8 +12,11 @@ namespace uplink.NET.Services
         public UploadOperation UploadObject(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
         {
             string error;
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            var uploaderRef = SWIG.storj_uplink.upload(bucket._bucketRef, targetPath, uploadOptions.ToSWIG(), out error);
+            var uploaderRef = SWIG.storj_uplink.upload(bucket._bucketRef, targetPath, uploadOptionsSWIG, out error);
+
+            SWIG.storj_uplink.free_upload_opts(uploadOptionsSWIG);
 
             UploadOperation upload = new UploadOperation(bytesToUpload, uploaderRef);
             if(immediateStart)
@@ -31,6 +34,10 @@ namespace uplink.NET.Services
                 throw new ObjectNotFoundException(targetPath, error);
 
             var objectMeta = SWIG.storj_uplink.get_object_meta(objectRef, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
+            SWIG.storj_uplink.close_object(objectRef, out error);
             if (!string.IsNullOrEmpty(error))
                 throw new ObjectNotFoundException(targetPath, error);
 
@@ -67,7 +74,20 @@ namespace uplink.NET.Services
             if (!string.IsNullOrEmpty(error))
                 throw new ObjectNotFoundException(targetPath, error);
 
+            SWIG.storj_uplink.close_object(objectRef, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
+
             return ObjectMeta.FromSWIG(objectMeta);
+        }
+
+        public void DeleteObject(BucketRef bucket, string targetPath)
+        {
+            string error;
+
+            SWIG.storj_uplink.delete_object(bucket._bucketRef, targetPath, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ObjectNotFoundException(targetPath, error);
         }
     }
 }

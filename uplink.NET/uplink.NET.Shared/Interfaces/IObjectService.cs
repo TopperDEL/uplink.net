@@ -39,5 +39,11 @@ namespace uplink.NET.Interfaces
         /// <param name="immediateStart">Starts the download immediately (default) or defer's it to you via the returned DownloadOperation.</param>
         /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
         DownloadOperation DownloadObject(BucketRef bucket, string targetPath, bool immediateStart = true);
+        /// <summary>
+        /// Deletes the mentioned object
+        /// </summary>
+        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        void DeleteObject(BucketRef bucket, string targetPath);
     }
 }

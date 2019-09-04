@@ -4,14 +4,22 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// A project
+    /// 
+    /// Needs to be disposed after use!
+    /// </summary>
     public class Project : IDisposable
     {
         internal SWIG.ProjectRef _projectRef = null;
 
         /// <summary>
-        /// 
+        /// Creates a new project-handle for a given uplink, apikey and satellite-address
         /// </summary>
-        public Project(Uplink uplink, APIKey apiKey, string satelliteAddr, ProjectOptions projectOptions)
+        /// <param name="uplink">The handle to the uplink</param>
+        /// <param name="apiKey">The API-Key to use</param>
+        /// <param name="satelliteAddr">The satellite-Address (host:port) to connect to</param>
+        public Project(Uplink uplink, APIKey apiKey, string satelliteAddr)
         {
             string error;
 

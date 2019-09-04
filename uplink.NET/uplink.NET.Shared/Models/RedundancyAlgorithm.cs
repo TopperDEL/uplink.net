@@ -4,6 +4,9 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// The redundancy algorithm
+    /// </summary>
     public enum RedundancyAlgorithm
     {
         STORJ_INVALID_REDUNDANCY_ALGORITHM = 0,
@@ -15,6 +18,11 @@ namespace uplink.NET.Models
         internal static RedundancyAlgorithm FromSWIG(SWIG.RedundancyAlgorithm original)
         {
            return (RedundancyAlgorithm)Enum.Parse(typeof(RedundancyAlgorithm), original.ToString());
+        }
+
+        internal static SWIG.RedundancyAlgorithm ToSWIG(RedundancyAlgorithm original)
+        {
+            return (SWIG.RedundancyAlgorithm)Enum.Parse(typeof(SWIG.RedundancyAlgorithm), original.ToString());
         }
     }
 }

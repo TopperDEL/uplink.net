@@ -4,20 +4,33 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
+    /// <summary>
+    /// Options for listing buckets
+    /// </summary>
     public class BucketListOptions
     {
+        /// <summary>
+        /// The cursors
+        /// </summary>
         public string Cursor { get; set; }
-        public int Direction { get; set; }
-        public int Limit { get; set; }
+        /// <summary>
+        /// The direction
+        /// </summary>
+        public ListDirection Direction { get; set; }
+        /// <summary>
+        /// Limit for the amount of search result
+        /// </summary>
+        public long Limit { get; set; }
 
         //ToDo: finish Mapping
         internal SWIG.BucketListOptions ToSWIG()
         {
-            SWIG.BucketListOptions swig = new SWIG.BucketListOptions();
-            //swig.encryption_parameters = EncryptionParameters.ToSWIG();
-            //swig.path_cipher = PathCipher;
-            //swig.redundancy_scheme = RedundancyScheme.ToSWIG();
-            return swig;
+            SWIG.BucketListOptions ret = new SWIG.BucketListOptions();
+            ret.cursor = Cursor;
+            //Finish mapping once PR is merged ret.direction = ListDirectionHelper.ToSWIG(Direction);
+            ret.limit = Limit;
+
+            return ret;
         }
     }
 }
