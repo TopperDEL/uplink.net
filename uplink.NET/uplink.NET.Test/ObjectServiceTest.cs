@@ -53,8 +53,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "uploadtest";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            var result = await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             var progressChangeCounter = 0;
@@ -95,8 +95,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "downloadtest";
 
-            var result = _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            var result = await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             
@@ -130,8 +130,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-raiseserror";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
@@ -154,8 +154,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-existingobjects";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = _objectService.UploadObject(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
@@ -174,8 +174,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "getobjectmeta-gets-objectmeta";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
@@ -188,12 +188,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void GetObjectMeta_Fails_OnNotExistingObject()
+        public async Task GetObjectMeta_Fails_OnNotExistingObject()
         {
             string bucketname = "getobjectmeta-fails-onnotexistingobject";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
             try
             {
@@ -210,12 +210,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public void DeleteObject_Fails_OnNotExistingObject()
+        public async Task DeleteObject_Fails_OnNotExistingObject()
         {
             string bucketname = "deleteobject-fails-onnotexistingobject";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
             try
             {
@@ -236,8 +236,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "deleteobject-deletes-object";
 
-            _bucketService.CreateBucket(_project, bucketname, _bucketConfig);
-            var bucket = _bucketService.OpenBucket(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
 
             byte[] bytesToUpload = GetRandomBytes(2048);
 
@@ -263,23 +263,23 @@ namespace uplink.NET.Test
         }
 
         [TestCleanup]
-        public void Cleanup()
+        public async Task CleanupAsync()
         {
-            DeleteBucket("uploadtest");
-            DeleteBucket("downloadtest");
-            DeleteBucket("listobject-lists-raiseserror");
-            DeleteBucket("listobject-lists-existingobjects");
-            DeleteBucket("getobjectmeta-gets-objectmeta");
-            DeleteBucket("getobjectmeta-fails-onnotexistingobject");
-            DeleteBucket("deleteobject-fails-onnotexistingobject");
-            DeleteBucket("deleteobject-deletes-object");
+            await DeleteBucketAsync("uploadtest");
+            await DeleteBucketAsync("downloadtest");
+            await DeleteBucketAsync("listobject-lists-raiseserror");
+            await DeleteBucketAsync("listobject-lists-existingobjects");
+            await DeleteBucketAsync("getobjectmeta-gets-objectmeta");
+            await DeleteBucketAsync("getobjectmeta-fails-onnotexistingobject");
+            await DeleteBucketAsync("deleteobject-fails-onnotexistingobject");
+            await DeleteBucketAsync("deleteobject-deletes-object");
         }
 
-        private void DeleteBucket(string bucketName)
+        private async Task DeleteBucketAsync(string bucketName)
         {
             try
             {
-                _bucketService.DeleteBucket(_project, bucketName);
+                await _bucketService.DeleteBucketAsync(_project, bucketName);
             }
             catch
             { }
