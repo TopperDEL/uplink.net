@@ -59,7 +59,7 @@ namespace uplink.NET.Test
 
             var progressChangeCounter = 0;
 
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             uploadOperation.UploadOperationProgressChanged += (op) =>
             {
                 Assert.AreEqual(uploadOperation.BytesSent, progressValues[progressChangeCounter]);
@@ -100,12 +100,12 @@ namespace uplink.NET.Test
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
             var progressChangeCounter = 0;
 
-            var downloadOperation = _objectService.DownloadObject(bucket, "myfile.txt", false);
+            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt", false);
             downloadOperation.DownloadOperationProgressChanged += (op) =>
             {
                 Assert.AreEqual(downloadOperation.BytesReceived, progressValues[progressChangeCounter]);
@@ -134,12 +134,12 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
             try
             {
-                _objectService.ListObjects(bucket, new ListOptions());
+                await _objectService.ListObjectsAsync(bucket, new ListOptions());
             }catch(ObjectListException ex)
             {
                 Assert.IsTrue(ex.Message.Contains("direction"));
@@ -158,12 +158,12 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
-            var uploadOperation2 = _objectService.UploadObject(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation2.StartUploadAsync();
 
-            var objectList = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
 
             Assert.AreEqual(2, objectList.Length);
             Assert.AreEqual("myfile2.txt", objectList.Items[1].Path);
@@ -178,10 +178,10 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
             byte[] bytesToUpload = GetRandomBytes(2048);
 
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
             
-            var objectMeta = _objectService.GetObjectMeta(bucket, "myfile.txt");
+            var objectMeta = await _objectService.GetObjectMetaAsync(bucket, "myfile.txt");
 
             Assert.AreEqual("myfile.txt", objectMeta.Path);
             Assert.AreEqual((ulong)2048, objectMeta.Size);
@@ -197,7 +197,7 @@ namespace uplink.NET.Test
 
             try
             {
-                var objectMeta = _objectService.GetObjectMeta(bucket, "notexisting.txt");
+                await _objectService.GetObjectMetaAsync(bucket, "notexisting.txt");
             }
             catch (ObjectNotFoundException ex)
             {
@@ -219,7 +219,7 @@ namespace uplink.NET.Test
 
             try
             {
-                _objectService.DeleteObject(bucket, "notexisting.txt");
+                await _objectService.DeleteObjectAsync(bucket, "notexisting.txt");
             }
             catch (ObjectNotFoundException ex)
             {
@@ -241,15 +241,15 @@ namespace uplink.NET.Test
 
             byte[] bytesToUpload = GetRandomBytes(2048);
 
-            var uploadOperation = _objectService.UploadObject(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var objectList = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
             Assert.AreEqual(1, objectList.Length);
 
-            _objectService.DeleteObject(bucket, "myfile1.txt");
+            await _objectService.DeleteObjectAsync(bucket, "myfile1.txt");
 
-            var objectList2 = _objectService.ListObjects(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList2 = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
             Assert.AreEqual(0, objectList2.Length);
         }
 
