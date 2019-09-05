@@ -54,12 +54,12 @@ public class BucketListOptions : global::System.IDisposable {
     } 
   }
 
-  public sbyte direction {
+  public ListDirection direction {
     set {
-      storj_uplinkPINVOKE.BucketListOptions_direction_set(swigCPtr, value);
+      storj_uplinkPINVOKE.BucketListOptions_direction_set(swigCPtr, (int)value);
     } 
     get {
-      sbyte ret = storj_uplinkPINVOKE.BucketListOptions_direction_get(swigCPtr);
+      ListDirection ret = (ListDirection)storj_uplinkPINVOKE.BucketListOptions_direction_get(swigCPtr);
       return ret;
     } 
   }

@@ -641,10 +641,10 @@ class storj_uplinkPINVOKE {
   public static extern string BucketListOptions_cursor_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_BucketListOptions_direction_set___")]
-  public static extern void BucketListOptions_direction_set(global::System.Runtime.InteropServices.HandleRef jarg1, sbyte jarg2);
+  public static extern void BucketListOptions_direction_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_BucketListOptions_direction_get___")]
-  public static extern sbyte BucketListOptions_direction_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+  public static extern int BucketListOptions_direction_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_BucketListOptions_limit_set___")]
   public static extern void BucketListOptions_limit_set(global::System.Runtime.InteropServices.HandleRef jarg1, long jarg2);

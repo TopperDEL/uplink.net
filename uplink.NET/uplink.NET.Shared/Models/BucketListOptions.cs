@@ -27,7 +27,7 @@ namespace uplink.NET.Models
         {
             SWIG.BucketListOptions ret = new SWIG.BucketListOptions();
             ret.cursor = Cursor;
-            //Finish mapping once PR is merged ret.direction = ListDirectionHelper.ToSWIG(Direction);
+            ret.direction = ListDirectionHelper.ToSWIG(Direction);
             ret.limit = Limit;
 
             return ret;
