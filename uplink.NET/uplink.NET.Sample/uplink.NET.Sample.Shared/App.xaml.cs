@@ -77,7 +77,20 @@ namespace uplink.NET.Sample
                     // configuring the new page by passing required information as a navigation
                     // parameter
                     if (Shared.Services.Factory.LoginService.IsLoggedIn())
-                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    {
+                        //ToDo: This could go better:
+                        var loginData = Shared.Services.Factory.LoginService.GetLoginData();
+                        var storjTask = Shared.Services.Factory.StorjService.InitializeAsync(loginData.APIKey, loginData.Satellite);
+                        storjTask.Wait();
+                        var initialized = storjTask.Result;
+                        if(initialized)
+                            rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
+                        else
+                        {
+                            Shared.Services.Factory.LoginService.Logout();
+                            rootFrame.Navigate(typeof(LogInPage), e.Arguments);
+                        }
+                    }
                     else
                         rootFrame.Navigate(typeof(LogInPage), e.Arguments);
                 }
