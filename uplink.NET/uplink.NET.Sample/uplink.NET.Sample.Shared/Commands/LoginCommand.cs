@@ -23,11 +23,11 @@ namespace uplink.NET.Sample.Shared.Commands
             return true;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
             LoginViewModel viewModel = parameter as LoginViewModel;
 
-            var loggedIn = _loginService.Login(viewModel.LoginData);
+            var loggedIn = await _loginService.LoginAsync(viewModel.LoginData);
 
             if (loggedIn)
             {

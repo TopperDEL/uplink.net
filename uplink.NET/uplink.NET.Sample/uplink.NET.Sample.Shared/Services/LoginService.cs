@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using uplink.NET.Sample.Shared.Interfaces;
 using uplink.NET.Sample.Shared.Models;
 using Windows.Storage;
@@ -41,8 +42,20 @@ namespace uplink.NET.Sample.Shared.Services
                 return false;
         }
 
-        public bool Login(LoginData loginData)
+        public async Task<bool> LoginAsync(LoginData loginData)
         {
+            try
+            {
+                uplink.NET.Models.APIKey apikey = new NET.Models.APIKey(loginData.APIKey);
+            }
+            catch (Exception ex)
+            {
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid API-Key");
+                await dialog.ShowAsync();
+
+                return false;
+            }
+
             _loginData = loginData;
             _localSettings.Values[SATELLITE] = _loginData.Satellite;
             _localSettings.Values[APIKEY] = _loginData.APIKey;
