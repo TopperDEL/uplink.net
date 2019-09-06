@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using uplink.NET.Interfaces;
+using uplink.NET.Sample.Shared.Commands;
 using uplink.NET.Sample.Shared.Interfaces;
+using uplink.NET.Sample.Shared.Services;
 
 namespace uplink.NET.Sample.Shared.ViewModels
 {
@@ -12,11 +15,15 @@ namespace uplink.NET.Sample.Shared.ViewModels
     {
         IBucketService _bucketService;
         IStorjService _storjService;
+        public ICommand LogoutCommand { get; private set; }
+
         public ObservableCollection<uplink.NET.Models.BucketInfo> Buckets { get; set; }
         public BucketListViewModel(IBucketService bucketService, IStorjService storjService)
         {
             _bucketService = bucketService;
             _storjService = storjService;
+
+            LogoutCommand = new LogoutCommand(Factory.LoginService);
 
             Buckets = new ObservableCollection<NET.Models.BucketInfo>();
 
