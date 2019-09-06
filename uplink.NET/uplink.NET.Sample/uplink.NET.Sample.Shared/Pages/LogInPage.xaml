@@ -15,6 +15,10 @@
                 <StackPanel Margin="10,10,10,0" Padding="10,10,10,0">
                     <StackPanel HorizontalAlignment="Stretch" Margin="0,20,0,0">
                         <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Satellite-Address" />
+                            <TextBox x:Name="Satellite" Text="{x:Bind _vm.LoginData.Satellite}" BorderBrush="{StaticResource StorjColor}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
                             <TextBlock Text="API-Key" />
                             <TextBox x:Name="APIKeyEntry" Text="{x:Bind _vm.LoginData.APIKey}" BorderBrush="{StaticResource StorjColor}"/>
                         </StackPanel>
