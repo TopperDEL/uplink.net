@@ -14,8 +14,8 @@
   <mp:PhoneIdentity PhoneProductId="d1ad9270-431d-46c5-8ae3-b68bb62b75cc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>uplink.NET.Sample</DisplayName>
-    <PublisherDisplayName>uplink.NET.Sample</PublisherDisplayName>
+    <DisplayName>uplink.NET-Sample</DisplayName>
+    <PublisherDisplayName>TopperDEL, Storj Labs Inc.</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
