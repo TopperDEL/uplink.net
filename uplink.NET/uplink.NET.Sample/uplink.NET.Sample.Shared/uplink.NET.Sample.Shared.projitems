@@ -20,6 +20,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LoginCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter\BooleanToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converter\DateTimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />

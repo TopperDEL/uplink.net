@@ -8,12 +8,14 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <StackPanel>
         <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
             <ProgressRing IsActive="True" Grid.Row="1"/>
         </StackPanel>
-        <ListView ItemsSource="{x:Bind _vm.Buckets, Mode=OneWay}">
+        <TextBlock Text="Your buckets:" Foreground="{StaticResource StorjBlue}" HorizontalAlignment="Center" FontSize="30"/>
+        <ListView ItemsSource="{x:Bind _vm.Buckets, Mode=OneWay}" ItemTemplate="{StaticResource BucketInfo}" MaxWidth="700">
 
         </ListView>
-    </Grid>
+        <Button Content="Add bucket..." HorizontalAlignment="Center" Background="{StaticResource StorjColor}" Foreground="White"/>
+    </StackPanel>
 </Page>
