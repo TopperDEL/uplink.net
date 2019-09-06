@@ -22,7 +22,7 @@
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Logout" Foreground="White">
+            <AppBarButton Label="Logout" Foreground="White" Command="{x:Bind _vm.LogoutCommand}">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_logout.png"/>
                 </AppBarButton.Icon>

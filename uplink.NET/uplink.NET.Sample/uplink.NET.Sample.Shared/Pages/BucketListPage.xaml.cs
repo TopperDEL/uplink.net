@@ -36,5 +36,15 @@ namespace uplink.NET.Sample.Shared.Pages
 
             this.DataContext = _vm = new BucketListViewModel(Factory.BucketService, Factory.StorjService);
         }
+
+        private void AddBucketClicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LogoutClicked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
