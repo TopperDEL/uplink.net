@@ -2,7 +2,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:uplink.NET.Sample.Shared"
+    xmlns:converter="using:uplink.NET.Sample.Shared.Converter"
     x:Class="uplink.NET.Sample.Shared.StorjDictionary">
+
+    <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
     <Color x:Key="StorjColor">#2683ff</Color>
     <SolidColorBrush Color="#2683ff" x:Name="StorjBlue"/>

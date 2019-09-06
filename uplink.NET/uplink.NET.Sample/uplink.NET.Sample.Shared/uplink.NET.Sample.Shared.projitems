@@ -19,7 +19,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LoginCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -27,11 +30,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Pages\LogInPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LoginService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\StorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -59,6 +68,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\BucketListPage.xaml.cs">
+      <DependentUpon>BucketListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
     </Compile>
