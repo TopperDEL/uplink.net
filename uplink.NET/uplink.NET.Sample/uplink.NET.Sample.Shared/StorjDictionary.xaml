@@ -14,7 +14,7 @@
 
     <DataTemplate x:Key="BucketInfo" x:DataType="models:BucketInfo">
         <StackPanel Orientation="Horizontal">
-            <SymbolIcon Symbol="Folder" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">
                 <TextBlock Text="{x:Bind Name}" Foreground="{StaticResource StorjBlue}"/>
                 <TextBlock Text="{x:Bind Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
