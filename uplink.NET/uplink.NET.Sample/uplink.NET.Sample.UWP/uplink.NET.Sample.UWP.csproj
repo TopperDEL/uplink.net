@@ -113,6 +113,26 @@
     <None Include="uplink.NET.Sample.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\storj.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\storj.altform-unplated_targetsize-24.png" />
+    <Content Include="Assets\storj.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\storj.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\storj.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\storj.scale-100.png" />
+    <Content Include="Assets\storj.scale-125.png" />
+    <Content Include="Assets\storj.scale-150.png" />
+    <Content Include="Assets\storj.scale-200.png" />
+    <Content Include="Assets\storj.scale-400.png" />
+    <Content Include="Assets\storj.targetsize-16.png" />
+    <Content Include="Assets\storj.targetsize-24.png" />
+    <Content Include="Assets\storj.targetsize-256.png" />
+    <Content Include="Assets\storj.targetsize-32.png" />
+    <Content Include="Assets\storj.targetsize-48.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <Import Project="..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems" Label="Shared" Condition="Exists('..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems')" />
