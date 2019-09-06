@@ -9,6 +9,7 @@ namespace uplink.NET.Sample.Shared.Services
 {
     public class LoginService : ILoginService
     {
+        const string SATELLITE = "Satellite";
         const string APIKEY = "APIKey";
         const string SECRET = "Secret";
 
@@ -19,6 +20,8 @@ namespace uplink.NET.Sample.Shared.Services
         {
             _localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             _loginData = new LoginData();
+            if (_localSettings.Values.ContainsKey(SATELLITE))
+                _loginData.Satellite = (string)_localSettings.Values[SATELLITE];
             if (_localSettings.Values.ContainsKey(APIKEY))
                 _loginData.APIKey = (string)_localSettings.Values[APIKEY];
             if (_localSettings.Values.ContainsKey(SECRET))
@@ -41,6 +44,7 @@ namespace uplink.NET.Sample.Shared.Services
         public bool Login(LoginData loginData)
         {
             _loginData = loginData;
+            _localSettings.Values[SATELLITE] = _loginData.Satellite;
             _localSettings.Values[APIKEY] = _loginData.APIKey;
             _localSettings.Values[SECRET] = _loginData.Secret;
 
@@ -49,6 +53,7 @@ namespace uplink.NET.Sample.Shared.Services
 
         public bool Logout()
         {
+            _localSettings.Values.Remove(SATELLITE);
             _localSettings.Values.Remove(APIKEY);
             _localSettings.Values.Remove(SECRET);
             _loginData = new LoginData();
