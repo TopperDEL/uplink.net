@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using uplink.NET.Sample.Shared.Pages;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -75,7 +76,10 @@ namespace uplink.NET.Sample
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    if (Shared.Services.Factory.LoginService.IsLoggedIn())
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    else
+                        rootFrame.Navigate(typeof(LogInPage), e.Arguments);
                 }
                 // Ensure the current window is active
                 Windows.UI.Xaml.Window.Current.Activate();
