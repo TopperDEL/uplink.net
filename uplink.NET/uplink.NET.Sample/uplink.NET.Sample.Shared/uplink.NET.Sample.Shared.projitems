@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\SaveBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CreateBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LogoutCommand.cs" />
@@ -38,6 +39,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\StorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketInfoViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CreateBucketViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />

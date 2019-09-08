@@ -4,6 +4,7 @@
     xmlns:local="using:uplink.NET.Sample.Shared"
     xmlns:converter="using:uplink.NET.Sample.Shared.Converter"
     xmlns:models="using:uplink.NET.Models"
+    xmlns:viewmodels="using:uplink.NET.Sample.Shared.ViewModels"
     x:Class="uplink.NET.Sample.Shared.StorjDictionary">
 
     <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -12,13 +13,14 @@
     <Color x:Key="StorjColor">#2683ff</Color>
     <SolidColorBrush Color="#2683ff" x:Name="StorjBlue"/>
 
-    <DataTemplate x:Key="BucketInfo" x:DataType="models:BucketInfo">
+    <DataTemplate x:Key="BucketInfo" x:DataType="viewmodels:BucketInfoViewModel">
         <StackPanel Orientation="Horizontal">
             <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="{x:Bind Name}" Foreground="{StaticResource StorjBlue}"/>
-                <TextBlock Text="{x:Bind Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+                <TextBlock Text="{x:Bind BucketInfo.Name}" Foreground="{StaticResource StorjBlue}"/>
+                <TextBlock Text="{x:Bind BucketInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
             </StackPanel>
+            <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>
