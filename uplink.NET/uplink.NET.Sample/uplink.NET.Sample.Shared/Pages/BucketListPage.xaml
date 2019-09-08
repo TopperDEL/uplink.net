@@ -15,7 +15,7 @@
     <StackPanel>
         <CommandBar Background="{StaticResource StorjBlue}" OverflowButtonVisibility="Collapsed">
             <CommandBar.Content>
-                <TextBlock Text="Your buckets" Foreground="White" FontSize="30"/>
+                <TextBlock Text="Your buckets" Foreground="White" FontSize="25" Margin="10,0"/>
             </CommandBar.Content>
             <AppBarButton Label="Add bucket..." Foreground="White" Command="{x:Bind _vm.CreateBucketCommand}">
                 <AppBarButton.Icon>
