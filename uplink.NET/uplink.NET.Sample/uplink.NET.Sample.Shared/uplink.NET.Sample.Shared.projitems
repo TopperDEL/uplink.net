@@ -18,6 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\SaveBucketCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CreateBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LogoutCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LoginCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter\BooleanToVisibilityConverter.cs" />
@@ -25,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -36,10 +39,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CreateBucketViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -78,6 +86,12 @@
     </Compile>
     <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\LogInPage.xaml.cs">
       <DependentUpon>LogInPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\Users\T\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\CreateBucketPage.xaml.cs">
+      <DependentUpon>CreateBucketPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\Users\T\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\ViewModels\CreateBucketViewModel.xaml.cs">
+      <DependentUpon>CreateBucketViewModel.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

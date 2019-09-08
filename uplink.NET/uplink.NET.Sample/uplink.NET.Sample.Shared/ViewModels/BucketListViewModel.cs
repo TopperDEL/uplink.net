@@ -16,6 +16,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         IBucketService _bucketService;
         IStorjService _storjService;
         public ICommand LogoutCommand { get; private set; }
+        public ICommand CreateBucketCommand { get; private set; }
 
         public ObservableCollection<uplink.NET.Models.BucketInfo> Buckets { get; set; }
         public BucketListViewModel(IBucketService bucketService, IStorjService storjService)
@@ -24,6 +25,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             _storjService = storjService;
 
             LogoutCommand = new LogoutCommand(Factory.LoginService);
+            CreateBucketCommand = new CreateBucketCommand();
 
             Buckets = new ObservableCollection<NET.Models.BucketInfo>();
 
