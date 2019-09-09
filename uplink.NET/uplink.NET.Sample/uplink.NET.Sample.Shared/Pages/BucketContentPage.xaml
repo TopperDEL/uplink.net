@@ -13,7 +13,7 @@
             <CommandBar.Content>
                 <TextBlock Text="{x:Bind _vm.BucketName}" Foreground="White" FontSize="25" Margin="10,0"/>
             </CommandBar.Content>
-            <AppBarButton Label="Add file..." Foreground="White">
+            <AppBarButton Label="Add file..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" Click="AppBarButton_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>

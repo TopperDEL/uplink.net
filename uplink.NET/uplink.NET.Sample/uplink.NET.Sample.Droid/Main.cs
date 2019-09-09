@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
+using Plugin.CurrentActivity;
 using Windows.UI.Xaml.Media;
 
 namespace uplink.NET.Sample.Droid
@@ -28,6 +29,12 @@ namespace uplink.NET.Sample.Droid
             ConfigureUniversalImageLoader();
         }
 
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            CrossCurrentActivity.Current.Init(this);
+        }
+        
         private void ConfigureUniversalImageLoader()
         {
             // Create global configuration and initialize ImageLoader with this config

@@ -18,6 +18,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
         public string BucketName { get; set; }
         public ICommand GoBackCommand { get; set; }
+        public ICommand UploadFileCommand { get; set; }
 
         IObjectService _objectService;
         IBucketService _bucketService;
@@ -35,12 +36,15 @@ namespace uplink.NET.Sample.Shared.ViewModels
             BucketName = bucketName;
 
             GoBackCommand = new GoBackCommand();
+            UploadFileCommand = new UploadFileCommand();
 
             InitAsync();
+            DoneLoading();
         }
 
         private async Task InitAsync()
         {
+            return;
             //Load all options
             try
             {

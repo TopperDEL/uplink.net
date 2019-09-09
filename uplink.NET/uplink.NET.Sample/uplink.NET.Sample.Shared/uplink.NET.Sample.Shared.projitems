@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\OpenBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteBucketCommand.cs" />
