@@ -31,6 +31,17 @@ namespace uplink.NET.Sample.Shared.Services
             }
         }
 
+        private static IObjectService _objectService;
+        public static IObjectService ObjectService
+        {
+            get
+            {
+                if (_objectService == null)
+                    _objectService = new ObjectService();
+                return _objectService;
+            }
+        }
+
         private static IStorjService _storjService;
         public static IStorjService StorjService
         {

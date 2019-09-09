@@ -22,10 +22,10 @@ namespace uplink.NET.Sample.Shared.Pages
     /// <summary>
     /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
     /// </summary>
-    public sealed partial class BucketListPage : Page
+    public sealed partial class BucketContentPage : Page
     {
-        public BucketListViewModel _vm;
-        public BucketListPage()
+        public BucketContentViewModel _vm;
+        public BucketContentPage()
         {
             this.InitializeComponent();
         }
@@ -34,12 +34,8 @@ namespace uplink.NET.Sample.Shared.Pages
         {
             base.OnNavigatedTo(e);
 
-            this.DataContext = _vm = new BucketListViewModel(Factory.BucketService, Factory.StorjService);
-        }
-
-        private void ItemClicked(object sender, ItemClickEventArgs e)
-        {
-            _vm.OpenBucketCommand.Execute(e.ClickedItem);
+            BucketInfoViewModel bucketVM = e.Parameter as BucketInfoViewModel;
+            this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService,Factory.StorjService,Factory.LoginService, bucketVM.BucketInfo.Name);
         }
     }
 }

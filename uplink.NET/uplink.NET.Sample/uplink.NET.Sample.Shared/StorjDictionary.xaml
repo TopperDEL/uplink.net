@@ -23,4 +23,15 @@
             <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>
         </StackPanel>
     </DataTemplate>
+
+    <DataTemplate x:Key="ObjectInfo" x:DataType="viewmodels:BucketEntryViewModel">
+        <StackPanel Orientation="Horizontal">
+            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="{x:Bind ObjectInfo.Path}" Foreground="{StaticResource StorjBlue}"/>
+                <TextBlock Text="{x:Bind ObjectInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+            </StackPanel>
+            <!--<Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>-->
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>
