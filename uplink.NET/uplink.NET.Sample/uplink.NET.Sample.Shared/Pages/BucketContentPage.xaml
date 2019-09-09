@@ -1,28 +1,24 @@
 ﻿<Page
-    x:Class="uplink.NET.Sample.Shared.Pages.BucketListPage"
+    x:Class="uplink.NET.Sample.Shared.Pages.BucketContentPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:uplink.NET.Sample.Shared.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:Uno.UI.Toolkit"
-	xmlns:ios="http://nventive.com/ios"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:android="http://nventive.com/android"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
         <CommandBar Background="{StaticResource StorjBlue}" OverflowButtonVisibility="Collapsed">
             <CommandBar.Content>
-                <TextBlock Text="Your buckets" Foreground="White" FontSize="25" Margin="10,0"/>
+                <TextBlock Text="{x:Bind _vm.BucketName}" Foreground="White" FontSize="25" Margin="10,0"/>
             </CommandBar.Content>
-            <AppBarButton Label="Add bucket..." Foreground="White" Command="{x:Bind _vm.CreateBucketCommand}">
+            <AppBarButton Label="Add file..." Foreground="White">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Logout" Foreground="White" Command="{x:Bind _vm.LogoutCommand}">
+            <AppBarButton Label="Back" Foreground="White">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_logout.png"/>
                 </AppBarButton.Icon>
@@ -31,8 +27,8 @@
         <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
             <ProgressRing IsActive="True" Grid.Row="1"/>
         </StackPanel>
-        <ListView ItemsSource="{x:Bind _vm.Buckets, Mode=OneWay}" ItemTemplate="{StaticResource BucketInfo}" MaxWidth="700"
-                  ItemClick="ItemClicked" IsItemClickEnabled="True" SelectionMode="Single">
+        <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700">
+
         </ListView>
     </StackPanel>
 </Page>

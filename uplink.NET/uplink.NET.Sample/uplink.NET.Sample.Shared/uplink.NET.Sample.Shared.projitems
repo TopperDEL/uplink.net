@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\OpenBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\SaveBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CreateBucketCommand.cs" />
@@ -27,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converter\DateTimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
@@ -39,12 +41,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\StorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketContentViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketInfoViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\CreateBucketViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -83,6 +91,9 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\BucketContentPage.xaml.cs">
+      <DependentUpon>BucketContentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\BucketListPage.xaml.cs">
       <DependentUpon>BucketListPage.xaml</DependentUpon>
     </Compile>
