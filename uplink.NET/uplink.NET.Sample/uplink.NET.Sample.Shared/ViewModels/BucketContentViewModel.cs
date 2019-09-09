@@ -7,6 +7,8 @@ using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using uplink.NET.Sample.Shared.Interfaces;
 using System.Linq;
+using System.Windows.Input;
+using uplink.NET.Sample.Shared.Commands;
 
 namespace uplink.NET.Sample.Shared.ViewModels
 {
@@ -15,6 +17,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public static Dictionary<string, UploadOperation> ActiveUploadOperations = new Dictionary<string, UploadOperation>();
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
         public string BucketName { get; set; }
+        public ICommand GoBackCommand { get; set; }
 
         IObjectService _objectService;
         IBucketService _bucketService;
@@ -30,6 +33,8 @@ namespace uplink.NET.Sample.Shared.ViewModels
             _storjService = storjService;
             _loginService = loginService;
             BucketName = bucketName;
+
+            GoBackCommand = new GoBackCommand();
 
             InitAsync();
         }

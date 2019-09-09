@@ -18,9 +18,9 @@
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Back" Foreground="White">
+            <AppBarButton Label="Back" Foreground="White" Command="{x:Bind _vm.GoBackCommand}">
                 <AppBarButton.Icon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/storj_logout.png"/>
+                    <BitmapIcon UriSource="ms-appx:///Assets/storj_left.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
         </CommandBar>
