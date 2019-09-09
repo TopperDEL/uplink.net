@@ -26,12 +26,21 @@
 
     <DataTemplate x:Key="ObjectInfo" x:DataType="viewmodels:BucketEntryViewModel">
         <StackPanel Orientation="Horizontal">
-            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="{x:Bind ObjectInfo.Path}" Foreground="{StaticResource StorjBlue}"/>
-                <TextBlock Text="{x:Bind ObjectInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsObject, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind ObjectInfo.Path}" Foreground="{StaticResource StorjBlue}"/>
+                    <TextBlock Text="{x:Bind ObjectInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+                </StackPanel>
+                <!--<Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>-->
             </StackPanel>
-            <!--<Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>-->
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsUploadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind UploadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
+                    <ProgressBar Value="{x:Bind UploadOperation.PercentageCompleted}" Minimum="0" Maximum="100"/>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>
