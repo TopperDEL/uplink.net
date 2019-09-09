@@ -37,5 +37,10 @@ namespace uplink.NET.Sample.Shared.Pages
             BucketInfoViewModel bucketVM = e.Parameter as BucketInfoViewModel;
             this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService,Factory.StorjService,Factory.LoginService, bucketVM.BucketInfo.Name);
         }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.UploadFileCommand.Execute(null);
+        }
     }
 }
