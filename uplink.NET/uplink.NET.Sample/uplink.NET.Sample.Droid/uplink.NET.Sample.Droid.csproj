@@ -67,9 +67,6 @@
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-    <PackageReference Include="uplink.NET">
-      <Version>1.1.0</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -92,6 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\storj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\uplink.NET.Droid\uplink.NET.Droid.csproj">
+      <Project>{17d64967-6893-469f-8950-114a983d2a2f}</Project>
+      <Name>uplink.NET.Droid</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems" Label="Shared" Condition="Exists('..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

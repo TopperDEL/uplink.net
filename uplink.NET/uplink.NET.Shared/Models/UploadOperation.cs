@@ -19,6 +19,10 @@ namespace uplink.NET.Models
         private bool _cancelled;
 
         /// <summary>
+        /// The name of the object uploading
+        /// </summary>
+        public string ObjectName { get; private set; }
+        /// <summary>
         /// Informs about upload-operation progress changes
         /// </summary>
         public event UploadOperationProgressChanged UploadOperationProgressChanged;
@@ -62,11 +66,20 @@ namespace uplink.NET.Models
                 return _errorMessage;
             }
         }
+        /// <summary>
+        /// The percentage of completeness
+        /// </summary>
+        public float PercentageCompleted { get
+            {
+                return BytesSent / TotalBytes * 100;
+            }
+        }
 
-        internal UploadOperation(byte[] bytestoUpload, SWIG.UploaderRef uploaderRef)
+        internal UploadOperation(byte[] bytestoUpload, SWIG.UploaderRef uploaderRef, string objectName)
         {
             _bytesToUpload = bytestoUpload;
             _uploaderRef = uploaderRef;
+            ObjectName = objectName;
         }
 
         /// <summary>

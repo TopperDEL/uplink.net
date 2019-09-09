@@ -19,7 +19,7 @@ namespace uplink.NET.Services
 
             SWIG.storj_uplink.free_upload_opts(uploadOptionsSWIG);
 
-            UploadOperation upload = new UploadOperation(bytesToUpload, uploaderRef);
+            UploadOperation upload = new UploadOperation(bytesToUpload, uploaderRef, targetPath);
             if(immediateStart)
                 upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
@@ -44,7 +44,7 @@ namespace uplink.NET.Services
 
             var downloaderRef = SWIG.storj_uplink.download(bucket._bucketRef, targetPath, out error);
 
-            DownloadOperation download = new DownloadOperation(downloaderRef, objectMeta.size);
+            DownloadOperation download = new DownloadOperation(downloaderRef, objectMeta.size, targetPath);
             if (immediateStart)
                 download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
 

@@ -32,6 +32,10 @@ namespace uplink.NET.Models
         private bool _cancelled;
 
         /// <summary>
+        /// The name of the object downloading
+        /// </summary>
+        public string ObjectName { get; private set; }
+        /// <summary>
         /// Informs about download-operation progress changes
         /// </summary>
         public event DownloadOperationProgressChanged DownloadOperationProgressChanged;
@@ -66,8 +70,18 @@ namespace uplink.NET.Models
                 return _errorMessage;
             }
         }
+        /// <summary>
+        /// The percentage of completeness
+        /// </summary>
+        public float PercentageCompleted
+        {
+            get
+            {
+                return BytesReceived / TotalBytes * 100;
+            }
+        }
 
-        internal DownloadOperation(SWIG.DownloaderRef downloaderRef, ulong totalBytes)
+        internal DownloadOperation(SWIG.DownloaderRef downloaderRef, ulong totalBytes, string objectName)
         {
             _downloaderRef = downloaderRef;
             TotalBytes = totalBytes;
