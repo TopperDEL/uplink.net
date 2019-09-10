@@ -10,14 +10,15 @@
 
     <Grid>
         <StackPanel Margin="0,20,0,20" MaxWidth="700">
-            <StackPanel HorizontalAlignment="Stretch" Margin="0,20,0,0">
+            <StackPanel Margin="10,10,10,0" Padding="10,10,10,0">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Bucket-Name" Foreground="{StaticResource StorjColor}"/>
                     <TextBox x:Name="BucketName" Text="{x:Bind _vm.BucketName, Mode=TwoWay}" BorderBrush="{StaticResource StorjColor}"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Margin="0,10" HorizontalAlignment="Center">
-                <Button Content="Create" Command="{x:Bind _vm.SaveBucketCommand}" CommandParameter="{Binding}" Background="{StaticResource StorjBlue}" Foreground="White"/>
+            <StackPanel Margin="0,10" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Content="Create" Command="{x:Bind _vm.SaveBucketCommand}" CommandParameter="{Binding}" Background="{StaticResource StorjBlue}" Foreground="White" Margin="2"/>
+                <Button Content="Cancel" Command="{x:Bind _vm.GoBackCommand}" Background="{StaticResource StorjBlue}" Foreground="White" Margin="2"/>
             </StackPanel>
         </StackPanel>
     </Grid>
