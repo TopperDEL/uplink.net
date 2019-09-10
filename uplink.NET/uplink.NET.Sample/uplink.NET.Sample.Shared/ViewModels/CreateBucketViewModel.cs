@@ -12,10 +12,12 @@ namespace uplink.NET.Sample.Shared.ViewModels
     {
         public string BucketName { get; set; }
         public ICommand SaveBucketCommand { get; set; }
+        public ICommand GoBackCommand { get; set; }
 
         public CreateBucketViewModel(IBucketService bucketService, IStorjService storjService)
         {
             SaveBucketCommand = new SaveBucketCommand(bucketService, storjService);
+            GoBackCommand = new GoBackCommand();
         }
     }
 }
