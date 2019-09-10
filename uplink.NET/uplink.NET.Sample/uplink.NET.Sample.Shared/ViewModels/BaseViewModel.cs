@@ -38,8 +38,10 @@ namespace uplink.NET.Sample.Shared.ViewModels
         protected async void RaiseChanged(string propertyName)
         {
 #if __ANDROID__
-            
-            PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
 #else
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
             {
