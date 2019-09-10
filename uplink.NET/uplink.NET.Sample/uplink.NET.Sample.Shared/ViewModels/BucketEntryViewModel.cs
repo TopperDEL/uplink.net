@@ -15,5 +15,19 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public bool IsDownload { get; set; }
         public DownloadOperation DownloadOperation { get; set; }
+
+        public float PercentageComplete { get; set; }
+
+        public void InitUploadOperation()
+        {
+            UploadOperation.UploadOperationProgressChanged += UploadOperation_UploadOperationProgressChanged;
+        }
+
+        private void UploadOperation_UploadOperationProgressChanged(UploadOperation uploadOperation)
+        {
+            PercentageComplete = (float)UploadOperation.BytesSent / (float)UploadOperation.TotalBytes * 100f;
+            RaiseChanged(nameof(PercentageComplete));
+            //RaiseChanged(nameof(UploadOperation));
+        }
     }
 }

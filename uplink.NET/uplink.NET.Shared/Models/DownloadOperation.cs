@@ -77,7 +77,7 @@ namespace uplink.NET.Models
         {
             get
             {
-                return BytesReceived / TotalBytes * 100;
+                return (float)BytesReceived / (float)TotalBytes * 100f;
             }
         }
 

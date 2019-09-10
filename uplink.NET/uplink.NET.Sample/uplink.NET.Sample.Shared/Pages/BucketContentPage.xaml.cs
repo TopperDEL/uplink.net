@@ -36,11 +36,14 @@ namespace uplink.NET.Sample.Shared.Pages
 
             BucketInfoViewModel bucketVM = e.Parameter as BucketInfoViewModel;
             this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService,Factory.StorjService,Factory.LoginService, bucketVM.BucketInfo.Name);
+            _vm.Dispatcher = Dispatcher;
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+#if __ANDROID__
             _vm.UploadFileCommand.Execute(null);
+#endif
         }
     }
 }
