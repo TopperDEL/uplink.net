@@ -32,6 +32,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task UploadObject_Uploads_LargeFile()
+        {
+            await Upload_X_Bytes(1024 * 10, 10, new List<ulong>() { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 });
+        }
+
+        [TestMethod]
         public async Task UploadObject_Uploads_2500Bytes()
         {
             await Upload_X_Bytes(2500, 3, new List<ulong>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
@@ -69,7 +75,7 @@ namespace uplink.NET.Test
             await uploadOperation.StartUploadAsync();
 
             Assert.AreEqual(exptecedProgressCount, progressChangeCounter);
-            Assert.IsTrue(uploadOperation.Completed);
+            Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
             Assert.AreEqual(bytes, uploadOperation.BytesSent);
         }
 

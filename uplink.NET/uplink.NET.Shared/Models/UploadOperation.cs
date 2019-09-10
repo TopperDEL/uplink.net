@@ -11,6 +11,11 @@ namespace uplink.NET.Models
     /// </summary>
     /// <param name="uploadOperation">The UploadOperation that changed</param>
     public delegate void UploadOperationProgressChanged(UploadOperation uploadOperation);
+    /// <summary>
+    /// Gets raised to inform about an ended UploadOperation.
+    /// </summary>
+    /// <param name="uploadOperation">The UploadOperation that ended</param>
+    public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public class UploadOperation : IDisposable
     {
         private byte[] _bytesToUpload;
@@ -26,6 +31,10 @@ namespace uplink.NET.Models
         /// Informs about upload-operation progress changes
         /// </summary>
         public event UploadOperationProgressChanged UploadOperationProgressChanged;
+        /// <summary>
+        /// Inform about a UploadOperation that ended (i.e. Completed, Failed or got Cancelled)
+        /// </summary>
+        public event UploadOperationEnded UploadOperationEnded;
         /// <summary>
         /// The - until now - sent bytes
         /// </summary>
@@ -55,6 +64,10 @@ namespace uplink.NET.Models
         /// Got the upload cancelled (by the user)?
         /// </summary>
         public bool Cancelled { get; set; }
+        /// <summary>
+        /// Is the upload currently in progress?
+        /// </summary>
+        public bool Running { get; set; }
         private string _errorMessage;
         /// <summary>
         /// The possible error - only filled if "Failed" is true.
@@ -71,7 +84,7 @@ namespace uplink.NET.Models
         /// </summary>
         public float PercentageCompleted { get
             {
-                return BytesSent / TotalBytes * 100;
+                return (float)BytesSent / (float)TotalBytes * 100f;
             }
         }
 
@@ -106,54 +119,73 @@ namespace uplink.NET.Models
 
         private void DoUpload()
         {
-            if (_bytesToUpload != null)
+            try
             {
-                while (BytesSent < (ulong)_bytesToUpload.Length)
+                if (_bytesToUpload != null)
                 {
-                    if ((ulong)_bytesToUpload.Length - BytesSent > 1024)
+                    Running = true;
+                    while (BytesSent < (ulong)_bytesToUpload.Length)
                     {
-                        //Send 1024 bytes in next batch
-                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
-                        if (sent != 1024 && string.IsNullOrEmpty(_errorMessage))
-                            continue; //try again?
-                        if (sent == 1024)
-                            BytesSent += 1024;
-                    }
-                    else
-                    {
-                        //Send only the remaining bytes
-                        var remaining = (ulong)_bytesToUpload.Length - BytesSent;
-                        var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), (uint)remaining, out _errorMessage);
-                        if (sent != remaining && string.IsNullOrEmpty(_errorMessage))
-                            continue; //try again?
-                        if (sent == remaining)
-                            BytesSent += remaining;
-                    }
-                    if (_cancelled)
-                    {
-                        SWIG.storj_uplink.upload_cancel(_uploaderRef, out _errorMessage);
-                        if (string.IsNullOrEmpty(_errorMessage))
-                            Cancelled = true;
+                        if ((ulong)_bytesToUpload.Length - BytesSent > 1024)
+                        {
+                            //Send 1024 bytes in next batch
+                            var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
+                            if (sent != 1024 && string.IsNullOrEmpty(_errorMessage))
+                                continue; //try again?
+                            if (sent == 1024)
+                                BytesSent += 1024;
+                        }
                         else
+                        {
+                            //Send only the remaining bytes
+                            var remaining = (ulong)_bytesToUpload.Length - BytesSent;
+                            var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), (uint)remaining, out _errorMessage);
+                            if (sent != remaining && string.IsNullOrEmpty(_errorMessage))
+                                continue; //try again?
+                            if (sent == remaining)
+                                BytesSent += remaining;
+                        }
+                        if (_cancelled)
+                        {
+                            SWIG.storj_uplink.upload_cancel(_uploaderRef, out _errorMessage);
+                            if (string.IsNullOrEmpty(_errorMessage))
+                                Cancelled = true;
+                            else
+                                Failed = true;
+                            Running = false;
+                            UploadOperationEnded?.Invoke(this);
+                            return;
+                        }
+                        UploadOperationProgressChanged?.Invoke(this);
+                        if (!string.IsNullOrEmpty(_errorMessage))
+                        {
                             Failed = true;
-                        return;
+                            Running = false;
+                            UploadOperationEnded?.Invoke(this);
+                            return;
+                        }
                     }
-                    UploadOperationProgressChanged?.Invoke(this);
-                    if (!string.IsNullOrEmpty(_errorMessage))
-                    {
-                        Failed = true;
-                        return;
-                    }
+                    SWIG.storj_uplink.upload_commit(_uploaderRef, out _errorMessage);
                 }
-                SWIG.storj_uplink.upload_commit(_uploaderRef, out _errorMessage);
+                if (!string.IsNullOrEmpty(_errorMessage))
+                {
+                    Failed = true;
+                    Running = false;
+                    UploadOperationEnded?.Invoke(this);
+                    return;
+                }
+                Running = false;
+                Completed = true;
+                UploadOperationEnded?.Invoke(this);
             }
-            if (!string.IsNullOrEmpty(_errorMessage))
+            catch(Exception ex)
             {
                 Failed = true;
+                Running = false;
+                _errorMessage = ex.Message;
+                UploadOperationEnded?.Invoke(this);
                 return;
             }
-
-            Completed = true;
         }
 
         public void Dispose()
