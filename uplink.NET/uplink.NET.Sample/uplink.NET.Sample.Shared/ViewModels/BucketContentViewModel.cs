@@ -36,14 +36,21 @@ namespace uplink.NET.Sample.Shared.ViewModels
             BucketName = bucketName;
 
             GoBackCommand = new GoBackCommand();
-            UploadFileCommand = new UploadFileCommand(objectService, bucketService, storjService, loginService, BucketName);
+            UploadFileCommand = new UploadFileCommand(this, objectService, bucketService, storjService, loginService, BucketName);
 
             InitAsync();
-            DoneLoading();
+        }
+
+        public async Task Refresh()
+        {
+            Entries.Clear();
+            await InitAsync();
         }
 
         private async Task InitAsync()
         {
+            StartLoading();
+
             //Load all options
             try
             {
@@ -53,7 +60,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {
-                    var entry = new BucketEntryViewModel();
+                    var entry = new BucketEntryViewModel(this);
                     entry.IsObject = true;
                     entry.ObjectInfo = obj;
                     Entries.Add(entry);
@@ -66,13 +73,17 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
 
             //Fetch all UploadOperations
-            foreach(var uploadOperation in (ActiveUploadOperations.Where(u=>u.Key == BucketName)).FirstOrDefault().Value)
+            var uploadOperations = (ActiveUploadOperations.Where(u => u.Key == BucketName)).FirstOrDefault();
+            if (uploadOperations.Value != null)
             {
-                var entry = new BucketEntryViewModel();
-                entry.IsUploadOperation = true;
-                entry.UploadOperation = uploadOperation;
-                entry.InitUploadOperation();
-                Entries.Add(entry);
+                foreach (var uploadOperation in uploadOperations.Value)
+                {
+                    var entry = new BucketEntryViewModel(this);
+                    entry.IsUploadOperation = true;
+                    entry.UploadOperation = uploadOperation;
+                    entry.InitUploadOperation();
+                    Entries.Add(entry);
+                }
             }
 
             DoneLoading();

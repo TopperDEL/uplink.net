@@ -7,7 +7,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
-        public Windows.UI.Core.CoreDispatcher Dispatcher { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Loading { get; set; }
@@ -38,7 +37,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         protected async void RaiseChanged(string propertyName)
         {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High,()=>
             {
                 if (PropertyChanged != null)
                 {

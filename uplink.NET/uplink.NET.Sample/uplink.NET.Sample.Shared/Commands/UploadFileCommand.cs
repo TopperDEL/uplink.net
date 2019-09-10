@@ -16,14 +16,16 @@ namespace uplink.NET.Sample.Shared.Commands
     {
         public event EventHandler CanExecuteChanged;
 
+        BucketContentViewModel _senderView;
         IObjectService _objectService;
         IBucketService _bucketService;
         IStorjService _storjService;
         ILoginService _loginService;
         string _bucketName;
 
-        public UploadFileCommand(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService, string bucketName)
+        public UploadFileCommand(BucketContentViewModel senderView, IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService, string bucketName)
         {
+            _senderView = senderView;
             _objectService = objectService;
             _bucketService = bucketService;
             _storjService = storjService;
@@ -55,8 +57,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 list.Add(uploadOperation);
                 BucketContentViewModel.ActiveUploadOperations.Add(_bucketName, list);
             }
-            //var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
-            //frame.Navigate(typeof(CreateBucketPage));
+            await _senderView.Refresh();//Todo: find a better way to refresh view - this has too much load
         }
     }
 }

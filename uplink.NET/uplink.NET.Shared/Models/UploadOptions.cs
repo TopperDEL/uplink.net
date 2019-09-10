@@ -24,6 +24,8 @@ namespace uplink.NET.Models
             options.content_type = ContentType;
             if (Expires != DateTime.MinValue)
                 options.expires = (new DateTimeOffset(Expires)).ToUnixTimeSeconds();
+            else
+                options.expires = (new DateTimeOffset(DateTime.MaxValue)).ToUnixTimeSeconds();
 
             return options;
         }
