@@ -80,11 +80,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
             {
                 foreach (var uploadOperation in uploadOperations.Value)
                 {
-                    var entry = new BucketEntryViewModel(this);
-                    entry.IsUploadOperation = true;
-                    entry.UploadOperation = uploadOperation;
-                    entry.InitUploadOperation();
-                    Entries.Add(entry);
+                    if (!uploadOperation.Completed)
+                    {
+                        var entry = new BucketEntryViewModel(this);
+                        entry.IsUploadOperation = true;
+                        entry.UploadOperation = uploadOperation;
+                        entry.InitUploadOperation();
+                        Entries.Add(entry);
+                    }
                 }
             }
 
