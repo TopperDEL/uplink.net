@@ -29,12 +29,6 @@ namespace uplink.NET.Sample.Shared.Pages
         public CreateBucketPage()
         {
             this.InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
             this.DataContext = _vm = new CreateBucketViewModel(Factory.BucketService, Factory.StorjService);
             _vm.DoneLoading();
         }

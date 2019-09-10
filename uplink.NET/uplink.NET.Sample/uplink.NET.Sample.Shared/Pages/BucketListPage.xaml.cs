@@ -28,11 +28,6 @@ namespace uplink.NET.Sample.Shared.Pages
         public BucketListPage()
         {
             this.InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
 
             this.DataContext = _vm = new BucketListViewModel(Factory.BucketService, Factory.StorjService);
         }
@@ -40,6 +35,20 @@ namespace uplink.NET.Sample.Shared.Pages
         private void ItemClicked(object sender, ItemClickEventArgs e)
         {
             _vm.OpenBucketCommand.Execute(e.ClickedItem);
+        }
+
+        private void CreateBucket_Click(object sender, RoutedEventArgs e)
+        {
+#if __ANDROID__
+            _vm.CreateBucketCommand.Execute(null);
+#endif
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+#if __ANDROID__
+            _vm.LogoutCommand.Execute(null);
+#endif
         }
     }
 }

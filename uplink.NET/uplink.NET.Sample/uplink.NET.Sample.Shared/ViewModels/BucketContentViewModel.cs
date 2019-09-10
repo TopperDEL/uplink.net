@@ -14,9 +14,9 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public class BucketContentViewModel : BaseViewModel
     {
-        public static Dictionary<string, UploadOperation> ActiveUploadOperations = new Dictionary<string, UploadOperation>();
+        public static Dictionary<string, List<UploadOperation>> ActiveUploadOperations = new Dictionary<string, List<UploadOperation>>();
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
-        public string BucketName { get; set; }
+        public string BucketName { get; private set; }
         public ICommand GoBackCommand { get; set; }
         public ICommand UploadFileCommand { get; set; }
 
@@ -25,7 +25,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         IStorjService _storjService;
         ILoginService _loginService;
 
-        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService, string bucketName)
+        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService)
         {
             Entries = new ObservableCollection<BucketEntryViewModel>();
 
@@ -33,18 +33,26 @@ namespace uplink.NET.Sample.Shared.ViewModels
             _bucketService = bucketService;
             _storjService = storjService;
             _loginService = loginService;
-            BucketName = bucketName;
 
             GoBackCommand = new GoBackCommand();
-            UploadFileCommand = new UploadFileCommand();
-
-            InitAsync();
-            DoneLoading();
         }
 
-        private async Task InitAsync()
+        public void SetBucketName(string bucketName)
         {
-            return;
+            BucketName = bucketName;
+            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService, BucketName);
+        }
+
+        public async Task Refresh()
+        {
+            Entries.Clear();
+            await InitAsync();
+        }
+
+        public async Task InitAsync()
+        {
+            StartLoading();
+
             //Load all options
             try
             {
@@ -54,7 +62,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {
-                    var entry = new BucketEntryViewModel();
+                    var entry = new BucketEntryViewModel(this);
                     entry.IsObject = true;
                     entry.ObjectInfo = obj;
                     Entries.Add(entry);
@@ -67,12 +75,17 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
 
             //Fetch all UploadOperations
-            foreach(var uploadOperation in ActiveUploadOperations.Where(u=>u.Key == BucketName))
+            var uploadOperations = (ActiveUploadOperations.Where(u => u.Key == BucketName)).FirstOrDefault();
+            if (uploadOperations.Value != null)
             {
-                var entry = new BucketEntryViewModel();
-                entry.IsUploadOperation = true;
-                entry.UploadOperation = uploadOperation.Value;
-                Entries.Add(entry);
+                foreach (var uploadOperation in uploadOperations.Value)
+                {
+                    var entry = new BucketEntryViewModel(this);
+                    entry.IsUploadOperation = true;
+                    entry.UploadOperation = uploadOperation;
+                    entry.InitUploadOperation();
+                    Entries.Add(entry);
+                }
             }
 
             DoneLoading();

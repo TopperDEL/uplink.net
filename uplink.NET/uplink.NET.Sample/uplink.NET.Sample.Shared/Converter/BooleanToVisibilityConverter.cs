@@ -10,7 +10,7 @@ namespace uplink.NET.Sample.Shared.Converter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if ((bool)value == true)
+            if (value != null && (bool)value == true)
                 return Visibility.Visible;
             else
                 return Visibility.Collapsed;
