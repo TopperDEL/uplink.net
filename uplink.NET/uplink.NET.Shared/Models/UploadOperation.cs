@@ -11,6 +11,11 @@ namespace uplink.NET.Models
     /// </summary>
     /// <param name="uploadOperation">The UploadOperation that changed</param>
     public delegate void UploadOperationProgressChanged(UploadOperation uploadOperation);
+    /// <summary>
+    /// Gets raised to inform about an ended UploadOperation.
+    /// </summary>
+    /// <param name="uploadOperation">The UploadOperation that ended</param>
+    public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public class UploadOperation : IDisposable
     {
         private byte[] _bytesToUpload;
@@ -26,6 +31,10 @@ namespace uplink.NET.Models
         /// Informs about upload-operation progress changes
         /// </summary>
         public event UploadOperationProgressChanged UploadOperationProgressChanged;
+        /// <summary>
+        /// Inform about a UploadOperation that ended (i.e. Completed, Failed or got Cancelled)
+        /// </summary>
+        public event UploadOperationEnded UploadOperationEnded;
         /// <summary>
         /// The - until now - sent bytes
         /// </summary>
@@ -55,6 +64,10 @@ namespace uplink.NET.Models
         /// Got the upload cancelled (by the user)?
         /// </summary>
         public bool Cancelled { get; set; }
+        /// <summary>
+        /// Is the upload currently in progress?
+        /// </summary>
+        public bool Running { get; set; }
         private string _errorMessage;
         /// <summary>
         /// The possible error - only filled if "Failed" is true.
@@ -110,6 +123,7 @@ namespace uplink.NET.Models
             {
                 if (_bytesToUpload != null)
                 {
+                    Running = true;
                     while (BytesSent < (ulong)_bytesToUpload.Length)
                     {
                         if ((ulong)_bytesToUpload.Length - BytesSent > 1024)
@@ -138,12 +152,16 @@ namespace uplink.NET.Models
                                 Cancelled = true;
                             else
                                 Failed = true;
+                            Running = false;
+                            UploadOperationEnded?.Invoke(this);
                             return;
                         }
                         UploadOperationProgressChanged?.Invoke(this);
                         if (!string.IsNullOrEmpty(_errorMessage))
                         {
                             Failed = true;
+                            Running = false;
+                            UploadOperationEnded?.Invoke(this);
                             return;
                         }
                     }
@@ -152,14 +170,20 @@ namespace uplink.NET.Models
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
                     Failed = true;
+                    Running = false;
+                    UploadOperationEnded?.Invoke(this);
                     return;
                 }
-
+                Running = false;
                 Completed = true;
-            }catch(Exception ex)
+                UploadOperationEnded?.Invoke(this);
+            }
+            catch(Exception ex)
             {
                 Failed = true;
+                Running = false;
                 _errorMessage = ex.Message;
+                UploadOperationEnded?.Invoke(this);
                 return;
             }
         }

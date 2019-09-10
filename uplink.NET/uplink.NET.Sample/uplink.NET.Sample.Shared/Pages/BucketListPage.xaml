@@ -29,7 +29,7 @@
             </AppBarButton>
         </CommandBar>
         <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
-            <ProgressRing IsActive="True" Grid.Row="1"/>
+            <ProgressRing IsActive="True"/>
         </StackPanel>
         <ListView ItemsSource="{x:Bind _vm.Buckets, Mode=OneWay}" ItemTemplate="{StaticResource BucketInfo}" MaxWidth="700"
                   ItemClick="ItemClicked" IsItemClickEnabled="True" SelectionMode="Single">
