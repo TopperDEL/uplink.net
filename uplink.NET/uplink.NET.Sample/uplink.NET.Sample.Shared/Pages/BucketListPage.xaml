@@ -17,12 +17,12 @@
             <CommandBar.Content>
                 <TextBlock Text="Your buckets" Foreground="White" FontSize="25" Margin="10,0"/>
             </CommandBar.Content>
-            <AppBarButton Label="Add bucket..." Foreground="White" Command="{x:Bind _vm.CreateBucketCommand}">
+            <AppBarButton Label="Add bucket..." Foreground="White" Command="{x:Bind _vm.CreateBucketCommand}" Click="CreateBucket_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Logout" Foreground="White" Command="{x:Bind _vm.LogoutCommand}">
+            <AppBarButton Label="Logout" Foreground="White" Command="{x:Bind _vm.LogoutCommand}" Click="Logout_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_logout.png"/>
                 </AppBarButton.Icon>

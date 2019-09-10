@@ -13,12 +13,12 @@
             <CommandBar.Content>
                 <TextBlock Text="{x:Bind _vm.BucketName}" Foreground="White" FontSize="25" Margin="10,0"/>
             </CommandBar.Content>
-            <AppBarButton Label="Add file..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" Click="AppBarButton_Click">
+            <AppBarButton Label="Add file..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" Click="UploadFile_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_add.png"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Back" Foreground="White" Command="{x:Bind _vm.GoBackCommand}">
+            <AppBarButton Label="Back" Foreground="White" Command="{x:Bind _vm.GoBackCommand}" Click="GoBack_Click">
                 <AppBarButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/storj_left.png"/>
                 </AppBarButton.Icon>
