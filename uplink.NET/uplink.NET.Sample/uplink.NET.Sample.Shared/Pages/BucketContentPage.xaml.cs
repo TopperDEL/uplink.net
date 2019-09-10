@@ -28,6 +28,7 @@ namespace uplink.NET.Sample.Shared.Pages
         public BucketContentPage()
         {
             this.InitializeComponent();
+            this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService, Factory.StorjService, Factory.LoginService);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -35,13 +36,21 @@ namespace uplink.NET.Sample.Shared.Pages
             base.OnNavigatedTo(e);
 
             BucketInfoViewModel bucketVM = e.Parameter as BucketInfoViewModel;
-            this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService,Factory.StorjService,Factory.LoginService, bucketVM.BucketInfo.Name);
+            _vm.SetBucketName(bucketVM.BucketInfo.Name);
+            _vm.InitAsync();
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private void UploadFile_Click(object sender, RoutedEventArgs e)
         {
 #if __ANDROID__
             _vm.UploadFileCommand.Execute(null);
+#endif
+        }
+
+        private void GoBack_Click(object sender, RoutedEventArgs e)
+        {
+#if __ANDROID__
+            _vm.GoBackCommand.Execute(null);
 #endif
         }
     }

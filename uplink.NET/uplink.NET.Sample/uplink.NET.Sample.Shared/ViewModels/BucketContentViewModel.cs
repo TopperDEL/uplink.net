@@ -16,7 +16,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
     {
         public static Dictionary<string, List<UploadOperation>> ActiveUploadOperations = new Dictionary<string, List<UploadOperation>>();
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
-        public string BucketName { get; set; }
+        public string BucketName { get; private set; }
         public ICommand GoBackCommand { get; set; }
         public ICommand UploadFileCommand { get; set; }
 
@@ -25,7 +25,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         IStorjService _storjService;
         ILoginService _loginService;
 
-        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService, string bucketName)
+        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService)
         {
             Entries = new ObservableCollection<BucketEntryViewModel>();
 
@@ -33,12 +33,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
             _bucketService = bucketService;
             _storjService = storjService;
             _loginService = loginService;
-            BucketName = bucketName;
 
             GoBackCommand = new GoBackCommand();
-            UploadFileCommand = new UploadFileCommand(this, objectService, bucketService, storjService, loginService, BucketName);
+        }
 
-            InitAsync();
+        public void SetBucketName(string bucketName)
+        {
+            BucketName = bucketName;
+            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService, BucketName);
         }
 
         public async Task Refresh()
@@ -47,7 +49,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             await InitAsync();
         }
 
-        private async Task InitAsync()
+        public async Task InitAsync()
         {
             StartLoading();
 
