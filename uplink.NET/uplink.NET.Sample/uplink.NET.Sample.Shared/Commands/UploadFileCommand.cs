@@ -41,6 +41,9 @@ namespace uplink.NET.Sample.Shared.Commands
         public async void Execute(object parameter)
         {
             var photo = await CrossMedia.Current.PickPhotoAsync();
+            if (photo == null)
+                return;
+
             var stream = photo.GetStream();
 
             var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, _bucketName, EncryptionAccess.FromPassphrase(_storjService.Project, _loginService.GetLoginData().Secret));
