@@ -20,8 +20,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public bool CanExecute(object parameter)
         {
-            var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
-            return frame.CanGoBack;
+            return true;
         }
 
         public void Execute(object parameter)
