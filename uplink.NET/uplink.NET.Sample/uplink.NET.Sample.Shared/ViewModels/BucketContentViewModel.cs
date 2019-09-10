@@ -14,7 +14,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public class BucketContentViewModel : BaseViewModel
     {
-        public static Dictionary<string, UploadOperation> ActiveUploadOperations = new Dictionary<string, UploadOperation>();
+        public static Dictionary<string, List<UploadOperation>> ActiveUploadOperations = new Dictionary<string, List<UploadOperation>>();
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
         public string BucketName { get; set; }
         public ICommand GoBackCommand { get; set; }
@@ -36,7 +36,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             BucketName = bucketName;
 
             GoBackCommand = new GoBackCommand();
-            UploadFileCommand = new UploadFileCommand();
+            UploadFileCommand = new UploadFileCommand(objectService, bucketService, storjService, loginService, BucketName);
 
             InitAsync();
             DoneLoading();
@@ -44,7 +44,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         private async Task InitAsync()
         {
-            return;
             //Load all options
             try
             {
@@ -67,11 +66,12 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
 
             //Fetch all UploadOperations
-            foreach(var uploadOperation in ActiveUploadOperations.Where(u=>u.Key == BucketName))
+            foreach(var uploadOperation in (ActiveUploadOperations.Where(u=>u.Key == BucketName)).FirstOrDefault().Value)
             {
                 var entry = new BucketEntryViewModel();
                 entry.IsUploadOperation = true;
-                entry.UploadOperation = uploadOperation.Value;
+                entry.UploadOperation = uploadOperation;
+                entry.InitUploadOperation();
                 Entries.Add(entry);
             }
 

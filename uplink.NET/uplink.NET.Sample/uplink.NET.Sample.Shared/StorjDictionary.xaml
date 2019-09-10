@@ -38,7 +38,7 @@
                 <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="{x:Bind UploadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
-                    <ProgressBar Value="{x:Bind UploadOperation.PercentageCompleted}" Minimum="0" Maximum="100"/>
+                    <ProgressBar Value="{x:Bind UploadOperation.PercentageCompleted, Mode=OneWay}" Minimum="0" Maximum="100"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

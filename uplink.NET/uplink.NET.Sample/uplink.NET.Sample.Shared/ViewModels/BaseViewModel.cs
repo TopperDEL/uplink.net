@@ -7,6 +7,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
+        public Windows.UI.Core.CoreDispatcher Dispatcher { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Loading { get; set; }
@@ -35,12 +36,15 @@ namespace uplink.NET.Sample.Shared.ViewModels
             RaiseChanged(nameof(Loaded));
         }
 
-        protected void RaiseChanged(string propertyName)
+        protected async void RaiseChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                }
+            });
         }
     }
 }
