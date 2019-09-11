@@ -7,6 +7,8 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
+        public static Windows.UI.Core.CoreDispatcher DispatcherToUse = null; //Hack to support Uno.Android
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Loading { get; set; }
@@ -37,20 +39,26 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         protected async void RaiseChanged(string propertyName)
         {
-#if __ANDROID__
-            if (PropertyChanged != null)
+            if (DispatcherToUse != null)
             {
-                PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-#else
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
-            {
-                if (PropertyChanged != null)
+                await DispatcherToUse.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                 {
-                    PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-                }
-            });
-#endif
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                    }
+                });
+            }
+            else
+            {
+                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                {
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                    }
+                });
+            }
         }
     }
 }

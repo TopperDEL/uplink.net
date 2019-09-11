@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using uplink.NET.Sample.Shared.Pages;
+using uplink.NET.Sample.Shared.ViewModels;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -68,6 +69,8 @@ namespace uplink.NET.Sample
                 // Place the frame in the current Window
                 Windows.UI.Xaml.Window.Current.Content = rootFrame;
             }
+
+            BaseViewModel.DispatcherToUse = Windows.UI.Xaml.Window.Current.Dispatcher; //Hack to support Uno.Android
 
             if (e.PrelaunchActivated == false)
             {
