@@ -12,7 +12,7 @@ If you want to help out, check the open issues, create some or open a PR.
 ## Use
 
 Search for "[uplink.NET](https://www.nuget.org/packages/uplink.NET)" on Nuget and install the latest version into your project.
-The wiki with tutorials is currently under development.
+See the [wiki](https://github.com/TopperDEL/uplink.net/wiki) for details how to use the library.
 
 ## Build
 
