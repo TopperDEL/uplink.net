@@ -18,13 +18,14 @@ namespace uplink.NET.Models
         /// Creates an Uplink-Instance
         /// </summary>
         /// <param name="uplinkConfig">The UplinkConfig to use</param>
-        public Uplink(UplinkConfig uplinkConfig)
+        /// <param name="tempDir">The temp directory to use - must be set on Android!</param>
+        public Uplink(UplinkConfig uplinkConfig, string tempDir = "inmemory")
         {
             string error;
 
             _uplinkConfig = new SWIG.UplinkConfig();
             _uplinkConfig.Volatile.tls.skip_peer_ca_whitelist = uplinkConfig.Volatile_TLS_SkipPeerCAWhitelist;
-            _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, out error);
+            _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, out error, tempDir);
 
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);

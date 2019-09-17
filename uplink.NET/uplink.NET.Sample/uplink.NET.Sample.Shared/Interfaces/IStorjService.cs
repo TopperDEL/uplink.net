@@ -11,7 +11,8 @@ namespace uplink.NET.Sample.Shared.Interfaces
         uplink.NET.Models.Project Project { get; }
         uplink.NET.Models.APIKey APIKey { get; }
         bool IsInitialized { get; }
+        uplink.NET.Models.EncryptionAccess EncryptionAccess { get; }
 
-        Task<bool> InitializeAsync(string APIKey, string satellite);
+        Task<bool> InitializeAsync(string APIKey, string satellite, string secret);
     }
 }

@@ -83,7 +83,7 @@ namespace uplink.NET.Sample
                     {
                         //ToDo: This could go better:
                         var loginData = Shared.Services.Factory.LoginService.GetLoginData();
-                        var storjTask = Shared.Services.Factory.StorjService.InitializeAsync(loginData.APIKey, loginData.Satellite);
+                        var storjTask = Shared.Services.Factory.StorjService.InitializeAsync(loginData.APIKey, loginData.Satellite, loginData.Secret);
                         storjTask.Wait();
                         var initialized = storjTask.Result;
                         if(initialized)

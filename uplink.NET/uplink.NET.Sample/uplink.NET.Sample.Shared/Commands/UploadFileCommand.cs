@@ -46,7 +46,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             var stream = photo.GetStream();
 
-            var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, _bucketName, EncryptionAccess.FromPassphrase(_storjService.Project, _loginService.GetLoginData().Secret));
+            var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, _bucketName, _storjService.EncryptionAccess);
             var uploadOptions = new UploadOptions();
             uploadOptions.Expires = DateTime.MaxValue;
             byte[] bytes = new byte[stream.Length];
@@ -60,7 +60,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 list.Add(uploadOperation);
                 BucketContentViewModel.ActiveUploadOperations.Add(_bucketName, list);
             }
-            await _senderView.Refresh();//Todo: find a better way to refresh view - this has too much load
+            _senderView.AddUploadOperation(uploadOperation);
         }
     }
 }

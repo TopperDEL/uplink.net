@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Plugin.CurrentActivity;
+using uplink.NET.Sample.Shared.Services;
 using Windows.UI.Xaml.Media;
 
 namespace uplink.NET.Sample.Droid
@@ -32,6 +33,7 @@ namespace uplink.NET.Sample.Droid
         public override void OnCreate()
         {
             base.OnCreate();
+            StorjService.TempDir = CacheDir.AbsolutePath;
             CrossCurrentActivity.Current.Init(this);
         }
         

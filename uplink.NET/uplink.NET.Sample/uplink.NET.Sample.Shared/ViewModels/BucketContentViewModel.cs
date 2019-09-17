@@ -43,6 +43,15 @@ namespace uplink.NET.Sample.Shared.ViewModels
             UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService, BucketName);
         }
 
+        public void AddUploadOperation(UploadOperation uploadOperation)
+        {
+            var entry = new BucketEntryViewModel(this);
+            entry.IsUploadOperation = true;
+            entry.UploadOperation = uploadOperation;
+            entry.InitUploadOperation();
+            Entries.Add(entry);
+        }
+
         public async Task Refresh()
         {
             Entries.Clear();
@@ -56,9 +65,9 @@ namespace uplink.NET.Sample.Shared.ViewModels
             //Load all options
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, EncryptionAccess.FromPassphrase(_storjService.Project, _loginService.GetLoginData().Secret));
+                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, _storjService.EncryptionAccess);
                 var listOptions = new ListOptions();
-                listOptions.Direction = ListDirection.STORJ_FORWARD;
+                listOptions.Direction = ListDirection.STORJ_AFTER;
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {
@@ -82,11 +91,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
                 {
                     if (!uploadOperation.Completed)
                     {
-                        var entry = new BucketEntryViewModel(this);
-                        entry.IsUploadOperation = true;
-                        entry.UploadOperation = uploadOperation;
-                        entry.InitUploadOperation();
-                        Entries.Add(entry);
+                        AddUploadOperation(uploadOperation);
                     }
                 }
             }

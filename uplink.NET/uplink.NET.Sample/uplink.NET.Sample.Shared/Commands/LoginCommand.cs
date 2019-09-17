@@ -33,7 +33,7 @@ namespace uplink.NET.Sample.Shared.Commands
             if (loggedIn)
             {
                 var storj = Factory.StorjService;
-                var initialized = await storj.InitializeAsync(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite);
+                var initialized = await storj.InitializeAsync(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
 
                 if (initialized)
                 {
