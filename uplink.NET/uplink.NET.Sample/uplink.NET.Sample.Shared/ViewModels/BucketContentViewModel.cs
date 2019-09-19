@@ -54,8 +54,11 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public async Task Refresh()
         {
-            Entries.Clear();
-            await InitAsync();
+            await InvokeAsync(async () =>
+            {
+                Entries.Clear();
+                await InitAsync();
+            });
         }
 
         public async Task InitAsync()
