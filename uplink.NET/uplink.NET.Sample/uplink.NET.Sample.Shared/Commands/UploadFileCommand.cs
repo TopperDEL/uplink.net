@@ -40,18 +40,21 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public async void Execute(object parameter)
         {
-            var photo = await CrossMedia.Current.PickPhotoAsync();
-            if (photo == null)
+            var galleryObject = await CrossMedia.Current.PickVideoAsync();
+            if (galleryObject == null)
                 return;
 
-            var stream = photo.GetStream();
+            Uri file = new Uri(galleryObject.AlbumPath);
+            var filename = System.IO.Path.GetFileName(file.LocalPath);
+
+            var stream = galleryObject.GetStream();
 
             var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, _bucketName, _storjService.EncryptionAccess);
             var uploadOptions = new UploadOptions();
             uploadOptions.Expires = DateTime.MaxValue;
             byte[] bytes = new byte[stream.Length];
             stream.Read(bytes, 0, (int)stream.Length);
-            var uploadOperation = await _objectService.UploadObjectAsync(bucket, Guid.NewGuid().ToString() + ".jpg", uploadOptions, bytes, true);
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, filename, uploadOptions, bytes, true);
             if (BucketContentViewModel.ActiveUploadOperations.ContainsKey(_bucketName))
                 BucketContentViewModel.ActiveUploadOperations[_bucketName].Add(uploadOperation);
             else
