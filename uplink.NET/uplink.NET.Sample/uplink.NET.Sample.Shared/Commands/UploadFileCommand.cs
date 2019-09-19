@@ -35,7 +35,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public bool CanExecute(object parameter)
         {
-            bool selectVideo = Convert.ToBoolean(parameter);
+            bool selectVideo = (string)parameter == "Video" ? true : false;
 
             if (selectVideo)
                 return CrossMedia.Current.IsPickVideoSupported;
@@ -45,7 +45,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public async void Execute(object parameter)
         {
-            bool selectVideo = Convert.ToBoolean(parameter);
+            bool selectVideo = (string)parameter == "Video" ? true : false;
 
             Plugin.Media.Abstractions.MediaFile galleryObject;
 
