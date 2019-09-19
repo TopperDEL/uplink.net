@@ -82,7 +82,9 @@ namespace uplink.NET.Models
         /// <summary>
         /// The percentage of completeness
         /// </summary>
-        public float PercentageCompleted { get
+        public float PercentageCompleted
+        {
+            get
             {
                 return (float)BytesSent / (float)TotalBytes * 100f;
             }
@@ -101,7 +103,7 @@ namespace uplink.NET.Models
         /// <returns></returns>
         public Task StartUploadAsync()
         {
-            if(Completed || Failed || Cancelled)
+            if (Completed || Failed || Cancelled)
                 return null;
 
             if (_uploadTask == null)
@@ -126,24 +128,21 @@ namespace uplink.NET.Models
                     Running = true;
                     while (BytesSent < (ulong)_bytesToUpload.Length)
                     {
-                        if ((ulong)_bytesToUpload.Length - BytesSent > 1024)
+                        var tenth = _bytesToUpload.Length / 10;
+                        if ((ulong)_bytesToUpload.Length - BytesSent > (ulong)tenth)
                         {
-                            //Send 1024 bytes in next batch
-                            var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take(1024).ToArray(), 1024, out _errorMessage);
-                            if (sent != 1024 && string.IsNullOrEmpty(_errorMessage))
-                                continue; //try again?
-                            if (sent == 1024)
-                                BytesSent += 1024;
+                            //Send next bytes in batch
+                            var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take(tenth).ToArray(), (uint)tenth, out _errorMessage);
+                            if (sent != 0 && string.IsNullOrEmpty(_errorMessage))
+                                BytesSent += sent;
                         }
                         else
                         {
                             //Send only the remaining bytes
                             var remaining = (ulong)_bytesToUpload.Length - BytesSent;
                             var sent = SWIG.storj_uplink.upload_write(_uploaderRef, _bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), (uint)remaining, out _errorMessage);
-                            if (sent != remaining && string.IsNullOrEmpty(_errorMessage))
-                                continue; //try again?
-                            if (sent == remaining)
-                                BytesSent += remaining;
+                            if (sent != 0 && string.IsNullOrEmpty(_errorMessage))
+                                BytesSent += sent;
                         }
                         if (_cancelled)
                         {
@@ -178,7 +177,7 @@ namespace uplink.NET.Models
                 Completed = true;
                 UploadOperationEnded?.Invoke(this);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Failed = true;
                 Running = false;
@@ -190,7 +189,7 @@ namespace uplink.NET.Models
 
         public void Dispose()
         {
-            if(_uploaderRef!= null)
+            if (_uploaderRef != null)
             {
                 SWIG.storj_uplink.free_uploader(_uploaderRef);
                 _uploaderRef = null;
