@@ -35,12 +35,25 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            bool selectVideo = Convert.ToBoolean(parameter);
+
+            if (selectVideo)
+                return CrossMedia.Current.IsPickVideoSupported;
+            else
+                return CrossMedia.Current.IsPickPhotoSupported;
         }
 
         public async void Execute(object parameter)
         {
-            var galleryObject = await CrossMedia.Current.PickVideoAsync();
+            bool selectVideo = Convert.ToBoolean(parameter);
+
+            Plugin.Media.Abstractions.MediaFile galleryObject;
+
+            if (selectVideo)
+                galleryObject = await CrossMedia.Current.PickVideoAsync();
+            else
+                galleryObject = await CrossMedia.Current.PickPhotoAsync();
+
             if (galleryObject == null)
                 return;
 

@@ -88,6 +88,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storjlogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_photo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_video.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
