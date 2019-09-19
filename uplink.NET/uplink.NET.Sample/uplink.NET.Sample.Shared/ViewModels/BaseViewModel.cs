@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace uplink.NET.Sample.Shared.ViewModels
 {
@@ -37,28 +38,27 @@ namespace uplink.NET.Sample.Shared.ViewModels
             RaiseChanged(nameof(Loaded));
         }
 
-        protected async void RaiseChanged(string propertyName)
+        protected async Task InvokeAsync(Action actionToInvoke)
         {
             if (DispatcherToUse != null)
             {
                 await DispatcherToUse.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                 {
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-                    }
+                    actionToInvoke();
                 });
             }
             else
             {
                 await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                 {
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-                    }
+                    actionToInvoke();
                 });
             }
+        }
+
+        protected async void RaiseChanged(string propertyName)
+        {
+            await InvokeAsync(() => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName)));
         }
     }
 }

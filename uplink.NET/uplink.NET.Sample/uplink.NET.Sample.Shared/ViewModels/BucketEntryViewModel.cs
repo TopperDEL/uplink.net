@@ -29,14 +29,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
             UploadOperation.UploadOperationEnded += UploadOperation_UploadOperationEnded;
         }
 
-        private void UploadOperation_UploadOperationEnded(UploadOperation uploadOperation)
+        private async void UploadOperation_UploadOperationEnded(UploadOperation uploadOperation)
         {
             UploadOperation.UploadOperationProgressChanged -= UploadOperation_UploadOperationProgressChanged;
             UploadOperation.UploadOperationEnded -= UploadOperation_UploadOperationEnded;
             if(uploadOperation.Completed)
             {
                 BucketContentViewModel.ActiveUploadOperations[_bucketContentViewModel.BucketName].Remove(uploadOperation);
-                _bucketContentViewModel.Refresh();
+                await _bucketContentViewModel.Refresh();
             }
             else
             {
