@@ -7,6 +7,8 @@ git clone https://github.com/storj/storj.git
 echo *** Folder "storj" already there - using it.
 )
 
+set /p DUMMY=You may alter the storj-library now. Otherwise or if you're ready: hit ENTER to continue...
+
 echo *** Copying necessary files
 copy .\uplink.net\SWIG\*.i .\storj\lib\uplinkc\ /Y
 copy .\uplink.net\GO\*.go .\storj\lib\uplinkc\ /Y
