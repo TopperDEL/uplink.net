@@ -35,6 +35,9 @@ namespace uplink.NET.Models
             string error;
 
             var key = SWIG.storj_uplink.project_salted_key_from_passphrase(project._projectRef, secret, out error);
+            if (!string.IsNullOrEmpty(error))
+                throw new ArgumentException(error);
+
             access._handle = SWIG.storj_uplink.new_encryption_access_with_default_key2(key);
 
             return access;
