@@ -41,9 +41,9 @@
                 <BitmapIcon UriSource="ms-appx:///Assets/storj_file_upload.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="{x:Bind UploadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
-                    <ProgressBar Value="{x:Bind UploadOperation.PercentageCompleted, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
-                                 ShowError="{x:Bind UploadOperation.Failed, Mode=OneWay}"
-                                 Visibility="{x:Bind UploadOperation.Running, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <ProgressBar Value="{x:Bind UploadPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
+                                 ShowError="{x:Bind UploadFailed, Mode=OneWay}"
+                                 Visibility="{x:Bind UploadRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
                 <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelUploadCommand}" CommandParameter="{Binding}"/>
             </StackPanel>

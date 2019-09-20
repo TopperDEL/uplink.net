@@ -25,6 +25,42 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand DeleteObjectCommand { get; private set; }
         public ICommand CancelUploadCommand { get; private set; }
 
+        #region Hacks
+        //TODO
+        //The following properties are only implemented to work on android.
+        //There seems to be an issue refreshing "nested" properties.
+        public float UploadPercentage { get
+            {
+                if (UploadOperation != null)
+                    return UploadOperation.PercentageCompleted;
+                else
+                    return 0;
+            }
+        }
+
+        public bool UploadRunning
+        {
+            get
+            {
+                if (UploadOperation != null)
+                    return UploadOperation.Running;
+                else
+                    return false;
+            }
+        }
+
+        public bool UploadFailed
+        {
+            get
+            {
+                if (UploadOperation != null)
+                    return UploadOperation.Failed;
+                else
+                    return false;
+            }
+        }
+        #endregion
+
         public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService, IStorjService storjService)
         {
             _bucketContentViewModel = bucketContentViewModel;
@@ -51,12 +87,18 @@ namespace uplink.NET.Sample.Shared.ViewModels
             else
             {
                 RaiseChanged(nameof(UploadOperation));
+                RaiseChanged(nameof(UploadPercentage));
+                RaiseChanged(nameof(UploadFailed));
+                RaiseChanged(nameof(UploadRunning));
             }
         }
 
         private void UploadOperation_UploadOperationProgressChanged(UploadOperation uploadOperation)
         {
             RaiseChanged(nameof(UploadOperation));
+            RaiseChanged(nameof(UploadPercentage));
+            RaiseChanged(nameof(UploadFailed));
+            RaiseChanged(nameof(UploadRunning));
         }
     }
 }
