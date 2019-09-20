@@ -40,10 +40,17 @@ namespace uplink.NET.Sample.Shared.Pages
             _vm.InitAsync();
         }
 
-        private void UploadFile_Click(object sender, RoutedEventArgs e)
+        private void UploadPhoto_Click(object sender, RoutedEventArgs e)
         {
 #if __ANDROID__
-            _vm.UploadFileCommand.Execute(null);
+            _vm.UploadFileCommand.Execute("Photo");
+#endif
+        }
+
+        private void UploadVideo_Click(object sender, RoutedEventArgs e)
+        {
+#if __ANDROID__
+            _vm.UploadFileCommand.Execute("Video");
 #endif
         }
 

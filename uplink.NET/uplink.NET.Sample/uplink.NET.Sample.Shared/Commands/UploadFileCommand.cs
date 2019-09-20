@@ -57,7 +57,7 @@ namespace uplink.NET.Sample.Shared.Commands
             if (galleryObject == null)
                 return;
 
-            Uri file = new Uri(galleryObject.AlbumPath);
+            Uri file = new Uri(galleryObject.Path);
             var filename = System.IO.Path.GetFileName(file.LocalPath);
 
             var stream = galleryObject.GetStream();

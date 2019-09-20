@@ -14,7 +14,7 @@
     <SolidColorBrush Color="#2683ff" x:Name="StorjBlue"/>
 
     <DataTemplate x:Key="BucketInfo" x:DataType="viewmodels:BucketInfoViewModel">
-        <StackPanel Orientation="Horizontal" MinWidth="500">
+        <StackPanel Orientation="Horizontal">
             <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">
                 <TextBlock Text="{x:Bind BucketInfo.Name}" Foreground="{StaticResource StorjBlue}"/>
@@ -25,7 +25,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="ObjectInfo" x:DataType="viewmodels:BucketEntryViewModel">
-        <StackPanel Orientation="Horizontal" MinWidth="500">
+        <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsObject, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <BitmapIcon UriSource="ms-appx:///Assets/storj_file.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center">
@@ -38,13 +38,14 @@
                 <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteObjectCommand}" CommandParameter="{Binding}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsUploadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_file_upload.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="{x:Bind UploadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
                     <ProgressBar Value="{x:Bind UploadOperation.PercentageCompleted, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
                                  ShowError="{x:Bind UploadOperation.Failed, Mode=OneWay}"
                                  Visibility="{x:Bind UploadOperation.Running, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
+                <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelUploadCommand}" CommandParameter="{Binding}"/>
             </StackPanel>
         </StackPanel>
     </DataTemplate>
