@@ -11,14 +11,14 @@ using Windows.UI.Xaml.Controls;
 
 namespace uplink.NET.Sample.Shared.Commands
 {
-    public class DeleteObjectCommand : ICommand
+    public class CancelUploadCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
         IBucketService _bucketService;
         IObjectService _objectService;
         IStorjService _storjService;
 
-        public DeleteObjectCommand(IBucketService bucketService, IObjectService objectService, IStorjService storjService)
+        public CancelUploadCommand(IBucketService bucketService, IObjectService objectService, IStorjService storjService)
         {
             _bucketService = bucketService;
             _objectService = objectService;
@@ -34,27 +34,25 @@ namespace uplink.NET.Sample.Shared.Commands
         {
             BucketEntryViewModel bucketEntryVM = parameter as BucketEntryViewModel;
 
-            ContentDialog deleteObjectDialog = new ContentDialog
+            ContentDialog cancelObjectUploadDialog = new ContentDialog
             {
-                Title = "Delete '" + bucketEntryVM.ObjectInfo.Path + "'",
-                Content = "Do you really want to delete the object '" + bucketEntryVM.ObjectInfo.Path + "' ?",
+                Title = "Cancel '" + bucketEntryVM.UploadOperation.ObjectName + "'",
+                Content = "Do you really want to cancel the upload of '" + bucketEntryVM.UploadOperation.ObjectName + "' ?",
                 CloseButtonText = "No",
                 PrimaryButtonText = "Yes"
             };
 
-            ContentDialogResult result = await deleteObjectDialog.ShowAsync();
+            ContentDialogResult result = await cancelObjectUploadDialog.ShowAsync();
             if (result != ContentDialogResult.Primary)
                 return;
+            bucketEntryVM.UploadOperation.Cancel();
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, bucketEntryVM._bucketContentViewModel.BucketName, _storjService.EncryptionAccess);
-                await _objectService.DeleteObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path);
+                BucketContentViewModel.ActiveUploadOperations[bucketEntryVM._bucketContentViewModel.BucketName].Remove(bucketEntryVM.UploadOperation);
             }
-            catch (Exception ex)
+            catch
             {
-                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Could not delete object - " + ex.Message);
-                await dialog.ShowAsync();
-                return;
+                //Ignore any error
             }
 
             await bucketEntryVM._bucketContentViewModel.RefreshAsync();

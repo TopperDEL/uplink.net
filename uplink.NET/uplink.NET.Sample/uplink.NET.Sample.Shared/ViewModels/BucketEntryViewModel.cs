@@ -23,12 +23,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public BucketContentViewModel _bucketContentViewModel;
 
         public ICommand DeleteObjectCommand { get; private set; }
+        public ICommand CancelUploadCommand { get; private set; }
 
         public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService, IStorjService storjService)
         {
             _bucketContentViewModel = bucketContentViewModel;
 
             DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
+            CancelUploadCommand = new CancelUploadCommand(bucketService, objectService, storjService);
         }
 
         public void InitUploadOperation()

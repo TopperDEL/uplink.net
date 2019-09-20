@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelUploadCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteObjectCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />
@@ -81,6 +82,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_add.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LockScreenLogo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_download.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_upload.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_folder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_left.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-200.png" />
