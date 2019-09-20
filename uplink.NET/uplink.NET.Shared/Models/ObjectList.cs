@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace uplink.NET.Models
 {
@@ -43,6 +44,7 @@ namespace uplink.NET.Models
                 ret.Items.Add(ObjectInfo.FromSWIG(SWIG.storj_uplink.get_objectinfo_at(original, i), false));
             }
 
+            ret.Items = ret.Items.OrderBy(i => i.Path).ToList();
             //ToDo: check why it fails - SWIG.storj_uplink.free_list_objects(original);
 
             return ret;

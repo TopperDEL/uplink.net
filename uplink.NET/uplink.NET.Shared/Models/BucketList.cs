@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace uplink.NET.Models
 {
@@ -32,6 +33,8 @@ namespace uplink.NET.Models
             {
                 ret.Items.Add(BucketInfo.FromSWIG(SWIG.storj_uplink.get_bucketinfo_at(original, i), false));
             }
+
+            ret.Items = ret.Items.OrderBy(i => i.Name).ToList();
 
             SWIG.storj_uplink.free_bucket_list(original);
 
