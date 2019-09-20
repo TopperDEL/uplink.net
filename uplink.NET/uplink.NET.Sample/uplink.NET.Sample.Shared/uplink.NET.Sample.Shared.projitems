@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteObjectCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\OpenBucketCommand.cs" />
@@ -79,15 +80,16 @@
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_add.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_folder.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_left.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_logout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storjlogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_logout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_photo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_video.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-200.png" />

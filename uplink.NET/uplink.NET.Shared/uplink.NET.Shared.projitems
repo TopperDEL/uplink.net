@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\BucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ObjectService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SizeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\APIKeyRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketInfo.cs" />
