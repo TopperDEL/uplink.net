@@ -45,6 +45,16 @@ namespace uplink.NET.Models
         /// The expiration date
         /// </summary>
         public DateTime Expires { get; set; }
+        /// <summary>
+        /// Returns the object-size as a size-string with KB, MB and so on...
+        /// </summary>
+        public string GetSizeString
+        {
+            get
+            {
+                return SizeHelper.ToFileSize(Size);
+            }
+        }
 
         internal static ObjectInfo FromSWIG(SWIG.ObjectInfo original, bool disposeObjectInfo = true)
         {

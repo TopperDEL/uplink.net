@@ -45,14 +45,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public void AddUploadOperation(UploadOperation uploadOperation)
         {
-            var entry = new BucketEntryViewModel(this);
+            var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
             entry.IsUploadOperation = true;
             entry.UploadOperation = uploadOperation;
             entry.InitUploadOperation();
             Entries.Add(entry);
         }
 
-        public async Task Refresh()
+        public async Task RefreshAsync()
         {
             await InvokeAsync(async () =>
             {
@@ -74,7 +74,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {
-                    var entry = new BucketEntryViewModel(this);
+                    var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
                     entry.IsObject = true;
                     entry.ObjectInfo = obj;
                     Entries.Add(entry);

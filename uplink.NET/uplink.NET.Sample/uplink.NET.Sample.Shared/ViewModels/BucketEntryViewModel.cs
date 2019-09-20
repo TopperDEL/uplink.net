@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
+using uplink.NET.Interfaces;
 using uplink.NET.Models;
+using uplink.NET.Sample.Shared.Commands;
+using uplink.NET.Sample.Shared.Interfaces;
 
 namespace uplink.NET.Sample.Shared.ViewModels
 {
@@ -18,9 +22,13 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public BucketContentViewModel _bucketContentViewModel;
 
-        public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel)
+        public ICommand DeleteObjectCommand { get; private set; }
+
+        public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService, IStorjService storjService)
         {
             _bucketContentViewModel = bucketContentViewModel;
+
+            DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
         }
 
         public void InitUploadOperation()
@@ -36,7 +44,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             if(uploadOperation.Completed)
             {
                 BucketContentViewModel.ActiveUploadOperations[_bucketContentViewModel.BucketName].Remove(uploadOperation);
-                await _bucketContentViewModel.Refresh();
+                await _bucketContentViewModel.RefreshAsync();
             }
             else
             {

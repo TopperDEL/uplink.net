@@ -7,6 +7,7 @@ using uplink.NET.Sample.Shared.Interfaces;
 using uplink.NET.Sample.Shared.Pages;
 using uplink.NET.Sample.Shared.Services;
 using uplink.NET.Sample.Shared.ViewModels;
+using Windows.UI.Xaml.Controls;
 
 namespace uplink.NET.Sample.Shared.Commands
 {
@@ -29,8 +30,20 @@ namespace uplink.NET.Sample.Shared.Commands
 
         public async void Execute(object parameter)
         {
-            //ToDo: Ask for deletion
             BucketInfoViewModel bucketInfoVM = parameter as BucketInfoViewModel;
+
+            ContentDialog deleteBucketDialog = new ContentDialog
+            {
+                Title = "Delete '" + bucketInfoVM.BucketInfo.Name + "'",
+                Content = "Do you really want to delete the bucket '" + bucketInfoVM.BucketInfo.Name + "' and ALL IT's CONTENT?",
+                CloseButtonText = "No",
+                PrimaryButtonText = "Yes"
+            };
+
+            ContentDialogResult result = await deleteBucketDialog.ShowAsync();
+            if (result != ContentDialogResult.Primary)
+                return;
+
             try
             {
                 await _bucketService.DeleteBucketAsync(_storjService.Project, bucketInfoVM.BucketInfo.Name);
