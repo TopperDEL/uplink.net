@@ -2,7 +2,7 @@
 cd ..
 IF NOT EXIST "storj\" (
 echo *** Cloning storj
-git clone https://github.com/storj/storj.git
+git clone --branch v0.21.2 https://github.com/storj/storj.git
 ) else (
 echo *** Folder "storj" already there - using it.
 )
