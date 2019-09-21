@@ -13,7 +13,8 @@
             <StackPanel Margin="10,10,10,0" Padding="10,10,10,0">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Bucket-Name" Foreground="{StaticResource StorjColor}"/>
-                    <TextBox x:Name="BucketName" Text="{x:Bind _vm.BucketName, Mode=TwoWay}" BorderBrush="{StaticResource StorjColor}"/>
+                    <TextBox x:Name="BucketName" Text="{x:Bind _vm.BucketName, Mode=TwoWay}" BorderBrush="{StaticResource StorjColor}"
+                             CharacterCasing="Lower"/>
                 </StackPanel>
             </StackPanel>
             <StackPanel Margin="0,10" HorizontalAlignment="Center" Orientation="Horizontal">
