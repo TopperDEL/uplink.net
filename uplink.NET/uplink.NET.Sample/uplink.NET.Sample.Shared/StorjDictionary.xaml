@@ -45,8 +45,11 @@
                     <ProgressBar Value="{x:Bind UploadPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
                                  ShowError="{x:Bind UploadFailed, Mode=OneWay}"
                                  Visibility="{x:Bind UploadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Upload failed!" Foreground="Red" Visibility="{x:Bind UploadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                 </StackPanel>
                 <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelUploadCommand}" CommandParameter="{Binding}"/>
+                <Button Content="Show error" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind ShowErrorCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind UploadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsDownloadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <BitmapIcon UriSource="ms-appx:///Assets/storj_file_download.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
@@ -56,11 +59,13 @@
                                  ShowError="{x:Bind DownloadFailed, Mode=OneWay}"
                                  Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                     <TextBlock Text="Download complete!" Foreground="DarkGreen" Visibility="{x:Bind DownloadComplete, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
-                    <TextBlock Text="Download failed!" Foreground="DarkRed" Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Download failed!" Foreground="Red" Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                     <TextBlock Text="Cancelled by user" Foreground="DarkOrange" Visibility="{x:Bind DownloadCancelled, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                 </StackPanel>
                 <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelDownloadCommand}" CommandParameter="{Binding}"
                         Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                <Button Content="Show error" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind ShowErrorCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
     </DataTemplate>

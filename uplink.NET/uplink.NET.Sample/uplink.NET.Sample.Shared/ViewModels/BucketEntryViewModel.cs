@@ -26,6 +26,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand DeleteObjectCommand { get; private set; }
         public ICommand CancelUploadCommand { get; private set; }
         public ICommand CancelDownloadCommand { get; private set; }
+        public ICommand ShowErrorCommand { get; private set; }
 
         #region Hacks
         //TODO
@@ -126,6 +127,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
             CancelUploadCommand = new CancelUploadCommand(bucketService, objectService, storjService);
             CancelDownloadCommand = new CancelDownloadCommand(bucketService, objectService, storjService);
+            ShowErrorCommand = new ShowErrorCommand();
         }
         public void InitDownloadOperation()
         {
@@ -133,7 +135,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             DownloadOperation.DownloadOperationEnded += DownloadOperation_DownloadOperationEnded;
         }
 
-        private async void DownloadOperation_DownloadOperationEnded(DownloadOperation downloadOperation)
+        private void DownloadOperation_DownloadOperationEnded(DownloadOperation downloadOperation)
         {
             DownloadOperation.DownloadOperationProgressChanged -= DownloadOperation_DownloadOperationProgressChanged;
             DownloadOperation.DownloadOperationEnded -= DownloadOperation_DownloadOperationEnded;
