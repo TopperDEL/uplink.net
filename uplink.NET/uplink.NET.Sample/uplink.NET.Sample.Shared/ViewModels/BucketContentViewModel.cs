@@ -36,12 +36,13 @@ namespace uplink.NET.Sample.Shared.ViewModels
             _loginService = loginService;
 
             GoBackCommand = new GoBackCommand();
+            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService);
         }
 
         public void SetBucketName(string bucketName)
         {
             BucketName = bucketName;
-            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService, BucketName);
+            ((UploadFileCommand)UploadFileCommand).BucketName = BucketName;
         }
 
         public void AddUploadOperation(UploadOperation uploadOperation)
