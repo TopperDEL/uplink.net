@@ -29,7 +29,7 @@ namespace uplink.NET.Sample.Shared.Services
                 Uplink = new NET.Models.Uplink(uplinkConfig, TempDir);
                 APIKey = new NET.Models.APIKey(apiKey);
                 Project = new NET.Models.Project(Uplink, APIKey, satellite);
-                EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret.Trim());
+                EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);
             }
             catch
             {
