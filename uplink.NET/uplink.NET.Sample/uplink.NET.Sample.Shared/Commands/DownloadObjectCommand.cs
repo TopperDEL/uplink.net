@@ -72,16 +72,6 @@ namespace uplink.NET.Sample.Shared.Commands
                     {
                         await Windows.Storage.FileIO.WriteBytesAsync(file, operation.DownloadedBytes);
                         var status = await CachedFileManager.CompleteUpdatesAsync(file);
-                        //if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
-                        //{
-                        //    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("File downloaded: '" + bucketEntryVM.ObjectInfo.Path + "'");
-                        //    await dialog.ShowAsync();
-                        //}
-                        //else
-                        //{
-                        //    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Error downloading '" + bucketEntryVM.ObjectInfo.Path + "'");
-                        //    await dialog.ShowAsync();
-                        //}
                     }
                 };
                 if (BucketContentViewModel.ActiveDownloadOperations.ContainsKey(_bucketName))
