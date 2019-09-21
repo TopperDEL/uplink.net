@@ -21,16 +21,15 @@ namespace uplink.NET.Sample.Shared.Commands
         IBucketService _bucketService;
         IStorjService _storjService;
         ILoginService _loginService;
-        string _bucketName;
+        public string BucketName { get; set; }
 
-        public UploadFileCommand(BucketContentViewModel senderView, IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService, string bucketName)
+        public UploadFileCommand(BucketContentViewModel senderView, IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService)
         {
             _senderView = senderView;
             _objectService = objectService;
             _bucketService = bucketService;
             _storjService = storjService;
             _loginService = loginService;
-            _bucketName = bucketName;
         }
 
         public bool CanExecute(object parameter)
@@ -62,19 +61,19 @@ namespace uplink.NET.Sample.Shared.Commands
 
             var stream = galleryObject.GetStream();
 
-            var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, _bucketName, _storjService.EncryptionAccess);
+            var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, _storjService.EncryptionAccess);
             var uploadOptions = new UploadOptions();
             uploadOptions.Expires = DateTime.MaxValue;
             byte[] bytes = new byte[stream.Length];
             stream.Read(bytes, 0, (int)stream.Length);
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, filename, uploadOptions, bytes, true);
-            if (BucketContentViewModel.ActiveUploadOperations.ContainsKey(_bucketName))
-                BucketContentViewModel.ActiveUploadOperations[_bucketName].Add(uploadOperation);
+            if (BucketContentViewModel.ActiveUploadOperations.ContainsKey(BucketName))
+                BucketContentViewModel.ActiveUploadOperations[BucketName].Add(uploadOperation);
             else
             {
                 var list = new List<UploadOperation>();
                 list.Add(uploadOperation);
-                BucketContentViewModel.ActiveUploadOperations.Add(_bucketName, list);
+                BucketContentViewModel.ActiveUploadOperations.Add(BucketName, list);
             }
             _senderView.AddUploadOperation(uploadOperation);
         }

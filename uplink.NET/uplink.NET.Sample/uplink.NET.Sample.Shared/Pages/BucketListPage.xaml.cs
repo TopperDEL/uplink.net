@@ -36,19 +36,5 @@ namespace uplink.NET.Sample.Shared.Pages
         {
             _vm.OpenBucketCommand.Execute(e.ClickedItem);
         }
-
-        private void CreateBucket_Click(object sender, RoutedEventArgs e)
-        {
-#if __ANDROID__
-            _vm.CreateBucketCommand.Execute(null);
-#endif
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-#if __ANDROID__
-            _vm.LogoutCommand.Execute(null);
-#endif
-        }
     }
 }
