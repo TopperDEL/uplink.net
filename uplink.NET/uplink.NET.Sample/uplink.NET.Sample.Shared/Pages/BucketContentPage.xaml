@@ -8,33 +8,35 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel>
-        <CommandBar Background="{StaticResource StorjBlue}" OverflowButtonVisibility="Collapsed">
-            <CommandBar.Content>
-                <TextBlock Text="{x:Bind _vm.BucketName}" Foreground="White" FontSize="25" Margin="10,0"/>
-            </CommandBar.Content>
-            <AppBarButton Label="Add photo..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" CommandParameter="Photo" Click="UploadPhoto_Click">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_photo.png"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="Add video..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" CommandParameter="Video" Click="UploadVideo_Click">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_video.png"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarButton Label="Back" Foreground="White" Command="{x:Bind _vm.GoBackCommand}" Click="GoBack_Click">
-                <AppBarButton.Icon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/storj_left.png"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
-        </CommandBar>
-        <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
-            <ProgressRing IsActive="True" Foreground="{StaticResource StorjBlue}" Margin="50"/>
-        </StackPanel>
-        <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700" HorizontalAlignment="Left"
+    <ScrollViewer>
+        <StackPanel>
+            <CommandBar Background="{StaticResource StorjBlue}" OverflowButtonVisibility="Collapsed">
+                <CommandBar.Content>
+                    <TextBlock Text="{x:Bind _vm.BucketName, Mode=OneWay}" Foreground="White" FontSize="25" Margin="10,0"/>
+                </CommandBar.Content>
+                <AppBarButton Label="Add photo..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" CommandParameter="Photo" Click="UploadPhoto_Click">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_photo.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Add video..." Foreground="White" Command="{x:Bind _vm.UploadFileCommand}" CommandParameter="Video" Click="UploadVideo_Click">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_video.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Back" Foreground="White" Command="{x:Bind _vm.GoBackCommand}" Click="GoBack_Click">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_left.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+            <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
+                <ProgressRing IsActive="True" Foreground="{StaticResource StorjBlue}" Margin="50"/>
+            </StackPanel>
+            <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700" HorizontalAlignment="Left"
                   IsItemClickEnabled="False" SelectionMode="None">
 
-        </ListView>
-    </StackPanel>
+            </ListView>
+        </StackPanel>
+    </ScrollViewer>
 </Page>
