@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <developmentDependency>true</developmentDependency>
@@ -34,10 +34,10 @@ It is - like Storj itself - open source and developed on GitHub.</description>
     </contentFiles>
   </metadata>
   <files>
-    <file src="build\uplink.NET.targets" target="build\uplink.NET.targets" />
-    <file src="lib\MonoAndroid\uplink.NET.Droid.dll" target="lib\MonoAndroid\uplink.NET.Droid.dll" />
-    <file src="lib\netcoreapp1.0\uplink.NET.dll" target="lib\netcoreapp1.0\uplink.NET.dll" />
-    <file src="lib\netstandard2.0\uplink.NET.dll" target="lib\netstandard2.0\uplink.NET.dll" />
-    <file src="storj_uplink.dll" target="storj_uplink.dll" />
+    <file src="uplink.NET.targets" target="build\uplink.NET.targets" />
+    <file src="uplink.NET.Droid\bin\Release\uplink.NET.Droid.dll" target="lib\MonoAndroid\uplink.NET.Droid.dll" />
+    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netcoreapp1.0\uplink.NET.dll" />
+    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netstandard2.0\uplink.NET.dll" />
+    <file src="uplink.NET\storj_uplink.dll" target="storj_uplink.dll" />
   </files>
 </package>
