@@ -37,13 +37,16 @@ namespace uplink.NET.Sample.Shared.Commands
 
                 if (initialized)
                 {
+                    Windows.UI.Popups.MessageDialog attentionDialog = new Windows.UI.Popups.MessageDialog("This app is only for testing - it might contain errors and corrupt your data. Use at your own risk!", "Attention");
+                    await attentionDialog.ShowAsync();
+
                     var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
                     frame.Navigate(typeof(BucketListPage));
                 }
                 else
                 {
-                    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Could not connect to storj");
-                    await dialog.ShowAsync();
+                    Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog("Could not connect to storj");
+                    await errorDialog.ShowAsync();
                 }
             }
         }
