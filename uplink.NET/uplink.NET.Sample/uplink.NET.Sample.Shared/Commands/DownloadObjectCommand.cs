@@ -94,7 +94,6 @@ namespace uplink.NET.Sample.Shared.Commands
             }
 #else
             var path = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
-            //var path = System.Environment.Ext .GetFolderPath(Environment.Ext .SpecialFolder.CommonPictures);
 
             try
             {
@@ -104,11 +103,17 @@ namespace uplink.NET.Sample.Shared.Commands
                 {
                     if (!operation.Failed && !operation.Cancelled)
                     {
-                        string filePath = Path.Combine(path, bucketEntryVM.ObjectInfo.Path);
-                        using (var file = File.Open(filePath, FileMode.Create, FileAccess.Write))
-                        using (var strm = new StreamWriter(file))
+                        string filePath = Path.Combine(path, "Download");
+                        if (!Directory.Exists(filePath))
+                            Directory.CreateDirectory(filePath);
+
+                        filePath = Path.Combine(filePath, "Storj");
+                        if (!Directory.Exists(filePath))
+                            Directory.CreateDirectory(filePath);
+                        filePath = Path.Combine(filePath, bucketEntryVM.ObjectInfo.Path);
+                        using (FileStream fs = new FileStream(filePath, FileMode.Create))
                         {
-                            strm.Write(operation.DownloadedBytes);
+                            await fs.WriteAsync(operation.DownloadedBytes, 0, (int)operation.TotalBytes);
                         }
                     }
                 };
