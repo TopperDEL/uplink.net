@@ -15,7 +15,7 @@
 
     <DataTemplate x:Key="BucketInfo" x:DataType="viewmodels:BucketInfoViewModel">
         <StackPanel Orientation="Horizontal">
-            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,0,10,0" Width="50" Height="50" VerticalAlignment="Center"/>
+            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
             <StackPanel VerticalAlignment="Center">
                 <TextBlock Text="{x:Bind BucketInfo.Name}" Foreground="{StaticResource StorjBlue}"/>
                 <TextBlock Text="{x:Bind BucketInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
@@ -35,6 +35,7 @@
                         <TextBlock Text="{x:Bind ObjectInfo.GetSizeString}" FontSize="11" Margin="10,0"/>
                     </StackPanel>
                 </StackPanel>
+                <Button Content="Download" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DownloadObjectCommand}" CommandParameter="{Binding}"/>
                 <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteObjectCommand}" CommandParameter="{Binding}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsUploadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
