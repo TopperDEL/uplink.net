@@ -17,11 +17,12 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public bool IsObject { get; set; }
         public ObjectInfo ObjectInfo { get; set; }
 
-        public bool IsDownload { get; set; }
+        public bool IsDownloadOperation { get; set; }
         public DownloadOperation DownloadOperation { get; set; }
 
         public BucketContentViewModel _bucketContentViewModel;
 
+        public ICommand DownloadObjectCommand { get; private set; }
         public ICommand DeleteObjectCommand { get; private set; }
         public ICommand CancelUploadCommand { get; private set; }
 
@@ -49,6 +50,39 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
         }
 
+        public bool DownloadFailed
+        {
+            get
+            {
+                if (DownloadOperation != null)
+                    return DownloadOperation.Failed;
+                else
+                    return false;
+            }
+        }
+
+        public float DownloadPercentage
+        {
+            get
+            {
+                if (DownloadOperation != null)
+                    return DownloadOperation.PercentageCompleted;
+                else
+                    return 0;
+            }
+        }
+
+        public bool DownloadRunning
+        {
+            get
+            {
+                if (DownloadOperation != null)
+                    return DownloadOperation.Running;
+                else
+                    return false;
+            }
+        }
+
         public bool UploadFailed
         {
             get
@@ -65,8 +99,38 @@ namespace uplink.NET.Sample.Shared.ViewModels
         {
             _bucketContentViewModel = bucketContentViewModel;
 
+            DownloadObjectCommand = new DownloadObjectCommand(bucketContentViewModel, bucketService, objectService, storjService, bucketContentViewModel.BucketName);
             DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
             CancelUploadCommand = new CancelUploadCommand(bucketService, objectService, storjService);
+        }
+        public void InitDownloadOperation()
+        {
+            DownloadOperation.DownloadOperationProgressChanged += DownloadOperation_DownloadOperationProgressChanged;
+            DownloadOperation.DownloadOperationEnded += DownloadOperation_DownloadOperationEnded;
+        }
+
+        private async void DownloadOperation_DownloadOperationEnded(DownloadOperation downloadOperation)
+        {
+            DownloadOperation.DownloadOperationProgressChanged -= DownloadOperation_DownloadOperationProgressChanged;
+            DownloadOperation.DownloadOperationEnded -= DownloadOperation_DownloadOperationEnded;
+            if (downloadOperation.Completed)
+            {
+                BucketContentViewModel.ActiveDownloadOperations[_bucketContentViewModel.BucketName].Remove(downloadOperation);
+                await InvokeAsync(async ()=> await _bucketContentViewModel.RemoveDownloadOperationAsync(downloadOperation));
+            }
+            else
+            {
+                RaiseChanged(nameof(DownloadPercentage));
+                RaiseChanged(nameof(DownloadFailed));
+                RaiseChanged(nameof(DownloadRunning));
+            }
+        }
+
+        private void DownloadOperation_DownloadOperationProgressChanged(DownloadOperation downloadOperation)
+        {
+            RaiseChanged(nameof(DownloadPercentage));
+            RaiseChanged(nameof(DownloadFailed));
+            RaiseChanged(nameof(DownloadRunning));
         }
 
         public void InitUploadOperation()

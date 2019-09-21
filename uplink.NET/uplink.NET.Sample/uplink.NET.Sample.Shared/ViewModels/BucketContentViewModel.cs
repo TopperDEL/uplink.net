@@ -15,6 +15,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
     public class BucketContentViewModel : BaseViewModel
     {
         public static Dictionary<string, List<UploadOperation>> ActiveUploadOperations = new Dictionary<string, List<UploadOperation>>();
+        public static Dictionary<string, List<DownloadOperation>> ActiveDownloadOperations = new Dictionary<string, List<DownloadOperation>>();
         public ObservableCollection<BucketEntryViewModel> Entries { get; set; }
         public string BucketName { get; private set; }
         public ICommand GoBackCommand { get; set; }
@@ -52,6 +53,24 @@ namespace uplink.NET.Sample.Shared.ViewModels
             Entries.Add(entry);
         }
 
+        public async Task RemoveDownloadOperationAsync(DownloadOperation downloadOperation)
+        {
+            var entry = Entries.Where(e => e.DownloadOperation == downloadOperation).FirstOrDefault();
+            if (entry != null)
+                Entries.Remove(entry);
+            else
+                await RefreshAsync();
+        }
+
+        public void AddDownloadOperation(DownloadOperation downloadOperation)
+        {
+            var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
+            entry.IsDownloadOperation = true;
+            entry.DownloadOperation = downloadOperation;
+            entry.InitDownloadOperation();
+            Entries.Add(entry);
+        }
+
         public async Task RefreshAsync()
         {
             await InvokeAsync(async () =>
@@ -65,7 +84,33 @@ namespace uplink.NET.Sample.Shared.ViewModels
         {
             StartLoading();
 
-            //Load all options
+            //Fetch all UploadOperations
+            var uploadOperations = (ActiveUploadOperations.Where(u => u.Key == BucketName)).FirstOrDefault();
+            if (uploadOperations.Value != null)
+            {
+                foreach (var uploadOperation in uploadOperations.Value)
+                {
+                    if (!uploadOperation.Completed)
+                    {
+                        AddUploadOperation(uploadOperation);
+                    }
+                }
+            }
+
+            //Fetch all DownloadOperations
+            var downloadOperations = (ActiveDownloadOperations.Where(u => u.Key == BucketName)).FirstOrDefault();
+            if (downloadOperations.Value != null)
+            {
+                foreach (var downloadOperation in downloadOperations.Value)
+                {
+                    if (!downloadOperation.Completed)
+                    {
+                        AddDownloadOperation(downloadOperation);
+                    }
+                }
+            }
+
+            //Load all objects
             try
             {
                 var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, _storjService.EncryptionAccess);
@@ -84,19 +129,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
             {
                 Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Could not open bucket - " + ex.Message);
                 await dialog.ShowAsync();
-            }
-
-            //Fetch all UploadOperations
-            var uploadOperations = (ActiveUploadOperations.Where(u => u.Key == BucketName)).FirstOrDefault();
-            if (uploadOperations.Value != null)
-            {
-                foreach (var uploadOperation in uploadOperations.Value)
-                {
-                    if (!uploadOperation.Completed)
-                    {
-                        AddUploadOperation(uploadOperation);
-                    }
-                }
             }
 
             DoneLoading();

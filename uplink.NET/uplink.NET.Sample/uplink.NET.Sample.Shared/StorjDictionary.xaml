@@ -48,6 +48,16 @@
                 </StackPanel>
                 <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelUploadCommand}" CommandParameter="{Binding}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsDownloadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_file_download.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind DownloadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
+                    <ProgressBar Value="{x:Bind DownloadPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
+                                 ShowError="{x:Bind DownloadFailed, Mode=OneWay}"
+                                 Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+                <!--<Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelDownloadCommand}" CommandParameter="{Binding}"/>-->
+            </StackPanel>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

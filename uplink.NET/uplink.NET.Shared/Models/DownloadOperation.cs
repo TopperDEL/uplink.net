@@ -10,6 +10,11 @@ namespace uplink.NET.Models
     /// </summary>
     /// <param name="downloadOperation">The DownloadOperation that changed</param>
     public delegate void DownloadOperationProgressChanged(DownloadOperation downloadOperation);
+    /// <summary>
+    /// Gets raised to inform about an ended DownloadOperation.
+    /// </summary>
+    /// <param name="uploadOperation">The UploadOperation that ended</param>
+    public delegate void DownloadOperationEnded(DownloadOperation downloadOperation);
 
     /// <summary>
     /// A DownloadOperation handles a file download in background and informs about progress changes.
@@ -40,6 +45,10 @@ namespace uplink.NET.Models
         /// </summary>
         public event DownloadOperationProgressChanged DownloadOperationProgressChanged;
         /// <summary>
+        /// Inform about a DownloadOperation that ended (i.e. Completed, Failed or got Cancelled)
+        /// </summary>
+        public event DownloadOperationEnded DownloadOperationEnded;
+        /// <summary>
         /// The - until now - received bytes
         /// </summary>
         public ulong BytesReceived { get; private set; }
@@ -59,6 +68,10 @@ namespace uplink.NET.Models
         /// Got the download cancelled (by the user)?
         /// </summary>
         public bool Cancelled { get; set; }
+        /// <summary>
+        /// Is the download currently in progress?
+        /// </summary>
+        public bool Running { get; set; }
         private string _errorMessage;
         /// <summary>
         /// The possible error - only filled if "Failed" is true
@@ -86,6 +99,7 @@ namespace uplink.NET.Models
             _downloaderRef = downloaderRef;
             TotalBytes = totalBytes;
             _bytesToDownload = new byte[TotalBytes];
+            ObjectName = objectName;
         }
 
         /// <summary>
@@ -112,34 +126,32 @@ namespace uplink.NET.Models
 
         private void DoDownload()
         {
+            Running = true;
             while (BytesReceived < TotalBytes)
             {
-                if (TotalBytes - BytesReceived > 1024)
+                var tenth = _bytesToDownload.Length / 10;
+                if ((ulong)TotalBytes - BytesReceived > (ulong)tenth)
                 {
-                    //Fetch 1024 bytes in next batch
-                    byte[] part = new byte[1024];
-                    var received = SWIG.storj_uplink.download_read(_downloaderRef, part, 1024, out _errorMessage);
-                    if (received != 1024 && string.IsNullOrEmpty(_errorMessage))
-                        continue; //try again?
-                    if (received == 1024)
+                    //Fetch next bytes in batch
+                    byte[] part = new byte[tenth];
+                    var received = SWIG.storj_uplink.download_read(_downloaderRef, part, (uint)tenth, out _errorMessage);
+                    if (received != 0 && string.IsNullOrEmpty(_errorMessage))
                     {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, 1024);
-                        BytesReceived += 1024;
+                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, received);
+                        BytesReceived += received;
                     }
                 }
                 else
                 {
                     //Fetch only the remaining bytes
-                    byte[] part = new byte[1024];
-
                     var remaining = TotalBytes - BytesReceived;
+                    byte[] part = new byte[remaining];
+
                     var received = SWIG.storj_uplink.download_read(_downloaderRef, part, (uint)remaining, out _errorMessage);
-                    if (received != remaining && string.IsNullOrEmpty(_errorMessage))
-                        continue; //try again?
-                    if (received == remaining)
+                    if (received != 0 && string.IsNullOrEmpty(_errorMessage))
                     {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, (long)remaining);
-                        BytesReceived += remaining;
+                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, received);
+                        BytesReceived += received;
                     }
                 }
 
@@ -150,12 +162,16 @@ namespace uplink.NET.Models
                         Cancelled = true;
                     else
                         Failed = true;
+                    Running = false;
+                    DownloadOperationEnded?.Invoke(this);
                     return;
                 }
                 DownloadOperationProgressChanged?.Invoke(this);
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
                     Failed = true;
+                    Running = false;
+                    DownloadOperationEnded?.Invoke(this);
                     return;
                 }
             }
@@ -165,10 +181,14 @@ namespace uplink.NET.Models
             if (!string.IsNullOrEmpty(_errorMessage))
             {
                 Failed = true;
+                Running = false;
+                DownloadOperationEnded?.Invoke(this);
                 return;
             }
 
             Completed = true;
+            Running = false;
+            DownloadOperationEnded?.Invoke(this);
         }
 
         public void Dispose()
