@@ -43,6 +43,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         {
             BucketName = bucketName;
             ((UploadFileCommand)UploadFileCommand).BucketName = BucketName;
+            RaiseChanged(nameof(BucketName));
         }
 
         public void AddUploadOperation(UploadOperation uploadOperation)
