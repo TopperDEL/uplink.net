@@ -57,8 +57,10 @@
                                  Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                     <TextBlock Text="Download complete!" Foreground="DarkGreen" Visibility="{x:Bind DownloadComplete, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                     <TextBlock Text="Download failed!" Foreground="DarkRed" Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Cancelled by user" Foreground="DarkOrange" Visibility="{x:Bind DownloadCancelled, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
                 </StackPanel>
-                <!--<Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelDownloadCommand}" CommandParameter="{Binding}"/>-->
+                <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelDownloadCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
     </DataTemplate>
