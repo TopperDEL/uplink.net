@@ -42,14 +42,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
         {
             if (DispatcherToUse != null)
             {
-                await DispatcherToUse.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                await DispatcherToUse.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     actionToInvoke();
                 });
             }
             else
             {
-                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     actionToInvoke();
                 });
@@ -58,7 +58,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         protected async void RaiseChanged(string propertyName)
         {
-            await InvokeAsync(() => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName)));
+            InvokeAsync(() => PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName)));
         }
     }
 }

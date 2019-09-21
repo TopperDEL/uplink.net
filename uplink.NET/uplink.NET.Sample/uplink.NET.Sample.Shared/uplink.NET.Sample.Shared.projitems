@@ -19,6 +19,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelUploadCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DownloadObjectCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteObjectCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />

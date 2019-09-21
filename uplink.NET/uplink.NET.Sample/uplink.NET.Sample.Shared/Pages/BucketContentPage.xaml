@@ -32,7 +32,8 @@
         <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
             <ProgressRing IsActive="True" Foreground="{StaticResource StorjBlue}" Margin="50"/>
         </StackPanel>
-        <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700" HorizontalAlignment="Left">
+        <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700" HorizontalAlignment="Left"
+                  IsItemClickEnabled="False" SelectionMode="None">
 
         </ListView>
     </StackPanel>
