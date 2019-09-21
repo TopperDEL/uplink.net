@@ -18,7 +18,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand LogoutCommand { get; private set; }
         public ICommand CreateBucketCommand { get; private set; }
         public ICommand DeleteBucketCommand { get; private set; }
-        public ICommand OpenBucketCommand { get; private set; }
 
         public ObservableCollection<uplink.NET.Sample.Shared.ViewModels.BucketInfoViewModel> Buckets { get; set; }
         public BucketListViewModel(IBucketService bucketService, IStorjService storjService)
@@ -29,7 +28,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
             LogoutCommand = new LogoutCommand(Factory.LoginService);
             CreateBucketCommand = new CreateBucketCommand();
             DeleteBucketCommand = new DeleteBucketCommand(_bucketService, _storjService);
-            OpenBucketCommand = new OpenBucketCommand();
 
             Buckets = new ObservableCollection<NET.Sample.Shared.ViewModels.BucketInfoViewModel>();
 

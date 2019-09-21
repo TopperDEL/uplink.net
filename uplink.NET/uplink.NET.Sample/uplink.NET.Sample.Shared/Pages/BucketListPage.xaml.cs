@@ -31,10 +31,5 @@ namespace uplink.NET.Sample.Shared.Pages
 
             this.DataContext = _vm = new BucketListViewModel(Factory.BucketService, Factory.StorjService);
         }
-
-        private void ItemClicked(object sender, ItemClickEventArgs e)
-        {
-            _vm.OpenBucketCommand.Execute(e.ClickedItem);
-        }
     }
 }
