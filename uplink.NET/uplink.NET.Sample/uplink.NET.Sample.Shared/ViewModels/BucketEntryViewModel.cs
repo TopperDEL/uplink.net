@@ -25,6 +25,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand DownloadObjectCommand { get; private set; }
         public ICommand DeleteObjectCommand { get; private set; }
         public ICommand CancelUploadCommand { get; private set; }
+        public ICommand CancelDownloadCommand { get; private set; }
 
         #region Hacks
         //TODO
@@ -72,6 +73,17 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
         }
 
+        public bool DownloadCancelled
+        {
+            get
+            {
+                if (DownloadOperation != null)
+                    return DownloadOperation.Cancelled;
+                else
+                    return false;
+            }
+        }
+
         public bool DownloadFailed
         {
             get
@@ -113,6 +125,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             DownloadObjectCommand = new DownloadObjectCommand(bucketContentViewModel, bucketService, objectService, storjService, bucketContentViewModel.BucketName);
             DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
             CancelUploadCommand = new CancelUploadCommand(bucketService, objectService, storjService);
+            CancelDownloadCommand = new CancelDownloadCommand(bucketService, objectService, storjService);
         }
         public void InitDownloadOperation()
         {
@@ -130,6 +143,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
             RaiseChanged(nameof(DownloadOperation));
             RaiseChanged(nameof(DownloadPercentage));
+            RaiseChanged(nameof(DownloadCancelled));
             RaiseChanged(nameof(DownloadFailed));
             RaiseChanged(nameof(DownloadComplete));
             RaiseChanged(nameof(DownloadRunning));
