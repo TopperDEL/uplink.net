@@ -50,6 +50,28 @@ namespace uplink.NET.Sample.Shared.ViewModels
             }
         }
 
+        public bool UploadFailed
+        {
+            get
+            {
+                if (UploadOperation != null)
+                    return UploadOperation.Failed;
+                else
+                    return false;
+            }
+        }
+
+        public bool DownloadComplete
+        {
+            get
+            {
+                if (DownloadOperation != null)
+                    return DownloadOperation.Completed;
+                else
+                    return false;
+            }
+        }
+
         public bool DownloadFailed
         {
             get
@@ -82,17 +104,6 @@ namespace uplink.NET.Sample.Shared.ViewModels
                     return false;
             }
         }
-
-        public bool UploadFailed
-        {
-            get
-            {
-                if (UploadOperation != null)
-                    return UploadOperation.Failed;
-                else
-                    return false;
-            }
-        }
         #endregion
 
         public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService, IStorjService storjService)
@@ -116,20 +127,19 @@ namespace uplink.NET.Sample.Shared.ViewModels
             if (downloadOperation.Completed)
             {
                 BucketContentViewModel.ActiveDownloadOperations[_bucketContentViewModel.BucketName].Remove(downloadOperation);
-                await InvokeAsync(async ()=> await _bucketContentViewModel.RemoveDownloadOperationAsync(downloadOperation));
             }
-            else
-            {
-                RaiseChanged(nameof(DownloadPercentage));
-                RaiseChanged(nameof(DownloadFailed));
-                RaiseChanged(nameof(DownloadRunning));
-            }
+            RaiseChanged(nameof(DownloadOperation));
+            RaiseChanged(nameof(DownloadPercentage));
+            RaiseChanged(nameof(DownloadFailed));
+            RaiseChanged(nameof(DownloadComplete));
+            RaiseChanged(nameof(DownloadRunning));
         }
 
         private void DownloadOperation_DownloadOperationProgressChanged(DownloadOperation downloadOperation)
         {
             RaiseChanged(nameof(DownloadPercentage));
             RaiseChanged(nameof(DownloadFailed));
+            RaiseChanged(nameof(DownloadComplete));
             RaiseChanged(nameof(DownloadRunning));
         }
 
