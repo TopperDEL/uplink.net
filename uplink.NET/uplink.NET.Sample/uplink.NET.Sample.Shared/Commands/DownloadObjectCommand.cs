@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows.Input;
 using uplink.NET.Interfaces;
@@ -40,6 +41,7 @@ namespace uplink.NET.Sample.Shared.Commands
         public async void Execute(object parameter)
         {
             BucketEntryViewModel bucketEntryVM = parameter as BucketEntryViewModel;
+#if!__ANDROID__
 
             FileSavePicker picker = new FileSavePicker();
             if (bucketEntryVM.ObjectInfo.Path.Contains("mp4"))
@@ -90,7 +92,43 @@ namespace uplink.NET.Sample.Shared.Commands
                 await dialog.ShowAsync();
                 return;
             }
-            
+#else
+            var path = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+            //var path = System.Environment.Ext .GetFolderPath(Environment.Ext .SpecialFolder.CommonPictures);
+
+            try
+            {
+                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, bucketEntryVM._bucketContentViewModel.BucketName, _storjService.EncryptionAccess);
+                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path, true);
+                downloadOperation.DownloadOperationEnded += async (operation) =>
+                {
+                    if (!operation.Failed && !operation.Cancelled)
+                    {
+                        string filePath = Path.Combine(path, bucketEntryVM.ObjectInfo.Path);
+                        using (var file = File.Open(filePath, FileMode.Create, FileAccess.Write))
+                        using (var strm = new StreamWriter(file))
+                        {
+                            strm.Write(operation.DownloadedBytes);
+                        }
+                    }
+                };
+                if (BucketContentViewModel.ActiveDownloadOperations.ContainsKey(_bucketName))
+                    BucketContentViewModel.ActiveDownloadOperations[_bucketName].Add(downloadOperation);
+                else
+                {
+                    var list = new List<DownloadOperation>();
+                    list.Add(downloadOperation);
+                    BucketContentViewModel.ActiveDownloadOperations.Add(_bucketName, list);
+                }
+                _senderView.AddDownloadOperation(downloadOperation);
+            }
+            catch (Exception ex)
+            {
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Could not download object - " + ex.Message);
+                await dialog.ShowAsync();
+                return;
+            }
+#endif
         }
     }
 }
