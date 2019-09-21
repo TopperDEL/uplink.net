@@ -42,7 +42,7 @@ namespace uplink.NET.Sample
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
@@ -81,12 +81,9 @@ namespace uplink.NET.Sample
                     // parameter
                     if (Shared.Services.Factory.LoginService.IsLoggedIn())
                     {
-                        //ToDo: This could go better:
                         var loginData = Shared.Services.Factory.LoginService.GetLoginData();
-                        var storjTask = Shared.Services.Factory.StorjService.InitializeAsync(loginData.APIKey, loginData.Satellite, loginData.Secret);
-                        storjTask.Wait();
-                        var initialized = storjTask.Result;
-                        if(initialized)
+                        var initialized = await Shared.Services.Factory.StorjService.InitializeAsync(loginData.APIKey, loginData.Satellite, loginData.Secret);
+                        if (initialized)
                             rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
                         else
                         {
