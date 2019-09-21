@@ -20,6 +20,7 @@
                 <TextBlock Text="{x:Bind BucketInfo.Name}" Foreground="{StaticResource StorjBlue}"/>
                 <TextBlock Text="{x:Bind BucketInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
             </StackPanel>
+            <Button Content="Open" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind OpenBucketCommand}" CommandParameter="{Binding}"/>
             <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>
         </StackPanel>
     </DataTemplate>

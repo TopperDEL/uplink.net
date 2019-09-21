@@ -13,11 +13,13 @@ namespace uplink.NET.Sample.Shared.ViewModels
     {
         public BucketInfo BucketInfo { get; private set; }
         public ICommand DeleteBucketCommand { get; private set; }
+        public ICommand OpenBucketCommand { get; private set; }
 
         public BucketInfoViewModel(BucketInfo bucketInfo, IBucketService bucketService, IStorjService storjService)
         {
             BucketInfo = bucketInfo;
             DeleteBucketCommand = new DeleteBucketCommand(bucketService, storjService); ;
+            OpenBucketCommand = new OpenBucketCommand(); ;
         }
     }
 }
