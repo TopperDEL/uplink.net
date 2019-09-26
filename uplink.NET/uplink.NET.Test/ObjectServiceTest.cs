@@ -22,6 +22,7 @@ namespace uplink.NET.Test
         [TestInitialize]
         public void Init()
         {
+            StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
             _environment = new StorjEnvironment();
             _environment.InitializeAsync(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_environment);
@@ -167,7 +168,7 @@ namespace uplink.NET.Test
             var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation2.StartUploadAsync();
 
-            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER });
 
             Assert.AreEqual(2, objectList.Length);
             Assert.AreEqual("myfile2.txt", objectList.Items[1].Path);
@@ -248,12 +249,12 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER });
             Assert.AreEqual(1, objectList.Length);
 
             await _objectService.DeleteObjectAsync(bucket, "myfile1.txt");
 
-            var objectList2 = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_FORWARD });
+            var objectList2 = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER });
             Assert.AreEqual(0, objectList2.Length);
         }
 
