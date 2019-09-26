@@ -16,13 +16,11 @@ namespace uplink.NET.Sample.Shared.Commands
         public event EventHandler CanExecuteChanged;
         IBucketService _bucketService;
         IObjectService _objectService;
-        IStorjService _storjService;
 
-        public CancelUploadCommand(IBucketService bucketService, IObjectService objectService, IStorjService storjService)
+        public CancelUploadCommand(IBucketService bucketService, IObjectService objectService)
         {
             _bucketService = bucketService;
             _objectService = objectService;
-            _storjService = storjService;
         }
 
         public bool CanExecute(object parameter)

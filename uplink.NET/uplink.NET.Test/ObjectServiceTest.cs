@@ -14,20 +14,18 @@ namespace uplink.NET.Test
 
     public class ObjectServiceTest
     {
+        IStorjEnvironment _environment;
         IBucketService _bucketService;
         IObjectService _objectService;
-        Project _project;
         BucketConfig _bucketConfig;
 
         [TestInitialize]
         public void Init()
         {
-            _bucketService = new BucketService();
+            _environment = new StorjEnvironment();
+            _environment.InitializeAsync(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
+            _bucketService = new BucketService(_environment);
             _objectService = new ObjectService();
-            UplinkConfig config = new UplinkConfig();
-            Uplink uplink = new Uplink(config);
-            APIKey apiKey = new APIKey(TestConstants.VALID_API_KEY);
-            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL);
             _bucketConfig = new BucketConfig();
         }
 
@@ -59,8 +57,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "uploadtest";
 
-            var result = await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             var progressChangeCounter = 0;
@@ -101,8 +99,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "downloadtest";
 
-            var result = await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             
@@ -136,8 +134,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-raiseserror";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
@@ -160,8 +158,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "listobject-lists-existingobjects";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
@@ -180,8 +178,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "getobjectmeta-gets-objectmeta";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
@@ -198,8 +196,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "getobjectmeta-fails-onnotexistingobject";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
             try
             {
@@ -220,8 +218,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "deleteobject-fails-onnotexistingobject";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
             try
             {
@@ -242,8 +240,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "deleteobject-deletes-object";
 
-            await _bucketService.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
             byte[] bytesToUpload = GetRandomBytes(2048);
 
@@ -285,7 +283,7 @@ namespace uplink.NET.Test
         {
             try
             {
-                await _bucketService.DeleteBucketAsync(_project, bucketName);
+                await _bucketService.DeleteBucketAsync(bucketName);
             }
             catch
             { }

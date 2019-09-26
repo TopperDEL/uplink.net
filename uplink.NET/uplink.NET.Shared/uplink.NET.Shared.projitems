@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjEnvironment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\APIKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketInfo.cs" />
@@ -36,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StorjEnvironment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOperation.cs" />

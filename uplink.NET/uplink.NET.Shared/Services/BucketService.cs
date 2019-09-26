@@ -10,11 +10,18 @@ namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
-        public async Task<BucketInfo> CreateBucketAsync(Project project, string bucketName, BucketConfig bucketConfig)
+        IStorjEnvironment _environment;
+
+        public BucketService(IStorjEnvironment environment)
+        {
+            _environment = environment;
+        }
+
+        public async Task<BucketInfo> CreateBucketAsync(string bucketName, BucketConfig bucketConfig)
         {
             string error = string.Empty;
 
-            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.create_bucket(project._projectRef, bucketName, bucketConfig.ToSWIG(), out error));
+            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.create_bucket(_environment.Project._projectRef, bucketName, bucketConfig.ToSWIG(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketCreationException(bucketName, error);
@@ -22,21 +29,21 @@ namespace uplink.NET.Services
             return BucketInfo.FromSWIG(bucketInfo);
         }
 
-        public async Task DeleteBucketAsync(Project project, string bucketName)
+        public async Task DeleteBucketAsync(string bucketName)
         {
             string error = string.Empty;
 
-            await Task.Run(() => SWIG.storj_uplink.delete_bucket(project._projectRef, bucketName, out error));
+            await Task.Run(() => SWIG.storj_uplink.delete_bucket(_environment.Project._projectRef, bucketName, out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketDeletionException(bucketName, error);
         }
 
-        public async Task<BucketInfo> GetBucketInfoAsync(Project project, string bucketName)
+        public async Task<BucketInfo> GetBucketInfoAsync(string bucketName)
         {
             string error = string.Empty;
 
-            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.get_bucket_info(project._projectRef, bucketName, out error));
+            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.get_bucket_info(_environment.Project._projectRef, bucketName, out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketNotFoundException(bucketName, error);
@@ -44,11 +51,11 @@ namespace uplink.NET.Services
             return BucketInfo.FromSWIG(bucketInfo);
         }
 
-        public async Task<BucketList> ListBucketsAsync(Project project, BucketListOptions bucketListOptions)
+        public async Task<BucketList> ListBucketsAsync(BucketListOptions bucketListOptions)
         {
             string error = string.Empty;
 
-            var res = await Task.Run<SWIG.BucketList>(() => SWIG.storj_uplink.list_buckets(project._projectRef, bucketListOptions.ToSWIG(), out error));
+            var res = await Task.Run<SWIG.BucketList>(() => SWIG.storj_uplink.list_buckets(_environment.Project._projectRef, bucketListOptions.ToSWIG(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketListException(error);
@@ -56,11 +63,16 @@ namespace uplink.NET.Services
             return BucketList.FromSWIG(res);
         }
 
-        public async Task<BucketRef> OpenBucketAsync(Project project, string bucketName, EncryptionAccess encryptionAccess)
+        public async Task<BucketRef> OpenBucketAsync(string bucketName)
+        {
+            return await OpenBucketAsync(bucketName, _environment.EncryptionAccess);
+        }
+
+        public async Task<BucketRef> OpenBucketAsync(string bucketName, EncryptionAccess encryptionAccess)
         {
             string error = string.Empty;
 
-            var handle = await Task.Run<SWIG.BucketRef>(() => SWIG.storj_uplink.open_bucket(project._projectRef, bucketName, encryptionAccess.ToBase58(), out error));
+            var handle = await Task.Run<SWIG.BucketRef>(() => SWIG.storj_uplink.open_bucket(_environment.Project._projectRef, bucketName, encryptionAccess.ToBase58(), out error));
 
             if (!string.IsNullOrEmpty(error))
                 throw new BucketNotFoundException(bucketName, error);

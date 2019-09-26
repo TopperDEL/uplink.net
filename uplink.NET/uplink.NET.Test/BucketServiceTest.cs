@@ -14,17 +14,15 @@ namespace uplink.NET.Test
     public class BucketServiceTest
     {
         IBucketService _service;
-        Project _project;
         BucketConfig _bucketConfig;
+        IStorjEnvironment _environment;
 
         [TestInitialize]
         public void Init()
         {
-            _service = new BucketService();
-            UplinkConfig config = new UplinkConfig();
-            Uplink uplink = new Uplink(config);
-            APIKey apiKey = new APIKey(TestConstants.VALID_API_KEY);
-            _project = new Project(uplink, apiKey, TestConstants.SATELLITE_URL);
+            _environment = new StorjEnvironment();
+            _environment.InitializeAsync(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
+            _service = new BucketService(_environment);
             _bucketConfig = new BucketConfig();
         }
 
@@ -33,7 +31,7 @@ namespace uplink.NET.Test
         {
             string bucketname = "createbucket-creates-newbucket";
 
-            var result = await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            var result = await _service.CreateBucketAsync(bucketname, _bucketConfig);
 
             Assert.AreEqual(bucketname, result.Name);
         }
@@ -43,11 +41,11 @@ namespace uplink.NET.Test
         {
             string bucketname = "createbucket-fails-onbucketalreadyexisting";
 
-            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig); //Should work
+            await _service.CreateBucketAsync(bucketname, _bucketConfig); //Should work
 
             try
             {
-                var resultFailed = await _service.CreateBucketAsync(_project, bucketname, _bucketConfig); //Should fail
+                var resultFailed = await _service.CreateBucketAsync(bucketname, _bucketConfig); //Should fail
             }catch(BucketCreationException ex)
             {
                 Assert.IsTrue(ex.Message.Contains("already exists"));
@@ -63,8 +61,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "getbucketinfo-retrieves-bucketinfo";
 
-            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucketInfo = await _service.GetBucketInfoAsync(_project, bucketname);
+            await _service.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucketInfo = await _service.GetBucketInfoAsync(bucketname);
 
             Assert.AreEqual(bucketname, bucketInfo.Name);
         }
@@ -76,7 +74,7 @@ namespace uplink.NET.Test
 
             try
             {
-                var bucketInfo = await _service.GetBucketInfoAsync(_project, bucketname);
+                var bucketInfo = await _service.GetBucketInfoAsync(bucketname);
             }
             catch(BucketNotFoundException ex)
             {
@@ -92,8 +90,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "openbucket-returns-buckethandle";
 
-            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _service.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucketHandle = await _service.OpenBucketAsync(bucketname);
 
             Assert.IsNotNull(bucketHandle);
         }
@@ -105,7 +103,7 @@ namespace uplink.NET.Test
 
             try
             {
-                var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+                var bucketHandle = await _service.OpenBucketAsync(bucketname);
             }
             catch (BucketNotFoundException ex)
             {
@@ -121,13 +119,13 @@ namespace uplink.NET.Test
         {
             string bucketname = "deletebucket-deletes-bucket";
 
-            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
+            await _service.CreateBucketAsync(bucketname, _bucketConfig);
 
-            await _service.DeleteBucketAsync(_project, bucketname);
+            await _service.DeleteBucketAsync(bucketname);
 
             try
             {
-                await _service.GetBucketInfoAsync(_project, bucketname);
+                await _service.GetBucketInfoAsync(bucketname);
             }
             catch (BucketNotFoundException ex)
             {
@@ -163,10 +161,10 @@ namespace uplink.NET.Test
             string bucketname1 = "listbucket-lists-mytwobuckets-bucket1";
             string bucketname2 = "listbucket-lists-mytwobuckets-bucket2";
 
-            await _service.CreateBucketAsync(_project, bucketname1, _bucketConfig);
-            await _service.CreateBucketAsync(_project, bucketname2, _bucketConfig);
+            await _service.CreateBucketAsync(bucketname1, _bucketConfig);
+            await _service.CreateBucketAsync(bucketname2, _bucketConfig);
 
-            var result = await _service.ListBucketsAsync(_project, new BucketListOptions());
+            var result = await _service.ListBucketsAsync(new BucketListOptions());
 
             Assert.IsTrue(result.Length >= 2);
             int foundBuckets = 0;
@@ -183,8 +181,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "closebucket-closes-bucket";
 
-            await _service.CreateBucketAsync(_project, bucketname, _bucketConfig);
-            var bucketHandle = await _service.OpenBucketAsync(_project, bucketname, EncryptionAccess.FromPassphrase(_project, TestConstants.ENCRYPTION_SECRET));
+            await _service.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucketHandle = await _service.OpenBucketAsync(bucketname);
 
             await _service.CloseBucketAsync(bucketHandle);
         }
@@ -222,7 +220,7 @@ namespace uplink.NET.Test
         {
             try
             {
-                await _service.DeleteBucketAsync(_project, bucketName);
+                await _service.DeleteBucketAsync(bucketName);
             }
             catch
             { }

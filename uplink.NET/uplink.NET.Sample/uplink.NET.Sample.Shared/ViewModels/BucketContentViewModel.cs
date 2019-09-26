@@ -23,20 +23,18 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         IObjectService _objectService;
         IBucketService _bucketService;
-        IStorjService _storjService;
         ILoginService _loginService;
 
-        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService)
+        public BucketContentViewModel(IObjectService objectService, IBucketService bucketService, ILoginService loginService)
         {
             Entries = new ObservableCollection<BucketEntryViewModel>();
 
             _objectService = objectService;
             _bucketService = bucketService;
-            _storjService = storjService;
             _loginService = loginService;
 
             GoBackCommand = new GoBackCommand();
-            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _storjService, _loginService);
+            UploadFileCommand = new UploadFileCommand(this, _objectService, _bucketService, _loginService);
         }
 
         public void SetBucketName(string bucketName)
@@ -48,7 +46,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public void AddUploadOperation(UploadOperation uploadOperation)
         {
-            var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
+            var entry = new BucketEntryViewModel(this, _bucketService, _objectService);
             entry.IsUploadOperation = true;
             entry.UploadOperation = uploadOperation;
             entry.InitUploadOperation();
@@ -66,7 +64,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public void AddDownloadOperation(DownloadOperation downloadOperation)
         {
-            var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
+            var entry = new BucketEntryViewModel(this, _bucketService, _objectService);
             entry.IsDownloadOperation = true;
             entry.DownloadOperation = downloadOperation;
             entry.InitDownloadOperation();
@@ -115,13 +113,13 @@ namespace uplink.NET.Sample.Shared.ViewModels
             //Load all objects
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, _storjService.EncryptionAccess);
+                var bucket = await _bucketService.OpenBucketAsync(BucketName);
                 var listOptions = new ListOptions();
                 listOptions.Direction = ListDirection.STORJ_AFTER;
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {
-                    var entry = new BucketEntryViewModel(this, _bucketService, _objectService, _storjService);
+                    var entry = new BucketEntryViewModel(this, _bucketService, _objectService);
                     entry.IsObject = true;
                     entry.ObjectInfo = obj;
                     Entries.Add(entry);

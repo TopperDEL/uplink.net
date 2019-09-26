@@ -119,14 +119,14 @@ namespace uplink.NET.Sample.Shared.ViewModels
         }
         #endregion
 
-        public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService, IStorjService storjService)
+        public BucketEntryViewModel(BucketContentViewModel bucketContentViewModel, IBucketService bucketService, IObjectService objectService)
         {
             _bucketContentViewModel = bucketContentViewModel;
 
-            DownloadObjectCommand = new DownloadObjectCommand(bucketContentViewModel, bucketService, objectService, storjService, bucketContentViewModel.BucketName);
-            DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService, storjService);
-            CancelUploadCommand = new CancelUploadCommand(bucketService, objectService, storjService);
-            CancelDownloadCommand = new CancelDownloadCommand(bucketService, objectService, storjService);
+            DownloadObjectCommand = new DownloadObjectCommand(bucketContentViewModel, bucketService, objectService, bucketContentViewModel.BucketName);
+            DeleteObjectCommand = new DeleteObjectCommand(bucketService, objectService);
+            CancelUploadCommand = new CancelUploadCommand(bucketService, objectService);
+            CancelDownloadCommand = new CancelDownloadCommand(bucketService, objectService);
             ShowErrorCommand = new ShowErrorCommand();
         }
         public void InitDownloadOperation()

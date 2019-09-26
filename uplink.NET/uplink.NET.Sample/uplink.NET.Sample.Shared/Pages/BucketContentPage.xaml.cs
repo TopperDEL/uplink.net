@@ -27,7 +27,7 @@ namespace uplink.NET.Sample.Shared.Pages
         public BucketContentViewModel _vm;
         public BucketContentPage()
         {
-            this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService, Factory.StorjService, Factory.LoginService);
+            this.DataContext = _vm = new BucketContentViewModel(Factory.ObjectService, Factory.BucketService, Factory.LoginService);
 
             this.InitializeComponent();
         }

@@ -2,31 +2,36 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using uplink.NET.Sample.Shared.Interfaces;
+using uplink.NET.Interfaces;
 
-namespace uplink.NET.Sample.Shared.Services
+namespace uplink.NET.Models
 {
-    public class StorjService : IStorjService
+    public class StorjEnvironment: IStorjEnvironment
     {
-        public static string TempDir { get; set; }
+        private static string TempDirectory { get; set; }
+        public static void SetTempDirectory(string tempDir)
+        {
+            TempDirectory = tempDir;
+        }
+
         public uplink.NET.Models.Uplink Uplink { get; private set; }
         public uplink.NET.Models.Project Project { get; private set; }
         public uplink.NET.Models.APIKey APIKey { get; private set; }
         public bool IsInitialized { get; private set; }
         public uplink.NET.Models.EncryptionAccess EncryptionAccess { get; private set; }
-        public async Task<bool> InitializeAsync(string apiKey, string satellite, string secret)
+        public async Task<bool> InitializeAsync(string apiKey, string satellite, string secret, UplinkConfig uplinkConfig = null)
         {
             if (IsInitialized)
                 return true;
 
-#if __ANDROID__
-            if (string.IsNullOrEmpty(TempDir))
-                throw new ArgumentException("TempDir must be set on android - use CacheDir.AbsolutePath.");
-#endif
+            if (string.IsNullOrEmpty(TempDirectory))
+                throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
             try
             {
-                var uplinkConfig = new NET.Models.UplinkConfig();
-                Uplink = new NET.Models.Uplink(uplinkConfig, TempDir);
+                if (uplinkConfig != null)
+                    Uplink = new NET.Models.Uplink(uplinkConfig, TempDirectory);
+                else
+                    Uplink = new NET.Models.Uplink(new NET.Models.UplinkConfig(), TempDirectory);
                 APIKey = new NET.Models.APIKey(apiKey);
                 Project = new NET.Models.Project(Uplink, APIKey, satellite);
                 EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);

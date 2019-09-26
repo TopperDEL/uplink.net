@@ -14,20 +14,18 @@ namespace uplink.NET.Sample.Shared.ViewModels
     public class BucketListViewModel : BaseViewModel
     {
         IBucketService _bucketService;
-        IStorjService _storjService;
         public ICommand LogoutCommand { get; private set; }
         public ICommand CreateBucketCommand { get; private set; }
         public ICommand DeleteBucketCommand { get; private set; }
 
         public ObservableCollection<uplink.NET.Sample.Shared.ViewModels.BucketInfoViewModel> Buckets { get; set; }
-        public BucketListViewModel(IBucketService bucketService, IStorjService storjService)
+        public BucketListViewModel(IBucketService bucketService)
         {
             _bucketService = bucketService;
-            _storjService = storjService;
 
             LogoutCommand = new LogoutCommand(Factory.LoginService);
             CreateBucketCommand = new CreateBucketCommand();
-            DeleteBucketCommand = new DeleteBucketCommand(_bucketService, _storjService);
+            DeleteBucketCommand = new DeleteBucketCommand(_bucketService);
 
             Buckets = new ObservableCollection<NET.Sample.Shared.ViewModels.BucketInfoViewModel>();
 
@@ -39,9 +37,9 @@ namespace uplink.NET.Sample.Shared.ViewModels
             base.StartLoading();
 
             NET.Models.BucketListOptions listOptions = new NET.Models.BucketListOptions();
-            var buckets = await _bucketService.ListBucketsAsync(_storjService.Project, listOptions);
+            var buckets = await _bucketService.ListBucketsAsync(listOptions);
             foreach (var bucket in buckets.Items)
-                Buckets.Add(new BucketInfoViewModel(bucket, _bucketService, _storjService));
+                Buckets.Add(new BucketInfoViewModel(bucket, _bucketService));
 
             base.DoneLoading();
         }

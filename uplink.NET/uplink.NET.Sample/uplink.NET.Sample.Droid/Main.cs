@@ -33,7 +33,9 @@ namespace uplink.NET.Sample.Droid
         public override void OnCreate()
         {
             base.OnCreate();
-            StorjService.TempDir = CacheDir.AbsolutePath;
+            Factory.StorjEnvironment = new uplink.NET.Models.StorjEnvironment();
+            Models.StorjEnvironment.SetTempDirectory(CacheDir.AbsolutePath);
+            
             CrossCurrentActivity.Current.Init(this);
         }
         
