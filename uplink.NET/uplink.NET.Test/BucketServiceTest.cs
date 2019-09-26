@@ -20,6 +20,7 @@ namespace uplink.NET.Test
         [TestInitialize]
         public void Init()
         {
+            StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
             _environment = new StorjEnvironment();
             _environment.InitializeAsync(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
             _service = new BucketService(_environment);
