@@ -19,16 +19,14 @@ namespace uplink.NET.Sample.Shared.Commands
         BucketContentViewModel _senderView;
         IObjectService _objectService;
         IBucketService _bucketService;
-        IStorjService _storjService;
         ILoginService _loginService;
         public string BucketName { get; set; }
 
-        public UploadFileCommand(BucketContentViewModel senderView, IObjectService objectService, IBucketService bucketService, IStorjService storjService, ILoginService loginService)
+        public UploadFileCommand(BucketContentViewModel senderView, IObjectService objectService, IBucketService bucketService, ILoginService loginService)
         {
             _senderView = senderView;
             _objectService = objectService;
             _bucketService = bucketService;
-            _storjService = storjService;
             _loginService = loginService;
         }
 
@@ -61,7 +59,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             var stream = galleryObject.GetStream();
 
-            var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, BucketName, _storjService.EncryptionAccess);
+            var bucket = await _bucketService.OpenBucketAsync(BucketName);
             var uploadOptions = new UploadOptions();
             uploadOptions.Expires = DateTime.MaxValue;
             byte[] bytes = new byte[stream.Length];

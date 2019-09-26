@@ -94,13 +94,13 @@
     <AndroidResource Include="Resources\drawable\storj.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\xml\file_paths.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\uplink.NET.Droid\uplink.NET.Droid.csproj">
       <Project>{17d64967-6893-469f-8950-114a983d2a2f}</Project>
       <Name>uplink.NET.Droid</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\xml\file_paths.xml" />
   </ItemGroup>
   <Import Project="..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems" Label="Shared" Condition="Exists('..\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

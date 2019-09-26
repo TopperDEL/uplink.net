@@ -21,15 +21,13 @@ namespace uplink.NET.Sample.Shared.Commands
         BucketContentViewModel _senderView;
         IBucketService _bucketService;
         IObjectService _objectService;
-        IStorjService _storjService;
         string _bucketName;
 
-        public DownloadObjectCommand(BucketContentViewModel senderView, IBucketService bucketService, IObjectService objectService, IStorjService storjService, string bucketName)
+        public DownloadObjectCommand(BucketContentViewModel senderView, IBucketService bucketService, IObjectService objectService, string bucketName)
         {
             _senderView = senderView;
             _bucketService = bucketService;
             _objectService = objectService;
-            _storjService = storjService;
             _bucketName = bucketName;
         }
 
@@ -66,7 +64,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, bucketEntryVM._bucketContentViewModel.BucketName, _storjService.EncryptionAccess);
+                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
                 var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path, true);
                 downloadOperation.DownloadOperationEnded += async (operation) =>
                 {
@@ -97,7 +95,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, bucketEntryVM._bucketContentViewModel.BucketName, _storjService.EncryptionAccess);
+                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
                 var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path, true);
                 downloadOperation.DownloadOperationEnded += async (operation) =>
                 {

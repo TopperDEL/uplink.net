@@ -29,7 +29,7 @@ namespace uplink.NET.Sample.Shared.Pages
         {
             this.InitializeComponent();
 
-            this.DataContext = _vm = new BucketListViewModel(Factory.BucketService, Factory.StorjService);
+            this.DataContext = _vm = new BucketListViewModel(Factory.BucketService);
         }
     }
 }

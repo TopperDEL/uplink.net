@@ -16,13 +16,11 @@ namespace uplink.NET.Sample.Shared.Commands
         public event EventHandler CanExecuteChanged;
         IBucketService _bucketService;
         IObjectService _objectService;
-        IStorjService _storjService;
 
-        public DeleteObjectCommand(IBucketService bucketService, IObjectService objectService, IStorjService storjService)
+        public DeleteObjectCommand(IBucketService bucketService, IObjectService objectService)
         {
             _bucketService = bucketService;
             _objectService = objectService;
-            _storjService = storjService;
         }
 
         public bool CanExecute(object parameter)
@@ -47,7 +45,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 return;
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(_storjService.Project, bucketEntryVM._bucketContentViewModel.BucketName, _storjService.EncryptionAccess);
+                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
                 await _objectService.DeleteObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path);
             }
             catch (Exception ex)

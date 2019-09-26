@@ -34,7 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter\DateTimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IStorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml.cs" />
@@ -45,7 +44,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Pages\LogInPage.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LoginService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\StorjService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketContentViewModel.cs" />
@@ -92,7 +90,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storjlogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\storj_logout.png" />

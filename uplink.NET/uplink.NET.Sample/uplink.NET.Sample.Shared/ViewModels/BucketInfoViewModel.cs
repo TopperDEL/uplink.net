@@ -15,10 +15,10 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand DeleteBucketCommand { get; private set; }
         public ICommand OpenBucketCommand { get; private set; }
 
-        public BucketInfoViewModel(BucketInfo bucketInfo, IBucketService bucketService, IStorjService storjService)
+        public BucketInfoViewModel(BucketInfo bucketInfo, IBucketService bucketService)
         {
             BucketInfo = bucketInfo;
-            DeleteBucketCommand = new DeleteBucketCommand(bucketService, storjService); ;
+            DeleteBucketCommand = new DeleteBucketCommand(bucketService); ;
             OpenBucketCommand = new OpenBucketCommand(); ;
         }
     }

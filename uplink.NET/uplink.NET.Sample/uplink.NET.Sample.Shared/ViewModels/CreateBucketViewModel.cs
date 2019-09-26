@@ -14,9 +14,9 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public ICommand SaveBucketCommand { get; set; }
         public ICommand GoBackCommand { get; set; }
 
-        public CreateBucketViewModel(IBucketService bucketService, IStorjService storjService)
+        public CreateBucketViewModel(IBucketService bucketService)
         {
-            SaveBucketCommand = new SaveBucketCommand(bucketService, storjService);
+            SaveBucketCommand = new SaveBucketCommand(bucketService);
             GoBackCommand = new GoBackCommand();
         }
     }

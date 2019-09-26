@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using uplink.NET.Models;
 using uplink.NET.Sample.Shared.Interfaces;
 using uplink.NET.Sample.Shared.Pages;
 using uplink.NET.Sample.Shared.Services;
@@ -32,8 +33,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             if (loggedIn)
             {
-                var storj = Factory.StorjService;
-                var initialized = await storj.InitializeAsync(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
+                var initialized = await Factory.StorjEnvironment.InitializeAsync(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
 
                 if (initialized)
                 {

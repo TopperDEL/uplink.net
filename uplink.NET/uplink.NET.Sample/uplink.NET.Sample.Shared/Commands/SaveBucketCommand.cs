@@ -14,12 +14,10 @@ namespace uplink.NET.Sample.Shared.Commands
     {
         public event EventHandler CanExecuteChanged;
         IBucketService _bucketService;
-        IStorjService _storjService;
 
-        public SaveBucketCommand(IBucketService bucketService, IStorjService storjService)
+        public SaveBucketCommand(IBucketService bucketService)
         {
             _bucketService = bucketService;
-            _storjService = storjService;
         }
 
         public bool CanExecute(object parameter)
@@ -33,7 +31,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                await _bucketService.CreateBucketAsync(_storjService.Project, createBucketViewModel.BucketName, new NET.Models.BucketConfig());
+                await _bucketService.CreateBucketAsync(createBucketViewModel.BucketName, new NET.Models.BucketConfig());
             }
             catch (Exception ex)
             {

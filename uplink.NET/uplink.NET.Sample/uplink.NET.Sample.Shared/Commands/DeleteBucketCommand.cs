@@ -15,12 +15,10 @@ namespace uplink.NET.Sample.Shared.Commands
     {
         public event EventHandler CanExecuteChanged;
         IBucketService _bucketService;
-        IStorjService _storjService;
 
-        public DeleteBucketCommand(IBucketService bucketService, IStorjService storjService)
+        public DeleteBucketCommand(IBucketService bucketService)
         {
             _bucketService = bucketService;
-            _storjService = storjService;
         }
 
         public bool CanExecute(object parameter)
@@ -46,7 +44,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                await _bucketService.DeleteBucketAsync(_storjService.Project, bucketInfoVM.BucketInfo.Name);
+                await _bucketService.DeleteBucketAsync(bucketInfoVM.BucketInfo.Name);
             }
             catch(Exception ex)
             {
