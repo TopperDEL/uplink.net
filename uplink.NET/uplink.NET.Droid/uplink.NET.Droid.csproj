@@ -56,6 +56,12 @@
     <EmbeddedNativeLibrary Include="libs\x86_64\libstorj_uplink.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="libs\armeabi-v7a\libstorj_uplink.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedNativeLibrary>
+    <EmbeddedNativeLibrary Include="libs\x86\libstorj_uplink.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedNativeLibrary>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
