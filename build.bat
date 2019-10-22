@@ -2,7 +2,7 @@
 cd ..
 IF NOT EXIST "storj\" (
 echo *** Cloning storj
-git clone --branch v0.21.2 https://github.com/storj/storj.git
+git clone --branch v0.23.5 https://github.com/storj/storj.git
 ) else (
 echo *** Folder "storj" already there - using it.
 )
@@ -67,6 +67,12 @@ echo *** Removing (hopefully) unnecessary reference to Shwlapi.h
 findstr /V "hlwapi" storj_uplink_second_wrap.c > storj_uplink_second_wrap2.c
 del storj_uplink_second_wrap.c
 ren storj_uplink_second_wrap2.c storj_uplink_second_wrap.c
+
+echo *** Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated
+findstr /V "check_for_64_bit" storj_uplink.h > storj_uplink.h2
+del storj_uplink.h
+ren storj_uplink.h2 storj_uplink.h
+
 
 set TOOLCHAIN=%ANDROID_HOME%\ndk-bundle\toolchains\llvm\prebuilt\windows-x86_64\bin
 
