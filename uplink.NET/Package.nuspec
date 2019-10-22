@@ -2,10 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.3.0</version>
+    <version>1.3.2</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
-    <developmentDependency>true</developmentDependency>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
     <iconUrl>https://storj.io/press-kit/Storj-symbol.png</iconUrl>
