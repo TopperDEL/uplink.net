@@ -19,7 +19,10 @@ echo *** Running SWIG to generate a c-file to be add to the dll
 swig -csharp -namespace uplink.SWIG storj_uplink_first.i
 
 echo *** Generating Windows-x64-DLL for the first time - this produces a necessary h-file
-REM Here one might alter the build settings to generate a DLL for x86, too
+set CC=gcc
+set CXX=g++
+set GOARCH=amd64
+set CGO_ENABLED=1
 go build -o storj_uplink.dll -buildmode c-shared
 
 echo *** Deleting generated cs-files
@@ -33,15 +36,28 @@ del *.dll
 
 echo *** Removing some types that lead to errors with SWIG
 findstr /V "GoComplex" storj_uplink.h > storj_uplink2.h
+echo *** Removing unnecessary static check
+findstr /V "pointer_matching_GoInt" storj_uplink2.h > storj_uplink3.h
 del storj_uplink.h
-ren storj_uplink2.h storj_uplink.h
+del storj_uplink2.h
+ren storj_uplink3.h storj_uplink.h
 
 echo *** Running SWIG again with the second i-file. It includes more typemaps.
 swig -csharp -namespace uplink.SWIG storj_uplink_second.i
 
-echo *** Generating Windows-x64-DLL for the second time - this includes all SWIG-proxies and is the final-DLL for Windows
-REM Here one might alter the build settings to generate a DLL for x86, too
+echo *** Generating Windows-x86-DLL - this is the final-x86-DLL for Windows
+set CC=i686-w64-mingw32-gcc
+set CXX=i686-w64-mingw32-g++
+set GOARCH=386
+set CGO_ENABLED=1
+go build -o storj_uplink-x86.dll -buildmode c-shared
+echo *** Generating Windows-x64-DLL - this is the final-x64-DLL for Windows
+set CC=gcc
+set CXX=g++
+set GOARCH=amd64
+set CGO_ENABLED=1
 go build -o storj_uplink.dll -buildmode c-shared
+
 
 echo *** Create result-folder
 cd ..\..\..
