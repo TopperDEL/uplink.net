@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)\..\storj_uplink.dll">
+        <None Include="$(MSBuildThisFileDirectory)\..\x64\storj_uplink.dll" Condition="'$(Platform)' == 'x64'">
+            <Link>storj_uplink.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+		<None Include="$(MSBuildThisFileDirectory)\..\x86\storj_uplink.dll" Condition="'$(Platform)' == 'x86'">
             <Link>storj_uplink.dll</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

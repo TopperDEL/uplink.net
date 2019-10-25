@@ -48,7 +48,7 @@ build
 
 This will start the build-process. During the build it will clone the storj-repository into the above chosen working directory.
 
-Once finished it will open the folder "Build-results" within the explorer and it should contain a storj_uplink.dll (Windows x64), a "cs-Files"-Folder and an "Android"-folder (containing the so-files for android with the correct ABI-lib-path).
+Once finished it will open the folder "Build-results" within the explorer and it should contain a storj_uplink.dll (Windows x64), a storj_uplink-x86.dll, a "cs-Files"-Folder and an "Android"-folder (containing the so-files for android with the correct ABI-lib-path).
 
 The files already got copied to the correct locations for the Visual Studio solution.
 

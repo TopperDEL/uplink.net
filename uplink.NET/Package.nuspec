@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -18,18 +18,22 @@ It is - like Storj itself - open source and developed on GitHub.</description>
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
     <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
     <references>
+      <!-- .NET Standard 2.0 -->
       <group targetFramework=".NETStandard2.0">
         <reference file="uplink.NET.dll" />
       </group>
-      <group targetFramework="MonoAndroid0.0">
+      <!-- Android -->
+      <group targetFramework="MonoAndroid">
         <reference file="uplink.NET.Droid.dll" />
       </group>
+      <!-- Windows -->
       <group targetFramework="UAP10.0.17763">
         <reference file="uplink.NET.dll" />
       </group>
     </references>
     <contentFiles>
       <files include="uplink.NET\bin\release\netstandard2.0\storj_uplink.dll" buildAction="None" copyToOutput="true" flatten="true" />
+      <files include="uplink.NET\bin\release\netstandard2.0\storj_uplink-x86.dll" buildAction="None" copyToOutput="true" flatten="true" />
     </contentFiles>
   </metadata>
   <files>
@@ -45,6 +49,7 @@ It is - like Storj itself - open source and developed on GitHub.</description>
     <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.pdb" target="lib\netstandard2.0\uplink.NET.pdb" />
     
     <!--Native lib-->
-    <file src="uplink.NET\storj_uplink.dll" target="storj_uplink.dll" />
+    <file src="uplink.NET\storj_uplink.dll" target="x64\storj_uplink.dll" />
+    <file src="uplink.NET\storj_uplink-x86.dll" target="x86\storj_uplink.dll" />
   </files>
 </package>

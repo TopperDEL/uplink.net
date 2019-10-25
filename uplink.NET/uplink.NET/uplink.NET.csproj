@@ -22,6 +22,9 @@ It is - like Storj itself - open source and developed on github.</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="storj_uplink-x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="storj_uplink.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
