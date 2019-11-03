@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectInfo.cs" />
