@@ -371,13 +371,13 @@ class storj_uplinkPINVOKE {
   public static extern void close_project(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
-  public static extern void free_string(global::System.IntPtr jarg1);
+  public static extern void free_string(ref global::System.IntPtr jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_internal_UniverseIsEmpty___")]
   public static extern byte internal_UniverseIsEmpty();
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_uplink___")]
-  public static extern global::System.IntPtr new_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2, string jarg3);
+  public static extern global::System.IntPtr new_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, ref global::System.IntPtr jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_close_uplink___")]
   public static extern void close_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);

@@ -387,7 +387,7 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
   public static void free_string(out string p0) {
 global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
     try {
-      storj_uplinkPINVOKE.free_string(tmpp0);
+      storj_uplinkPINVOKE.free_string(ref tmpp0);
     } finally {
 p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
 			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
@@ -399,15 +399,15 @@ p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
     return ret;
   }
 
-  public static UplinkRef new_uplink(UplinkConfig p0, out string p1, string p2) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
+  public static UplinkRef new_uplink(UplinkConfig p0, string p1, out string p2) {
+global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
     try {
-      UplinkRef ret = new UplinkRef(storj_uplinkPINVOKE.new_uplink(UplinkConfig.getCPtr(p0), ref tmpp1, p2), true);
+      UplinkRef ret = new UplinkRef(storj_uplinkPINVOKE.new_uplink(UplinkConfig.getCPtr(p0), p1, ref tmpp2), true);
       if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
       return ret;
     } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
+p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
+			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
     }
   }
 
