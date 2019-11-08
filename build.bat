@@ -2,7 +2,7 @@
 cd ..
 IF NOT EXIST "storj\" (
 echo *** Cloning storj
-git clone --branch v0.23.5 https://github.com/storj/storj.git
+git clone --branch v0.25.1 https://github.com/storj/storj.git
 ) else (
 echo *** Folder "storj" already there - using it.
 )
@@ -54,7 +54,7 @@ set CGO_CFLAGS=-g -O2 -Wl,--kill-at
 set CGO_CXXFLAGS=-g -O2 -Wl,--kill-at
 set CGO_FFLAGS=-g -O2 -Wl,--kill-at
 set CGO_LDFLAGS=-g -O2 -Wl,--kill-at
-go build -o storj_uplink-x86.dll -buildmode c-shared
+go build -ldflags="-s -w" -o storj_uplink-x86.dll -buildmode c-shared
 echo *** Generating Windows-x64-DLL - this is the final-x64-DLL for Windows
 set CC=gcc
 set CXX=g++
@@ -64,7 +64,7 @@ set CGO_CFLAGS=-g -O2
 set CGO_CXXFLAGS=-g -O2
 set CGO_FFLAGS=-g -O2
 set CGO_LDFLAGS=-g -O2
-go build -o storj_uplink.dll -buildmode c-shared
+go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
 
 
 echo *** Create result-folder
@@ -108,7 +108,7 @@ set CC=%TOOLCHAIN%\armv7a-linux-androideabi16-clang
 set CXX=%TOOLCHAIN%\armv7a-linux-androideabi16-clang++
 set GOARM=7
 echo *** Target: armeabi-v7a
-go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
 copy ..\..\..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\armeabi-v7a\ /Y
 
 set GOARM=
@@ -117,21 +117,21 @@ set GOARCH=arm64
 set CC=%TOOLCHAIN%\aarch64-linux-android21-clang
 set CXX=%TOOLCHAIN%\aarch64-linux-android21-clang++
 echo *** Target: arm64-v8a
-go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
 copy ..\..\..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\arm64-v8a\ /Y
 
 set GOARCH=386
 set CC=%TOOLCHAIN%\i686-linux-android16-clang
 set CXX=%TOOLCHAIN%\i686-linux-android16-clang++
 echo *** Target: x86
-go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
 copy ..\..\..\Build-Results\Android\x86\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86\ /Y
 
 set GOARCH=amd64
 set CC=%TOOLCHAIN%\x86_64-linux-android21-clang
 set CXX=%TOOLCHAIN%\x86_64-linux-android21-clang++
 echo *** Target: x86_64
-go build -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
 copy ..\..\..\Build-Results\Android\x86_64\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86_64\ /Y
 
 cd ..\..\..
