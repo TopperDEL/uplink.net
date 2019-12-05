@@ -54,6 +54,16 @@ public class UplinkConfig_Volatile_tls : global::System.IDisposable {
     } 
   }
 
+  public string peer_ca_whitelist_path {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_tls_peer_ca_whitelist_path_set(swigCPtr, value);
+    } 
+    get {
+      string ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_tls_peer_ca_whitelist_path_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public UplinkConfig_Volatile_tls() : this(storj_uplinkPINVOKE.new_UplinkConfig_Volatile_tls(), true) {
   }
 
