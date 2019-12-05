@@ -52,6 +52,46 @@ public class UplinkConfig_Volatile : global::System.IDisposable {
     } 
   }
 
+  public string peer_id_version {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_peer_id_version_set(swigCPtr, value);
+    } 
+    get {
+      string ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_peer_id_version_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public int max_inline_size {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_max_inline_size_set(swigCPtr, value);
+    } 
+    get {
+      int ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_max_inline_size_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public int max_memory {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_max_memory_set(swigCPtr, value);
+    } 
+    get {
+      int ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_max_memory_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public int dial_timeout {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_dial_timeout_set(swigCPtr, value);
+    } 
+    get {
+      int ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_dial_timeout_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public UplinkConfig_Volatile() : this(storj_uplinkPINVOKE.new_UplinkConfig_Volatile(), true) {
   }
 

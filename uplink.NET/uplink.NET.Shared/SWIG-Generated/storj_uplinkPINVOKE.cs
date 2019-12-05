@@ -490,6 +490,30 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_tls_get___")]
   public static extern global::System.IntPtr UplinkConfig_Volatile_tls_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_peer_id_version_set___")]
+  public static extern void UplinkConfig_Volatile_peer_id_version_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_peer_id_version_get___")]
+  public static extern string UplinkConfig_Volatile_peer_id_version_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_max_inline_size_set___")]
+  public static extern void UplinkConfig_Volatile_max_inline_size_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_max_inline_size_get___")]
+  public static extern int UplinkConfig_Volatile_max_inline_size_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_max_memory_set___")]
+  public static extern void UplinkConfig_Volatile_max_memory_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_max_memory_get___")]
+  public static extern int UplinkConfig_Volatile_max_memory_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_dial_timeout_set___")]
+  public static extern void UplinkConfig_Volatile_dial_timeout_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_dial_timeout_get___")]
+  public static extern int UplinkConfig_Volatile_dial_timeout_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkConfig_Volatile___")]
   public static extern global::System.IntPtr new_UplinkConfig_Volatile();
 
@@ -501,6 +525,12 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_tls_skip_peer_ca_whitelist_get___")]
   public static extern bool UplinkConfig_Volatile_tls_skip_peer_ca_whitelist_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_tls_peer_ca_whitelist_path_set___")]
+  public static extern void UplinkConfig_Volatile_tls_peer_ca_whitelist_path_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_tls_peer_ca_whitelist_path_get___")]
+  public static extern string UplinkConfig_Volatile_tls_peer_ca_whitelist_path_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkConfig_Volatile_tls___")]
   public static extern global::System.IntPtr new_UplinkConfig_Volatile_tls();
