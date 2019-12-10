@@ -66,6 +66,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\ProjectRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\RedundancyAlgorithm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\RedundancyScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\ScopeRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplinkPINVOKE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_ptrdiff_t.cs" />

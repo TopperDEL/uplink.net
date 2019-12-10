@@ -29,6 +29,18 @@ namespace uplink.NET.Models
                 throw new NullReferenceException("No APIKey-reference created");
         }
 
+        private APIKey()
+        {
+        }
+
+        internal static APIKey FromSWIG(SWIG.APIKeyRef original)
+        {
+            APIKey apiKey = new APIKey();
+            apiKey._apiKeyRef = original;
+
+            return apiKey;
+        }
+
         /// <summary>
         /// Returns the used APIKey as string
         /// </summary>

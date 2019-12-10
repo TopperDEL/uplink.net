@@ -253,6 +253,27 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_GoSlice___")]
   public static extern void delete_GoSlice(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_scope___")]
+  public static extern global::System.IntPtr new_scope(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, ref global::System.IntPtr jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_scope_satellite_address___")]
+  public static extern string get_scope_satellite_address(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_scope_api_key___")]
+  public static extern global::System.IntPtr get_scope_api_key(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_scope_enc_access___")]
+  public static extern global::System.IntPtr get_scope_enc_access(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_parse_scope___")]
+  public static extern global::System.IntPtr parse_scope(string jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_serialize_scope___")]
+  public static extern string serialize_scope(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_scope___")]
+  public static extern void free_scope(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_parse_api_key___")]
   public static extern global::System.IntPtr parse_api_key(string jarg1, ref global::System.IntPtr jarg2);
 
@@ -331,6 +352,9 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_download___")]
   public static extern global::System.IntPtr download(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, ref global::System.IntPtr jarg3);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_download_range___")]
+  public static extern global::System.IntPtr download_range(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, long jarg3, long jarg4, ref global::System.IntPtr jarg5);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_download_read___")]
   public static extern uint download_read(global::System.Runtime.InteropServices.HandleRef jarg1, [global::System.Runtime.InteropServices.Out, global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPArray)]byte[] jarg2, uint jarg3, ref global::System.IntPtr jarg4);
 
@@ -377,7 +401,7 @@ class storj_uplinkPINVOKE {
   public static extern byte internal_UniverseIsEmpty();
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_uplink___")]
-  public static extern global::System.IntPtr new_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2, string jarg3);
+  public static extern global::System.IntPtr new_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, ref global::System.IntPtr jarg3);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_close_uplink___")]
   public static extern void close_uplink(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
@@ -477,6 +501,18 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_EncryptionAccessRef___")]
   public static extern void delete_EncryptionAccessRef(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_ScopeRef__handle_set___")]
+  public static extern void ScopeRef__handle_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_ScopeRef__handle_get___")]
+  public static extern int ScopeRef__handle_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_ScopeRef___")]
+  public static extern global::System.IntPtr new_ScopeRef();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_ScopeRef___")]
+  public static extern void delete_ScopeRef(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_get___")]
   public static extern global::System.IntPtr UplinkConfig_Volatile_get(global::System.Runtime.InteropServices.HandleRef jarg1);
