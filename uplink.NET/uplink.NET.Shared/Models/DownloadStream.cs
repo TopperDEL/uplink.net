@@ -8,7 +8,8 @@ namespace uplink.NET.Models
 {
     public class DownloadStream : Stream
     {
-        private SWIG.DownloaderRef _downloaderRef;
+        private BucketRef _bucketRef;
+        private string _objectName;
         public override bool CanRead => true;
 
         public override bool CanSeek => false;
@@ -20,13 +21,11 @@ namespace uplink.NET.Models
 
         public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        private DownloadOperation _download;
-        public DownloadStream(SWIG.DownloaderRef downloaderRef, ulong totalBytes, string objectName)
+        public DownloadStream(BucketRef bucketRef, int totalBytes, string objectName)
         {
-            _length = (long)totalBytes;
-            _downloaderRef = downloaderRef;
-            _download = new DownloadOperation(downloaderRef, totalBytes, objectName);
-            _download.StartDownloadAsync();
+            _length = totalBytes;
+            _bucketRef = bucketRef;
+            _objectName = objectName;
         }
 
         public override void Flush()
@@ -35,15 +34,20 @@ namespace uplink.NET.Models
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while (_download.BytesReceived < (ulong)offset)
-                Task.Delay(100);
+            string error;
+            var downloaderRef = SWIG.storj_uplink.download_range(_bucketRef._bucketRef, _objectName, offset, count, out error);
 
-            int available = (int)_download.BytesReceived - offset;
-            if (available > count)
-                available = count;
+            if (!string.IsNullOrEmpty(error))
+                return 0;
 
-            Buffer.BlockCopy(_download.DownloadedBytes, offset, buffer, 0, (int)available);
-            return available;
+            using (var download = new DownloadOperation(downloaderRef, (ulong)count, _objectName))
+            {
+                var downloadTask = download.StartDownloadAsync();
+                downloadTask.Wait();
+
+                Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, 0, (int)download.BytesReceived);
+                return (int)download.BytesReceived;
+            }
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -64,9 +68,6 @@ namespace uplink.NET.Models
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            _download.Cancel();
-            _download.Dispose();
-            _download = null;
         }
     }
 }
