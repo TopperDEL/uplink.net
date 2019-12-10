@@ -14,11 +14,11 @@ namespace uplink.NET.Models
         internal SWIG.ProjectRef _projectRef = null;
 
         /// <summary>
-        /// Creates a new project-handle for a given uplink, apikey and satellite-address
+        /// Creates a new project-handle for a given uplink, API-key and satellite-address
         /// </summary>
         /// <param name="uplink">The handle to the uplink</param>
-        /// <param name="apiKey">The API-Key to use</param>
-        /// <param name="satelliteAddr">The satellite-Address (host:port) to connect to</param>
+        /// <param name="apiKey">The API-key to use</param>
+        /// <param name="satelliteAddr">The satellite-address (host:port) to connect to</param>
         public Project(Uplink uplink, APIKey apiKey, string satelliteAddr)
         {
             string error;
