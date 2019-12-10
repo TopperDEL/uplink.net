@@ -25,7 +25,7 @@ namespace uplink.NET.Models
 
             _uplinkConfig = new SWIG.UplinkConfig();
             _uplinkConfig.Volatile.tls.skip_peer_ca_whitelist = uplinkConfig.Volatile_TLS_SkipPeerCAWhitelist;
-            _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, out error, tempDir);
+            _uplinkRef = SWIG.storj_uplink.new_uplink(_uplinkConfig, tempDir, out error);
 
             if (!string.IsNullOrEmpty(error))
                 throw new ArgumentException(error);

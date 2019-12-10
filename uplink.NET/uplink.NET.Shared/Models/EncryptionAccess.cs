@@ -22,6 +22,14 @@ namespace uplink.NET.Models
             return base58;
         }
 
+        internal static EncryptionAccess FromSWIG(SWIG.EncryptionAccessRef original)
+        {
+            EncryptionAccess encAccess = new EncryptionAccess();
+            encAccess._handle = original;
+
+            return encAccess;
+        }
+
         /// <summary>
         /// Creates an EncryptionAccess from a given passphrase for a given project
         /// </summary>
