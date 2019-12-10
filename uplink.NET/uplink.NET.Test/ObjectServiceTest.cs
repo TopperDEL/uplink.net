@@ -33,28 +33,28 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task UploadObject_Uploads_LargeFile()
         {
-            await Upload_X_Bytes(1024 * 10, 10, new List<ulong>() { 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192, 9216, 10240 });
+            await Upload_X_Bytes(1024 * 10, 10);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_2500Bytes()
         {
-            await Upload_X_Bytes(2500, 3, new List<ulong>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
+            await Upload_X_Bytes(2500, 3);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_2048Bytes()
         {
-            await Upload_X_Bytes(2048, 2, new List<ulong>() { 1024, 2048 }); //Two 1024 bytes packages
+            await Upload_X_Bytes(2048, 2);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_256Bytes()
         {
-            await Upload_X_Bytes(256, 1, new List<ulong>() { 256 }); //One 256 bytes package
+            await Upload_X_Bytes(256, 1);
         }
 
-        private async Task Upload_X_Bytes(ulong bytes, int exptecedProgressCount, List<ulong> progressValues)
+        private async Task Upload_X_Bytes(ulong bytes, int exptecedProgressCount)
         {
             string bucketname = "uploadtest";
 
@@ -62,18 +62,17 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
-            var progressChangeCounter = 0;
+            bool progressChangeCounterCalled = false;
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             uploadOperation.UploadOperationProgressChanged += (op) =>
             {
-                Assert.AreEqual(uploadOperation.BytesSent, progressValues[progressChangeCounter]);
-                progressChangeCounter++;
+                progressChangeCounterCalled = true;
             };
 
             await uploadOperation.StartUploadAsync();
 
-            Assert.AreEqual(exptecedProgressCount, progressChangeCounter);
+            Assert.IsTrue(progressChangeCounterCalled);
             Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
             Assert.AreEqual(bytes, uploadOperation.BytesSent);
         }
@@ -81,22 +80,22 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task DownloadObject_Downloads_256Bytes()
         {
-            await Download_X_Bytes(256, 1, new List<ulong>() { 256 }); //One 256 bytes package
+            await Download_X_Bytes(256, 1);
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2048Bytes()
         {
-            await Download_X_Bytes(2048, 2, new List<ulong>() { 1024, 2048 }); //Two 1024 bytes package
+            await Download_X_Bytes(2048, 2);
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2500Bytes()
         {
-            await Download_X_Bytes(2500, 3, new List<ulong>() { 1024, 2048, 2500 }); //Two 1024 bytes packages, one with 452 bytes
+            await Download_X_Bytes(2500, 3);
         }
 
-        private async Task Download_X_Bytes(ulong bytes, int exptecedProgressCount, List<ulong> progressValues)
+        private async Task Download_X_Bytes(ulong bytes, int exptecedProgressCount)
         {
             string bucketname = "downloadtest";
 
@@ -104,22 +103,20 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.OpenBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
-            
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var progressChangeCounter = 0;
+            bool progressChangeCounterCalled = false;
 
             var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt", false);
             downloadOperation.DownloadOperationProgressChanged += (op) =>
             {
-                Assert.AreEqual(downloadOperation.BytesReceived, progressValues[progressChangeCounter]);
-                progressChangeCounter++;
+                progressChangeCounterCalled = true;
             };
 
             await downloadOperation.StartDownloadAsync();
 
-            Assert.AreEqual(exptecedProgressCount, progressChangeCounter);
+            Assert.IsTrue(progressChangeCounterCalled);
             Assert.IsTrue(downloadOperation.Completed);
             Assert.AreEqual(bytes, downloadOperation.BytesReceived);
             int index = 0;
@@ -127,6 +124,32 @@ namespace uplink.NET.Test
             {
                 Assert.AreEqual(bytesToUpload[index], b);
                 index++;
+            }
+        }
+
+        [TestMethod]
+        public async Task DownloadStream01()
+        {
+            string bucketname = "downloadstreamtest";
+
+            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            byte[] bytesToUpload = new byte[250];
+            for (int i = 0; i < 250; i++)
+            {
+                bytesToUpload[i] = Convert.ToByte(i);
+            }
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
+            byte[] bytesReceived = new byte[50];
+            await stream.ReadAsync(bytesReceived, 100, 50);
+
+            for (int i = 0; i < 50; i++)
+            {
+                Assert.AreEqual(100 + i, Convert.ToInt32(bytesReceived[i]));
             }
         }
 
@@ -272,6 +295,7 @@ namespace uplink.NET.Test
         {
             await DeleteBucketAsync("uploadtest");
             await DeleteBucketAsync("downloadtest");
+            await DeleteBucketAsync("downloadstreamtest");
             await DeleteBucketAsync("listobject-lists-raiseserror");
             await DeleteBucketAsync("listobject-lists-existingobjects");
             await DeleteBucketAsync("getobjectmeta-gets-objectmeta");
