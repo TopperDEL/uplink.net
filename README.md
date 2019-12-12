@@ -58,3 +58,6 @@ In the file storj_uplinkPINVOKE.cs search for "free_string" and remove the "ref"
 In the file storj_uplink.cs also remove the "ref" from the call to storj_uplinkPINVOKE.free_string().
 
 Build the solution.
+
+**Testing**
+To run the test within the VS-solution you have to set the VALID_API_KEY within TestConstants.cs of the test-project to a valid API-key. If you use a different satellite, change that address, too. Storj provides a local test-net you can spin up very quickly that would be possible to use, too.
