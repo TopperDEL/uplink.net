@@ -59,5 +59,6 @@ In the file storj_uplink.cs also remove the "ref" from the call to storj_uplinkP
 
 Build the solution.
 
-**Testing**
+## Testing
+
 To run the test within the VS-solution you have to set the VALID_API_KEY within TestConstants.cs of the test-project to a valid API-key. If you use a different satellite, change that address, too. Storj provides a local test-net you can spin up very quickly that would be possible to use, too.
