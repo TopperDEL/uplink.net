@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\RedundancyScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Scope.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StorjEnvironment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UplinkConfig.cs" />
@@ -75,7 +76,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplinkPINVOKE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_ptrdiff_t.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_p_EncryptionRestriction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_uint8_t.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_void.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\UplinkConfig.cs" />

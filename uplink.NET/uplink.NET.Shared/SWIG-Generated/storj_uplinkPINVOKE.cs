@@ -272,7 +272,7 @@ class storj_uplinkPINVOKE {
   public static extern string serialize_scope(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope___")]
-  public static extern global::System.IntPtr restrict_scope(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, ref global::System.IntPtr jarg5);
+  public static extern global::System.IntPtr restrict_scope(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, [global::System.Runtime.InteropServices.Out, global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPArray)]EncryptionRestriction[] jarg3, uint jarg4, ref global::System.IntPtr jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_scope___")]
   public static extern void free_scope(global::System.Runtime.InteropServices.HandleRef jarg1);
