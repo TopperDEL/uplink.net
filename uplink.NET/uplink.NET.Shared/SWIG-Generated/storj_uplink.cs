@@ -82,6 +82,18 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     }
   }
 
+  public static ScopeRef restrict_scope(ScopeRef p0, Caveat p1, SWIGTYPE_p_p_EncryptionRestriction p2, uint p3, out string p4) {
+global::System.IntPtr tmpp4=global::System.IntPtr.Zero;
+    try {
+      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.restrict_scope(ScopeRef.getCPtr(p0), Caveat.getCPtr(p1), SWIGTYPE_p_p_EncryptionRestriction.getCPtr(p2), p3, ref tmpp4), true);
+      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      return ret;
+    } finally {
+p4=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp4);
+			  if(tmpp4 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp4);
+    }
+  }
+
   public static void free_scope(ScopeRef p0) {
     storj_uplinkPINVOKE.free_scope(ScopeRef.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
