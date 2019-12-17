@@ -8,6 +8,11 @@ namespace uplink.NET.Models
     {
         internal SWIG.ScopeRef _scoperef;
 
+        internal Scope(SWIG.ScopeRef scopeRef)
+        {
+            _scoperef = scopeRef;
+        }
+
         /// <summary>
         /// Creates a new scope from a serialized string.
         /// A Scope contains info about the satellite-address, the EncryptionAccess and the API-Key.
@@ -106,6 +111,31 @@ namespace uplink.NET.Models
                 throw new ArgumentException(error);
 
             return serializedScope;
+        }
+
+        /// <summary>
+        /// Restricts a scope with the given caveat and for the given EncryptionRestrictions
+        /// </summary>
+        /// <param name="caveat">The caveat describes, which actions are allowd</param>
+        /// <param name="encryptionRestrictions">The encryptionRestrictions declare for which buckets and path-prefixes the restrictions are meant for</param>
+        /// <returns>The restricted scope</returns>
+        public Scope Restrict(Caveat caveat, List<EncryptionRestriction> encryptionRestrictions)
+        {
+            string error;
+
+            SWIG.EncryptionRestriction[] restrictions = new SWIG.EncryptionRestriction[encryptionRestrictions.Count];
+            for (int i = 0; i < encryptionRestrictions.Count; i++)
+                restrictions[i] = encryptionRestrictions[i].ToSWIG();
+
+            try
+            {
+                var restricted = SWIG.storj_uplink.restrict_scope(_scoperef, caveat.ToSWIG(), restrictions, (uint)encryptionRestrictions.Count, out error);
+                return new Scope(restricted);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public void Dispose()

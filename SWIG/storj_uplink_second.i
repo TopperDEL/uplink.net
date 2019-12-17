@@ -66,6 +66,9 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 	extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
 	extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 %}
+
+CSHARP_ARRAYS(EncryptionRestriction, EncryptionRestriction)
+%apply EncryptionRestriction OUTPUT[] { EncryptionRestriction **p2 }
 		 
 /* Parse the header file to generate wrappers */
 %include "storj_uplink.h"
