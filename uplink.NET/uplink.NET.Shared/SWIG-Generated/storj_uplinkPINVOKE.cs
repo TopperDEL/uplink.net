@@ -271,6 +271,9 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_serialize_scope___")]
   public static extern string serialize_scope(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope___")]
+  public static extern global::System.IntPtr restrict_scope(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, uint jarg4, ref global::System.IntPtr jarg5);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_scope___")]
   public static extern void free_scope(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -969,6 +972,54 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_ObjectMeta___")]
   public static extern void delete_ObjectMeta(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionRestriction_bucket_set___")]
+  public static extern void EncryptionRestriction_bucket_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionRestriction_bucket_get___")]
+  public static extern string EncryptionRestriction_bucket_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionRestriction_path_prefix_set___")]
+  public static extern void EncryptionRestriction_path_prefix_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionRestriction_path_prefix_get___")]
+  public static extern string EncryptionRestriction_path_prefix_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_EncryptionRestriction___")]
+  public static extern global::System.IntPtr new_EncryptionRestriction();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_EncryptionRestriction___")]
+  public static extern void delete_EncryptionRestriction(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_reads_set___")]
+  public static extern void Caveat_disallow_reads_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_reads_get___")]
+  public static extern bool Caveat_disallow_reads_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_writes_set___")]
+  public static extern void Caveat_disallow_writes_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_writes_get___")]
+  public static extern bool Caveat_disallow_writes_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_lists_set___")]
+  public static extern void Caveat_disallow_lists_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_lists_get___")]
+  public static extern bool Caveat_disallow_lists_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_deletes_set___")]
+  public static extern void Caveat_disallow_deletes_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Caveat_disallow_deletes_get___")]
+  public static extern bool Caveat_disallow_deletes_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_Caveat___")]
+  public static extern global::System.IntPtr new_Caveat();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_Caveat___")]
+  public static extern void delete_Caveat(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_bucketinfo_at___")]
   public static extern global::System.IntPtr get_bucketinfo_at(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);

@@ -25,8 +25,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Caveat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionRestriction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectInfo.cs" />
@@ -52,10 +54,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketListOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\BucketRef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\Caveat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\CipherSuite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\DownloaderRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\EncryptionAccessRef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\EncryptionParameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\EncryptionRestriction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\GoInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\GoSlice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\ListDirection.cs" />
@@ -71,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\storj_uplinkPINVOKE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_ptrdiff_t.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_p_EncryptionRestriction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_uint8_t.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\SWIGTYPE_p_void.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\UplinkConfig.cs" />
