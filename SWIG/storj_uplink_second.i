@@ -67,8 +67,14 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 	extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 %}
 
-CSHARP_ARRAYS(EncryptionRestriction, EncryptionRestriction)
-%apply EncryptionRestriction OUTPUT[] { EncryptionRestriction **p2 }
+/* Map EncryptionRestriction** for function restrict_scope */
+%typemap(ctype)   EncryptionRestriction** "EncryptionRestriction**"
+%typemap(cstype)  EncryptionRestriction** "EncryptionRestriction[]"
+%typemap(imtype, inattributes="[System.Runtime.InteropServices.In, System.Runtime.InteropServices.Out, System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPArray)]") EncryptionRestriction** "EncryptionRestriction[]"
+%typemap(csin)    EncryptionRestriction** "$csinput"
+%typemap(in)      EncryptionRestriction** "$1 = $input;"
+%typemap(freearg) EncryptionRestriction** ""
+%typemap(argout)  EncryptionRestriction** ""
 		 
 /* Parse the header file to generate wrappers */
 %include "storj_uplink.h"
