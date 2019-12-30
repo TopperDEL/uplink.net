@@ -1029,6 +1029,21 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_encryption_access_with_default_key2___")]
   public static extern global::System.IntPtr new_encryption_access_with_default_key2(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_restrictions___")]
+  public static extern void prepare_restrictions(int jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_add_restriction___")]
+  public static extern bool add_restriction(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope2___")]
+  public static extern global::System.IntPtr restrict_scope2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3, ref global::System.IntPtr jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrictions_set___")]
+  public static extern void restrictions_set(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrictions_get___")]
+  public static extern global::System.IntPtr restrictions_get();
 }
 
 }
