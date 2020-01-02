@@ -71,6 +71,9 @@ set CGO_FFLAGS=-g -O2
 set CGO_LDFLAGS=-g -O2
 go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
 
+echo *** Replacing ref-modifier from free_string-method
+fart "storj_uplink.cs" "storj_uplinkPINVOKE.free_string(ref tmpp0);" "storj_uplinkPINVOKE.free_string(tmpp0);"
+fart "storj_uplinkPINVOKE.cs" "public static extern void free_string(ref global::System.IntPtr jarg1);" "public static extern void free_string(global::System.IntPtr jarg1);"
 
 echo *** Create result-folder
 cd ..\..\..
