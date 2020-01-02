@@ -7,6 +7,7 @@
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+	<icon>images\Storj-symbol.png</icon>
     <iconUrl>https://storj.io/press-kit/Storj-symbol.png</iconUrl>
     <description>This library provides access to the secure and decentralised Storj-network. It allows you to:
 - create and delete buckets
@@ -46,6 +47,8 @@ It is - like Storj itself - open source and developed on GitHub.</description>
     </contentFiles>
   </metadata>
   <files>
+    <file src="Storj-symbol.png" target="images\" />
+	
     <file src="uplink.NET.targets" target="build\uplink.NET.targets" />
     <!--.NET Standard 2.0-->
     <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netstandard2.0\uplink.NET.dll" />
