@@ -83,10 +83,11 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 extern BucketInfo get_bucketinfo_at(BucketList list, int index);
 extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
 extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
+extern void free_restrictions();
 extern void prepare_restrictions(int count);
 extern bool add_restriction(EncryptionRestriction restriction, int position);
 extern ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, size_t p3, char** p4);
-extern void free_restrictions();
+extern char* get_storj_version();
 
 %inline %{
 BucketInfo get_bucketinfo_at(BucketList list, int index){
@@ -103,6 +104,13 @@ EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes){
 
 EncryptionRestriction *restrictions = NULL;
 
+void free_restrictions(){
+	if(!restrictions)
+	{
+		free(restrictions);
+	}
+}
+
 void prepare_restrictions(int count){
 	free_restrictions();
 	
@@ -118,10 +126,7 @@ ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, size_t p3, char** p4){
 	return restrict_scope(p0, p1, &restrictions, p3, p4);
 }
 
-void free_restrictions(){
-	if(!restrictions)
-	{
-		free(restrictions);
-	}
+char* get_storj_version(){
+	return "STORJVERSION";
 }
 %}

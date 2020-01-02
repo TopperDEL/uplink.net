@@ -398,7 +398,7 @@ class storj_uplinkPINVOKE {
   public static extern void close_project(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
-  public static extern void free_string(ref global::System.IntPtr jarg1);
+  public static extern void free_string(global::System.IntPtr jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_internal_UniverseIsEmpty___")]
   public static extern byte internal_UniverseIsEmpty();
@@ -1030,6 +1030,9 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_encryption_access_with_default_key2___")]
   public static extern global::System.IntPtr new_encryption_access_with_default_key2(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_restrictions___")]
+  public static extern void free_restrictions();
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_restrictions___")]
   public static extern void prepare_restrictions(int jarg1);
 
@@ -1039,8 +1042,8 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope2___")]
   public static extern global::System.IntPtr restrict_scope2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3, ref global::System.IntPtr jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_restrictions___")]
-  public static extern void free_restrictions();
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_storj_version___")]
+  public static extern string get_storj_version();
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrictions_set___")]
   public static extern void restrictions_set(global::System.Runtime.InteropServices.HandleRef jarg1);

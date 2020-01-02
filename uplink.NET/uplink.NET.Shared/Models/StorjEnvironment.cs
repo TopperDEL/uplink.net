@@ -44,5 +44,14 @@ namespace uplink.NET.Models
             IsInitialized = true;
             return true;
         }
+
+        /// <summary>
+        /// Gets the version of the underlying libuplinkc-library. It returns the github-tag being used.
+        /// </summary>
+        /// <returns>The storj-version</returns>
+        public static string GetStorjVersion()
+        {
+            return SWIG.storj_uplink.get_storj_version();
+        }
     }
 }
