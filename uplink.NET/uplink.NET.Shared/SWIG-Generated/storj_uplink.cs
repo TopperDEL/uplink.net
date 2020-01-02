@@ -487,7 +487,7 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
   public static void free_string(out string p0) {
 global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
     try {
-      storj_uplinkPINVOKE.free_string(ref tmpp0);
+      storj_uplinkPINVOKE.free_string(tmpp0);
     } finally {
 p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
 			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
@@ -539,6 +539,10 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     return ret;
   }
 
+  public static void free_restrictions() {
+    storj_uplinkPINVOKE.free_restrictions();
+  }
+
   public static void prepare_restrictions(int count) {
     storj_uplinkPINVOKE.prepare_restrictions(count);
   }
@@ -561,8 +565,9 @@ p4=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp4);
     }
   }
 
-  public static void free_restrictions() {
-    storj_uplinkPINVOKE.free_restrictions();
+  public static string get_storj_version() {
+    string ret = storj_uplinkPINVOKE.get_storj_version();
+    return ret;
   }
 
   public static EncryptionRestriction restrictions {

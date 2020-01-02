@@ -12,9 +12,13 @@ set /p DUMMY=You may alter the storj-library now. Otherwise or if you're ready: 
 
 echo *** Copying necessary files
 copy .\uplink.net\SWIG\*.i .\storj\lib\uplinkc\ /Y
+copy .\uplink.net\SWIG\*.exe .\storj\lib\uplinkc\ /Y
 copy .\uplink.net\GO\*.go .\storj\lib\uplinkc\ /Y
 
 cd .\storj\lib\uplinkc\
+
+echo *** Replacing the version-variable within the DLL
+fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
 
 echo *** Running SWIG to generate a c-file to be add to the dll
 swig -csharp -namespace uplink.SWIG storj_uplink_first.i
