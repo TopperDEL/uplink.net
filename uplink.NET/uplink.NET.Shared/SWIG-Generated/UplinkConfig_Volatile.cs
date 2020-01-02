@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class UplinkConfig_Volatile : global::System.IDisposable {
+internal class UplinkConfig_Volatile : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 

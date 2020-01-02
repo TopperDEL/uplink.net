@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class UploadOptions : global::System.IDisposable {
+internal class UploadOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 

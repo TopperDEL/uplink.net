@@ -1,4 +1,6 @@
 %module storj_uplink
+%pragma(csharp) moduleclassmodifiers="internal class"
+%typemap(csclassmodifiers) SWIGTYPE "internal class"
 %include "csharp.swg"
 
 /*Wrap "out string"-parameters*/

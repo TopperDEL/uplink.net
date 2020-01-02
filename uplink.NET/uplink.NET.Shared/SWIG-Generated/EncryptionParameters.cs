@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class EncryptionParameters : global::System.IDisposable {
+internal class EncryptionParameters : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
