@@ -52,12 +52,9 @@ Once finished it will open the folder "Build-results" within the explorer and it
 
 The files already got copied to the correct locations for the Visual Studio solution.
 
-Unfortunately, there are still some manual tasks to do:
-
-In the file storj_uplinkPINVOKE.cs search for "free_string" and remove the "ref" from the parameter jarg1. This should be handled by SWIG, but I don't know how.
-In the file storj_uplink.cs also remove the "ref" from the call to storj_uplinkPINVOKE.free_string().
-
 Build the solution.
+
+Feel good.
 
 ## Testing
 
