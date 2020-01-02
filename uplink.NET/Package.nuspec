@@ -1,75 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
-	<icon>images\Storj-symbol.png</icon>
+    <icon>images\Storj-symbol.png</icon>
     <iconUrl>https://storj.io/press-kit/Storj-symbol.png</iconUrl>
     <description>This library provides access to the secure and decentralised Storj-network. It allows you to:
 - create and delete buckets
 - upload and download files
 
 It is - like Storj itself - open source and developed on GitHub.</description>
-    <releaseNotes>Contains Scope and Restrict() to create Macaroons. Minor fixes with MemoryManagement on RestrictScope. GetStorjVersion within StorjEnvironment.</releaseNotes>
+    <releaseNotes>- Contains Scope and Restrict() to create Macaroons.
+	- Minor fixes with MemoryManagement on RestrictScope.
+	- GetStorjVersion within StorjEnvironment.
+	- Correct x86/x64-handling</releaseNotes>
     <copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</copyright>
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
     <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
-	 <dependencies>
-      <group targetFramework="netstandard2.0" />
-	  <group targetFramework="netcoreapp1.0" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.7" />
+	  <group targetFramework=".NETStandard2.0" />
 	  <group targetFramework="MonoAndroid" />
-	  <group targetFramework="UAP10.0.17763" />
     </dependencies>
-    <references>
-      <!-- .NET Standard 2.0 -->
-      <group targetFramework="netstandard2.0">
-        <reference file="uplink.NET.dll" />
-      </group>
-	  <group targetFramework="netcoreapp1.0">
-        <reference file="uplink.NET.dll" />
-      </group>
-      <!-- Android -->
-      <group targetFramework="MonoAndroid">
-        <reference file="uplink.NET.Droid.dll" />
-      </group>
-      <!-- Windows -->
-      <group targetFramework="UAP10.0.17763">
-        <reference file="uplink.NET.dll" />
-      </group>
-    </references>
-    <contentFiles>
-      <files include="uplink.NET\bin\release\netstandard2.0\storj_uplink.dll" buildAction="None" copyToOutput="true" flatten="true" />
-      <files include="uplink.NET\bin\release\netstandard2.0\storj_uplink-x86.dll" buildAction="None" copyToOutput="true" flatten="true" />
-    </contentFiles>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.7" />
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.7" />
+    </frameworkAssemblies>
   </metadata>
   <files>
     <file src="Storj-symbol.png" target="images\" />
-	
     <file src="uplink.NET.targets" target="build\uplink.NET.targets" />
-    <!--.NET Standard 2.0-->
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netstandard2.0\uplink.NET.dll" />
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="ref\netstandard2.0\uplink.NET.dll" />
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.pdb" target="lib\netstandard2.0\uplink.NET.pdb" />
-    <!--.NET core-->
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netcoreapp1.0\uplink.NET.dll" />
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="ref\netcoreapp1.0\uplink.NET.dll" />
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.pdb" target="lib\netcoreapp1.0\uplink.NET.pdb" />
-    <!--Windows-->
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\uap10.0.17763\uplink.NET.dll" />
-    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="ref\uap10.0.17763\uplink.NET.dll" />
-	<file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.pdb" target="lib\uap10.0.17763\uplink.NET.pdb" />
-	<!--Android-->
-    <file src="uplink.NET.Droid\bin\Release\uplink.NET.Droid.dll" target="lib\MonoAndroid\uplink.NET.Droid.dll" />
-    <file src="uplink.NET.Droid\bin\Release\uplink.NET.Droid.dll" target="ref\MonoAndroid\uplink.NET.Droid.dll" />
-    <file src="uplink.NET.Droid\bin\Release\uplink.NET.Droid.pdb" target="lib\MonoAndroid\uplink.NET.Droid.pdb" />
-    
-    
-    <!--Native lib-->
-    <file src="uplink.NET\storj_uplink.dll" target="x64\storj_uplink.dll" />
-    <file src="uplink.NET\storj_uplink-x86.dll" target="x86\storj_uplink.dll" />
+    <file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\net47\uplink.NET.dll" />
+	<file src="uplink.NET\bin\Release\netstandard2.0\uplink.NET.dll" target="lib\netstandard2.0\uplink.NET.dll" />
+	<file src="uplink.NET.Droid\bin\Release\uplink.NET.Droid.dll" target="lib\MonoAndroid\uplink.NET.Droid.dll" />
+    <file src="uplink.NET\x64\storj_uplink.dll" target="runtimes\win-x64\native\storj_uplink.dll" />
+    <file src="uplink.NET\x86\storj_uplink.dll" target="runtimes\win-x86\native\storj_uplink.dll" />
   </files>
 </package>

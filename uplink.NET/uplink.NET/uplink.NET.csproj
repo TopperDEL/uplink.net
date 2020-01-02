@@ -19,13 +19,14 @@ It is - like Storj itself - open source and developed on github.</Description>
     <RepositoryUrl>https://github.com/TopperDEL/uplink.net</RepositoryUrl>
     <PackageTags>storj storage decentralised secure bucket file</PackageTags>
     <PackageReleaseNotes>Added the StorjEnvironment to make the usage of the library easier.</PackageReleaseNotes>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="storj_uplink-x86.dll">
+    <None Update="x86\storj_uplink.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="storj_uplink.dll">
+    <None Update="x64\storj_uplink.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
