@@ -24,6 +24,8 @@ namespace uplink.NET.Models
             if (IsInitialized)
                 return true;
 
+            SWIG.storj_uplink.Init();
+
             if (string.IsNullOrEmpty(TempDirectory))
                 throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
             try
@@ -36,7 +38,7 @@ namespace uplink.NET.Models
                 Project = new NET.Models.Project(Uplink, APIKey, satellite);
                 EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }

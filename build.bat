@@ -79,9 +79,10 @@ echo *** Create result-folder
 cd ..\..\..
 mkdir Build-Results
 
-echo *** Copy Windows-x64-DLL
+echo *** Copy Windows-DLLs
 copy .\storj\lib\uplinkc\*.dll .\Build-Results\ /Y
-copy .\storj\lib\uplinkc\*.dll .\uplink.net\uplink.NET\uplink.NET\ /Y
+copy .\storj\lib\uplinkc\storj_uplink-x86.dll .\uplink.net\uplink.NET\uplink.NET\x86\storj_uplink.dll /Y
+copy .\storj\lib\uplinkc\storj_uplink.dll .\uplink.net\uplink.NET\uplink.NET\x64\storj_uplink.dll /Y
 
 echo *** Copy cs-files
 cd Build-Results

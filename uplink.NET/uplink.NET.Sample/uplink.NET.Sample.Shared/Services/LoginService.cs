@@ -50,7 +50,7 @@ namespace uplink.NET.Sample.Shared.Services
             }
             catch (Exception ex)
             {
-                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid API-Key");
+                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid API-Key: " + ex.Message);
                 await dialog.ShowAsync();
 
                 return false;
