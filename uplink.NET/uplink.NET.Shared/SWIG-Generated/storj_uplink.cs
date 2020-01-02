@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class storj_uplink {
+internal class storj_uplink {
   public static ScopeRef new_scope(string p0, APIKeyRef p1, EncryptionAccessRef p2, out string p3) {
 global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
     try {

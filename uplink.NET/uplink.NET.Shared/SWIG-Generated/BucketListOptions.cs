@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class BucketListOptions : global::System.IDisposable {
+internal class BucketListOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 

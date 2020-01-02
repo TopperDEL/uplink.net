@@ -10,7 +10,7 @@
 
 namespace uplink.SWIG {
 
-public class GoSlice : global::System.IDisposable {
+internal class GoSlice : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
