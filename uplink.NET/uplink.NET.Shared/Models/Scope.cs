@@ -137,6 +137,10 @@ namespace uplink.NET.Models
             {
                 return null;
             }
+            finally
+            {
+                SWIG.storj_uplink.free_restrictions();
+            }
         }
 
         public void Dispose()
