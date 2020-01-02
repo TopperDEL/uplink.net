@@ -86,6 +86,7 @@ extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* byte
 extern void prepare_restrictions(int count);
 extern bool add_restriction(EncryptionRestriction restriction, int position);
 extern ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, size_t p3, char** p4);
+extern void free_restrictions();
 
 %inline %{
 BucketInfo get_bucketinfo_at(BucketList list, int index){
@@ -103,10 +104,7 @@ EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes){
 EncryptionRestriction *restrictions = NULL;
 
 void prepare_restrictions(int count){
-	if(!restrictions)
-	{
-		free(restrictions);
-	}
+	free_restrictions();
 	
 	restrictions = malloc(count * sizeof(EncryptionRestriction));
 }
@@ -118,5 +116,12 @@ bool add_restriction(EncryptionRestriction restriction, int position){
 
 ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, size_t p3, char** p4){
 	return restrict_scope(p0, p1, &restrictions, p3, p4);
+}
+
+void free_restrictions(){
+	if(!restrictions)
+	{
+		free(restrictions);
+	}
 }
 %}
