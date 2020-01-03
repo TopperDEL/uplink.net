@@ -24,7 +24,7 @@ namespace uplink.NET.Models
             if (IsInitialized)
                 return true;
 
-            SWIG.storj_uplink.Init();
+            SWIG.DLLInitializer.Init();
 
             if (string.IsNullOrEmpty(TempDirectory))
                 throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
