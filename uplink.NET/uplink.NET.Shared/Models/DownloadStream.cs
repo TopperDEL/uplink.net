@@ -12,14 +12,14 @@ namespace uplink.NET.Models
         private string _objectName;
         public override bool CanRead => true;
 
-        public override bool CanSeek => false;
+        public override bool CanSeek => true;
 
         public override bool CanWrite => false;
 
         private long _length;
         public override long Length => _length;
 
-        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override long Position { get; set; }
 
         public DownloadStream(BucketRef bucketRef, int totalBytes, string objectName)
         {
@@ -46,13 +46,26 @@ namespace uplink.NET.Models
                 downloadTask.Wait();
 
                 Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, 0, (int)download.BytesReceived);
+                Position += (long)download.BytesReceived;
                 return (int)download.BytesReceived;
             }
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new NotSupportedException();
+            switch (origin)
+            {
+                case SeekOrigin.End:
+                    Position = Length + offset;
+                    break;
+                case SeekOrigin.Begin:
+                    Position = offset;
+                    break;
+                case SeekOrigin.Current:
+                    Position += offset;
+                    break;
+            }
+            return Position;
         }
 
         public override void SetLength(long value)
