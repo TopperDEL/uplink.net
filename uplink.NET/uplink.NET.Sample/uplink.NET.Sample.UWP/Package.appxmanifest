@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="b399257b-a76c-4f6a-aeff-d9ee9db44f51"
-    Publisher="CN=com.example"
-    Version="1.0.0.0" />
+    Name="8916TimParth.uplink.NET-Sample"
+    Publisher="CN=07929E22-2FB8-4C9D-B9EB-B4A357099123"
+    Version="1.0.4.0" />
 
-  <mp:PhoneIdentity PhoneProductId="d1ad9270-431d-46c5-8ae3-b68bb62b75cc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="97fcfe38-fd16-4ecc-baec-3c56ed0ee302" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>uplink.NET-Sample</DisplayName>
-    <PublisherDisplayName>TopperDEL, Storj Labs Inc.</PublisherDisplayName>
+    <PublisherDisplayName>Tim Parth</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
