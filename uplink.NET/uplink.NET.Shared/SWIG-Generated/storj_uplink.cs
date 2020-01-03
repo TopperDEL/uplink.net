@@ -8,61 +8,10 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-using System;
-using System.Runtime.InteropServices;
-
 namespace uplink.SWIG {
 
 internal class storj_uplink {
-        [System.Flags]
-        enum LoadLibraryFlags : uint
-        {
-            None = 0,
-            DONT_RESOLVE_DLL_REFERENCES = 0x00000001,
-            LOAD_IGNORE_CODE_AUTHZ_LEVEL = 0x00000010,
-            LOAD_LIBRARY_AS_DATAFILE = 0x00000002,
-            LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE = 0x00000040,
-            LOAD_LIBRARY_AS_IMAGE_RESOURCE = 0x00000020,
-            LOAD_LIBRARY_SEARCH_APPLICATION_DIR = 0x00000200,
-            LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000,
-            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100,
-            LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800,
-            LOAD_LIBRARY_SEARCH_USER_DIRS = 0x00000400,
-            LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
-
-        static storj_uplink()
-        {
-#if !__ANDROID__
-            if (System.Environment.Is64BitProcess)
-            {
-                var handle = LoadLibraryEx(@"x64/storj_uplink.dll", IntPtr.Zero, LoadLibraryFlags.None);
-                if (handle != IntPtr.Zero)
-                {
-                    //...
-                }
-            }
-            else
-            {
-                // Load 32-bit dll
-                var handle = LoadLibraryEx(@"x86/storj_uplink.dll", IntPtr.Zero, LoadLibraryFlags.None);
-                if (handle != IntPtr.Zero)
-                {
-                    //...
-                }
-            }
-#endif
-        }
-
-        public static void Init()
-        {
-
-        }
-
-        public static ScopeRef new_scope(string p0, APIKeyRef p1, EncryptionAccessRef p2, out string p3) {
+  public static ScopeRef new_scope(string p0, APIKeyRef p1, EncryptionAccessRef p2, out string p3) {
 global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
     try {
       ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.new_scope(p0, APIKeyRef.getCPtr(p1), EncryptionAccessRef.getCPtr(p2), ref tmpp3), true);
