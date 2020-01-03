@@ -38,7 +38,7 @@ namespace uplink.NET.Models
                 Project = new NET.Models.Project(Uplink, APIKey, satellite);
                 EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
