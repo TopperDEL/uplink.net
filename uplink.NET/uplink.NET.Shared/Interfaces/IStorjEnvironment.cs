@@ -36,6 +36,14 @@ namespace uplink.NET.Interfaces
         /// <param name="secret">The encryption-secret</param>
         /// <param name="uplinkConfig">The (optional) UplinkConfig to use</param>
         /// <returns>true, if the enviroment could be initialized - false if not</returns>
-        Task<bool> InitializeAsync(string APIKey, string satellite, string secret, Models.UplinkConfig uplinkConfig = null);
+        bool Initialize(string APIKey, string satellite, string secret, Models.UplinkConfig uplinkConfig = null);
+
+        /// <summary>
+        /// Initializes the current storj-environment from a serialized scope
+        /// </summary>
+        /// <param name="serializedScope">The serialized scope</param>
+        /// <param name="uplinkConfig">The (optional) UplinkConfig to use</param>
+        /// <returns>true, if the enviroment could be initialized - false if not</returns>
+        bool Initialize(string serializedScope, Models.UplinkConfig uplinkConfig = null);
     }
 }

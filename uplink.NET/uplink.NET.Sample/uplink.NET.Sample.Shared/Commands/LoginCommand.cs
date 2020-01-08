@@ -33,7 +33,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             if (loggedIn)
             {
-                var initialized = await Factory.StorjEnvironment.InitializeAsync(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
+                var initialized = Factory.StorjEnvironment.Initialize(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
 
                 if (initialized)
                 {

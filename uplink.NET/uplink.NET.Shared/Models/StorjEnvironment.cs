@@ -19,7 +19,7 @@ namespace uplink.NET.Models
         public uplink.NET.Models.APIKey APIKey { get; private set; }
         public bool IsInitialized { get; private set; }
         public uplink.NET.Models.EncryptionAccess EncryptionAccess { get; private set; }
-        public async Task<bool> InitializeAsync(string apiKey, string satellite, string secret, UplinkConfig uplinkConfig = null)
+        public bool Initialize(string apiKey, string satellite, string secret, UplinkConfig uplinkConfig = null)
         {
             if (IsInitialized)
                 return true;
@@ -37,6 +37,37 @@ namespace uplink.NET.Models
                 APIKey = new NET.Models.APIKey(apiKey);
                 Project = new NET.Models.Project(Uplink, APIKey, satellite);
                 EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);
+            }
+            catch
+            {
+                return false;
+            }
+
+            IsInitialized = true;
+            return true;
+        }
+
+        public bool Initialize(string serializedScope, UplinkConfig uplinkConfig = null)
+        {
+            if (IsInitialized)
+                return true;
+
+            SWIG.DLLInitializer.Init();
+
+            if (string.IsNullOrEmpty(TempDirectory))
+                throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
+            try
+            {
+                if (uplinkConfig != null)
+                    Uplink = new NET.Models.Uplink(uplinkConfig, TempDirectory);
+                else
+                    Uplink = new NET.Models.Uplink(new NET.Models.UplinkConfig(), TempDirectory);
+
+                Scope scope = new Scope(serializedScope);
+
+                APIKey = scope.GetAPIKey();
+                Project = new NET.Models.Project(Uplink, APIKey, scope.GetSatelliteAddress());
+                EncryptionAccess = scope.GetEncryptionAccess();
             }
             catch
             {

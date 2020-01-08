@@ -86,7 +86,7 @@ namespace uplink.NET.Sample
 #if !__ANDROID__
                         Models.StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
 #endif
-                        var initialized = await Shared.Services.Factory.StorjEnvironment.InitializeAsync(loginData.APIKey, loginData.Satellite, loginData.Secret);
+                        var initialized = Shared.Services.Factory.StorjEnvironment.Initialize(loginData.APIKey, loginData.Satellite, loginData.Secret);
                         if (initialized)
                             rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
                         else
