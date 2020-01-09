@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,7 +17,7 @@ It is - like Storj itself - open source and developed on GitHub.</description>
     <releaseNotes>- Contains Scope and Restrict() to create Macaroons.
 	- Minor fixes with MemoryManagement on RestrictScope.
 	- GetStorjVersion within StorjEnvironment.
-	- Correct x86/x64-handling</releaseNotes>
+	- Correct x86/x64-handling - once again</releaseNotes>
     <copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</copyright>
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
     <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
