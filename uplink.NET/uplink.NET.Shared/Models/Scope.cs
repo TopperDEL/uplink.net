@@ -131,6 +131,10 @@ namespace uplink.NET.Models
             try
             {
                 var restricted = SWIG.storj_uplink.restrict_scope2(_scoperef, caveat.ToSWIG(), (uint)encryptionRestrictions.Count, out error);
+
+                if(!string.IsNullOrEmpty(error))
+                    throw new ArgumentException(error);
+
                 return new Scope(restricted);
             }
             catch (Exception ex)

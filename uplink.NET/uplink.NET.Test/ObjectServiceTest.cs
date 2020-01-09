@@ -308,7 +308,7 @@ namespace uplink.NET.Test
             Assert.AreEqual(0, objectList2.Length);
         }
 
-        private byte[] GetRandomBytes(ulong length)
+        public static byte[] GetRandomBytes(ulong length)
         {
             byte[] bytes = new byte[length];
             Random rand = new Random();
