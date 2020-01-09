@@ -24,7 +24,7 @@ namespace uplink.NET.Test
         {
             StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
             _environment = new StorjEnvironment();
-            _environment.InitializeAsync(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
+            _environment.Initialize(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_environment);
             _objectService = new ObjectService();
             _bucketConfig = new BucketConfig();
@@ -128,9 +128,9 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task DownloadStream01()
+        public async Task DownloadStream_Provides_First50Bytes()
         {
-            string bucketname = "downloadstreamtest";
+            string bucketname = "downloadstreamtest1";
 
             var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
             var bucket = await _bucketService.OpenBucketAsync(bucketname);
@@ -145,7 +145,34 @@ namespace uplink.NET.Test
 
             var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
             byte[] bytesReceived = new byte[50];
-            await stream.ReadAsync(bytesReceived, 100, 50);
+            await stream.ReadAsync(bytesReceived, 0, 50);
+
+            for (int i = 0; i < 50; i++)
+            {
+                Assert.AreEqual(i, Convert.ToInt32(bytesReceived[i]));
+            }
+        }
+
+        [TestMethod]
+        public async Task DownloadStream_Supports_Seeking()
+        {
+            string bucketname = "downloadstreamtest2";
+
+            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            byte[] bytesToUpload = new byte[250];
+            for (int i = 0; i < 250; i++)
+            {
+                bytesToUpload[i] = Convert.ToByte(i);
+            }
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
+            byte[] bytesReceived = new byte[50];
+            stream.Seek(100, System.IO.SeekOrigin.Begin);
+            await stream.ReadAsync(bytesReceived, 0, 50);
 
             for (int i = 0; i < 50; i++)
             {
@@ -295,7 +322,8 @@ namespace uplink.NET.Test
         {
             await DeleteBucketAsync("uploadtest");
             await DeleteBucketAsync("downloadtest");
-            await DeleteBucketAsync("downloadstreamtest");
+            await DeleteBucketAsync("downloadstreamtest1");
+            await DeleteBucketAsync("downloadstreamtest2");
             await DeleteBucketAsync("listobject-lists-raiseserror");
             await DeleteBucketAsync("listobject-lists-existingobjects");
             await DeleteBucketAsync("getobjectmeta-gets-objectmeta");
