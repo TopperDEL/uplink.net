@@ -1,5 +1,5 @@
 @echo off
-SET STORJ_VERSION=v0.28.4
+SET STORJ_VERSION=v0.30.2
 cd ..
 IF NOT EXIST "storj\" (
 echo *** Cloning storj

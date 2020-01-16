@@ -484,6 +484,26 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     }
   }
 
+  public static void prepare_restrictions(uint p0) {
+    storj_uplinkPINVOKE.prepare_restrictions(p0);
+  }
+
+  public static void append_restriction(string p0, string p1) {
+    storj_uplinkPINVOKE.append_restriction(p0, p1);
+  }
+
+  public static ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, out string p2) {
+global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
+    try {
+      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.restrict_scope2(ScopeRef.getCPtr(p0), Caveat.getCPtr(p1), ref tmpp2), true);
+      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+      return ret;
+    } finally {
+p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
+			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
+    }
+  }
+
   public static void free_string(out string p0) {
 global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
     try {
@@ -539,46 +559,9 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     return ret;
   }
 
-  public static void free_restrictions() {
-    storj_uplinkPINVOKE.free_restrictions();
-  }
-
-  public static void prepare_restrictions(int count) {
-    storj_uplinkPINVOKE.prepare_restrictions(count);
-  }
-
-  public static bool add_restriction(EncryptionRestriction restriction, int position) {
-    bool ret = storj_uplinkPINVOKE.add_restriction(EncryptionRestriction.getCPtr(restriction), position);
-    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    return ret;
-  }
-
-  public static ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, uint p3, out string p4) {
-global::System.IntPtr tmpp4=global::System.IntPtr.Zero;
-    try {
-      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.restrict_scope2(ScopeRef.getCPtr(p0), Caveat.getCPtr(p1), p3, ref tmpp4), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p4=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp4);
-			  if(tmpp4 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp4);
-    }
-  }
-
   public static string get_storj_version() {
     string ret = storj_uplinkPINVOKE.get_storj_version();
     return ret;
-  }
-
-  public static EncryptionRestriction restrictions {
-    set {
-      storj_uplinkPINVOKE.restrictions_set(EncryptionRestriction.getCPtr(value));
-    } 
-    get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.restrictions_get();
-      EncryptionRestriction ret = (cPtr == global::System.IntPtr.Zero) ? null : new EncryptionRestriction(cPtr, false);
-      return ret;
-    } 
   }
 
 }

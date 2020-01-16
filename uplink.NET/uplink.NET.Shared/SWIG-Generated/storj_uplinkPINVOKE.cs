@@ -397,6 +397,15 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_close_project___")]
   public static extern void close_project(global::System.Runtime.InteropServices.HandleRef jarg1, ref global::System.IntPtr jarg2);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_restrictions___")]
+  public static extern void prepare_restrictions(uint jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_append_restriction___")]
+  public static extern void append_restriction(string jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope2___")]
+  public static extern global::System.IntPtr restrict_scope2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, ref global::System.IntPtr jarg3);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
   public static extern void free_string(global::System.IntPtr jarg1);
 
@@ -552,6 +561,12 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_dial_timeout_get___")]
   public static extern int UplinkConfig_Volatile_dial_timeout_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_user_agent_set___")]
+  public static extern void UplinkConfig_Volatile_user_agent_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_Volatile_user_agent_get___")]
+  public static extern string UplinkConfig_Volatile_user_agent_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkConfig_Volatile___")]
   public static extern global::System.IntPtr new_UplinkConfig_Volatile();
@@ -1030,26 +1045,8 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_encryption_access_with_default_key2___")]
   public static extern global::System.IntPtr new_encryption_access_with_default_key2(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_restrictions___")]
-  public static extern void free_restrictions();
-
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_restrictions___")]
-  public static extern void prepare_restrictions(int jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_add_restriction___")]
-  public static extern bool add_restriction(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrict_scope2___")]
-  public static extern global::System.IntPtr restrict_scope2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3, ref global::System.IntPtr jarg4);
-
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_storj_version___")]
   public static extern string get_storj_version();
-
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrictions_set___")]
-  public static extern void restrictions_set(global::System.Runtime.InteropServices.HandleRef jarg1);
-
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_restrictions_get___")]
-  public static extern global::System.IntPtr restrictions_get();
 }
 
 }
