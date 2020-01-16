@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.4.5</version>
+    <version>1.4.6</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -12,9 +12,10 @@
     <description>This library provides access to the secure and decentralised Storj-network. It allows you to:
 - create and delete buckets
 - upload and download files
+- give specific access to buckets and files through Macaroons
 
 It is - like Storj itself - open source and developed on GitHub.</description>
-    <releaseNotes>- Contains Scope and Restrict() to create Macaroons.
+    <releaseNotes>- Contains Scope and Restrict() to create Macaroons (now Working).
 	- Minor fixes with MemoryManagement on RestrictScope.
 	- GetStorjVersion within StorjEnvironment.
 	- Correct x86/x64-handling - once again
