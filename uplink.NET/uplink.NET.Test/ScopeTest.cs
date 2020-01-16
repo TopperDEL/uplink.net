@@ -71,9 +71,10 @@ namespace uplink.NET.Test
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
                 restrictions.Add(new EncryptionRestriction() { Bucket = "restrictscope-creates-usablerestrictedscope", PathPrefix = "test-file" });
                 var restricted = scope.Restrict(caveat, restrictions);
-
+                
                 var restrictedEnv = new StorjEnvironment();
                 var envInitialized = restrictedEnv.Initialize(restricted.Serialize());
+
                 Assert.IsTrue(envInitialized);
 
                 var restrictedObjectService = new ObjectService();
@@ -83,9 +84,9 @@ namespace uplink.NET.Test
                 await downloadOperation.StartDownloadAsync();
 
                 Assert.IsTrue(downloadOperation.Completed);
-                Assert.AreEqual(bytesToUpload.Length, downloadOperation.BytesReceived);
+                Assert.AreEqual((ulong)bytesToUpload.Length, downloadOperation.BytesReceived);
 
-                for (int i = 0; i <= bytesToUpload.Length; i++)
+                for (int i = 0; i < bytesToUpload.Length; i++)
                 {
                     Assert.AreEqual(bytesToUpload[i], downloadOperation.DownloadedBytes[i], "DownloadedBytes are not equal at index " + i);
                 }

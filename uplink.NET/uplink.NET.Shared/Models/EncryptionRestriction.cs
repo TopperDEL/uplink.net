@@ -18,14 +18,5 @@ namespace uplink.NET.Models
         /// The path-prefix for which this EncryptionRestriction is meant for
         /// </summary>
         public string PathPrefix { get; set; }
-
-        internal SWIG.EncryptionRestriction ToSWIG()
-        {
-            SWIG.EncryptionRestriction ret = new SWIG.EncryptionRestriction();
-            ret.bucket = Bucket;
-            ret.path_prefix = PathPrefix;
-
-            return ret;
-        }
     }
 }

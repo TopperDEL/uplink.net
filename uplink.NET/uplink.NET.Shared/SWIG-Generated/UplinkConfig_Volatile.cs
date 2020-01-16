@@ -92,6 +92,16 @@ internal class UplinkConfig_Volatile : global::System.IDisposable {
     } 
   }
 
+  public string user_agent {
+    set {
+      storj_uplinkPINVOKE.UplinkConfig_Volatile_user_agent_set(swigCPtr, value);
+    } 
+    get {
+      string ret = storj_uplinkPINVOKE.UplinkConfig_Volatile_user_agent_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public UplinkConfig_Volatile() : this(storj_uplinkPINVOKE.new_UplinkConfig_Volatile(), true) {
   }
 

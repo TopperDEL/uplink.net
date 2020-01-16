@@ -123,27 +123,22 @@ namespace uplink.NET.Models
         {
             string error;
 
-            SWIG.storj_uplink.prepare_restrictions(encryptionRestrictions.Count);
+            SWIG.storj_uplink.prepare_restrictions((uint)encryptionRestrictions.Count);
 
             for (int i = 0; i < encryptionRestrictions.Count; i++)
-                SWIG.storj_uplink.add_restriction(encryptionRestrictions[i].ToSWIG(), i);
+                SWIG.storj_uplink.append_restriction(encryptionRestrictions[i].Bucket, encryptionRestrictions[i].PathPrefix);
 
             try
             {
-                var restricted = SWIG.storj_uplink.restrict_scope2(_scoperef, caveat.ToSWIG(), (uint)encryptionRestrictions.Count, out error);
+                var restricted = SWIG.storj_uplink.restrict_scope2(_scoperef, caveat.ToSWIG(), out error);
 
                 if(!string.IsNullOrEmpty(error))
                     throw new ArgumentException(error);
-
                 return new Scope(restricted);
             }
             catch (Exception ex)
             {
                 return null;
-            }
-            finally
-            {
-                SWIG.storj_uplink.free_restrictions();
             }
         }
 
