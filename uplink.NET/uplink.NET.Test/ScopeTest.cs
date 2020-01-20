@@ -56,13 +56,15 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task RestrictScope_Creates_UsableRestrictedScope()
         {
+            string serializedScope;
+            string bucketname = "restrictscope-creates-usablerestrictedscope";
+            byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
+
             using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
             {
-                string bucketname = "restrictscope-creates-usablerestrictedscope";
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
-                byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
                 var uploadOperation = await _objectService.UploadObjectAsync(bucket, "test-file", new UploadOptions(), bytesToUpload, false);
                 await uploadOperation.StartUploadAsync();
@@ -71,25 +73,26 @@ namespace uplink.NET.Test
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
                 restrictions.Add(new EncryptionRestriction() { Bucket = "restrictscope-creates-usablerestrictedscope", PathPrefix = "test-file" });
                 var restricted = scope.Restrict(caveat, restrictions);
-                
-                var restrictedEnv = new StorjEnvironment();
-                var envInitialized = restrictedEnv.Initialize(restricted.Serialize());
+                serializedScope = restricted.Serialize();
+            }
 
-                Assert.IsTrue(envInitialized);
+            var restrictedEnv = new StorjEnvironment();
+            var envInitialized = restrictedEnv.Initialize(serializedScope);
 
-                var restrictedObjectService = new ObjectService();
-                var restrictedBucketService = new BucketService(restrictedEnv);
-                var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
-                var downloadOperation = await restrictedObjectService.DownloadObjectAsync(restrictedBucket, "test-file", false);
-                await downloadOperation.StartDownloadAsync();
+            Assert.IsTrue(envInitialized);
 
-                Assert.IsTrue(downloadOperation.Completed);
-                Assert.AreEqual((ulong)bytesToUpload.Length, downloadOperation.BytesReceived);
+            var restrictedObjectService = new ObjectService();
+            var restrictedBucketService = new BucketService(restrictedEnv);
+            var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
+            var downloadOperation = await restrictedObjectService.DownloadObjectAsync(restrictedBucket, "test-file", false);
+            await downloadOperation.StartDownloadAsync();
 
-                for (int i = 0; i < bytesToUpload.Length; i++)
-                {
-                    Assert.AreEqual(bytesToUpload[i], downloadOperation.DownloadedBytes[i], "DownloadedBytes are not equal at index " + i);
-                }
+            Assert.IsTrue(downloadOperation.Completed);
+            Assert.AreEqual((ulong)bytesToUpload.Length, downloadOperation.BytesReceived);
+
+            for (int i = 0; i < bytesToUpload.Length; i++)
+            {
+                Assert.AreEqual(bytesToUpload[i], downloadOperation.DownloadedBytes[i], "DownloadedBytes are not equal at index " + i);
             }
         }
 
