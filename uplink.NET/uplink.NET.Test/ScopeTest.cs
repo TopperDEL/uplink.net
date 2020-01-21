@@ -54,10 +54,10 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task RestrictScope_Creates_UsableRestrictedScope()
+        public async Task RestrictScope_Creates_UsableRestrictedScopeForUpload()
         {
             string serializedScope;
-            string bucketname = "restrictscope-creates-usablerestrictedscope";
+            string bucketname = "restrictscope-creates-usablerestrictedscopeforupload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
             using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
@@ -65,13 +65,9 @@ namespace uplink.NET.Test
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
-
-                var uploadOperation = await _objectService.UploadObjectAsync(bucket, "test-file", new UploadOptions(), bytesToUpload, false);
-                await uploadOperation.StartUploadAsync();
-
                 Caveat caveat = new Caveat();
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
-                restrictions.Add(new EncryptionRestriction() { Bucket = "restrictscope-creates-usablerestrictedscope", PathPrefix = "test-file" });
+                restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test" });
                 var restricted = scope.Restrict(caveat, restrictions);
                 serializedScope = restricted.Serialize();
             }
@@ -84,7 +80,79 @@ namespace uplink.NET.Test
             var restrictedObjectService = new ObjectService();
             var restrictedBucketService = new BucketService(restrictedEnv);
             var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
-            var downloadOperation = await restrictedObjectService.DownloadObjectAsync(restrictedBucket, "test-file", false);
+            var uploadOperationRestricted = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
+            await uploadOperationRestricted.StartUploadAsync();
+
+            Assert.IsTrue(uploadOperationRestricted.Completed);
+            Assert.AreEqual((ulong)bytesToUpload.Length, uploadOperationRestricted.BytesSent);
+        }
+
+        [TestMethod]
+        public async Task RestrictScope_Creates_UsableRestrictedScopeForUploadDeep()
+        {
+            string serializedScope;
+            string bucketname = "restrictscope-creates-usablerestrictedscopeforuploaddeep";
+            byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
+
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            {
+                await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+                var bucket = await _bucketService.OpenBucketAsync(bucketname);
+
+                Caveat caveat = new Caveat();
+                List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
+                restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test/subfolder" });
+                var restricted = scope.Restrict(caveat, restrictions);
+                serializedScope = restricted.Serialize();
+            }
+
+            var restrictedEnv = new StorjEnvironment();
+            var envInitialized = restrictedEnv.Initialize(serializedScope);
+
+            Assert.IsTrue(envInitialized);
+
+            var restrictedObjectService = new ObjectService();
+            var restrictedBucketService = new BucketService(restrictedEnv);
+            var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
+            var uploadOperationRestricted = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
+            await uploadOperationRestricted.StartUploadAsync();
+
+            Assert.IsTrue(uploadOperationRestricted.Completed);
+            Assert.AreEqual((ulong)bytesToUpload.Length, uploadOperationRestricted.BytesSent);
+        }
+
+        [TestMethod]
+        public async Task RestrictScope_Creates_UsableRestrictedScopeForDownload()
+        {
+            string serializedScope;
+            string bucketname = "restrictscope-creates-usablerestrictedscopefordownload";
+            byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
+
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            {
+                await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+                var bucket = await _bucketService.OpenBucketAsync(bucketname);
+
+
+                var uploadOperation = await _objectService.UploadObjectAsync(bucket, "test/test-file", new UploadOptions(), bytesToUpload, false);
+                await uploadOperation.StartUploadAsync();
+
+                Caveat caveat = new Caveat();
+                List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
+                restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test" });
+                var restricted = scope.Restrict(caveat, restrictions);
+                serializedScope = restricted.Serialize();
+            }
+
+            var restrictedEnv = new StorjEnvironment();
+            var envInitialized = restrictedEnv.Initialize(serializedScope);
+
+            Assert.IsTrue(envInitialized);
+
+            var restrictedObjectService = new ObjectService();
+            var restrictedBucketService = new BucketService(restrictedEnv);
+            var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
+            var downloadOperation = await restrictedObjectService.DownloadObjectAsync(restrictedBucket, "test/test-file", false);
             await downloadOperation.StartDownloadAsync();
 
             Assert.IsTrue(downloadOperation.Completed);
@@ -99,7 +167,9 @@ namespace uplink.NET.Test
         [TestCleanup]
         public async Task CleanupAsync()
         {
-            await DeleteBucketAsync("restrictscope-creates-usablerestrictedscope");
+            await DeleteBucketAsync("restrictscope-creates-usablerestrictedscopeforupload");
+            await DeleteBucketAsync("restrictscope-creates-usablerestrictedscopeforuploaddeep");
+            await DeleteBucketAsync("restrictscope-creates-usablerestrictedscopefordownload");
         }
 
         private async Task DeleteBucketAsync(string bucketName)
