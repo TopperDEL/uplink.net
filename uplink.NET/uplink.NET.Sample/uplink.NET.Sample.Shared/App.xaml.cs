@@ -82,14 +82,16 @@ namespace uplink.NET.Sample
                     if (Shared.Services.Factory.LoginService.IsLoggedIn())
                     {
                         var loginData = Shared.Services.Factory.LoginService.GetLoginData();
-                        Shared.Services.Factory.StorjEnvironment = new Models.StorjEnvironment();
 #if !__ANDROID__
-                        Models.StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
+                        Models.Scope.SetTempDirectory(System.IO.Path.GetTempPath());
 #endif
-                        var initialized = Shared.Services.Factory.StorjEnvironment.Initialize(loginData.APIKey, loginData.Satellite, loginData.Secret);
-                        if (initialized)
+
+                        try
+                        {
+                            Shared.Services.Factory.Scope = new Models.Scope(loginData.APIKey, loginData.Satellite, loginData.Secret);
                             rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
-                        else
+                        }
+                        catch
                         {
                             Shared.Services.Factory.LoginService.Logout();
                             rootFrame.Navigate(typeof(LogInPage), e.Arguments);

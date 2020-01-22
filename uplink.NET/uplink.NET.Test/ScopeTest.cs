@@ -12,7 +12,7 @@ namespace uplink.NET.Test
     [TestClass]
     public class ScopeTest
     {
-        IStorjEnvironment _environment;
+        Scope _scope;
         IBucketService _bucketService;
         IObjectService _objectService;
         BucketConfig _bucketConfig;
@@ -20,10 +20,9 @@ namespace uplink.NET.Test
         [TestInitialize]
         public void Init()
         {
-            StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
-            _environment = new StorjEnvironment();
-            _environment.Initialize(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
-            _bucketService = new BucketService(_environment);
+            Scope.SetTempDirectory(System.IO.Path.GetTempPath());
+            _scope = new Scope(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
+            _bucketService = new BucketService(_scope);
             _objectService = new ObjectService();
             _bucketConfig = new BucketConfig();
         }
@@ -31,9 +30,9 @@ namespace uplink.NET.Test
         [TestMethod]
         public void CreateValidScope_Crestes_ValidScope()
         {
-            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
-                Assert.AreEqual(_environment.APIKey.GetAPIKey(), scope.GetAPIKey().GetAPIKey());
+                Assert.AreEqual(_scope.GetAPIKey().GetAPIKey(), scope.GetAPIKey().GetAPIKey());
                 Assert.AreEqual(TestConstants.SATELLITE_URL, scope.GetSatelliteAddress());
             }
         }
@@ -41,7 +40,7 @@ namespace uplink.NET.Test
         [TestMethod]
         public void RestrictScope_Creates_ValidScope()
         {
-            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 Caveat caveat = new Caveat() { DisallowWrites = true };
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
@@ -60,7 +59,7 @@ namespace uplink.NET.Test
             string bucketname = "restrictscope-creates-usablerestrictedscopeforupload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
@@ -72,10 +71,16 @@ namespace uplink.NET.Test
                 serializedScope = restricted.Serialize();
             }
 
-            var restrictedEnv = new StorjEnvironment();
-            var envInitialized = restrictedEnv.Initialize(serializedScope);
-
-            Assert.IsTrue(envInitialized);
+            Scope restrictedEnv;
+            try
+            {
+                restrictedEnv = new Scope(serializedScope);
+            }
+            catch
+            {
+                Assert.Fail("Failed to create restricted scope from serialized scope");
+                return;
+            }
 
             var restrictedObjectService = new ObjectService();
             var restrictedBucketService = new BucketService(restrictedEnv);
@@ -94,7 +99,7 @@ namespace uplink.NET.Test
             string bucketname = "restrictscope-creates-usablerestrictedscopeforuploaddeep";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
@@ -106,10 +111,16 @@ namespace uplink.NET.Test
                 serializedScope = restricted.Serialize();
             }
 
-            var restrictedEnv = new StorjEnvironment();
-            var envInitialized = restrictedEnv.Initialize(serializedScope);
-
-            Assert.IsTrue(envInitialized);
+            Scope restrictedEnv;
+            try
+            {
+                restrictedEnv = new Scope(serializedScope);
+            }
+            catch
+            {
+                Assert.Fail("Failed to create restricted scope from serialized scope");
+                return;
+            }
 
             var restrictedObjectService = new ObjectService();
             var restrictedBucketService = new BucketService(restrictedEnv);
@@ -128,7 +139,7 @@ namespace uplink.NET.Test
             string bucketname = "restrictscope-creates-usablerestrictedscopefordownload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _environment.APIKey, _environment.EncryptionAccess))
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
@@ -144,10 +155,16 @@ namespace uplink.NET.Test
                 serializedScope = restricted.Serialize();
             }
 
-            var restrictedEnv = new StorjEnvironment();
-            var envInitialized = restrictedEnv.Initialize(serializedScope);
-
-            Assert.IsTrue(envInitialized);
+            Scope restrictedEnv;
+            try
+            {
+                restrictedEnv = new Scope(serializedScope);
+            }
+            catch
+            {
+                Assert.Fail("Failed to create restricted scope from serialized scope");
+                return;
+            }
 
             var restrictedObjectService = new ObjectService();
             var restrictedBucketService = new BucketService(restrictedEnv);
