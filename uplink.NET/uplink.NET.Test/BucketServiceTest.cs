@@ -15,15 +15,14 @@ namespace uplink.NET.Test
     {
         IBucketService _service;
         BucketConfig _bucketConfig;
-        IStorjEnvironment _environment;
+        Scope _scope;
 
         [TestInitialize]
         public void Init()
         {
-            StorjEnvironment.SetTempDirectory(System.IO.Path.GetTempPath());
-            _environment = new StorjEnvironment();
-            _environment.Initialize(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
-            _service = new BucketService(_environment);
+            Scope.SetTempDirectory(System.IO.Path.GetTempPath());
+            _scope = new Scope(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
+            _service = new BucketService(_scope);
             _bucketConfig = new BucketConfig();
         }
 

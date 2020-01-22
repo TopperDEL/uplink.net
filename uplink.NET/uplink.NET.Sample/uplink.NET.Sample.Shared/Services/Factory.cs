@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using uplink.NET.Interfaces;
+using uplink.NET.Models;
 using uplink.NET.Sample.Shared.Interfaces;
 using uplink.NET.Services;
 
@@ -9,7 +10,7 @@ namespace uplink.NET.Sample.Shared.Services
 {
     public static class Factory
     {
-        public static IStorjEnvironment StorjEnvironment { get; set; }
+        public static Scope Scope { get; set; }
 
         private static ILoginService _loginService;
         public static ILoginService LoginService
@@ -28,7 +29,7 @@ namespace uplink.NET.Sample.Shared.Services
             get
             {
                 if (_bucketService == null)
-                    _bucketService = new BucketService(StorjEnvironment);
+                    _bucketService = new BucketService(Scope);
                 return _bucketService;
             }
         }

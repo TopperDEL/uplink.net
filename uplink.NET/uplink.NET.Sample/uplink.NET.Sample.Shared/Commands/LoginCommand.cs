@@ -33,19 +33,19 @@ namespace uplink.NET.Sample.Shared.Commands
 
             if (loggedIn)
             {
-                var initialized = Factory.StorjEnvironment.Initialize(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
-
-                if (initialized)
+                try
                 {
+                    Factory.Scope = new Scope(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
+
                     Windows.UI.Popups.MessageDialog attentionDialog = new Windows.UI.Popups.MessageDialog("This app is only for testing - it might contain errors and corrupt your data. Use at your own risk!", "Attention");
                     await attentionDialog.ShowAsync();
 
                     var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
                     frame.Navigate(typeof(BucketListPage));
                 }
-                else
+                catch (Exception ex)
                 {
-                    Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog("Could not connect to storj");
+                    Windows.UI.Popups.MessageDialog errorDialog = new Windows.UI.Popups.MessageDialog("Could not connect to storj: " + ex.Message);
                     await errorDialog.ShowAsync();
                 }
             }

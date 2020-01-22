@@ -6,6 +6,24 @@ namespace uplink.NET.Models
 {
     public class Scope : IDisposable
     {
+        private static string TempDirectory { get; set; }
+
+        /// <summary>
+        /// Sets the temporary directory to use.
+        /// On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().
+        /// </summary>
+        /// <param name="tempDir">The temporary directory</param>
+        public static void SetTempDirectory(string tempDir)
+        {
+            TempDirectory = tempDir;
+        }
+
+        private Uplink Uplink { get; set; }
+        internal Project Project { get; set; }
+        internal APIKey APIKey { get; set; }
+        private bool IsInitialized { get; set; }
+        internal EncryptionAccess EncryptionAccess { get; set; }
+
         internal SWIG.ScopeRef _scoperef;
 
         internal Scope(SWIG.ScopeRef scopeRef)
@@ -18,16 +36,60 @@ namespace uplink.NET.Models
         /// A Scope contains info about the satellite-address, the EncryptionAccess and the API-Key.
         /// </summary>
         /// <param name="serializedScope">The serializes scope-string</param>
-        public Scope(string serializedScope)
+        /// <param name="uplinkConfig">The (optional) Uplink-Configuration</param>
+        public Scope(string serializedScope, UplinkConfig uplinkConfig = null)
         {
+            Init(uplinkConfig);
+
+            string error;
+            try
+            {
+                _scoperef = SWIG.storj_uplink.parse_scope(serializedScope, out error);
+                Project = new NET.Models.Project(Uplink, GetAPIKey(), GetSatelliteAddress());
+                EncryptionAccess = GetEncryptionAccess();
+
+                if (!string.IsNullOrEmpty(error))
+                    throw new ArgumentException(error);
+                if (_scoperef == null)
+                    throw new NullReferenceException("Could not parse scope");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new scope based on the satellite-adress, the API-key and the encryption access.
+        /// A Scope contains info about the satellite-address, the EncryptionAccess and the API-Key.
+        /// </summary>
+        /// <param name="apiKey">The API-key</param>
+        /// <param name="satelliteAddress">The satellite address</param>
+        /// <param name="encAccess">The EncryptionAccess</param>
+        /// <param name="uplinkConfig">The (optional) Uplink-Configuration</param>
+        public Scope(string apiKey, string satelliteAddress, string secret, UplinkConfig uplinkConfig = null)
+        {
+            Init(uplinkConfig);
+
             string error;
 
-            _scoperef = SWIG.storj_uplink.parse_scope(serializedScope, out error);
+            try
+            {  
+                APIKey = new NET.Models.APIKey(apiKey);
+                Project = new NET.Models.Project(Uplink, APIKey, satelliteAddress);
+                EncryptionAccess = uplink.NET.Models.EncryptionAccess.FromPassphrase(Project, secret);
 
-            if (!string.IsNullOrEmpty(error))
-                throw new ArgumentException(error);
-            if (_scoperef == null)
-                throw new NullReferenceException("Could not parse scope");
+                _scoperef = SWIG.storj_uplink.new_scope(satelliteAddress, APIKey._apiKeyRef, EncryptionAccess._handle, out error);
+
+                if (!string.IsNullOrEmpty(error))
+                    throw new ArgumentException(error);
+                if (_scoperef == null)
+                    throw new NullReferenceException("Could not create scope");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
         }
 
         /// <summary>
@@ -37,16 +99,44 @@ namespace uplink.NET.Models
         /// <param name="satelliteAddress">The satellite address</param>
         /// <param name="apiKey">The API-key</param>
         /// <param name="encAccess">The EncryptionAccess</param>
-        public Scope(string satelliteAddress, APIKey apiKey, EncryptionAccess encAccess)
+        /// <param name="uplinkConfig">The (optional) Uplink-Configuration</param>
+        public Scope(string satelliteAddress, APIKey apiKey, EncryptionAccess encAccess, UplinkConfig uplinkConfig = null)
         {
+            Init(uplinkConfig);
+
             string error;
 
-            _scoperef = SWIG.storj_uplink.new_scope(satelliteAddress, apiKey._apiKeyRef, encAccess._handle, out error);
+            try
+            {
+                APIKey = apiKey;
+                EncryptionAccess = encAccess;
 
-            if (!string.IsNullOrEmpty(error))
-                throw new ArgumentException(error);
-            if (_scoperef == null)
-                throw new NullReferenceException("Could not create scope");
+                _scoperef = SWIG.storj_uplink.new_scope(satelliteAddress, apiKey._apiKeyRef, encAccess._handle, out error);
+
+                if (!string.IsNullOrEmpty(error))
+                    throw new ArgumentException(error);
+                if (_scoperef == null)
+                    throw new NullReferenceException("Could not create scope");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
+        private void Init(UplinkConfig uplinkConfig)
+        {
+#if !__ANDROID__
+            SWIG.DLLInitializer.Init();
+#endif
+
+            if (string.IsNullOrEmpty(TempDirectory))
+                throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
+
+            if (uplinkConfig != null)
+                Uplink = new NET.Models.Uplink(uplinkConfig, TempDirectory);
+            else
+                Uplink = new NET.Models.Uplink(new NET.Models.UplinkConfig(), TempDirectory);
         }
 
         /// <summary>
@@ -132,7 +222,7 @@ namespace uplink.NET.Models
             {
                 var restricted = SWIG.storj_uplink.restrict_scope2(_scoperef, caveat.ToSWIG(), out error);
 
-                if(!string.IsNullOrEmpty(error))
+                if (!string.IsNullOrEmpty(error))
                     throw new ArgumentException(error);
                 return new Scope(restricted);
             }
@@ -148,6 +238,30 @@ namespace uplink.NET.Models
             {
                 SWIG.storj_uplink.free_scope(_scoperef);
                 _scoperef = null;
+            }
+
+            if (Uplink != null)
+            {
+                Uplink.Dispose();
+                Uplink = null;
+            }
+
+            if (Project != null)
+            {
+                Project.Dispose();
+                Project = null;
+            }
+
+            if (APIKey != null)
+            {
+                APIKey.Dispose();
+                APIKey = null;
+            }
+
+            if (EncryptionAccess != null)
+            {
+                EncryptionAccess.Dispose();
+                EncryptionAccess = null;
             }
         }
     }
