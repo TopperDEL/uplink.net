@@ -40,6 +40,8 @@ First you need to pull the latest version of this repository. Open a command pro
 git clone https://github.com/topperdel/uplink.net.git
 ```
 
+If you want you can adjust the Storj-Version to use (the github-tag) by setting the STORJ_VERSION-Parameter within build.bat to the one to use.
+
 Then do
 ```
 cd \uplink.net
