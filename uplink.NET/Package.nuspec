@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.5</version>
+    <version>1.5.1</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,7 +15,8 @@
 - give specific access to buckets and files through Macaroons
 
 It is - like Storj itself - open source and developed on GitHub.</description>
-    <releaseNotes>- Refactor StorjEnvironment - use Scope instead</releaseNotes>
+    <releaseNotes>- Refactor StorjEnvironment - use Scope instead
+    - Switch to uplink-version v0.30.5</releaseNotes>
     <copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</copyright>
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
     <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
