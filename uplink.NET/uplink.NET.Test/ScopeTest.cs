@@ -62,9 +62,48 @@ namespace uplink.NET.Test
             using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-                var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
                 Caveat caveat = new Caveat();
+                List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
+                restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test" });
+                var restricted = scope.Restrict(caveat, restrictions);
+                serializedScope = restricted.Serialize();
+            }
+
+            Scope restrictedEnv;
+            try
+            {
+                restrictedEnv = new Scope(serializedScope);
+            }
+            catch
+            {
+                Assert.Fail("Failed to create restricted scope from serialized scope");
+                return;
+            }
+
+            var restrictedObjectService = new ObjectService();
+            var restrictedBucketService = new BucketService(restrictedEnv);
+            var restrictedBucket = await restrictedBucketService.OpenBucketAsync(bucketname);
+            var uploadOperationRestricted = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
+            await uploadOperationRestricted.StartUploadAsync();
+
+            Assert.IsTrue(uploadOperationRestricted.Completed);
+            Assert.AreEqual((ulong)bytesToUpload.Length, uploadOperationRestricted.BytesSent);
+        }
+
+        [TestMethod]
+        public async Task RestrictScope_Creates_UsableRestrictedScopeForUploadWithDisallowDeletes()
+        {
+            string serializedScope;
+            string bucketname = "restrictscope-creates-usablerestrictedscopeforupload";
+            byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
+
+            using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
+            {
+                await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
+
+                Caveat caveat = new Caveat();
+                caveat.DisallowReads = true; //should not change anything as we are uploading here
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
                 restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test" });
                 var restricted = scope.Restrict(caveat, restrictions);
@@ -102,7 +141,6 @@ namespace uplink.NET.Test
             using (Scope scope = new Scope(TestConstants.SATELLITE_URL, _scope.GetAPIKey(), _scope.GetEncryptionAccess()))
             {
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-                var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
                 Caveat caveat = new Caveat();
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
@@ -144,11 +182,11 @@ namespace uplink.NET.Test
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
                 var bucket = await _bucketService.OpenBucketAsync(bucketname);
 
-
                 var uploadOperation = await _objectService.UploadObjectAsync(bucket, "test/test-file", new UploadOptions(), bytesToUpload, false);
                 await uploadOperation.StartUploadAsync();
 
                 Caveat caveat = new Caveat();
+                caveat.DisallowWrites = true; //Should not change anything as we are downloading here
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
                 restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test" });
                 var restricted = scope.Restrict(caveat, restrictions);
