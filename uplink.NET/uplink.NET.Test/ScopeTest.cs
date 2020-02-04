@@ -143,6 +143,7 @@ namespace uplink.NET.Test
                 await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
 
                 Caveat caveat = new Caveat();
+                caveat.DisallowDeletes = true; //Should not change anything as we are uploading here
                 List<EncryptionRestriction> restrictions = new List<EncryptionRestriction>();
                 restrictions.Add(new EncryptionRestriction() { Bucket = bucketname, PathPrefix = "test/subfolder" });
                 var restricted = scope.Restrict(caveat, restrictions);
