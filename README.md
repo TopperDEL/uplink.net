@@ -3,7 +3,7 @@
 
 **A .Net/C#-wrapper for Storj (v3)**
 
-This library enables you to connect to the storj-network to upload and retrieve files to the distributed and secure cloud-storage.
+This library enables you to connect to the [storj](https://storj.io)-network to upload and retrieve files to the distributed and secure cloud-storage.
 
 The library is quite new and may contain bugs or missing documentation. Use at your own risk!
 
