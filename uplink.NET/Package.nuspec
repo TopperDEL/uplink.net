@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>uplink.NET</id>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <authors>TopperDEL,Storj Labs Inc.</authors>
     <owners>TopperDEL,Storj Labs Inc.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,8 +17,8 @@
 It is - like Storj itself - open source and developed on GitHub.</description>
     <releaseNotes>
 	- Refactor StorjEnvironment - use Scope instead
-    - Switch to uplink-version v0.31.13
-	- Fixing RestrictScope-issue with non-empty caveat</releaseNotes>
+	- Fixing RestrictScope-issue with non-empty caveat
+	- Switch to uplink-version v0.33.4</releaseNotes>
     <copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</copyright>
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
     <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
