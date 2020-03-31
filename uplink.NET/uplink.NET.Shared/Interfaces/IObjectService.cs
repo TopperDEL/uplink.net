@@ -11,40 +11,41 @@ namespace uplink.NET.Interfaces
         /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path.
         /// </summary>
-        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="bucket">The Bucket to upload to</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
         /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
         /// <param name="bytesToUpload">The binary-data to upload</param>
         /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
-        Task<UploadOperation> UploadObjectAsync(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
         /// <summary>
         /// Lists all objects within a bucket
         /// </summary>
-        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="bucket">The Bucket to list entries from</param>
         /// <param name="listOptions">Options for the listing</param>
         /// <returns>The list of found objects within the bucket and with the given ListOptions or throws an ObjectListException</returns>
-        Task<ObjectList> ListObjectsAsync(BucketRef bucket, ListOptions listOptions);
+        Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions);
         /// <summary>
-        /// Gets the meta-data of a specific object
+        /// Gets the specific object
         /// </summary>
-        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="bucket">The Bucket where the object resides in</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
-        /// <returns>The object meta-data or an ObjectNotFoundException</returns>
-        Task<ObjectMeta> GetObjectMetaAsync(BucketRef bucket, string targetPath);
+        /// <returns>The object an ObjectNotFoundException</returns>
+        Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath);
         /// <summary>
         /// Downloads an object from the given bucket and the given Target-Path.
         /// </summary>
-        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="bucket">The Bucket to download from</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="downloadOptions">The options for this download</param>
         /// <param name="immediateStart">Starts the download immediately (default) or defer's it to you via the returned DownloadOperation.</param>
         /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
-        Task<DownloadOperation> DownloadObjectAsync(BucketRef bucket, string targetPath, bool immediateStart = true);
+        Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart = true);
         /// <summary>
         /// Deletes the mentioned object
         /// </summary>
-        /// <param name="bucket">The BucketRef-Handle retrieved from BucketService.OpenBucket().</param>
+        /// <param name="bucket">The Bucket where the object resides in</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
-        Task DeleteObjectAsync(BucketRef bucket, string targetPath);
+        Task DeleteObjectAsync(Bucket bucket, string targetPath);
     }
 }

@@ -27,6 +27,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		uplink.NET.Shared\uplink.NET.Shared.projitems*{17d64967-6893-469f-8950-114a983d2a2f}*SharedItemsImports = 4
+		uplink.NET.Shared\uplink.NET.Shared.projitems*{5bbe87ec-c89f-4676-84db-3f6a2678dc53}*SharedItemsImports = 5
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
 		uplink.NET.Shared\uplink.NET.Shared.projitems*{a5a6fa4d-6fd1-48b1-86b1-0263262bc432}*SharedItemsImports = 13
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{b399257b-a76c-4f6a-aeff-d9ee9db44f51}*SharedItemsImports = 4

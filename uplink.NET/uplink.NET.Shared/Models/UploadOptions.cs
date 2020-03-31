@@ -10,10 +10,6 @@ namespace uplink.NET.Models
     public class UploadOptions
     {
         /// <summary>
-        /// The content-type of the object to upload
-        /// </summary>
-        public string ContentType { get; set; }
-        /// <summary>
         /// The expiration date
         /// </summary>
         public DateTime Expires { get; set; }
@@ -21,7 +17,6 @@ namespace uplink.NET.Models
         internal SWIG.UploadOptions ToSWIG()
         {
             SWIG.UploadOptions options = new SWIG.UploadOptions();
-            options.content_type = ContentType;
             if (Expires != DateTime.MinValue)
                 options.expires = (new DateTimeOffset(Expires)).ToUnixTimeSeconds();
             else

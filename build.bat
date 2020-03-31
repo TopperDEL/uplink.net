@@ -1,21 +1,21 @@
 @echo off
-SET STORJ_VERSION=v0.34.6
+SET STORJ_VERSION=v1.0.0-rc.1
 cd ..
-IF NOT EXIST "storj\" (
+IF NOT EXIST "uplink-c\" (
 echo *** Cloning storj
-git clone --branch %STORJ_VERSION% https://github.com/storj/storj.git
+git clone --branch %STORJ_VERSION% https://github.com/storj/uplink-c.git
 ) else (
-echo *** Folder "storj" already there - using it.
+echo *** Folder "uplink-c" already there - using it.
 )
 
-set /p DUMMY=You may alter the storj-library now. Otherwise or if you're ready: hit ENTER to continue...
+set /p DUMMY=You may alter the uplink-c-library now. Otherwise or if you're ready: hit ENTER to continue...
 
 echo *** Copying necessary files
-copy .\uplink.net\SWIG\*.i .\storj\lib\uplinkc\ /Y
-copy .\uplink.net\SWIG\*.exe .\storj\lib\uplinkc\ /Y
-copy .\uplink.net\GO\*.go .\storj\lib\uplinkc\ /Y
+copy .\uplink.net\SWIG\*.i .\uplink-c\ /Y
+copy .\uplink.net\SWIG\*.exe .\uplink-c\ /Y
+copy .\uplink.net\GO\*.go .\uplink-c\ /Y
 
-cd .\storj\lib\uplinkc\
+cd .\uplink-c\
 
 echo *** Replacing the version-variable within the DLL
 fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
@@ -76,25 +76,25 @@ fart "storj_uplink.cs" "storj_uplinkPINVOKE.free_string(ref tmpp0);" "storj_upli
 fart "storj_uplinkPINVOKE.cs" "public static extern void free_string(ref global::System.IntPtr jarg1);" "public static extern void free_string(global::System.IntPtr jarg1);"
 
 echo *** Create result-folder
-cd ..\..\..
+cd ..
 mkdir Build-Results
 
 echo *** Copy Windows-DLLs
-copy .\storj\lib\uplinkc\*.dll .\Build-Results\ /Y
-copy .\storj\lib\uplinkc\storj_uplink-x86.dll .\uplink.net\uplink.NET\uplink.NET\x86\storj_uplink.dll /Y
-copy .\storj\lib\uplinkc\storj_uplink.dll .\uplink.net\uplink.NET\uplink.NET\x64\storj_uplink.dll /Y
+copy .\uplink-c\*.dll .\Build-Results\ /Y
+copy .\uplink-c\storj_uplink-x86.dll .\uplink.net\uplink.NET\uplink.NET\x86\storj_uplink.dll /Y
+copy .\uplink-c\storj_uplink.dll .\uplink.net\uplink.NET\uplink.NET\x64\storj_uplink.dll /Y
 
 echo *** Copy cs-files
 cd Build-Results
 mkdir cs-Files
 cd..
-copy .\storj\lib\uplinkc\*.cs .\Build-Results\cs-Files /Y
+copy .\uplink-c\*.cs .\Build-Results\cs-Files /Y
 del .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Generated\*.cs
-copy .\storj\lib\uplinkc\*.cs .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Generated\ /Y
+copy .\uplink-c\*.cs .\uplink.net\uplink.NET\uplink.NET.Shared\SWIG-Generated\ /Y
 
 echo *** Generating Android-DLLs
 echo *** Go and get a coffee...
-cd .\storj\lib\uplinkc
+cd .\uplink-c
 
 echo *** Removing (hopefully) unnecessary reference to Shwlapi.h
 findstr /V "hlwapi" storj_uplink_second_wrap.c > storj_uplink_second_wrap2.c
@@ -117,8 +117,8 @@ set CC=%TOOLCHAIN%\armv7a-linux-androideabi16-clang
 set CXX=%TOOLCHAIN%\armv7a-linux-androideabi16-clang++
 set GOARM=7
 echo *** Target: armeabi-v7a
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\..\..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\armeabi-v7a\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\armeabi-v7a\ /Y
 
 set GOARM=
 
@@ -126,24 +126,24 @@ set GOARCH=arm64
 set CC=%TOOLCHAIN%\aarch64-linux-android21-clang
 set CXX=%TOOLCHAIN%\aarch64-linux-android21-clang++
 echo *** Target: arm64-v8a
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\..\..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\arm64-v8a\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\arm64-v8a\ /Y
 
 set GOARCH=386
 set CC=%TOOLCHAIN%\i686-linux-android16-clang
 set CXX=%TOOLCHAIN%\i686-linux-android16-clang++
 echo *** Target: x86
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\..\..\Build-Results\Android\x86\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\Build-Results\Android\x86\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86\ /Y
 
 set GOARCH=amd64
 set CC=%TOOLCHAIN%\x86_64-linux-android21-clang
 set CXX=%TOOLCHAIN%\x86_64-linux-android21-clang++
 echo *** Target: x86_64
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\..\..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\..\..\Build-Results\Android\x86_64\libstorj_uplink.so ..\..\..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86_64\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
+copy ..\Build-Results\Android\x86_64\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86_64\ /Y
 
-cd ..\..\..
+cd ..
 %SystemRoot%\explorer.exe .\Build-Results\
 
 echo ***********************************************

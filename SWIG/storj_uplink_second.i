@@ -59,14 +59,12 @@ MAP_SPECIAL(uint8_t, byte, uint8_t)
 MAP_SPECIAL(uint16_t, ushort, uint16_t)
 MAP_SPECIAL(uint32_t, uint, uint32_t)
 MAP_SPECIAL(uint64_t, ulong, uint64_t)
+MAP_SPECIAL(_Bool, bool, _Bool)
 
 %{
 	/* Includes the header in the wrapper code */
 	#include "uplink_definitions.h"
 	#include "storj_uplink.h"
-	extern BucketInfo get_bucketinfo_at(BucketList list, int index);
-	extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
-	extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 %}
 
 /* Map EncryptionRestriction** for function restrict_scope */
@@ -82,23 +80,9 @@ MAP_SPECIAL(uint64_t, ulong, uint64_t)
 /* Parse the header file to generate wrappers */
 %include "storj_uplink.h"
 %include "uplink_definitions.h"
-extern BucketInfo get_bucketinfo_at(BucketList list, int index);
-extern ObjectInfo get_objectinfo_at(ObjectList list, int index);
-extern EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes);
 extern char* get_storj_version();
 
 %inline %{
-BucketInfo get_bucketinfo_at(BucketList list, int index){
-	return *(list.items+index);
-}
-
-extern ObjectInfo get_objectinfo_at(ObjectList list, int index){
-	return *(list.items+index);
-}
-
-EncryptionAccessRef new_encryption_access_with_default_key2(uint8_t* bytes){
-	return new_encryption_access_with_default_key(bytes);
-}
 
 char* get_storj_version(){
 	return "STORJVERSION";
