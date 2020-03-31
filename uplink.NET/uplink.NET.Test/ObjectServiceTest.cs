@@ -17,7 +17,6 @@ namespace uplink.NET.Test
         Scope _scope;
         IBucketService _bucketService;
         IObjectService _objectService;
-        BucketConfig _bucketConfig;
 
         [TestInitialize]
         public void Init()
@@ -25,8 +24,7 @@ namespace uplink.NET.Test
             Scope.SetTempDirectory(System.IO.Path.GetTempPath());
             _scope = new Scope(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_scope);
-            _objectService = new ObjectService();
-            _bucketConfig = new BucketConfig();
+            _objectService = new ObjectService(_scope);
         }
 
         [TestMethod]
@@ -53,12 +51,12 @@ namespace uplink.NET.Test
             await Upload_X_Bytes(256, 1);
         }
 
-        private async Task Upload_X_Bytes(ulong bytes, int exptecedProgressCount)
+        private async Task Upload_X_Bytes(long bytes, int exptecedProgressCount)
         {
             string bucketname = "uploadtest";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             bool progressChangeCounterCalled = false;
@@ -94,12 +92,12 @@ namespace uplink.NET.Test
             await Download_X_Bytes(2500, 3);
         }
 
-        private async Task Download_X_Bytes(ulong bytes, int exptecedProgressCount)
+        private async Task Download_X_Bytes(long bytes, int exptecedProgressCount)
         {
             string bucketname = "downloadtest";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
@@ -107,7 +105,7 @@ namespace uplink.NET.Test
 
             bool progressChangeCounterCalled = false;
 
-            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt", false);
+            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt",new DownloadOptions(), false);
             downloadOperation.DownloadOperationProgressChanged += (op) =>
             {
                 progressChangeCounterCalled = true;
@@ -119,7 +117,7 @@ namespace uplink.NET.Test
             Assert.IsTrue(downloadOperation.Completed);
             Assert.AreEqual(bytes, downloadOperation.BytesReceived);
             int index = 0;
-            foreach(var b in downloadOperation.DownloadedBytes)
+            foreach (var b in downloadOperation.DownloadedBytes)
             {
                 Assert.AreEqual(bytesToUpload[index], b);
                 index++;
@@ -131,8 +129,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "downloadstreamtest1";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = new byte[250];
             for (int i = 0; i < 250; i++)
             {
@@ -142,7 +140,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _scope);
             byte[] bytesReceived = new byte[50];
             await stream.ReadAsync(bytesReceived, 0, 50);
 
@@ -157,8 +155,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "downloadstreamtest2";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = new byte[250];
             for (int i = 0; i < 250; i++)
             {
@@ -168,7 +166,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _scope);
             byte[] bytesReceived = new byte[50];
             stream.Seek(100, System.IO.SeekOrigin.Begin);
             await stream.ReadAsync(bytesReceived, 0, 50);
@@ -180,36 +178,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task ListObjects_Lists_RaisesError()
-        {
-            string bucketname = "listobject-lists-raiseserror";
-
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
-            byte[] bytesToUpload = GetRandomBytes(2048);
-
-            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
-            await uploadOperation.StartUploadAsync();
-
-            try
-            {
-                await _objectService.ListObjectsAsync(bucket, new ListOptions());
-            }catch(ObjectListException ex)
-            {
-                Assert.IsTrue(ex.Message.Contains("direction"));
-                return;
-            }
-
-            Assert.IsTrue(false, "Error message not raised");
-        }
-
-        [TestMethod]
         public async Task ListObjects_Lists_ExistingObject()
         {
             string bucketname = "listobject-lists-existingobjects";
 
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
@@ -217,41 +191,41 @@ namespace uplink.NET.Test
             var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation2.StartUploadAsync();
 
-            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER, Recursive = true });
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
 
-            Assert.AreEqual(2, objectList.Length);
-            Assert.AreEqual("myfile2.txt", objectList.Items[1].Path);
+            Assert.AreEqual(2, objectList.Items.Count);
+            Assert.AreEqual("myfile2.txt", objectList.Items[1].Key);
         }
 
         [TestMethod]
-        public async Task GetObjectMeta_Gets_ObjectMeta()
+        public async Task GetObject_Gets_Object()
         {
             string bucketname = "getobjectmeta-gets-objectmeta";
 
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
-            
-            var objectMeta = await _objectService.GetObjectMetaAsync(bucket, "myfile.txt");
 
-            Assert.AreEqual("myfile.txt", objectMeta.Path);
-            Assert.AreEqual((ulong)2048, objectMeta.Size);
+            var storjObject = await _objectService.GetObjectAsync(bucket, "myfile.txt");
+
+            Assert.AreEqual("myfile.txt", storjObject.Key);
+            Assert.AreEqual(2048, storjObject.SystemMetaData.ContentLength);
         }
 
         [TestMethod]
-        public async Task GetObjectMeta_Fails_OnNotExistingObject()
+        public async Task GetObject_Fails_OnNotExistingObject()
         {
             string bucketname = "getobjectmeta-fails-onnotexistingobject";
 
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
 
             try
             {
-                await _objectService.GetObjectMetaAsync(bucket, "notexisting.txt");
+                await _objectService.GetObjectAsync(bucket, "notexisting.txt");
             }
             catch (ObjectNotFoundException ex)
             {
@@ -268,8 +242,8 @@ namespace uplink.NET.Test
         {
             string bucketname = "deleteobject-fails-onnotexistingobject";
 
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
 
             try
             {
@@ -290,24 +264,24 @@ namespace uplink.NET.Test
         {
             string bucketname = "deleteobject-deletes-object";
 
-            await _bucketService.CreateBucketAsync(bucketname, _bucketConfig);
-            var bucket = await _bucketService.OpenBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
 
             byte[] bytesToUpload = GetRandomBytes(2048);
 
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var objectList = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER, Recursive = true });
-            Assert.AreEqual(1, objectList.Length);
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+            Assert.AreEqual(1, objectList.Items.Count);
 
             await _objectService.DeleteObjectAsync(bucket, "myfile1.txt");
 
-            var objectList2 = await _objectService.ListObjectsAsync(bucket, new ListOptions() { Direction = ListDirection.STORJ_AFTER, Recursive = true });
-            Assert.AreEqual(0, objectList2.Length);
+            var objectList2 = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+            Assert.AreEqual(0, objectList2.Items.Count);
         }
 
-        public static byte[] GetRandomBytes(ulong length)
+        public static byte[] GetRandomBytes(long length)
         {
             byte[] bytes = new byte[length];
             Random rand = new Random();
@@ -323,7 +297,6 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("downloadtest");
             await DeleteBucketAsync("downloadstreamtest1");
             await DeleteBucketAsync("downloadstreamtest2");
-            await DeleteBucketAsync("listobject-lists-raiseserror");
             await DeleteBucketAsync("listobject-lists-existingobjects");
             await DeleteBucketAsync("getobjectmeta-gets-objectmeta");
             await DeleteBucketAsync("getobjectmeta-fails-onnotexistingobject");
@@ -333,6 +306,17 @@ namespace uplink.NET.Test
 
         private async Task DeleteBucketAsync(string bucketName)
         {
+            try
+            {
+                var bucket = await _bucketService.GetBucketAsync(bucketName);
+                var result = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+                foreach(var obj in result.Items)
+                {
+                    await _objectService.DeleteObjectAsync(bucket, obj.Key);
+                }
+            }
+            catch
+            { }
             try
             {
                 await _bucketService.DeleteBucketAsync(bucketName);

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using uplink.NET.Interfaces;
 
 namespace uplink.NET.Models
 {
     public class DownloadStream : Stream
     {
-        private BucketRef _bucketRef;
-        private SWIG.DownloaderRef _downloaderRef;
+        private Bucket _bucket;
+        private SWIG.DownloadResult _downloadResult;
         private DownloadOperation _download;
+        private Scope _scope;
         private string _objectName;
         public override bool CanRead => true;
 
@@ -23,16 +25,17 @@ namespace uplink.NET.Models
 
         public override long Position { get; set; }
 
-        public DownloadStream(BucketRef bucketRef, int totalBytes, string objectName)
+        public DownloadStream(Bucket bucket, int totalBytes, string objectName, Scope scope) //TODO: better Scope-handling
         {
             string error;
 
             _length = totalBytes;
-            _bucketRef = bucketRef;
+            _bucket = bucket;
             _objectName = objectName;
+            _scope = scope;
 
-            _downloaderRef = SWIG.storj_uplink.download(bucketRef._bucketRef, objectName, out error);
-            _download = new DownloadOperation(_downloaderRef, (ulong)totalBytes, objectName);
+            _downloadResult = SWIG.storj_uplink.download_object(_scope.Project, bucket.Name, objectName, null); //TODO: make DownloadOptions available to caller
+            _download = new DownloadOperation(_downloadResult, totalBytes, objectName);
             if (!_download.Running && !_download.Completed && !_download.Cancelled && !_download.Failed)
                 _download.StartDownloadAsync();
         }

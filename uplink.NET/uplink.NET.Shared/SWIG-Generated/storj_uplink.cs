@@ -11,477 +11,205 @@
 namespace uplink.SWIG {
 
 internal class storj_uplink {
-  public static ScopeRef new_scope(string p0, APIKeyRef p1, EncryptionAccessRef p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.new_scope(p0, APIKeyRef.getCPtr(p1), EncryptionAccessRef.getCPtr(p2), ref tmpp3), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static string get_scope_satellite_address(ScopeRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      string ret = storj_uplinkPINVOKE.get_scope_satellite_address(ScopeRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static APIKeyRef get_scope_api_key(ScopeRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      APIKeyRef ret = new APIKeyRef(storj_uplinkPINVOKE.get_scope_api_key(ScopeRef.getCPtr(p0), ref tmpp1), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static EncryptionAccessRef get_scope_enc_access(ScopeRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.get_scope_enc_access(ScopeRef.getCPtr(p0), ref tmpp1), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static ScopeRef parse_scope(string p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.parse_scope(p0, ref tmpp1), true);
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static string serialize_scope(ScopeRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      string ret = storj_uplinkPINVOKE.serialize_scope(ScopeRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static ScopeRef restrict_scope(ScopeRef p0, Caveat p1, EncryptionRestriction[] p2, uint p3, out string p4) {
-global::System.IntPtr tmpp4=global::System.IntPtr.Zero;
-    try {
-      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.restrict_scope(ScopeRef.getCPtr(p0), Caveat.getCPtr(p1), p2, p3, ref tmpp4), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p4=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp4);
-			  if(tmpp4 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp4);
-    }
-  }
-
-  public static void free_scope(ScopeRef p0) {
-    storj_uplinkPINVOKE.free_scope(ScopeRef.getCPtr(p0));
-    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-  }
-
-  public static APIKeyRef parse_api_key(string p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      APIKeyRef ret = new APIKeyRef(storj_uplinkPINVOKE.parse_api_key(p0, ref tmpp1), true);
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static string serialize_api_key(APIKeyRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      string ret = storj_uplinkPINVOKE.serialize_api_key(APIKeyRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static void free_api_key(APIKeyRef p0) {
-    storj_uplinkPINVOKE.free_api_key(APIKeyRef.getCPtr(p0));
-    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-  }
-
-  public static BucketInfo create_bucket(ProjectRef p0, string p1, BucketConfig p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      BucketInfo ret = new BucketInfo(storj_uplinkPINVOKE.create_bucket(ProjectRef.getCPtr(p0), p1, BucketConfig.getCPtr(p2), ref tmpp3), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static BucketInfo get_bucket_info(ProjectRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      BucketInfo ret = new BucketInfo(storj_uplinkPINVOKE.get_bucket_info(ProjectRef.getCPtr(p0), p1, ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static BucketRef open_bucket(ProjectRef p0, string p1, string p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      BucketRef ret = new BucketRef(storj_uplinkPINVOKE.open_bucket(ProjectRef.getCPtr(p0), p1, p2, ref tmpp3), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static BucketList list_buckets(ProjectRef p0, BucketListOptions p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      BucketList ret = new BucketList(storj_uplinkPINVOKE.list_buckets(ProjectRef.getCPtr(p0), BucketListOptions.getCPtr(p1), ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static void delete_bucket(ProjectRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.delete_bucket(ProjectRef.getCPtr(p0), p1, ref tmpp2);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static void close_bucket(BucketRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.close_bucket(BucketRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static void free_bucket_info(BucketInfo p0) {
-    storj_uplinkPINVOKE.free_bucket_info(BucketInfo.getCPtr(p0));
-  }
-
-  public static void free_bucket_list(BucketList p0) {
-    storj_uplinkPINVOKE.free_bucket_list(BucketList.getCPtr(p0));
-  }
-
-  public static EncryptionAccessRef new_encryption_access(out string p0) {
-global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
-    try {
-      EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access(ref tmpp0), true);
-      return ret;
-    } finally {
-p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
-			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
-    }
-  }
-
-  public static EncryptionAccessRef new_encryption_access_with_default_key(byte[] p0) {
-    EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key(p0), true);
+  public static AccessResult parse_access(string p0) {
+    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.parse_access(p0), true);
     return ret;
   }
 
-  public static void set_default_key(EncryptionAccessRef p0, byte[] p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.set_default_key(EncryptionAccessRef.getCPtr(p0), p1, ref tmpp2);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
+  public static AccessResult request_access_with_passphrase(string p0, string p1, string p2) {
+    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.request_access_with_passphrase(p0, p1, p2), true);
+    return ret;
   }
 
-  public static string serialize_encryption_access(EncryptionAccessRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      string ret = storj_uplinkPINVOKE.serialize_encryption_access(EncryptionAccessRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
+  public static StringResult access_serialize(Access p0) {
+    StringResult ret = new StringResult(storj_uplinkPINVOKE.access_serialize(Access.getCPtr(p0)), true);
+    return ret;
   }
 
-  public static EncryptionAccessRef parse_encryption_access(string p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.parse_encryption_access(p0, ref tmpp1), true);
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
+  public static AccessResult access_share(Access p0, Permission p1, SharePrefix p2, long p3) {
+    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.access_share(Access.getCPtr(p0), Permission.getCPtr(p1), SharePrefix.getCPtr(p2), p3), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
   }
 
-  public static void free_encryption_access(EncryptionAccessRef p0) {
-    storj_uplinkPINVOKE.free_encryption_access(EncryptionAccessRef.getCPtr(p0));
+  public static void free_string_result(StringResult p0) {
+    storj_uplinkPINVOKE.free_string_result(StringResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static ObjectRef open_object(BucketRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      ObjectRef ret = new ObjectRef(storj_uplinkPINVOKE.open_object(BucketRef.getCPtr(p0), p1, ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static void close_object(ObjectRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.close_object(ObjectRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static ObjectMeta get_object_meta(ObjectRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      ObjectMeta ret = new ObjectMeta(storj_uplinkPINVOKE.get_object_meta(ObjectRef.getCPtr(p0), ref tmpp1), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static UploaderRef upload(BucketRef p0, string p1, UploadOptions p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      UploaderRef ret = new UploaderRef(storj_uplinkPINVOKE.upload(BucketRef.getCPtr(p0), p1, UploadOptions.getCPtr(p2), ref tmpp3), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static uint upload_write(UploaderRef p0, byte[] p1, uint p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      uint ret = storj_uplinkPINVOKE.upload_write(UploaderRef.getCPtr(p0), p1, p2, ref tmpp3);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static void upload_commit(UploaderRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.upload_commit(UploaderRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static void upload_cancel(UploaderRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.upload_cancel(UploaderRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static ObjectList list_objects(BucketRef p0, ListOptions p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      ObjectList ret = new ObjectList(storj_uplinkPINVOKE.list_objects(BucketRef.getCPtr(p0), ListOptions.getCPtr(p1), ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static DownloaderRef download(BucketRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      DownloaderRef ret = new DownloaderRef(storj_uplinkPINVOKE.download(BucketRef.getCPtr(p0), p1, ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static DownloaderRef download_range(BucketRef p0, string p1, long p2, long p3, out string p4) {
-global::System.IntPtr tmpp4=global::System.IntPtr.Zero;
-    try {
-      DownloaderRef ret = new DownloaderRef(storj_uplinkPINVOKE.download_range(BucketRef.getCPtr(p0), p1, p2, p3, ref tmpp4), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p4=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp4);
-			  if(tmpp4 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp4);
-    }
-  }
-
-  public static uint download_read(DownloaderRef p0, byte[] p1, uint p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      uint ret = storj_uplinkPINVOKE.download_read(DownloaderRef.getCPtr(p0), p1, p2, ref tmpp3);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
-  }
-
-  public static void download_close(DownloaderRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.download_close(DownloaderRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static void download_cancel(DownloaderRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.download_cancel(DownloaderRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
-  }
-
-  public static void delete_object(BucketRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.delete_object(BucketRef.getCPtr(p0), p1, ref tmpp2);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
-  }
-
-  public static void free_uploader(UploaderRef p0) {
-    storj_uplinkPINVOKE.free_uploader(UploaderRef.getCPtr(p0));
+  public static void free_access_result(AccessResult p0) {
+    storj_uplinkPINVOKE.free_access_result(AccessResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_downloader(DownloaderRef p0) {
-    storj_uplinkPINVOKE.free_downloader(DownloaderRef.getCPtr(p0));
+  public static BucketResult stat_bucket(Project p0, string p1) {
+    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.stat_bucket(Project.getCPtr(p0), p1), true);
+    return ret;
+  }
+
+  public static BucketResult create_bucket(Project p0, string p1) {
+    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.create_bucket(Project.getCPtr(p0), p1), true);
+    return ret;
+  }
+
+  public static BucketResult ensure_bucket(Project p0, string p1) {
+    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.ensure_bucket(Project.getCPtr(p0), p1), true);
+    return ret;
+  }
+
+  public static BucketResult delete_bucket(Project p0, string p1) {
+    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.delete_bucket(Project.getCPtr(p0), p1), true);
+    return ret;
+  }
+
+  public static void free_bucket_result(BucketResult p0) {
+    storj_uplinkPINVOKE.free_bucket_result(BucketResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_upload_opts(UploadOptions p0) {
-    storj_uplinkPINVOKE.free_upload_opts(UploadOptions.getCPtr(p0));
+  public static void free_bucket(Bucket p0) {
+    storj_uplinkPINVOKE.free_bucket(Bucket.getCPtr(p0));
   }
 
-  public static void free_object_meta(ObjectMeta p0) {
-    storj_uplinkPINVOKE.free_object_meta(ObjectMeta.getCPtr(p0));
+  public static BucketIterator list_buckets(Project p0, ListBucketsOptions p1) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.list_buckets(Project.getCPtr(p0), ListBucketsOptions.getCPtr(p1));
+    BucketIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new BucketIterator(cPtr, false);
+    return ret;
   }
 
-  public static void free_object_info(ObjectInfo p0) {
-    storj_uplinkPINVOKE.free_object_info(ObjectInfo.getCPtr(p0));
+  public static bool bucket_iterator_next(BucketIterator p0) {
+    bool ret = storj_uplinkPINVOKE.bucket_iterator_next(BucketIterator.getCPtr(p0));
+    return ret;
   }
 
-  public static void free_list_objects(ObjectList p0) {
-    storj_uplinkPINVOKE.free_list_objects(ObjectList.getCPtr(p0));
+  public static Error bucket_iterator_err(BucketIterator p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.bucket_iterator_err(BucketIterator.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
   }
 
-  public static ProjectRef open_project(UplinkRef p0, string p1, APIKeyRef p2, out string p3) {
-global::System.IntPtr tmpp3=global::System.IntPtr.Zero;
-    try {
-      ProjectRef ret = new ProjectRef(storj_uplinkPINVOKE.open_project(UplinkRef.getCPtr(p0), p1, APIKeyRef.getCPtr(p2), ref tmpp3), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p3=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp3);
-			  if(tmpp3 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp3);
-    }
+  public static Bucket bucket_iterator_item(BucketIterator p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.bucket_iterator_item(BucketIterator.getCPtr(p0));
+    Bucket ret = (cPtr == global::System.IntPtr.Zero) ? null : new Bucket(cPtr, false);
+    return ret;
   }
 
-  public static SWIGTYPE_p_uint8_t project_salted_key_from_passphrase(ProjectRef p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.project_salted_key_from_passphrase(ProjectRef.getCPtr(p0), p1, ref tmpp2);
-      SWIGTYPE_p_uint8_t ret = (cPtr == global::System.IntPtr.Zero) ? null : new SWIGTYPE_p_uint8_t(cPtr, false);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
+  public static void free_bucket_iterator(BucketIterator p0) {
+    storj_uplinkPINVOKE.free_bucket_iterator(BucketIterator.getCPtr(p0));
   }
 
-  public static void close_project(ProjectRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.close_project(ProjectRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
+  public static AccessResult config_request_access_with_passphrase(Config p0, string p1, string p2, string p3) {
+    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.config_request_access_with_passphrase(Config.getCPtr(p0), p1, p2, p3), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static ProjectResult config_open_project(Config p0, Access p1) {
+    ProjectResult ret = new ProjectResult(storj_uplinkPINVOKE.config_open_project(Config.getCPtr(p0), Access.getCPtr(p1)), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static DownloadResult download_object(Project p0, string p1, string p2, DownloadOptions p3) {
+    DownloadResult ret = new DownloadResult(storj_uplinkPINVOKE.download_object(Project.getCPtr(p0), p1, p2, DownloadOptions.getCPtr(p3)), true);
+    return ret;
+  }
+
+  public static ReadResult download_read(Download p0, SWIGTYPE_p_void p1, uint p2) {
+    ReadResult ret = new ReadResult(storj_uplinkPINVOKE.download_read(Download.getCPtr(p0), SWIGTYPE_p_void.getCPtr(p1), p2), true);
+    return ret;
+  }
+
+  public static ObjectResult download_info(Download p0) {
+    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.download_info(Download.getCPtr(p0)), true);
+    return ret;
+  }
+
+  public static void free_read_result(ReadResult p0) {
+    storj_uplinkPINVOKE.free_read_result(ReadResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static Error close_download(Download p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.close_download(Download.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
+  public static void free_download_result(DownloadResult p0) {
+    storj_uplinkPINVOKE.free_download_result(DownloadResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void free_error(Error p0) {
+    storj_uplinkPINVOKE.free_error(Error.getCPtr(p0));
+  }
+
+  public static byte internal_UniverseIsEmpty() {
+    byte ret = storj_uplinkPINVOKE.internal_UniverseIsEmpty();
+    return ret;
+  }
+
+  public static ObjectResult stat_object(Project p0, string p1, string p2) {
+    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.stat_object(Project.getCPtr(p0), p1, p2), true);
+    return ret;
+  }
+
+  public static ObjectResult delete_object(Project p0, string p1, string p2) {
+    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.delete_object(Project.getCPtr(p0), p1, p2), true);
+    return ret;
+  }
+
+  public static void free_object_result(ObjectResult p0) {
+    storj_uplinkPINVOKE.free_object_result(ObjectResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void free_object(Object p0) {
+    storj_uplinkPINVOKE.free_object(Object.getCPtr(p0));
+  }
+
+  public static ObjectIterator list_objects(Project p0, string p1, ListObjectsOptions p2) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.list_objects(Project.getCPtr(p0), p1, ListObjectsOptions.getCPtr(p2));
+    ObjectIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new ObjectIterator(cPtr, false);
+    return ret;
+  }
+
+  public static bool object_iterator_next(ObjectIterator p0) {
+    bool ret = storj_uplinkPINVOKE.object_iterator_next(ObjectIterator.getCPtr(p0));
+    return ret;
+  }
+
+  public static Error object_iterator_err(ObjectIterator p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.object_iterator_err(ObjectIterator.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
+  public static Object object_iterator_item(ObjectIterator p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.object_iterator_item(ObjectIterator.getCPtr(p0));
+    Object ret = (cPtr == global::System.IntPtr.Zero) ? null : new Object(cPtr, false);
+    return ret;
+  }
+
+  public static void free_object_iterator(ObjectIterator p0) {
+    storj_uplinkPINVOKE.free_object_iterator(ObjectIterator.getCPtr(p0));
+  }
+
+  public static ProjectResult open_project(Access p0) {
+    ProjectResult ret = new ProjectResult(storj_uplinkPINVOKE.open_project(Access.getCPtr(p0)), true);
+    return ret;
+  }
+
+  public static Error close_project(Project p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.close_project(Project.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
+  public static void free_project_result(ProjectResult p0) {
+    storj_uplinkPINVOKE.free_project_result(ProjectResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
   public static void prepare_restrictions(uint p0) {
@@ -490,18 +218,6 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
 
   public static void append_restriction(string p0, string p1) {
     storj_uplinkPINVOKE.append_restriction(p0, p1);
-  }
-
-  public static ScopeRef restrict_scope2(ScopeRef p0, Caveat p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      ScopeRef ret = new ScopeRef(storj_uplinkPINVOKE.restrict_scope2(ScopeRef.getCPtr(p0), Caveat.getCPtr(p1), ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
   }
 
   public static void free_string(out string p0) {
@@ -514,49 +230,48 @@ p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
     }
   }
 
-  public static byte internal_UniverseIsEmpty() {
-    byte ret = storj_uplinkPINVOKE.internal_UniverseIsEmpty();
+  public static UploadResult upload_object(Project p0, string p1, string p2, UploadOptions p3) {
+    UploadResult ret = new UploadResult(storj_uplinkPINVOKE.upload_object(Project.getCPtr(p0), p1, p2, UploadOptions.getCPtr(p3)), true);
     return ret;
   }
 
-  public static UplinkRef new_uplink(UplinkConfig p0, string p1, out string p2) {
-global::System.IntPtr tmpp2=global::System.IntPtr.Zero;
-    try {
-      UplinkRef ret = new UplinkRef(storj_uplinkPINVOKE.new_uplink(UplinkConfig.getCPtr(p0), p1, ref tmpp2), true);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-      return ret;
-    } finally {
-p2=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp2);
-			  if(tmpp2 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp2);
-    }
+  public static WriteResult upload_write(Upload p0, SWIGTYPE_p_void p1, uint p2) {
+    WriteResult ret = new WriteResult(storj_uplinkPINVOKE.upload_write(Upload.getCPtr(p0), SWIGTYPE_p_void.getCPtr(p1), p2), true);
+    return ret;
   }
 
-  public static void close_uplink(UplinkRef p0, out string p1) {
-global::System.IntPtr tmpp1=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.close_uplink(UplinkRef.getCPtr(p0), ref tmpp1);
-      if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    } finally {
-p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
-			  if(tmpp1 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp1);
-    }
+  public static Error upload_commit(Upload p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_commit(Upload.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
   }
 
-  public static BucketInfo get_bucketinfo_at(BucketList list, int index) {
-    BucketInfo ret = new BucketInfo(storj_uplinkPINVOKE.get_bucketinfo_at(BucketList.getCPtr(list), index), true);
+  public static Error upload_abort(Upload p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_abort(Upload.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
+  public static ObjectResult upload_info(Upload p0) {
+    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.upload_info(Upload.getCPtr(p0)), true);
+    return ret;
+  }
+
+  public static Error upload_set_custom_metadata(Upload p0, CustomMetadata p1) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_set_custom_metadata(Upload.getCPtr(p0), CustomMetadata.getCPtr(p1));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
-  public static ObjectInfo get_objectinfo_at(ObjectList list, int index) {
-    ObjectInfo ret = new ObjectInfo(storj_uplinkPINVOKE.get_objectinfo_at(ObjectList.getCPtr(list), index), true);
+  public static void free_write_result(WriteResult p0) {
+    storj_uplinkPINVOKE.free_write_result(WriteResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    return ret;
   }
 
-  public static EncryptionAccessRef new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t bytes) {
-    EncryptionAccessRef ret = new EncryptionAccessRef(storj_uplinkPINVOKE.new_encryption_access_with_default_key2(SWIGTYPE_p_uint8_t.getCPtr(bytes)), true);
-    return ret;
+  public static void free_upload_result(UploadResult p0) {
+    storj_uplinkPINVOKE.free_upload_result(UploadResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
   public static string get_storj_version() {
@@ -564,6 +279,18 @@ p1=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp1);
     return ret;
   }
 
+  public static readonly int ERROR_INTERNAL = storj_uplinkPINVOKE.ERROR_INTERNAL_get();
+  public static readonly int ERROR_CANCELED = storj_uplinkPINVOKE.ERROR_CANCELED_get();
+  public static readonly int ERROR_INVALID_HANDLE = storj_uplinkPINVOKE.ERROR_INVALID_HANDLE_get();
+  public static readonly int ERROR_TOO_MANY_REQUESTS = storj_uplinkPINVOKE.ERROR_TOO_MANY_REQUESTS_get();
+  public static readonly int ERROR_BANDWIDTH_LIMIT_EXCEEDED = storj_uplinkPINVOKE.ERROR_BANDWIDTH_LIMIT_EXCEEDED_get();
+  public static readonly int ERROR_BUCKET_NAME_INVALID = storj_uplinkPINVOKE.ERROR_BUCKET_NAME_INVALID_get();
+  public static readonly int ERROR_BUCKET_ALREADY_EXISTS = storj_uplinkPINVOKE.ERROR_BUCKET_ALREADY_EXISTS_get();
+  public static readonly int ERROR_BUCKET_NOT_EMPTY = storj_uplinkPINVOKE.ERROR_BUCKET_NOT_EMPTY_get();
+  public static readonly int ERROR_BUCKET_NOT_FOUND = storj_uplinkPINVOKE.ERROR_BUCKET_NOT_FOUND_get();
+  public static readonly int ERROR_OBJECT_KEY_INVALID = storj_uplinkPINVOKE.ERROR_OBJECT_KEY_INVALID_get();
+  public static readonly int ERROR_OBJECT_NOT_FOUND = storj_uplinkPINVOKE.ERROR_OBJECT_NOT_FOUND_get();
+  public static readonly int ERROR_UPLOAD_DONE = storj_uplinkPINVOKE.ERROR_UPLOAD_DONE_get();
 }
 
 }

@@ -44,16 +44,6 @@ internal class UploadOptions : global::System.IDisposable {
     }
   }
 
-  public string content_type {
-    set {
-      storj_uplinkPINVOKE.UploadOptions_content_type_set(swigCPtr, value);
-    } 
-    get {
-      string ret = storj_uplinkPINVOKE.UploadOptions_content_type_get(swigCPtr);
-      return ret;
-    } 
-  }
-
   public long expires {
     set {
       storj_uplinkPINVOKE.UploadOptions_expires_set(swigCPtr, value);

@@ -25,27 +25,22 @@ namespace uplink.NET.Models
         /// <summary>
         /// The items within this list
         /// </summary>
-        public List<ObjectInfo> Items { get; set; }
-        /// <summary>
-        /// The amount of items within this list
-        /// </summary>
-        public int Length { get; set; }
+        public List<Object> Items { get; set; }
 
-        internal static ObjectList FromSWIG(SWIG.ObjectList original)
+        public ObjectList()
+        {
+            Items = new List<Object>();
+        }
+
+        internal static ObjectList FromSWIG(SWIG.ObjectIterator iterator)
         {
             ObjectList ret = new ObjectList();
-            ret.Bucket = original.bucket;
-            ret.Prefix = original.prefix;
-            ret.More = original.more;
-            ret.Length = original.length;
-            ret.Items = new List<ObjectInfo>();
-            for (int i = 0; i < original.length; i++)
+            ret.Items = new List<Object>();
+            
+            while(SWIG.storj_uplink.object_iterator_next(iterator))
             {
-                ret.Items.Add(ObjectInfo.FromSWIG(SWIG.storj_uplink.get_objectinfo_at(original, i), false));
+                ret.Items.Add(Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(iterator)));
             }
-
-            ret.Items = ret.Items.OrderBy(i => i.Path).ToList();
-            //ToDo: check why it fails - SWIG.storj_uplink.free_list_objects(original);
 
             return ret;
         }

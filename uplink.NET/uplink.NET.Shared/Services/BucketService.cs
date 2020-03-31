@@ -17,80 +17,51 @@ namespace uplink.NET.Services
             _scope = scope;
         }
 
-        public async Task<BucketInfo> CreateBucketAsync(string bucketName, BucketConfig bucketConfig)
+        public async Task<Bucket> CreateBucketAsync(string bucketName)
         {
-            string error = string.Empty;
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.create_bucket(_scope.Project, bucketName));
 
-            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.create_bucket(_scope.Project._projectRef, bucketName, bucketConfig.ToSWIG(), out error));
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
+                throw new BucketCreationException(bucketName, bucketResult.error.message);
 
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketCreationException(bucketName, error);
-
-            return BucketInfo.FromSWIG(bucketInfo);
+            return Bucket.FromSWIG(bucketResult.bucket);
         }
 
         public async Task DeleteBucketAsync(string bucketName)
         {
-            string error = string.Empty;
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.delete_bucket(_scope.Project, bucketName));
 
-            await Task.Run(() => SWIG.storj_uplink.delete_bucket(_scope.Project._projectRef, bucketName, out error));
-
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketDeletionException(bucketName, error);
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
+                throw new BucketDeletionException(bucketName, bucketResult.error.message);
         }
 
-        public async Task<BucketInfo> GetBucketInfoAsync(string bucketName)
+        public async Task<Bucket> GetBucketAsync(string bucketName)
         {
-            string error = string.Empty;
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.stat_bucket(_scope.Project, bucketName));
 
-            var bucketInfo = await Task.Run<SWIG.BucketInfo>(() => SWIG.storj_uplink.get_bucket_info(_scope.Project._projectRef, bucketName, out error));
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
+                throw new BucketNotFoundException(bucketName, bucketResult.error.message);
 
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketNotFoundException(bucketName, error);
-
-            return BucketInfo.FromSWIG(bucketInfo);
+            return Bucket.FromSWIG(bucketResult.bucket);
         }
 
-        public async Task<BucketList> ListBucketsAsync(BucketListOptions bucketListOptions)
+        public async Task<BucketList> ListBucketsAsync(ListBucketsOptions listBucketsOptions)
         {
-            string error = string.Empty;
+            SWIG.BucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.list_buckets(_scope.Project, listBucketsOptions.ToSWIG()));
 
-            var res = await Task.Run<SWIG.BucketList>(() => SWIG.storj_uplink.list_buckets(_scope.Project._projectRef, bucketListOptions.ToSWIG(), out error));
+            var error = SWIG.storj_uplink.bucket_iterator_err(bucketIterator);
+            if (error != null && !string.IsNullOrEmpty(error.message))
+                throw new BucketListException(error.message);
 
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketListException(error);
+            BucketList bucketList = new BucketList();
 
-            return BucketList.FromSWIG(res);
-        }
+            while(SWIG.storj_uplink.bucket_iterator_next(bucketIterator))
+            {
+                bucketList.Items.Add(Bucket.FromSWIG(SWIG.storj_uplink.bucket_iterator_item(bucketIterator)));
+            }
+            SWIG.storj_uplink.free_bucket_iterator(bucketIterator);
 
-        public async Task<BucketRef> OpenBucketAsync(string bucketName)
-        {
-            return await OpenBucketAsync(bucketName, _scope.EncryptionAccess);
-        }
-
-        public async Task<BucketRef> OpenBucketAsync(string bucketName, EncryptionAccess encryptionAccess)
-        {
-            string error = string.Empty;
-
-            var handle = await Task.Run<SWIG.BucketRef>(() => SWIG.storj_uplink.open_bucket(_scope.Project._projectRef, bucketName, encryptionAccess.ToBase58(), out error));
-
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketNotFoundException(bucketName, error);
-
-            return BucketRef.FromSWIG(handle);
-        }
-
-        public async Task CloseBucketAsync(BucketRef bucketRef)
-        {
-            if (bucketRef == null || bucketRef._bucketRef == null)
-                throw new BucketCloseException("Bucket already closed");
-
-            string error = string.Empty;
-
-            await Task.Run(() => SWIG.storj_uplink.close_bucket(bucketRef._bucketRef, out error));
-
-            if (!string.IsNullOrEmpty(error))
-                throw new BucketCloseException(error);
+            return bucketList;
         }
     }
 }

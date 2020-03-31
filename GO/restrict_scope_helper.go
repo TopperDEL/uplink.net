@@ -4,9 +4,6 @@ package main
 import "C"
 
 import  (
-	"fmt"
-
-	"storj.io/common/macaroon"
 	libuplink "storj.io/storj/lib/uplink"
 )
 
@@ -29,40 +26,4 @@ func append_restriction(bucket *C.char, path_prefix *C.char){
 			}
 	
 	restrictions = append(restrictions, restriction)
-}
-
-//export restrict_scope2
-// restrict_scope2 restricts a given scope with the provided caveat and the temporary encryption restrictions
-func restrict_scope2(scopeRef C.ScopeRef, caveat C.Caveat, cerr **C.char) C.ScopeRef {
-	scope, ok := universe.Get(scopeRef._handle).(*libuplink.Scope)
-	if !ok {
-		*cerr = C.CString("invalid scope")
-		return C.ScopeRef{}
-	}
-
-	caveatGo := macaroon.Caveat{
-		DisallowReads:   bool(caveat.disallow_reads),
-		DisallowWrites:  bool(caveat.disallow_writes),
-		DisallowLists:   bool(caveat.disallow_lists),
-		DisallowDeletes: bool(caveat.disallow_deletes),
-	}
-
-	apiKeyRestricted, err := scope.APIKey.Restrict(caveatGo)
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-		return C.ScopeRef{}
-	}
-
-	apiKeyRestricted, encAccessRestricted, err := scope.EncryptionAccess.Restrict(apiKeyRestricted, restrictions...)
-	if err != nil {
-		*cerr = C.CString(fmt.Sprintf("%+v", err))
-		return C.ScopeRef{}
-	}
-
-	scopeRestricted := &libuplink.Scope{
-		SatelliteAddr:    scope.SatelliteAddr,
-		APIKey:           apiKeyRestricted,
-		EncryptionAccess: encAccessRestricted,
-	}
-	return C.ScopeRef{_handle: universe.Add(scopeRestricted)}
 }

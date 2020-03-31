@@ -32,7 +32,7 @@ namespace uplink.NET.Models
                 return _bytesToDownload;
             }
         }
-        private SWIG.DownloaderRef _downloaderRef;
+        private SWIG.DownloadResult _downloadResult;
         private Task _downloadTask;
         private bool _cancelled;
 
@@ -51,11 +51,11 @@ namespace uplink.NET.Models
         /// <summary>
         /// The - until now - received bytes
         /// </summary>
-        public ulong BytesReceived { get; private set; }
+        public long BytesReceived { get; private set; }
         /// <summary>
         /// The total bytes to download
         /// </summary>
-        public ulong TotalBytes { get; private set; }
+        public long TotalBytes { get; private set; }
         /// <summary>
         /// Is the download completed?
         /// </summary>
@@ -94,9 +94,9 @@ namespace uplink.NET.Models
             }
         }
 
-        internal DownloadOperation(SWIG.DownloaderRef downloaderRef, ulong totalBytes, string objectName)
+        internal DownloadOperation(SWIG.DownloadResult downloadResult, long totalBytes, string objectName)
         {
-            _downloaderRef = downloaderRef;
+            _downloadResult = downloadResult;
             TotalBytes = totalBytes;
             _bytesToDownload = new byte[TotalBytes];
             ObjectName = objectName;
@@ -130,15 +130,23 @@ namespace uplink.NET.Models
             while (BytesReceived < TotalBytes)
             {
                 var tenth = _bytesToDownload.Length / 10;
-                if ((ulong)TotalBytes - BytesReceived > (ulong)tenth)
+                if (TotalBytes - BytesReceived > tenth)
                 {
                     //Fetch next bytes in batch
                     byte[] part = new byte[tenth];
-                    var received = SWIG.storj_uplink.download_read(_downloaderRef, part, (uint)tenth, out _errorMessage);
-                    if (received != 0 && string.IsNullOrEmpty(_errorMessage))
+                    var readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)tenth);
+                    if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                     {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, received);
-                        BytesReceived += received;
+                        _errorMessage = readResult.error.message;
+                        Failed = true;
+                        Running = false;
+                        DownloadOperationEnded?.Invoke(this);
+                        return;
+                    }
+                    if (readResult.bytes_read != 0)
+                    {
+                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                        BytesReceived += readResult.bytes_read;
                     }
                 }
                 else
@@ -147,21 +155,33 @@ namespace uplink.NET.Models
                     var remaining = TotalBytes - BytesReceived;
                     byte[] part = new byte[remaining];
 
-                    var received = SWIG.storj_uplink.download_read(_downloaderRef, part, (uint)remaining, out _errorMessage);
-                    if (received != 0 && string.IsNullOrEmpty(_errorMessage))
+                    var readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)remaining);
+
+                    if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                     {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, received);
-                        BytesReceived += received;
+                        _errorMessage = readResult.error.message;
+                        Failed = true;
+                        Running = false;
+                        DownloadOperationEnded?.Invoke(this);
+                        return;
+                    }
+                    if (readResult.bytes_read != 0)
+                    {
+                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                        BytesReceived += readResult.bytes_read;
                     }
                 }
 
                 if (_cancelled)
                 {
-                    SWIG.storj_uplink.download_cancel(_downloaderRef, out _errorMessage);
-                    if (string.IsNullOrEmpty(_errorMessage))
-                        Cancelled = true;
-                    else
+                    var cancelError = SWIG.storj_uplink.close_download(_downloadResult.download);
+                    if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
+                    {
+                        _errorMessage = cancelError.message;
                         Failed = true;
+                    }
+                    else
+                        Cancelled = true;
                     Running = false;
                     DownloadOperationEnded?.Invoke(this);
                     return;
@@ -176,10 +196,11 @@ namespace uplink.NET.Models
                 }
             }
 
-            SWIG.storj_uplink.download_close(_downloaderRef, out _errorMessage);
+            var closeError = SWIG.storj_uplink.close_download(_downloadResult.download);
 
-            if (!string.IsNullOrEmpty(_errorMessage))
+            if (closeError != null && !string.IsNullOrEmpty(closeError.message))
             {
+                _errorMessage = closeError.message;
                 Failed = true;
                 Running = false;
                 DownloadOperationEnded?.Invoke(this);
@@ -193,10 +214,10 @@ namespace uplink.NET.Models
 
         public void Dispose()
         {
-            if(_downloaderRef != null)
+            if (_downloadResult != null)
             {
-                SWIG.storj_uplink.free_downloader(_downloaderRef);
-                _downloaderRef = null;
+                SWIG.storj_uplink.free_download_result(_downloadResult);
+                _downloadResult = null;
             }
         }
     }

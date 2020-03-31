@@ -10,85 +10,81 @@ namespace uplink.NET.Services
 {
     public class ObjectService : IObjectService
     {
-        public async Task<UploadOperation> UploadObjectAsync(BucketRef bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
+        Scope _scope;
+
+        public ObjectService(Scope scope)
         {
-            string error = string.Empty;
+            _scope = scope;
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
+        {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            var uploaderRef = await Task.Run<SWIG.UploaderRef>(() => SWIG.storj_uplink.upload(bucket._bucketRef, targetPath, uploadOptionsSWIG, out error));
+            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_scope.Project, bucket.Name, targetPath, uploadOptionsSWIG));
 
-            SWIG.storj_uplink.free_upload_opts(uploadOptionsSWIG);
-
-            UploadOperation upload = new UploadOperation(bytesToUpload, uploaderRef, targetPath);
-            if(immediateStart)
+            UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath);
+            if (immediateStart)
                 upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
             return upload;
         }
 
-        public async Task<DownloadOperation> DownloadObjectAsync(BucketRef bucket, string targetPath, bool immediateStart = true)
+        public async Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart = true)
         {
-            string error = string.Empty;
+            var downloadOptionsSWIG = downloadOptions.ToSWIG();
 
-            var objectRef = await Task.Run<SWIG.ObjectRef>(() => SWIG.storj_uplink.open_object(bucket._bucketRef, targetPath, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
+            SWIG.DownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.download_object(_scope.Project, bucket.Name, targetPath, downloadOptionsSWIG));
 
-            var objectMeta = await Task.Run<SWIG.ObjectMeta>(() => SWIG.storj_uplink.get_object_meta(objectRef, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
+             if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
+                throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
 
-            await Task.Run(() => SWIG.storj_uplink.close_object(objectRef, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
+            SWIG.ObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.download_info(downloadResult.download));
+            if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
+                throw new ObjectNotFoundException(targetPath, objectResult.error.message);
 
-            var downloaderRef = SWIG.storj_uplink.download(bucket._bucketRef, targetPath, out error);
-
-            DownloadOperation download = new DownloadOperation(downloaderRef, objectMeta.size, targetPath);
+            DownloadOperation download = new DownloadOperation(downloadResult, objectResult.object_.system.content_length, targetPath);
             if (immediateStart)
                 download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
 
             return download;
         }
 
-        public async Task<ObjectList> ListObjectsAsync(BucketRef bucket, ListOptions listOptions)
+        public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
-            string error = string.Empty;
+            SWIG.ObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.list_objects(_scope.Project, bucket.Name, listObjectsOptions.ToSWIG()));
 
-            var objectList = await Task.Run<SWIG.ObjectList>(() => SWIG.storj_uplink.list_objects(bucket._bucketRef, listOptions.ToSWIG(), out error));
+            var error = SWIG.storj_uplink.object_iterator_err(objectIterator);
+            if (error != null && !string.IsNullOrEmpty(error.message))
+                throw new BucketListException(error.message);
 
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectListException(error);
+            ObjectList objectList = new ObjectList();
 
-            return ObjectList.FromSWIG(objectList);
+            while (SWIG.storj_uplink.object_iterator_next(objectIterator))
+            {
+                objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(objectIterator)));
+            }
+            SWIG.storj_uplink.free_object_iterator(objectIterator);
+
+            return objectList;
         }
 
-        public async Task<ObjectMeta> GetObjectMetaAsync(BucketRef bucket, string targetPath)
+        public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
-            string error = string.Empty;
+            var objectResult = await Task.Run(()=> SWIG.storj_uplink.stat_object(_scope.Project, bucket.Name, targetPath));
 
-            var objectRef = await Task.Run<SWIG.ObjectRef>(() => SWIG.storj_uplink.open_object(bucket._bucketRef, targetPath, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
+            if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
+                throw new ObjectNotFoundException(targetPath, objectResult.error.message);
 
-            var objectMeta = await Task.Run<SWIG.ObjectMeta>(() => SWIG.storj_uplink.get_object_meta(objectRef, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
-
-            await Task.Run(() => SWIG.storj_uplink.close_object(objectRef, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
-
-            return ObjectMeta.FromSWIG(objectMeta);
+            return uplink.NET.Models.Object.FromSWIG(objectResult.object_, true);
         }
 
-        public async Task DeleteObjectAsync(BucketRef bucket, string targetPath)
+        public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
-            string error = string.Empty;
-
-            await Task.Run(() => SWIG.storj_uplink.delete_object(bucket._bucketRef, targetPath, out error));
-            if (!string.IsNullOrEmpty(error))
-                throw new ObjectNotFoundException(targetPath, error);
+            var objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_scope.Project, bucket.Name, targetPath));
+            
+            if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
+                throw new ObjectNotFoundException(targetPath, objectResult.error.message);
         }
     }
 }
