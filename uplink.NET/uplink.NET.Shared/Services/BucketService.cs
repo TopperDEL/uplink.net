@@ -10,16 +10,16 @@ namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
-        Scope _scope;
+        Access _access;
 
-        public BucketService(Scope scope)
+        public BucketService(Access access)
         {
-            _scope = scope;
+            _access = access;
         }
 
         public async Task<Bucket> CreateBucketAsync(string bucketName)
         {
-            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.create_bucket(_scope.Project, bucketName));
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.create_bucket(_access._project, bucketName));
 
             if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                 throw new BucketCreationException(bucketName, bucketResult.error.message);
@@ -29,7 +29,7 @@ namespace uplink.NET.Services
 
         public async Task DeleteBucketAsync(string bucketName)
         {
-            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.delete_bucket(_scope.Project, bucketName));
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.delete_bucket(_access._project, bucketName));
 
             if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                 throw new BucketDeletionException(bucketName, bucketResult.error.message);
@@ -37,7 +37,7 @@ namespace uplink.NET.Services
 
         public async Task<Bucket> GetBucketAsync(string bucketName)
         {
-            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.stat_bucket(_scope.Project, bucketName));
+            SWIG.BucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.stat_bucket(_access._project, bucketName));
 
             if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                 throw new BucketNotFoundException(bucketName, bucketResult.error.message);
@@ -47,7 +47,7 @@ namespace uplink.NET.Services
 
         public async Task<BucketList> ListBucketsAsync(ListBucketsOptions listBucketsOptions)
         {
-            SWIG.BucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.list_buckets(_scope.Project, listBucketsOptions.ToSWIG()));
+            SWIG.BucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.list_buckets(_access._project, listBucketsOptions.ToSWIG()));
 
             var error = SWIG.storj_uplink.bucket_iterator_err(bucketIterator);
             if (error != null && !string.IsNullOrEmpty(error.message))

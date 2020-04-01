@@ -10,18 +10,18 @@ namespace uplink.NET.Services
 {
     public class ObjectService : IObjectService
     {
-        Scope _scope;
+        Access _access;
 
-        public ObjectService(Scope scope)
+        public ObjectService(Access access)
         {
-            _scope = scope;
+            _access = access;
         }
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_scope.Project, bucket.Name, targetPath, uploadOptionsSWIG));
+            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
 
             UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath);
             if (immediateStart)
@@ -34,7 +34,7 @@ namespace uplink.NET.Services
         {
             var downloadOptionsSWIG = downloadOptions.ToSWIG();
 
-            SWIG.DownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.download_object(_scope.Project, bucket.Name, targetPath, downloadOptionsSWIG));
+            SWIG.DownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG));
 
              if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                 throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
@@ -52,7 +52,7 @@ namespace uplink.NET.Services
 
         public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
-            SWIG.ObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.list_objects(_scope.Project, bucket.Name, listObjectsOptions.ToSWIG()));
+            SWIG.ObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.list_objects(_access._project, bucket.Name, listObjectsOptions.ToSWIG()));
 
             var error = SWIG.storj_uplink.object_iterator_err(objectIterator);
             if (error != null && !string.IsNullOrEmpty(error.message))
@@ -71,7 +71,7 @@ namespace uplink.NET.Services
 
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
-            var objectResult = await Task.Run(()=> SWIG.storj_uplink.stat_object(_scope.Project, bucket.Name, targetPath));
+            var objectResult = await Task.Run(()=> SWIG.storj_uplink.stat_object(_access._project, bucket.Name, targetPath));
 
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
@@ -81,7 +81,7 @@ namespace uplink.NET.Services
 
         public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
-            var objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_scope.Project, bucket.Name, targetPath));
+            var objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_access._project, bucket.Name, targetPath));
             
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);

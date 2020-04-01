@@ -14,14 +14,14 @@ namespace uplink.NET.Test
     public class BucketServiceTest
     {
         IBucketService _service;
-        Scope _scope;
+        Access _access;
 
         [TestInitialize]
         public void Init()
         {
-            Scope.SetTempDirectory(System.IO.Path.GetTempPath());
-            _scope = new Scope(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
-            _service = new BucketService(_scope);
+            Access.SetTempDirectory(System.IO.Path.GetTempPath());
+            _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
+            _service = new BucketService(_access);
         }
 
         [TestMethod]
