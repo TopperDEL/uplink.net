@@ -13,6 +13,12 @@ namespace uplink.NET.Models
         public DateTime NotBefore { get; set; }
         public DateTime NotAfter { get; set; }
 
+        public Permission()
+        {
+            NotBefore = DateTime.Now;
+            NotAfter = DateTime.MaxValue;
+        }
+
         internal SWIG.Permission ToSWIG()
         {
             SWIG.Permission permission = new SWIG.Permission();

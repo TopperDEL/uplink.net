@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Access.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Permission.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SharePrefix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SystemMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />

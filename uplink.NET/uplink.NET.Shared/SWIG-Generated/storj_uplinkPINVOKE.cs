@@ -370,11 +370,14 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_project_result___")]
   public static extern void free_project_result(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_restrictions___")]
-  public static extern void prepare_restrictions(uint jarg1);
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_prepare_shareprefixes___")]
+  public static extern void prepare_shareprefixes(uint jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_append_restriction___")]
-  public static extern void append_restriction(string jarg1, string jarg2);
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_append_shareprefix___")]
+  public static extern void append_shareprefix(string jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_access_share2___")]
+  public static extern global::System.IntPtr access_share2(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string___")]
   public static extern void free_string(global::System.IntPtr jarg1);

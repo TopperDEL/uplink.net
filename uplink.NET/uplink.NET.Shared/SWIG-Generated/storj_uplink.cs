@@ -212,12 +212,18 @@ internal class storj_uplink {
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void prepare_restrictions(uint p0) {
-    storj_uplinkPINVOKE.prepare_restrictions(p0);
+  public static void prepare_shareprefixes(uint p0) {
+    storj_uplinkPINVOKE.prepare_shareprefixes(p0);
   }
 
-  public static void append_restriction(string p0, string p1) {
-    storj_uplinkPINVOKE.append_restriction(p0, p1);
+  public static void append_shareprefix(string p0, string p1) {
+    storj_uplinkPINVOKE.append_shareprefix(p0, p1);
+  }
+
+  public static AccessResult access_share2(Access p0, Permission p1) {
+    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.access_share2(Access.getCPtr(p0), Permission.getCPtr(p1)), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
   }
 
   public static void free_string(out string p0) {
