@@ -309,7 +309,7 @@ namespace uplink.NET.Test
             try
             {
                 var bucket = await _bucketService.GetBucketAsync(bucketName);
-                var result = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+                var result = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions() { Recursive = true });
                 foreach(var obj in result.Items)
                 {
                     await _objectService.DeleteObjectAsync(bucket, obj.Key);

@@ -135,10 +135,14 @@ namespace uplink.NET.Models
         /// <param name="permission">The permission describes, which actions are allowed</param>
         /// <param name="prefixes">The prefixes declare for which pathes the permissions are meant for</param>
         /// <returns>The restricted scope</returns>
-        public Access Share(Permission permission, List<object> prefixes)
+        public Access Share(Permission permission, List<SharePrefix> prefixes)
         {
+            SWIG.storj_uplink.prepare_shareprefixes((uint)prefixes.Count);
 
-            SWIG.AccessResult accessResult = SWIG.storj_uplink.access_share(_access, permission.ToSWIG(), null, 0);
+            foreach (var prefix in prefixes)
+                SWIG.storj_uplink.append_shareprefix(prefix.Bucket, prefix.Prefix);
+
+            SWIG.AccessResult accessResult = SWIG.storj_uplink.access_share2(_access, permission.ToSWIG());
             if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                 throw new ArgumentException(accessResult.error.message);
 
