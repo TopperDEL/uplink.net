@@ -15,14 +15,6 @@
 %apply char **OUTPUT { char **p3 };
 %apply char **OUTPUT { char **p4 };
 
-/*Wrap byte-arrays (byte[])*/
-%include "arrays_csharp.i"
-CSHARP_ARRAYS(uint8_t, byte)
-%apply uint8_t OUTPUT[] { uint8_t *p0 }
-%apply uint8_t OUTPUT[] { uint8_t *p1 }
-%apply uint8_t OUTPUT[] { uint8_t *p2 }
-/*%apply uint8_t OUTPUT[] { uint8_t *p3 }*/
-
 /*Mapping for primitive types*/
 %define MAP_SPECIAL(CTYPE, CSTYPE, TYPECHECKPRECEDENCE)
 %typemap(ctype) CTYPE "CTYPE"
@@ -66,16 +58,6 @@ MAP_SPECIAL(_Bool, bool, _Bool)
 	#include "uplink_definitions.h"
 	#include "storj_uplink.h"
 %}
-
-/* Map EncryptionRestriction** for function restrict_scope */
-/* TODO: This does not work, yet, as it crashes during runtime. The array gets not mapped correctly... */
-%typemap(ctype)   EncryptionRestriction** "EncryptionRestriction**"
-%typemap(cstype)  EncryptionRestriction** "EncryptionRestriction[]"
-%typemap(imtype, inattributes="[System.Runtime.InteropServices.In, System.Runtime.InteropServices.Out, System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPArray)]") EncryptionRestriction** "EncryptionRestriction[]"
-%typemap(csin)    EncryptionRestriction** "$csinput"
-%typemap(in)      EncryptionRestriction** "$1 = $input;"
-%typemap(freearg) EncryptionRestriction** ""
-%typemap(argout)  EncryptionRestriction** ""
 		 
 /* Parse the header file to generate wrappers */
 %include "storj_uplink.h"
