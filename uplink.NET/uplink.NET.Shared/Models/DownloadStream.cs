@@ -12,7 +12,7 @@ namespace uplink.NET.Models
         private Bucket _bucket;
         private SWIG.DownloadResult _downloadResult;
         private DownloadOperation _download;
-        private Scope _scope;
+        private Access _access;
         private string _objectName;
         public override bool CanRead => true;
 
@@ -25,16 +25,16 @@ namespace uplink.NET.Models
 
         public override long Position { get; set; }
 
-        public DownloadStream(Bucket bucket, int totalBytes, string objectName, Scope scope) //TODO: better Scope-handling
+        public DownloadStream(Bucket bucket, int totalBytes, string objectName, Access access) //TODO: better access-handling
         {
             string error;
 
             _length = totalBytes;
             _bucket = bucket;
             _objectName = objectName;
-            _scope = scope;
+            _access = access;
 
-            _downloadResult = SWIG.storj_uplink.download_object(_scope.Project, bucket.Name, objectName, null); //TODO: make DownloadOptions available to caller
+            _downloadResult = SWIG.storj_uplink.download_object(_access._project, bucket.Name, objectName, null); //TODO: make DownloadOptions available to caller
             _download = new DownloadOperation(_downloadResult, totalBytes, objectName);
             if (!_download.Running && !_download.Completed && !_download.Cancelled && !_download.Failed)
                 _download.StartDownloadAsync();

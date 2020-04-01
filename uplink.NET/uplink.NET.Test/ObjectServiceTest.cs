@@ -14,17 +14,17 @@ namespace uplink.NET.Test
 
     public class ObjectServiceTest
     {
-        Scope _scope;
+        Access _access;
         IBucketService _bucketService;
         IObjectService _objectService;
 
         [TestInitialize]
         public void Init()
         {
-            Scope.SetTempDirectory(System.IO.Path.GetTempPath());
-            _scope = new Scope(TestConstants.VALID_API_KEY, TestConstants.SATELLITE_URL, TestConstants.ENCRYPTION_SECRET);
-            _bucketService = new BucketService(_scope);
-            _objectService = new ObjectService(_scope);
+            Access.SetTempDirectory(System.IO.Path.GetTempPath());
+            _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
+            _bucketService = new BucketService(_access);
+            _objectService = new ObjectService(_access);
         }
 
         [TestMethod]
@@ -140,7 +140,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _scope);
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _access);
             byte[] bytesReceived = new byte[50];
             await stream.ReadAsync(bytesReceived, 0, 50);
 
@@ -166,7 +166,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _scope);
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _access);
             byte[] bytesReceived = new byte[50];
             stream.Seek(100, System.IO.SeekOrigin.Begin);
             await stream.ReadAsync(bytesReceived, 0, 50);

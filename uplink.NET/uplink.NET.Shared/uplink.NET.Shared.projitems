@@ -30,7 +30,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListObjectsOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Object.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ObjectList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\Scope.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Access.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Permission.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SystemMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />
