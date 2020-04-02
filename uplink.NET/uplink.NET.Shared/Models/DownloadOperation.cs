@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using uplink.SWIG;
 
 namespace uplink.NET.Models
 {
@@ -134,7 +135,7 @@ namespace uplink.NET.Models
                 {
                     //Fetch next bytes in batch
                     byte[] part = new byte[tenth];
-                    var readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)tenth);
+                    SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)tenth);
                     if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                     {
                         _errorMessage = readResult.error.message;
@@ -148,6 +149,7 @@ namespace uplink.NET.Models
                         Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
                         BytesReceived += readResult.bytes_read;
                     }
+                    SWIG.storj_uplink.free_read_result(readResult);
                 }
                 else
                 {
@@ -155,7 +157,7 @@ namespace uplink.NET.Models
                     var remaining = TotalBytes - BytesReceived;
                     byte[] part = new byte[remaining];
 
-                    var readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)remaining);
+                    SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)remaining);
 
                     if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                     {
@@ -170,6 +172,7 @@ namespace uplink.NET.Models
                         Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
                         BytesReceived += readResult.bytes_read;
                     }
+                    SWIG.storj_uplink.free_read_result(readResult);
                 }
 
                 if (_cancelled)
