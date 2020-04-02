@@ -15,8 +15,14 @@ namespace uplink.NET.Interfaces
         /// Creates a new bucket
         /// </summary>
         /// <param name="bucketName">The name of the bucket to create</param>
-        /// <returns>The BucketInfo of the created bucket or throws a BucketCreationException</returns>
+        /// <returns>The created bucket or throws a BucketCreationException</returns>
         Task<Bucket> CreateBucketAsync(string bucketName);
+        /// <summary>
+        /// Creates a new bucket and ignores the error when it already exists.
+        /// </summary>
+        /// <param name="bucketName">The name of the bucket to create</param>
+        /// <returns>The created bucket or throws a BucketCreationException</returns>
+        Task<Bucket> EnsureBucketAsync(string bucketName);
         /// <summary>
         /// Loads a bucket
         /// </summary>
