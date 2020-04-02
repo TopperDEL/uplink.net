@@ -123,7 +123,7 @@ namespace uplink.NET.Models
 
                 _access = _accessResult.access;
 
-                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                SWIG.ProjectResult projectResult = SWIG.storj_uplink.open_project(_access);
                 if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                     throw new ArgumentException(projectResult.error.message);
 
