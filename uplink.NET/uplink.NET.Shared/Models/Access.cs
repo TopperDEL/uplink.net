@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.SWIG;
 
 namespace uplink.NET.Models
 {
@@ -22,6 +23,8 @@ namespace uplink.NET.Models
         internal SWIG.Project _project { get; set; }
         internal SWIG.Config _config { get; set; }
 
+        private SWIG.AccessResult _accessResult;
+
         internal Access(SWIG.Access access)
         {
             Init();
@@ -30,7 +33,7 @@ namespace uplink.NET.Models
             {
                 _access = access;
 
-                var projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
                 if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                     throw new ArgumentException(projectResult.error.message);
 
@@ -53,13 +56,13 @@ namespace uplink.NET.Models
 
             try
             {
-                var accessResult = SWIG.storj_uplink.parse_access(accessString);
-                if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                    throw new ArgumentException(accessResult.error.message);
+                _accessResult = SWIG.storj_uplink.parse_access(accessString);
+                if (_accessResult.error != null && !string.IsNullOrEmpty(_accessResult.error.message))
+                    throw new ArgumentException(_accessResult.error.message);
 
-                _access = accessResult.access;
+                _access = _accessResult.access;
 
-                var projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
                 if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                     throw new ArgumentException(projectResult.error.message);
 
@@ -83,13 +86,13 @@ namespace uplink.NET.Models
 
             try
             {
-                var accessResult = SWIG.storj_uplink.request_access_with_passphrase(satelliteAddress, apiKey, secret);
-                if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                    throw new ArgumentException(accessResult.error.message);
+                _accessResult = SWIG.storj_uplink.request_access_with_passphrase(satelliteAddress, apiKey, secret);
+                if (_accessResult.error != null && !string.IsNullOrEmpty(_accessResult.error.message))
+                    throw new ArgumentException(_accessResult.error.message);
 
-                _access = accessResult.access;
+                _access = _accessResult.access;
 
-                var projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
                 if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                     throw new ArgumentException(projectResult.error.message);
 
@@ -121,12 +124,17 @@ namespace uplink.NET.Models
         /// <returns>The serialized scope</returns>
         public string Serialize()
         {
-            var serializedAccessResult = SWIG.storj_uplink.access_serialize(_access);
+            using (SWIG.StringResult serializedAccessResult = SWIG.storj_uplink.access_serialize(_access))
+            {
+                if (serializedAccessResult.error != null && !string.IsNullOrEmpty(serializedAccessResult.error.message))
+                    throw new ArgumentException(serializedAccessResult.error.message);
 
-            if (serializedAccessResult.error != null && !string.IsNullOrEmpty(serializedAccessResult.error.message))
-                throw new ArgumentException(serializedAccessResult.error.message);
+                string serializedAccess = serializedAccessResult.string_;
 
-            return serializedAccessResult.string_;
+                SWIG.storj_uplink.free_string_result(serializedAccessResult);
+
+                return serializedAccess;
+            }
         }
 
         /// <summary>
@@ -155,6 +163,12 @@ namespace uplink.NET.Models
             {
                 _project.Dispose();
                 _project = null;
+            }
+            if(_accessResult != null)
+            {
+                SWIG.storj_uplink.free_access_result(_accessResult);
+                _accessResult.Dispose();
+                _accessResult = null;
             }
         }
     }
