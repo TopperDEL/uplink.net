@@ -172,7 +172,7 @@ namespace uplink.NET.Models
                         }
                         if (_cancelled)
                         {
-                            var abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
+                            SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
                             if (abortError != null && !string.IsNullOrEmpty(abortError.message))
                             {
                                 Failed = true;
@@ -180,6 +180,7 @@ namespace uplink.NET.Models
                             }
                             else
                                 Cancelled = true;
+                            SWIG.storj_uplink.free_error(abortError);
 
                             Running = false;
                             UploadOperationEnded?.Invoke(this);
@@ -194,15 +195,17 @@ namespace uplink.NET.Models
                             return;
                         }
                     }
-                    var commitError = SWIG.storj_uplink.upload_commit(_uploadResult.upload);
+                    SWIG.Error commitError = SWIG.storj_uplink.upload_commit(_uploadResult.upload);
                     if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                     {
                         _errorMessage = commitError.message;
                         Failed = true;
                         Running = false;
                         UploadOperationEnded?.Invoke(this);
+                        SWIG.storj_uplink.free_error(commitError);
                         return;
                     }
+                    SWIG.storj_uplink.free_error(commitError);
                 }
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {

@@ -177,7 +177,7 @@ namespace uplink.NET.Models
 
                 if (_cancelled)
                 {
-                    var cancelError = SWIG.storj_uplink.close_download(_downloadResult.download);
+                    SWIG.Error cancelError = SWIG.storj_uplink.close_download(_downloadResult.download);
                     if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
                     {
                         _errorMessage = cancelError.message;
@@ -185,6 +185,8 @@ namespace uplink.NET.Models
                     }
                     else
                         Cancelled = true;
+                    SWIG.storj_uplink.free_error(cancelError);
+
                     Running = false;
                     DownloadOperationEnded?.Invoke(this);
                     return;
@@ -199,7 +201,7 @@ namespace uplink.NET.Models
                 }
             }
 
-            var closeError = SWIG.storj_uplink.close_download(_downloadResult.download);
+            SWIG.Error closeError = SWIG.storj_uplink.close_download(_downloadResult.download);
 
             if (closeError != null && !string.IsNullOrEmpty(closeError.message))
             {
@@ -207,8 +209,10 @@ namespace uplink.NET.Models
                 Failed = true;
                 Running = false;
                 DownloadOperationEnded?.Invoke(this);
+                SWIG.storj_uplink.free_error(closeError);
                 return;
             }
+            SWIG.storj_uplink.free_error(closeError);
 
             Completed = true;
             Running = false;

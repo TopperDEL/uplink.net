@@ -54,9 +54,10 @@ namespace uplink.NET.Services
         {
             SWIG.ObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.list_objects(_access._project, bucket.Name, listObjectsOptions.ToSWIG()));
 
-            var error = SWIG.storj_uplink.object_iterator_err(objectIterator);
+            SWIG.Error error = SWIG.storj_uplink.object_iterator_err(objectIterator);
             if (error != null && !string.IsNullOrEmpty(error.message))
                 throw new BucketListException(error.message);
+            SWIG.storj_uplink.free_error(error);
 
             ObjectList objectList = new ObjectList();
 

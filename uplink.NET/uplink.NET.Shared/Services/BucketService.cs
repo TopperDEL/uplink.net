@@ -72,9 +72,10 @@ namespace uplink.NET.Services
             using (SWIG.BucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.list_buckets(_access._project, listBucketsOptions.ToSWIG())))
             {
 
-                var error = SWIG.storj_uplink.bucket_iterator_err(bucketIterator);
+                SWIG.Error error = SWIG.storj_uplink.bucket_iterator_err(bucketIterator);
                 if (error != null && !string.IsNullOrEmpty(error.message))
                     throw new BucketListException(error.message);
+                SWIG.storj_uplink.free_error(error);
 
                 BucketList bucketList = new BucketList();
 
