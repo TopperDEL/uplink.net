@@ -142,7 +142,7 @@ namespace uplink.NET.Models
                         if (_bytesToUpload.Length - BytesSent > tenth)
                         {
                             //Send next bytes in batch
-                            var sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take(tenth).ToArray(), 0), true), (uint)tenth);
+                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take(tenth).ToArray(), 0), true), (uint)tenth);
                             if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                             {
                                 _errorMessage = sentResult.error.message;
@@ -153,12 +153,13 @@ namespace uplink.NET.Models
                             }
                             else
                                 BytesSent += sentResult.bytes_written;
+                            SWIG.storj_uplink.free_write_result(sentResult);
                         }
                         else
                         {
                             //Send only the remaining bytes
                             var remaining = _bytesToUpload.Length - BytesSent;
-                            var sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), 0), true), (uint)remaining);
+                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), 0), true), (uint)remaining);
                             if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                             {
                                 _errorMessage = sentResult.error.message;
@@ -169,6 +170,7 @@ namespace uplink.NET.Models
                             }
                             else
                                 BytesSent += sentResult.bytes_written;
+                            SWIG.storj_uplink.free_write_result(sentResult);
                         }
                         if (_cancelled)
                         {
