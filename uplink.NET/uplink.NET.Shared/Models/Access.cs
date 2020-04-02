@@ -199,6 +199,8 @@ namespace uplink.NET.Models
         {
             if (_project != null)
             {
+                SWIG.Error closeError = SWIG.storj_uplink.close_project(_project);
+                SWIG.storj_uplink.free_error(closeError);
                 _project.Dispose();
                 _project = null;
             }
