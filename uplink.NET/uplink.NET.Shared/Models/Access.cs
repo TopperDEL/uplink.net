@@ -24,6 +24,7 @@ namespace uplink.NET.Models
         internal SWIG.Config _config { get; set; }
 
         private SWIG.AccessResult _accessResult;
+        private SWIG.ProjectResult _projectResult;
 
         internal Access(SWIG.Access access)
         {
@@ -33,11 +34,11 @@ namespace uplink.NET.Models
             {
                 _access = access;
 
-                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
-                if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                    throw new ArgumentException(projectResult.error.message);
+                _projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                if (_projectResult.error != null && !string.IsNullOrEmpty(_projectResult.error.message))
+                    throw new ArgumentException(_projectResult.error.message);
 
-                _project = projectResult.project;
+                _project = _projectResult.project;
             }
             catch (Exception ex)
             {
@@ -62,11 +63,11 @@ namespace uplink.NET.Models
 
                 _access = _accessResult.access;
 
-                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
-                if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                    throw new ArgumentException(projectResult.error.message);
+                _projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                if (_projectResult.error != null && !string.IsNullOrEmpty(_projectResult.error.message))
+                    throw new ArgumentException(_projectResult.error.message);
 
-                _project = projectResult.project;
+                _project = _projectResult.project;
             }
             catch (Exception ex)
             {
@@ -92,11 +93,11 @@ namespace uplink.NET.Models
 
                 _access = _accessResult.access;
 
-                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
-                if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                    throw new ArgumentException(projectResult.error.message);
+                _projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                if (_projectResult.error != null && !string.IsNullOrEmpty(_projectResult.error.message))
+                    throw new ArgumentException(_projectResult.error.message);
 
-                _project = projectResult.project;
+                _project = _projectResult.project;
             }
             catch (Exception ex)
             {
@@ -123,11 +124,11 @@ namespace uplink.NET.Models
 
                 _access = _accessResult.access;
 
-                SWIG.ProjectResult projectResult = SWIG.storj_uplink.open_project(_access);
-                if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                    throw new ArgumentException(projectResult.error.message);
+                _projectResult = SWIG.storj_uplink.open_project(_access);
+                if (_projectResult.error != null && !string.IsNullOrEmpty(_projectResult.error.message))
+                    throw new ArgumentException(_projectResult.error.message);
 
-                _project = projectResult.project;
+                _project = _projectResult.project;
             }
             catch (Exception ex)
             {
@@ -209,6 +210,12 @@ namespace uplink.NET.Models
                 SWIG.storj_uplink.free_access_result(_accessResult);
                 _accessResult.Dispose();
                 _accessResult = null;
+            }
+            if (_projectResult != null)
+            {
+                SWIG.storj_uplink.free_project_result(_projectResult);
+                _projectResult.Dispose();
+                _projectResult = null;
             }
         }
     }
