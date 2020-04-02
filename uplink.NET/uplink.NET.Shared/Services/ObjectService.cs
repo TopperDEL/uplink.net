@@ -36,7 +36,7 @@ namespace uplink.NET.Services
 
             SWIG.DownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG));
 
-             if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
+            if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                 throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
 
             SWIG.ObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.download_info(downloadResult.download));
@@ -46,6 +46,8 @@ namespace uplink.NET.Services
             DownloadOperation download = new DownloadOperation(downloadResult, objectResult.object_.system.content_length, targetPath);
             if (immediateStart)
                 download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
+
+            SWIG.storj_uplink.free_object_result(objectResult);
 
             return download;
         }
@@ -63,7 +65,7 @@ namespace uplink.NET.Services
 
             while (SWIG.storj_uplink.object_iterator_next(objectIterator))
             {
-                objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(objectIterator)));
+                objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(objectIterator), true));
             }
             SWIG.storj_uplink.free_object_iterator(objectIterator);
 
@@ -72,7 +74,7 @@ namespace uplink.NET.Services
 
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
-            var objectResult = await Task.Run(()=> SWIG.storj_uplink.stat_object(_access._project, bucket.Name, targetPath));
+            var objectResult = await Task.Run(() => SWIG.storj_uplink.stat_object(_access._project, bucket.Name, targetPath));
 
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
@@ -82,10 +84,12 @@ namespace uplink.NET.Services
 
         public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
-            var objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_access._project, bucket.Name, targetPath));
-            
+            SWIG.ObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_access._project, bucket.Name, targetPath));
+
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
+
+            SWIG.storj_uplink.free_object_result(objectResult);
         }
     }
 }

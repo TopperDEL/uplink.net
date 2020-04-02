@@ -233,6 +233,7 @@ namespace uplink.NET.Models
             if (_uploadResult != null)
             {
                 SWIG.storj_uplink.free_upload_result(_uploadResult);
+                _uploadResult.Dispose();
                 _uploadResult = null;
             }
         }

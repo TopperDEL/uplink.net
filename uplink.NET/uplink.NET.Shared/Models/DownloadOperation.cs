@@ -224,6 +224,7 @@ namespace uplink.NET.Models
             if (_downloadResult != null)
             {
                 SWIG.storj_uplink.free_download_result(_downloadResult);
+                _downloadResult.Dispose();
                 _downloadResult = null;
             }
         }
