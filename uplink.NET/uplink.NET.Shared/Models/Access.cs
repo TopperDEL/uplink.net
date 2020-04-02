@@ -104,7 +104,38 @@ namespace uplink.NET.Models
             }
         }
 
-        private void Init()
+        /// <summary>
+        /// Creates a new access based on the satellite-adress, the API-key and the secret passphrase and by using a specific config
+        /// </summary>
+        /// <param name="config">The configuration</param>
+        /// <param name="satelliteAddress">The satellite address</param>
+        /// <param name="apiKey">The API-key</param>
+        /// <param name="secret">The passphrase</param>
+        public Access(Config config, string satelliteAddress, string apiKey, string secret)
+        {
+            Init(config);
+
+            try
+            {
+                _accessResult = SWIG.storj_uplink.config_request_access_with_passphrase(_config, satelliteAddress, apiKey, secret);
+                if (_accessResult.error != null && !string.IsNullOrEmpty(_accessResult.error.message))
+                    throw new ArgumentException(_accessResult.error.message);
+
+                _access = _accessResult.access;
+
+                SWIG.ProjectResult projectResult = SWIG.storj_uplink.config_open_project(_config, _access);
+                if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
+                    throw new ArgumentException(projectResult.error.message);
+
+                _project = projectResult.project;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
+        private void Init(Config config = null)
         {
 #if !__ANDROID__
             SWIG.DLLInitializer.Init();
@@ -113,8 +144,15 @@ namespace uplink.NET.Models
             if (string.IsNullOrEmpty(TempDirectory))
                 throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
 
-            _config = new SWIG.Config();
-            _config.temp_directory = TempDirectory;
+            if (config == null)
+            {
+                _config = new SWIG.Config();
+                _config.temp_directory = TempDirectory;
+            }
+            else
+            {
+                _config = config.ToSWIG();
+            }
         }
 
 
