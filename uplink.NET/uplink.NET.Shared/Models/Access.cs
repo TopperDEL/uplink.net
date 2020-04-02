@@ -19,6 +19,15 @@ namespace uplink.NET.Models
             TempDirectory = tempDir;
         }
 
+        /// <summary>
+        /// Return the current storj/uplink-c-version
+        /// </summary>
+        /// <returns>The current version</returns>
+        public static string GetStorjVersion()
+        {
+            return SWIG.storj_uplink.get_storj_version();
+        }
+
         internal SWIG.Access _access { get; set; }
         internal SWIG.Project _project { get; set; }
         internal SWIG.Config _config { get; set; }
