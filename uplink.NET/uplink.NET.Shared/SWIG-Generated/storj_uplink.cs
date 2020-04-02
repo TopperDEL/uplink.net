@@ -226,16 +226,6 @@ internal class storj_uplink {
     return ret;
   }
 
-  public static void free_string(out string p0) {
-global::System.IntPtr tmpp0=global::System.IntPtr.Zero;
-    try {
-      storj_uplinkPINVOKE.free_string(tmpp0);
-    } finally {
-p0=global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi(tmpp0);
-			  if(tmpp0 != System.IntPtr.Zero) storj_uplinkPINVOKE.free_string(tmpp0);
-    }
-  }
-
   public static UploadResult upload_object(Project p0, string p1, string p2, UploadOptions p3) {
     UploadResult ret = new UploadResult(storj_uplinkPINVOKE.upload_object(Project.getCPtr(p0), p1, p2, UploadOptions.getCPtr(p3)), true);
     return ret;
