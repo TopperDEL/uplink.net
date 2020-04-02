@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Bucket.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Config.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CustomMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\CustomMetadataEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOperation.cs" />
