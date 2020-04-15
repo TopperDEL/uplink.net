@@ -17,5 +17,16 @@ namespace uplink.NET.Models
 
             return ret;
         }
+
+        internal SWIG.CustomMetadata ToSWIG()
+        {
+            SWIG.CustomMetadata ret = new SWIG.CustomMetadata();
+            //ret.entries
+            //ret.Entries = new List<CustomMetadataEntry>();
+            //ToDo: add helper-method in SWIG-Wrapper
+            //foreach(var entry in original.entries)
+
+            return ret;
+        }
     }
 }
