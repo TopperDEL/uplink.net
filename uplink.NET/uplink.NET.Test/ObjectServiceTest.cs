@@ -281,6 +281,33 @@ namespace uplink.NET.Test
             Assert.AreEqual(0, objectList2.Items.Count);
         }
 
+        [TestMethod]
+        public async Task SetCustomMetaData_Works()
+        {
+            string bucketname = "set-custom-metadata-works";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            CustomMetadata customMetadata = new CustomMetadata();
+            customMetadata.Entries.Add(new CustomMetadataEntry() { Key = "my-key 1", Value = "my-value 1" });
+            customMetadata.Entries.Add(new CustomMetadataEntry() { Key = "my-key 2", Value = "my-value 2" });
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, customMetadata, false);
+            await uploadOperation.StartUploadAsync();
+
+            var stat = await _objectService.GetObjectAsync(bucket, "myfile1.txt");
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+
+            Assert.AreEqual(1, objectList.Items.Count);
+            Assert.AreEqual(2, stat.CustomMetaData.Entries.Count);
+            Assert.AreEqual("my-key 1", stat.CustomMetaData.Entries[0].Key);
+            Assert.AreEqual("my-value 1", stat.CustomMetaData.Entries[0].Value);
+            Assert.AreEqual("my-key 2", stat.CustomMetaData.Entries[1].Key);
+            Assert.AreEqual("my-value 2", stat.CustomMetaData.Entries[1].Value);
+        }
+
         public static byte[] GetRandomBytes(long length)
         {
             byte[] bytes = new byte[length];
@@ -302,6 +329,7 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("getobjectmeta-fails-onnotexistingobject");
             await DeleteBucketAsync("deleteobject-fails-onnotexistingobject");
             await DeleteBucketAsync("deleteobject-deletes-object");
+            await DeleteBucketAsync("set-custom-metadata-works");
         }
 
         private async Task DeleteBucketAsync(string bucketName)

@@ -32,7 +32,7 @@ namespace uplink.NET.Models
             ret.Key = original.key;
             ret.IsPrefix = original.is_prefix;
             ret.SystemMetaData = SystemMetadata.FromSWIG(original.system);
-            ret.CustomMetaData = CustomMetadata.FromSWIG(original.custom);
+            ret.CustomMetaData = CustomMetadata.FromSWIG(original);
 
             if (disposeObjectInfo)
                 SWIG.storj_uplink.free_object(original);

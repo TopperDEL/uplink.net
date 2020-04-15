@@ -208,7 +208,8 @@ namespace uplink.NET.Models
                         {
                             try
                             {
-                                SWIG.Error customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata(_uploadResult.upload, _customMetadata.ToSWIG());
+                                _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
+                                SWIG.Error customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
                                 if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                                 {
                                     _errorMessage = customMetadataError.message;
@@ -266,15 +267,6 @@ namespace uplink.NET.Models
                 SWIG.storj_uplink.free_upload_result(_uploadResult);
                 _uploadResult.Dispose();
                 _uploadResult = null;
-            }
-            if (mut != null)
-            {
-                try
-                {
-                    mut.Dispose();
-                    mut = null;
-                }
-                catch { }
             }
         }
     }
