@@ -3,7 +3,7 @@
 
 **A .Net/C#-wrapper for Storj (v3)**
 
-This library enables you to connect to the [storj](https://storj.io)-network to upload and retrieve files to the distributed and secure cloud-storage.
+This library enables you to connect to the [storj](https://storj.io)-network to upload and retrieve files to the distributed and secure cloud-storage. It is based on "uplink-c", the C-bindings provided from Storj-labs to connect to the storj-network.
 
 The library is quite new and may contain bugs or missing documentation. Use at your own risk!
 
@@ -22,10 +22,10 @@ You may also try the included sample-app for UWP and Android. There you should f
 
 Building everything by yourself is possible on Windows. You'll need the following tools:
 
-* Git (to get the storj-repository)
+* Git (to get the uplinkc-repository)
 * SWIG (to generate the C#-proxy)
-* Go (to build the C-Binding to storj/uplink)
-* [MSYS2](https://www.msys2.org/) (used by go to compile a Windows-DLL) => see [here](https://github.com/orlp/dev-on-windows/wiki/Installing-GCC--&-MSYS2) for installation instructions
+* Go (to build uplink-c)
+* [MSYS2](https://www.msys2.org/) (used by Go to compile a Windows-DLL) => see [here](https://github.com/orlp/dev-on-windows/wiki/Installing-GCC--&-MSYS2) for installation instructions
 * Visual Studio 2017 or higher to compile the uplink.NET-library
 * Android NDK (to build the Android-Release) => install Xamarin with your Visual Studio, start VS, go to Extensions => Android => SDA Manager, Choose Tools and install NDK. Check that your environment variables include "$ANDROID_HOME" and that the path contains no spaces. If it got installed in "C:\Program files (x86)" (default) change the path in the variable to "C:\PROGRA~2\...". Otherwise you'll get an "exec: could not find file"-error during build.
 
@@ -40,7 +40,7 @@ First you need to pull the latest version of this repository. Open a command pro
 git clone https://github.com/topperdel/uplink.net.git
 ```
 
-If you want you can adjust the Storj-Version to use (the github-tag) by setting the STORJ_VERSION-Parameter within build.bat to the one to use.
+If you want you can adjust the uplinkc-Version to use (the github-tag) by setting the STORJ_VERSION-Parameter within build.bat to the one to use.
 
 Then do
 ```
@@ -48,7 +48,7 @@ cd \uplink.net
 build
 ```
 
-This will start the build-process. During the build it will clone the storj-repository into the above chosen working directory.
+This will start the build-process. During the build it will clone the uplinkc-repository into the above chosen working directory.
 
 Once finished it will open the folder "Build-results" within the explorer and it should contain a storj_uplink.dll (Windows x64), a storj_uplink-x86.dll, a "cs-Files"-Folder and an "Android"-folder (containing the so-files for android with the correct ABI-lib-path).
 
