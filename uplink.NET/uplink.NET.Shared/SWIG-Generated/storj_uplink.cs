@@ -110,6 +110,20 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static void prepare_custommetadata() {
+    storj_uplinkPINVOKE.prepare_custommetadata();
+  }
+
+  public static void append_custommetadata(string p0, string p1) {
+    storj_uplinkPINVOKE.append_custommetadata(p0, p1);
+  }
+
+  public static Error upload_set_custom_metadata2(Upload p0) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_set_custom_metadata2(Upload.getCPtr(p0));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
   public static DownloadResult download_object(Project p0, string p1, string p2, DownloadOptions p3) {
     DownloadResult ret = new DownloadResult(storj_uplinkPINVOKE.download_object(Project.getCPtr(p0), p1, p2, DownloadOptions.getCPtr(p3)), true);
     return ret;

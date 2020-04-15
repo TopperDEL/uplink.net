@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Threading;
 
 namespace uplink.NET.Models
 {
@@ -18,10 +19,12 @@ namespace uplink.NET.Models
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public class UploadOperation : IDisposable
     {
+        private static Mutex mut = new Mutex();
         private byte[] _bytesToUpload;
         private SWIG.UploadResult _uploadResult;
         private Task _uploadTask;
         private bool _cancelled;
+        private CustomMetadata _customMetadata;
 
         /// <summary>
         /// The name of the object uploading
@@ -90,11 +93,12 @@ namespace uplink.NET.Models
             }
         }
 
-        internal UploadOperation(byte[] bytestoUpload, SWIG.UploadResult uploadResult, string objectName)
+        internal UploadOperation(byte[] bytestoUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
             _bytesToUpload = bytestoUpload;
             _uploadResult = uploadResult;
             ObjectName = objectName;
+            _customMetadata = customMetadata;
 
             if (uploadResult.error != null && !string.IsNullOrEmpty(uploadResult.error.message))
             {
@@ -197,6 +201,31 @@ namespace uplink.NET.Models
                             return;
                         }
                     }
+
+                    if (_customMetadata != null)
+                    {
+                        if (mut.WaitOne(1000))
+                        {
+                            try
+                            {
+                                SWIG.Error customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata(_uploadResult.upload, _customMetadata.ToSWIG());
+                                if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
+                                {
+                                    _errorMessage = customMetadataError.message;
+                                    Failed = true;
+                                    Running = false;
+                                    UploadOperationEnded?.Invoke(this);
+                                    return;
+                                }
+                                SWIG.storj_uplink.free_error(customMetadataError);
+                            }
+                            finally
+                            {
+                                mut.ReleaseMutex();
+                            }
+                        }
+                    }
+
                     SWIG.Error commitError = SWIG.storj_uplink.upload_commit(_uploadResult.upload);
                     if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                     {
@@ -237,6 +266,15 @@ namespace uplink.NET.Models
                 SWIG.storj_uplink.free_upload_result(_uploadResult);
                 _uploadResult.Dispose();
                 _uploadResult = null;
+            }
+            if (mut != null)
+            {
+                try
+                {
+                    mut.Dispose();
+                    mut = null;
+                }
+                catch { }
             }
         }
     }
