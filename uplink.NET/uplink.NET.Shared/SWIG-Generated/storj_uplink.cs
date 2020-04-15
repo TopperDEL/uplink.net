@@ -124,6 +124,15 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static void prepare_get_custommetadata(Object p0) {
+    storj_uplinkPINVOKE.prepare_get_custommetadata(Object.getCPtr(p0));
+  }
+
+  public static CustomMetadataEntry get_next_custommetadata() {
+    CustomMetadataEntry ret = new CustomMetadataEntry(storj_uplinkPINVOKE.get_next_custommetadata(), true);
+    return ret;
+  }
+
   public static DownloadResult download_object(Project p0, string p1, string p2, DownloadOptions p3) {
     DownloadResult ret = new DownloadResult(storj_uplinkPINVOKE.download_object(Project.getCPtr(p0), p1, p2, DownloadOptions.getCPtr(p3)), true);
     return ret;

@@ -19,6 +19,17 @@ namespace uplink.NET.Interfaces
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
         Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
         /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="bytesToUpload">The binary-data to upload</param>
+        /// <param name="customMetadata">Adds custom metadata.</param>
+        /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
+        /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true);
+        /// <summary>
         /// Lists all objects within a bucket
         /// </summary>
         /// <param name="bucket">The Bucket to list entries from</param>
