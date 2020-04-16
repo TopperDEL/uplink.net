@@ -6,7 +6,7 @@ using System.Linq;
 namespace uplink.NET.Models
 {
     /// <summary>
-    /// A BucketList holds the buckets within a given project
+    /// A BucketList holds the buckets within a given access
     /// </summary>
     public class BucketList
     {

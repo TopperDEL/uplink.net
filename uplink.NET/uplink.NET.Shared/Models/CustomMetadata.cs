@@ -9,6 +9,12 @@ namespace uplink.NET.Models
     {
         private static Mutex mut = new Mutex();
 
+        /// <summary>
+        /// CustomMetadata contains custom user metadata about the object.
+        /// The keys and values in custom metadata are expected to be valid UTF-8.
+        /// When choosing a custom key for your application start it with a prefix "app:key",
+        /// as an example application named "Image Board" might use a key "image-board:title".
+        /// </summary>
         public List<CustomMetadataEntry> Entries { get; set; }
 
         public CustomMetadata()

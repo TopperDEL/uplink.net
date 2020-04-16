@@ -10,23 +10,23 @@ namespace uplink.NET.Models
     public class ListObjectsOptions
     {
         /// <summary>
-        /// The prefix
+        /// Prefix allows to filter objects by a key prefix. If not empty, it must end with slash.
         /// </summary>
         public string Prefix { get; set; }
         /// <summary>
-        /// The cursor
+        /// Cursor sets the starting position of the iterator. The first item listed will be the one after the cursor.
         /// </summary>
         public string Cursor { get; set; }
         /// <summary>
-        /// Listing should be recursive
+        /// Recursive iterates the objects without collapsing prefixes.
         /// </summary>
         public bool Recursive { get; set; }
         /// <summary>
-        /// Listing should be recursive
+        /// System includes SystemMetadata in the results.
         /// </summary>
         public bool System { get; set; }
         /// <summary>
-        /// Listing should be recursive
+        /// Custom includes CustomMetadata in the results.
         /// </summary>
         public bool Custom { get; set; }
 

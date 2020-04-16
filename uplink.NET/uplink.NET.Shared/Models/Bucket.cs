@@ -5,13 +5,16 @@ using System.Text;
 namespace uplink.NET.Models
 {
     /// <summary>
-    /// The handle for an opened bucket. The bucket has to be closed with this handle after use.
+    /// The handle for a bucket.
     /// </summary>
     public class Bucket: IDisposable
     {
         internal SWIG.Bucket _bucketRef;
         internal SWIG.BucketResult _bucketResultRef;
 
+        /// <summary>
+        /// The name of the bucket
+        /// </summary>
         public string Name
         {
             get
@@ -20,6 +23,9 @@ namespace uplink.NET.Models
             }
         }
         
+        /// <summary>
+        /// The DateTime the bucket was created
+        /// </summary>
         public DateTime Created
         {
             get
