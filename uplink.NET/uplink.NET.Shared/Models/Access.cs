@@ -117,11 +117,11 @@ namespace uplink.NET.Models
         /// <summary>
         /// Creates a new access based on the satellite-adress, the API-key and the secret passphrase and by using a specific config
         /// </summary>
-        /// <param name="config">The configuration</param>
         /// <param name="satelliteAddress">The satellite address</param>
         /// <param name="apiKey">The API-key</param>
         /// <param name="secret">The passphrase</param>
-        public Access(Config config, string satelliteAddress, string apiKey, string secret)
+        /// <param name="config">The configuration</param>
+        public Access(string satelliteAddress, string apiKey, string secret, Config config)
         {
             Init(config);
 
@@ -169,7 +169,7 @@ namespace uplink.NET.Models
         /// <summary>
         /// Serializes this access into a string
         /// </summary>
-        /// <returns>The serialized scope</returns>
+        /// <returns>The serialized access</returns>
         public string Serialize()
         {
             using (SWIG.StringResult serializedAccessResult = SWIG.storj_uplink.access_serialize(_access))
@@ -190,7 +190,7 @@ namespace uplink.NET.Models
         /// </summary>
         /// <param name="permission">The permission describes, which actions are allowed</param>
         /// <param name="prefixes">The prefixes declare for which pathes the permissions are meant for</param>
-        /// <returns>The restricted scope</returns>
+        /// <returns>The restricted access</returns>
         public Access Share(Permission permission, List<SharePrefix> prefixes)
         {
             SWIG.storj_uplink.prepare_shareprefixes((uint)prefixes.Count);

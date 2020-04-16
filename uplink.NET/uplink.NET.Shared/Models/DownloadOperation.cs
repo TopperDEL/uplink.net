@@ -26,7 +26,7 @@ namespace uplink.NET.Models
         /// <summary>
         /// The downloaded bytes - get's filled while the download progresses.
         /// </summary>
-        public byte[] DownloadedBytes //Maybe a Stream would be better?
+        public byte[] DownloadedBytes
         {
             get
             {
@@ -62,7 +62,7 @@ namespace uplink.NET.Models
         /// </summary>
         public bool Completed { get; private set; }
         /// <summary>
-        /// Did the download fail? See ErrorMessage for details.
+        /// Did the download fail? If true, see ErrorMessage for details.
         /// </summary>
         public bool Failed { get; set; }
         /// <summary>
