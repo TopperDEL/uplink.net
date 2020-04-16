@@ -1,5 +1,5 @@
 @echo off
-SET STORJ_VERSION=v1.0.0
+SET STORJ_VERSION=v1.0.1
 cd ..
 IF NOT EXIST "uplink-c\" (
 echo *** Cloning storj
