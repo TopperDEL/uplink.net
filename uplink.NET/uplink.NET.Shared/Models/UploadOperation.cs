@@ -93,9 +93,9 @@ namespace uplink.NET.Models
             }
         }
 
-        internal UploadOperation(byte[] bytestoUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+        internal UploadOperation(byte[] bytesToUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
-            _bytesToUpload = bytestoUpload;
+            _bytesToUpload = bytesToUpload;
             _uploadResult = uploadResult;
             ObjectName = objectName;
             _customMetadata = customMetadata;
