@@ -84,7 +84,7 @@ namespace uplink.NET.Test
                 Permission permission = new Permission();
                 permission.AllowUpload = true;
                 List<SharePrefix> sharePrefixes = new List<SharePrefix>();
-                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test" });
+                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/" });
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
@@ -125,7 +125,7 @@ namespace uplink.NET.Test
                 permission.AllowUpload = true; 
                 permission.AllowDownload = false; //should not change anything as we are uploading here
                 List<SharePrefix> sharePrefixes = new List<SharePrefix>();
-                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test" });
+                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/" });
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
@@ -166,7 +166,7 @@ namespace uplink.NET.Test
                 permission.AllowUpload = true;
                 permission.AllowDownload = false; //should not change anything as we are uploading here
                 List<SharePrefix> sharePrefixes = new List<SharePrefix>();
-                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/subfolder" });
+                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/subfolder/" });
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
@@ -211,7 +211,7 @@ namespace uplink.NET.Test
                 permission.AllowUpload = false;  //Should not change anything as we are downloading here
                 permission.AllowDownload = true;
                 List<SharePrefix> sharePrefixes = new List<SharePrefix>();
-                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test" });
+                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/" });
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
