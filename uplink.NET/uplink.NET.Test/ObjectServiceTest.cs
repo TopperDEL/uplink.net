@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using uplink.NET.Exceptions;
@@ -30,28 +31,52 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task UploadObject_Uploads_LargeFile()
         {
-            await Upload_X_Bytes(1024 * 10, 10);
+            await Upload_X_Bytes(1024 * 512);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_2500Bytes()
         {
-            await Upload_X_Bytes(2500, 3);
+            await Upload_X_Bytes(2500);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_2048Bytes()
         {
-            await Upload_X_Bytes(2048, 2);
+            await Upload_X_Bytes(2048);
         }
 
         [TestMethod]
         public async Task UploadObject_Uploads_256Bytes()
         {
-            await Upload_X_Bytes(256, 1);
+            await Upload_X_Bytes(256);
         }
 
-        private async Task Upload_X_Bytes(long bytes, int exptecedProgressCount)
+        [TestMethod]
+        public async Task UploadObject_Uploads_LargeFileAsStream()
+        {
+            await Upload_X_Bytes_AsStream(1024 * 512);
+        }
+
+        [TestMethod]
+        public async Task UploadObject_Uploads_2500BytesAsStream()
+        {
+            await Upload_X_Bytes_AsStream(2500);
+        }
+
+        [TestMethod]
+        public async Task UploadObject_Uploads_2048BytesAsStream()
+        {
+            await Upload_X_Bytes_AsStream(2048);
+        }
+
+        [TestMethod]
+        public async Task UploadObject_Uploads_256BytesAsStream()
+        {
+            await Upload_X_Bytes_AsStream(256);
+        }
+
+        private async Task Upload_X_Bytes(long bytes)
         {
             string bucketname = "uploadtest";
 
@@ -74,25 +99,55 @@ namespace uplink.NET.Test
             Assert.AreEqual(bytes, uploadOperation.BytesSent);
         }
 
+        private async Task Upload_X_Bytes_AsStream(long bytes)
+        {
+            string bucketname = "uploadtest";
+
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(bytes);
+            Stream stream = new MemoryStream(bytesToUpload);
+
+            bool progressChangeCounterCalled = false;
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), stream, false);
+            uploadOperation.UploadOperationProgressChanged += (op) =>
+            {
+                progressChangeCounterCalled = true;
+            };
+
+            await uploadOperation.StartUploadAsync();
+
+            Assert.IsTrue(progressChangeCounterCalled);
+            Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
+            Assert.AreEqual(bytes, uploadOperation.BytesSent);
+        }
+
         [TestMethod]
         public async Task DownloadObject_Downloads_256Bytes()
         {
-            await Download_X_Bytes(256, 1);
+            await Download_X_Bytes(256);
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2048Bytes()
         {
-            await Download_X_Bytes(2048, 2);
+            await Download_X_Bytes(2048);
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2500Bytes()
         {
-            await Download_X_Bytes(2500, 3);
+            await Download_X_Bytes(2500);
         }
 
-        private async Task Download_X_Bytes(long bytes, int exptecedProgressCount)
+        [TestMethod]
+        public async Task DownloadObject_Downloads_LargeFile()
+        {
+            await Download_X_Bytes(1024*512);
+        }
+
+        private async Task Download_X_Bytes(long bytes)
         {
             string bucketname = "downloadtest";
 

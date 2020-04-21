@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using System.IO;
 
 namespace uplink.NET.Models
 {
@@ -20,7 +21,7 @@ namespace uplink.NET.Models
     public class UploadOperation : IDisposable
     {
         private static Mutex mut = new Mutex();
-        private byte[] _bytesToUpload;
+        private Stream _byteStreamToUpload;
         private SWIG.UploadResult _uploadResult;
         private Task _uploadTask;
         private bool _cancelled;
@@ -49,10 +50,17 @@ namespace uplink.NET.Models
         {
             get
             {
-                if (_bytesToUpload != null)
-                    return _bytesToUpload.Length;
-                else
-                    return 0;
+                try
+                {
+                    if (_byteStreamToUpload != null)
+                        return _byteStreamToUpload.Length;
+                    else
+                        return 0;
+                }
+                catch
+                {
+                    return 0; //Fallback
+                }
             }
         }
         /// <summary>
@@ -92,10 +100,9 @@ namespace uplink.NET.Models
                 return (float)BytesSent / (float)TotalBytes * 100f;
             }
         }
-
-        internal UploadOperation(byte[] bytesToUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+        internal UploadOperation(Stream stream, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
-            _bytesToUpload = bytesToUpload;
+            _byteStreamToUpload = stream;
             _uploadResult = uploadResult;
             ObjectName = objectName;
             _customMetadata = customMetadata;
@@ -106,6 +113,11 @@ namespace uplink.NET.Models
                 Failed = true;
                 Running = false;
             }
+        }
+
+        internal UploadOperation(byte[] bytesToUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null) :
+            this(new MemoryStream(bytesToUpload), uploadResult, objectName, customMetadata)
+        {
         }
 
         /// <summary>
@@ -137,70 +149,56 @@ namespace uplink.NET.Models
         {
             try
             {
-                if (_bytesToUpload != null)
+                if (_byteStreamToUpload != null)
                 {
                     Running = true;
-                    while (BytesSent < _bytesToUpload.Length)
+                    int bytesToUploadCount = 0;
+                    do
                     {
-                        var tenth = _bytesToUpload.Length / 10;
-                        if (_bytesToUpload.Length - BytesSent > tenth)
-                        {
-                            //Send next bytes in batch
-                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take(tenth).ToArray(), 0), true), (uint)tenth);
-                            if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
-                            {
-                                _errorMessage = sentResult.error.message;
-                                Failed = true;
-                                Running = false;
-                                UploadOperationEnded?.Invoke(this);
-                                return;
-                            }
-                            else
-                                BytesSent += sentResult.bytes_written;
-                            SWIG.storj_uplink.free_write_result(sentResult);
-                        }
-                        else
-                        {
-                            //Send only the remaining bytes
-                            var remaining = _bytesToUpload.Length - BytesSent;
-                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(_bytesToUpload.Skip((int)BytesSent).Take((int)remaining).ToArray(), 0), true), (uint)remaining);
-                            if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
-                            {
-                                _errorMessage = sentResult.error.message;
-                                Failed = true;
-                                Running = false;
-                                UploadOperationEnded?.Invoke(this);
-                                return;
-                            }
-                            else
-                                BytesSent += sentResult.bytes_written;
-                            SWIG.storj_uplink.free_write_result(sentResult);
-                        }
-                        if (_cancelled)
-                        {
-                            SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
-                            if (abortError != null && !string.IsNullOrEmpty(abortError.message))
-                            {
-                                Failed = true;
-                                _errorMessage = abortError.message;
-                            }
-                            else
-                                Cancelled = true;
-                            SWIG.storj_uplink.free_error(abortError);
+                        byte[] bytesToUpload = new byte[262144];
 
-                            Running = false;
-                            UploadOperationEnded?.Invoke(this);
-                            return;
-                        }
-                        UploadOperationProgressChanged?.Invoke(this);
-                        if (!string.IsNullOrEmpty(_errorMessage))
+                        bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
+                        if (bytesToUploadCount > 0)
                         {
-                            Failed = true;
-                            Running = false;
-                            UploadOperationEnded?.Invoke(this);
-                            return;
+                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(bytesToUpload.Take((int)bytesToUploadCount).ToArray(), 0), true), (uint)bytesToUploadCount);
+                            if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                            {
+                                _errorMessage = sentResult.error.message;
+                                Failed = true;
+                                Running = false;
+                                UploadOperationEnded?.Invoke(this);
+                                return;
+                            }
+                            else
+                                BytesSent += sentResult.bytes_written;
+
+                            SWIG.storj_uplink.free_write_result(sentResult);
+                            if (_cancelled)
+                            {
+                                SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
+                                if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                {
+                                    Failed = true;
+                                    _errorMessage = abortError.message;
+                                }
+                                else
+                                    Cancelled = true;
+                                SWIG.storj_uplink.free_error(abortError);
+
+                                Running = false;
+                                UploadOperationEnded?.Invoke(this);
+                                return;
+                            }
+                            UploadOperationProgressChanged?.Invoke(this);
+                            if (!string.IsNullOrEmpty(_errorMessage))
+                            {
+                                Failed = true;
+                                Running = false;
+                                UploadOperationEnded?.Invoke(this);
+                                return;
+                            }
                         }
-                    }
+                    } while (bytesToUploadCount > 0);
 
                     if (_customMetadata != null)
                     {

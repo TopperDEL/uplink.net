@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using uplink.NET.Exceptions;
@@ -20,6 +21,24 @@ namespace uplink.NET.Services
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
         {
             return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, null, immediateStart);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart = true)
+        {
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, null, immediateStart);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true)
+        {
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
+
+            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
+
+            UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
+            if (immediateStart)
+                upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
+
+            return upload;
         }
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true)
