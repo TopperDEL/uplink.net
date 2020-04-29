@@ -133,7 +133,10 @@ namespace uplink.NET.Models
             }
 
             if (_uploadTask == null)
+            {
                 _uploadTask = Task.Run(DoUpload);
+                Running = true;
+            }
             return _uploadTask;
         }
 
@@ -193,7 +196,6 @@ namespace uplink.NET.Models
                             if (!string.IsNullOrEmpty(_errorMessage))
                             {
                                 Failed = true;
-                                Running = false;
                                 UploadOperationEnded?.Invoke(this);
                                 return;
                             }
@@ -212,7 +214,6 @@ namespace uplink.NET.Models
                                 {
                                     _errorMessage = customMetadataError.message;
                                     Failed = true;
-                                    Running = false;
                                     UploadOperationEnded?.Invoke(this);
                                     return;
                                 }
@@ -230,7 +231,6 @@ namespace uplink.NET.Models
                     {
                         _errorMessage = commitError.message;
                         Failed = true;
-                        Running = false;
                         UploadOperationEnded?.Invoke(this);
                         SWIG.storj_uplink.free_error(commitError);
                         return;
@@ -240,21 +240,22 @@ namespace uplink.NET.Models
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
                     Failed = true;
-                    Running = false;
                     UploadOperationEnded?.Invoke(this);
                     return;
                 }
-                Running = false;
                 Completed = true;
                 UploadOperationEnded?.Invoke(this);
             }
             catch (Exception ex)
             {
                 Failed = true;
-                Running = false;
                 _errorMessage = ex.Message;
-                UploadOperationEnded?.Invoke(this);
                 return;
+            }
+            finally
+            {
+                Running = false;
+                UploadOperationEnded?.Invoke(this);
             }
         }
 
