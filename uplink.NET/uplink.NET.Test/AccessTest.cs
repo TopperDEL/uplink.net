@@ -89,6 +89,8 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
+            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+
             Access restrictedEnv;
             try
             {
@@ -130,6 +132,8 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
+            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+
             Access restrictedEnv;
             try
             {
@@ -170,6 +174,8 @@ namespace uplink.NET.Test
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
+
+            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try
@@ -215,6 +221,8 @@ namespace uplink.NET.Test
                 var restricted = scope.Share(permission, sharePrefixes);
                 serializedAccess = restricted.Serialize();
             }
+
+            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try
