@@ -1,34 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>uplink.NET</RootNamespace>
-    <AssemblyVersion>1.5.0.0</AssemblyVersion>
-    <FileVersion>1.3.0.0</FileVersion>
-    <Version>1.5.0</Version>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Authors>TopperDEL, Storj labs</Authors>
     <Description>This library provides access to the secure and decentralised Storj-network. It allows you to:
 - create and delete buckets
 - upload and download files
 
 It is - like Storj itself - open source and developed on github.</Description>
-    <Copyright>(c) 2019 TopperDEL, Storj labs</Copyright>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <Authors>TopperDEL, Storj labs</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>portable</DebugType>
+    <AssemblyName>uplink.NET</AssemblyName>
+    <PackageId>uplink.NET</PackageId>
+    <PackagePrereleaseIdentifier></PackagePrereleaseIdentifier>
+    <PackageVersion>$(AssemblyVersion)$(PackagePrereleaseIdentifier)</PackageVersion>
+    <PackageTags>storj tardigrade storage decentralised secure bucket file xamarin android</PackageTags>
     <PackageProjectUrl>https://github.com/TopperDEL/uplink.net</PackageProjectUrl>
-    <PackageIconUrl>https://storj.io/press-kit/Storj-symbol.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/TopperDEL/uplink.net</RepositoryUrl>
-    <PackageTags>storj storage decentralised secure bucket file</PackageTags>
-    <PackageReleaseNotes>Added the StorjEnvironment to make the usage of the library easier.</PackageReleaseNotes>
-    <Platforms>AnyCPU;x86</Platforms>
+    <DocumentationFile Condition="'$(Configuration)' == 'Release'"></DocumentationFile>
+    <RootNamespace>uplink.NET</RootNamespace>
+    <FileVersion>2.1.0.0</FileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath></OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="x86\storj_uplink.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="x64\storj_uplink.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+  <Content Include="win-x86\storj_uplink.dll">
+      <PackagePath>runtimes/win-x86/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    <Content Include="win-x64\storj_uplink.dll">
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+    <Content Include="..\uplink.NET.targets">
+      <PackagePath>build/net40/uplink.NET.targets</PackagePath>
+      <Pack>true</Pack>
+    </Content>
   </ItemGroup>
 
   <Import Project="..\uplink.NET.Shared\uplink.NET.Shared.projitems" Label="Shared" />
