@@ -11,11 +11,11 @@ namespace uplink.NET.Sample.Shared.ViewModels
 {
     public class BucketInfoViewModel: BaseViewModel
     {
-        public BucketInfo BucketInfo { get; private set; }
+        public Bucket BucketInfo { get; private set; }
         public ICommand DeleteBucketCommand { get; private set; }
         public ICommand OpenBucketCommand { get; private set; }
 
-        public BucketInfoViewModel(BucketInfo bucketInfo, IBucketService bucketService)
+        public BucketInfoViewModel(Bucket bucketInfo, IBucketService bucketService)
         {
             BucketInfo = bucketInfo;
             DeleteBucketCommand = new DeleteBucketCommand(bucketService); ;

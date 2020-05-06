@@ -59,7 +59,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             var stream = galleryObject.GetStream();
 
-            var bucket = await _bucketService.OpenBucketAsync(BucketName);
+            var bucket = await _bucketService.GetBucketAsync(BucketName);
             var uploadOptions = new UploadOptions();
             uploadOptions.Expires = DateTime.MaxValue;
             byte[] bytes = new byte[stream.Length];

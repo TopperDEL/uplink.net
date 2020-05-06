@@ -33,7 +33,7 @@ namespace uplink.NET.Sample.Droid
         public override void OnCreate()
         {
             base.OnCreate();
-            Models.Scope.SetTempDirectory(CacheDir.AbsolutePath);
+            Models.Access.SetTempDirectory(CacheDir.AbsolutePath);
             
             CrossCurrentActivity.Current.Init(this);
         }

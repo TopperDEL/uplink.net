@@ -95,8 +95,8 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
-                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path, true);
+                var bucket = await _bucketService.GetBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
+                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Key, new DownloadOptions(), true);
                 downloadOperation.DownloadOperationEnded += async (operation) =>
                 {
                     if (!operation.Failed && !operation.Cancelled)
@@ -108,7 +108,7 @@ namespace uplink.NET.Sample.Shared.Commands
                         filePath = Path.Combine(filePath, "Storj");
                         if (!Directory.Exists(filePath))
                             Directory.CreateDirectory(filePath);
-                        filePath = Path.Combine(filePath, bucketEntryVM.ObjectInfo.Path);
+                        filePath = Path.Combine(filePath, bucketEntryVM.ObjectInfo.Key);
                         using (FileStream fs = new FileStream(filePath, FileMode.Create))
                         {
                             await fs.WriteAsync(operation.DownloadedBytes, 0, (int)operation.TotalBytes);

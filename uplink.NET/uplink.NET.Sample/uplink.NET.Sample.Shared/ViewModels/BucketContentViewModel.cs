@@ -113,9 +113,8 @@ namespace uplink.NET.Sample.Shared.ViewModels
             //Load all objects
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(BucketName);
-                var listOptions = new ListOptions();
-                listOptions.Direction = ListDirection.STORJ_AFTER;
+                var bucket = await _bucketService.GetBucketAsync(BucketName);
+                var listOptions = new ListObjectsOptions();
                 var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
                 foreach (var obj in objects.Items)
                 {

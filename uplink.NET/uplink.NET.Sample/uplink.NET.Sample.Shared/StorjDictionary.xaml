@@ -30,11 +30,11 @@
             <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsObject, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <BitmapIcon UriSource="ms-appx:///Assets/storj_file.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="{x:Bind ObjectInfo.Path}" Foreground="{StaticResource StorjBlue}"/>
-                    <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{x:Bind ObjectInfo.Key}" Foreground="{StaticResource StorjBlue}"/>
+                    <!--<StackPanel Orientation="Horizontal">
                         <TextBlock Text="{x:Bind ObjectInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
                         <TextBlock Text="{x:Bind ObjectInfo.GetSizeString}" FontSize="11" Margin="10,0"/>
-                    </StackPanel>
+                    </StackPanel>-->
                 </StackPanel>
                 <Button Content="Download" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DownloadObjectCommand}" CommandParameter="{Binding}"/>
                 <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteObjectCommand}" CommandParameter="{Binding}"/>
