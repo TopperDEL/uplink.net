@@ -44,17 +44,17 @@ namespace uplink.NET.Sample.Shared.Services
 
         public async Task<bool> LoginAsync(LoginData loginData)
         {
-            try
-            {
-                uplink.NET.Models.APIKey apikey = new NET.Models.APIKey(loginData.APIKey);
-            }
-            catch (Exception ex)
-            {
-                Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid API-Key: " + ex.Message);
-                await dialog.ShowAsync();
+            //try
+            //{
+            //    uplink.NET.Models.APIKey apikey = new NET.Models.APIKey(loginData.APIKey);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog("Invalid API-Key: " + ex.Message);
+            //    await dialog.ShowAsync();
 
-                return false;
-            }
+            //    return false;
+            //}
 
             _loginData = loginData;
             _localSettings.Values[SATELLITE] = _loginData.Satellite;

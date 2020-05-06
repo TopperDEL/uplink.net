@@ -88,7 +88,7 @@ namespace uplink.NET.Sample
 
                         try
                         {
-                            Shared.Services.Factory.Scope = new Models.Scope(loginData.APIKey, loginData.Satellite, loginData.Secret);
+                            Shared.Services.Factory.Access = new Models.Access(loginData.Satellite, loginData.APIKey, loginData.Secret);
                             rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
                         }
                         catch

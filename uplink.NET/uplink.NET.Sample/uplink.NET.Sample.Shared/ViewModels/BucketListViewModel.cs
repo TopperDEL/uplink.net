@@ -36,7 +36,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         {
             base.StartLoading();
 
-            NET.Models.BucketListOptions listOptions = new NET.Models.BucketListOptions();
+            NET.Models.ListBucketsOptions listOptions = new NET.Models.ListBucketsOptions();
             var buckets = await _bucketService.ListBucketsAsync(listOptions);
             foreach (var bucket in buckets.Items)
                 Buckets.Add(new BucketInfoViewModel(bucket, _bucketService));

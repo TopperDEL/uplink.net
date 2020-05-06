@@ -31,7 +31,7 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                await _bucketService.CreateBucketAsync(createBucketViewModel.BucketName, new NET.Models.BucketConfig());
+                await _bucketService.CreateBucketAsync(createBucketViewModel.BucketName);
             }
             catch (Exception ex)
             {

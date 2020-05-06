@@ -34,8 +34,8 @@ namespace uplink.NET.Sample.Shared.Commands
 
             ContentDialog deleteObjectDialog = new ContentDialog
             {
-                Title = "Delete '" + bucketEntryVM.ObjectInfo.Path + "'",
-                Content = "Do you really want to delete the object '" + bucketEntryVM.ObjectInfo.Path + "' ?",
+                Title = "Delete '" + bucketEntryVM.ObjectInfo.Key + "'",
+                Content = "Do you really want to delete the object '" + bucketEntryVM.ObjectInfo.Key + "' ?",
                 CloseButtonText = "No",
                 PrimaryButtonText = "Yes"
             };
@@ -45,8 +45,8 @@ namespace uplink.NET.Sample.Shared.Commands
                 return;
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
-                await _objectService.DeleteObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path);
+                var bucket = await _bucketService.GetBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
+                await _objectService.DeleteObjectAsync(bucket, bucketEntryVM.ObjectInfo.Key);
             }
             catch (Exception ex)
             {

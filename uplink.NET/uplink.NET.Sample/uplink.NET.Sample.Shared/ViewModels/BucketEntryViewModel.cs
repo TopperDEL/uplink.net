@@ -15,7 +15,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
         public UploadOperation UploadOperation { get; set; }
 
         public bool IsObject { get; set; }
-        public ObjectInfo ObjectInfo { get; set; }
+        public uplink.NET.Models.Object ObjectInfo { get; set; }
 
         public bool IsDownloadOperation { get; set; }
         public DownloadOperation DownloadOperation { get; set; }

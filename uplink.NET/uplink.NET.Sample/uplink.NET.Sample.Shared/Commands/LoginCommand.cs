@@ -35,7 +35,7 @@ namespace uplink.NET.Sample.Shared.Commands
             {
                 try
                 {
-                    Factory.Scope = new Scope(viewModel.LoginData.APIKey, viewModel.LoginData.Satellite, viewModel.LoginData.Secret);
+                    Factory.Access = new Access(viewModel.LoginData.Satellite, viewModel.LoginData.APIKey, viewModel.LoginData.Secret);
 
                     Windows.UI.Popups.MessageDialog attentionDialog = new Windows.UI.Popups.MessageDialog("This app is only for testing - it might contain errors and corrupt your data. Use at your own risk!", "Attention");
                     await attentionDialog.ShowAsync();

@@ -10,7 +10,7 @@ namespace uplink.NET.Sample.Shared.Services
 {
     public static class Factory
     {
-        public static Scope Scope { get; set; }
+        public static Access Access { get; set; }
 
         private static ILoginService _loginService;
         public static ILoginService LoginService
@@ -29,7 +29,7 @@ namespace uplink.NET.Sample.Shared.Services
             get
             {
                 if (_bucketService == null)
-                    _bucketService = new BucketService(Scope);
+                    _bucketService = new BucketService(Access);
                 return _bucketService;
             }
         }
@@ -40,7 +40,7 @@ namespace uplink.NET.Sample.Shared.Services
             get
             {
                 if (_objectService == null)
-                    _objectService = new ObjectService();
+                    _objectService = new ObjectService(Access);
                 return _objectService;
             }
         }
