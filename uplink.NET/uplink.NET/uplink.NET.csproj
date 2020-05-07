@@ -5,7 +5,7 @@
 - upload and download files
 
 It is - like Storj itself - open source and developed on github.</Description>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <AssemblyVersion>2.16.0.0</AssemblyVersion>
     <Authors>TopperDEL, Storj labs</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,16 +25,32 @@ It is - like Storj itself - open source and developed on github.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-  <Content Include="win-x86\storj_uplink.dll">
+  <Content Include="win10-x86\storj_uplink.dll">
       <PackagePath>runtimes/win-x86/native</PackagePath>
       <Pack>true</Pack>
     </Content>
-    <Content Include="win-x64\storj_uplink.dll">
+    <Content Include="win10-x64\storj_uplink.dll">
       <PackagePath>runtimes/win-x64/native</PackagePath>
       <Pack>true</Pack>
     </Content>
+	<Content Include="libs\arm64-v8a\libstorj_uplink.so">
+      <PackagePath>runtimes/native/libs/arm64-v8a</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+	<Content Include="libs\armeabi-v7a\libstorj_uplink.so">
+      <PackagePath>runtimes/native/libs/armeabi-v7a</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+	<Content Include="libs\x86\libstorj_uplink.so">
+      <PackagePath>runtimes/native/libs/x86</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+	<Content Include="libs\x86_64\libstorj_uplink.so">
+      <PackagePath>runtimes/native/libs/x86_64</PackagePath>
+      <Pack>true</Pack>
+    </Content>
     <Content Include="..\uplink.NET.targets">
-      <PackagePath>build/net40/uplink.NET.targets</PackagePath>
+      <PackagePath>build/uplink.NET.targets</PackagePath>
       <Pack>true</Pack>
     </Content>
   </ItemGroup>
