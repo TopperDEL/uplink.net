@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Choose>
-    <When Condition="'$(Platform)' == 'AnyCPU' OR '$(Platform)' == 'x86' OR '$(Platform)' == 'X86'">
+    <When Condition="'$(Platform)' == 'x86' Or '$(Platform)' == 'X86'">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)\..\..\runtimes\win-x86\native\storj_uplink.dll">
           <Link>storj_uplink.dll</Link>
@@ -11,7 +11,7 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="'$(Platform)' == 'x64' OR '$(Platform)' == 'X64'">
+    <When Condition="'$(Platform)' == 'AnyCPU' Or '$(Platform)' == 'x64' Or '$(Platform)' == 'X64'">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)\..\..\runtimes\win-x64\native\storj_uplink.dll">
           <Link>storj_uplink.dll</Link>
