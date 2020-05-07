@@ -4,6 +4,7 @@
     <_IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</_IsWindows>
     <_IsMacOS Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</_IsMacOS>
     <_IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</_IsLinux>
+    <_IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</_IsLinux>
 
     <_NativeRuntime Condition=" '$(_NativeRuntime)' == '' And '$(_IsMacOS)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">osx-x64</_NativeRuntime>
     <_NativeRuntime Condition=" '$(_NativeRuntime)' == '' And '$(_IsLinux)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">linux-x64</_NativeRuntime>
@@ -11,12 +12,38 @@
     <_NativeRuntime Condition=" '$(_NativeRuntime)' == '' And '$(_IsWindows)' == 'true' And ('$(Prefer32Bit)' == 'false' Or '$(PlatformTarget)' == 'x64')">win-x64</_NativeRuntime>
 
     <_NativeLibName Condition="'$(_NativeRuntime)' == 'win-x86' Or '$(_NativeRuntime)' == 'win-x64'">storj_uplink.dll</_NativeLibName>
+
+    <_DNAGeneticNugetNativePath Condition="'$(_DNAGeneticNugetNativePath)' == ''">$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\</_DNAGeneticNugetNativePath>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Condition="'$(_NativeRuntime)' != ''" Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(_NativeRuntime)\native\$(_NativeLibName)">
+  
+  <!--Windows/Linux/Mac-->
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'MonoAndroid'">
+    <Content Condition="'$(_NativeRuntime)' != ''" Include="$(MSBuildThisFileDirectory)..\runtimes\$(_NativeRuntime)\native\$(_NativeLibName)">
       <Link>%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Visible>False</Visible>
     </Content>
+  </ItemGroup>
+  
+  <!--Android-->
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\runtimes\native\libs\arm64-v8a\libstorj_uplink.so">
+      <Link>$(_DNAGeneticNugetNativePath)arm64-v8a\libstorj_uplink.so</Link>
+    </AndroidNativeLibrary >
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\runtimes\native\libs\armeabi-v7a\libstorj_uplink.so">
+      <Link>$(_DNAGeneticNugetNativePath)armeabi-v7a\libstorj_uplink.so</Link>
+    </AndroidNativeLibrary >
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\runtimes\native\libs\x86\libstorj_uplink.so">
+      <Link>$(_DNAGeneticNugetNativePath)x86\libstorj_uplink.so</Link>
+    </AndroidNativeLibrary >
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\runtimes\native\libs\x86_64\libstorj_uplink.so">
+      <Link>$(_DNAGeneticNugetNativePath)x86_64\libstorj_uplink.so</Link>
+    </AndroidNativeLibrary>
   </ItemGroup>
 </Project>

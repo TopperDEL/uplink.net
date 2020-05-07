@@ -117,8 +117,8 @@ set CC=%TOOLCHAIN%\armv7a-linux-androideabi16-clang
 set CXX=%TOOLCHAIN%\armv7a-linux-androideabi16-clang++
 set GOARM=7
 echo *** Target: armeabi-v7a
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\armeabi-v7a\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/armeabi-v7a/libstorj_uplink.so
+copy ..\Build-Results\Android\armeabi-v7a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET\libs\armeabi-v7a\ /Y
 
 set GOARM=
 
@@ -126,22 +126,22 @@ set GOARCH=arm64
 set CC=%TOOLCHAIN%\aarch64-linux-android21-clang
 set CXX=%TOOLCHAIN%\aarch64-linux-android21-clang++
 echo *** Target: arm64-v8a
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/arm64-v8a/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\arm64-v8a\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/arm64-v8a/libstorj_uplink.so
+copy ..\Build-Results\Android\arm64-v8a\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET\libs\arm64-v8a\ /Y
 
 set GOARCH=386
 set CC=%TOOLCHAIN%\i686-linux-android16-clang
 set CXX=%TOOLCHAIN%\i686-linux-android16-clang++
 echo *** Target: x86
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\Build-Results\Android\x86\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86/libstorj_uplink.so
+copy ..\Build-Results\Android\x86\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET\libs\x86\ /Y
 
 set GOARCH=amd64
 set CC=%TOOLCHAIN%\x86_64-linux-android21-clang
 set CXX=%TOOLCHAIN%\x86_64-linux-android21-clang++
 echo *** Target: x86_64
-go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86_64/libstorj_uplink.so storj.io/storj/lib/uplinkc
-copy ..\Build-Results\Android\x86_64\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET.Droid\libs\x86_64\ /Y
+go build -ldflags="-s -w" -tags linux -buildmode c-shared -o ..\Build-Results/Android/x86_64/libstorj_uplink.so
+copy ..\Build-Results\Android\x86_64\libstorj_uplink.so ..\uplink.net\uplink.NET\uplink.NET\libs\x86_64\ /Y
 
 cd ..
 %SystemRoot%\explorer.exe .\Build-Results\
