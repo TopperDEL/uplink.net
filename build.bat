@@ -81,8 +81,8 @@ mkdir Build-Results
 
 echo *** Copy Windows-DLLs
 copy .\uplink-c\*.dll .\Build-Results\ /Y
-copy .\uplink-c\storj_uplink-x86.dll .\uplink.net\uplink.NET\uplink.NET\win-x86\storj_uplink.dll /Y
-copy .\uplink-c\storj_uplink.dll .\uplink.net\uplink.NET\uplink.NET\win-x64\storj_uplink.dll /Y
+copy .\uplink-c\storj_uplink-x86.dll .\uplink.net\uplink.NET\uplink.NET\runtimes\win-x86\native\storj_uplink.dll /Y
+copy .\uplink-c\storj_uplink.dll .\uplink.net\uplink.NET\uplink.NET\runtimes\win-x64\native\storj_uplink.dll /Y
 
 echo *** Copy cs-files
 cd Build-Results

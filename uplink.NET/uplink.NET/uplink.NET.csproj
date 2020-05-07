@@ -5,7 +5,7 @@
 - upload and download files
 
 It is - like Storj itself - open source and developed on github.</Description>
-    <AssemblyVersion>2.16.0.0</AssemblyVersion>
+    <AssemblyVersion>2.33.0.0</AssemblyVersion>
     <Authors>TopperDEL, Storj labs</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,11 +25,11 @@ It is - like Storj itself - open source and developed on github.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-  <Content Include="win10-x86\storj_uplink.dll">
+	<Content Include="runtimes\win-x86\native\storj_uplink.dll">
       <PackagePath>runtimes/win-x86/native</PackagePath>
       <Pack>true</Pack>
     </Content>
-    <Content Include="win10-x64\storj_uplink.dll">
+    <Content Include="runtimes\win-x64\native\storj_uplink.dll">
       <PackagePath>runtimes/win-x64/native</PackagePath>
       <Pack>true</Pack>
     </Content>
@@ -49,8 +49,13 @@ It is - like Storj itself - open source and developed on github.</Description>
       <PackagePath>runtimes/native/libs/x86_64</PackagePath>
       <Pack>true</Pack>
     </Content>
-    <Content Include="..\uplink.NET.targets">
-      <PackagePath>build/uplink.NET.targets</PackagePath>
+	
+	 <Content Include="build\net40\uplink.NET.targets">
+      <PackagePath>build/net40/uplink.NET.targets</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+	<Content Include="build\MonoAndroid\uplink.NET.targets">
+      <PackagePath>build/MonoAndroid/uplink.NET.targets</PackagePath>
       <Pack>true</Pack>
     </Content>
   </ItemGroup>
