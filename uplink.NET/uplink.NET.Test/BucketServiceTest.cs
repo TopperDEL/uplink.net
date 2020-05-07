@@ -55,6 +55,30 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task EnsureBucket_Creates_NewBucket()
+        {
+            string bucketname = "ensurebucket-creates-newbucket";
+
+            var result = await _service.EnsureBucketAsync(bucketname);
+
+            Assert.AreEqual(bucketname, result.Name);
+        }
+
+        [TestMethod]
+        public async Task EnsureBucket_Returns_BucketEvenIfItExistsAlready()
+        {
+            string bucketname = "ensurebucket-returns-bucketevenifitexistsalready";
+
+            var result = await _service.CreateBucketAsync(bucketname);
+
+            Assert.AreEqual(bucketname, result.Name);
+
+            var resultEnsured = await _service.EnsureBucketAsync(bucketname);
+
+            Assert.AreEqual(bucketname, resultEnsured.Name);
+        }
+
+        [TestMethod]
         public async Task GetBucket_Retrieves_Bucket()
         {
             string bucketname = "getbucket-retrieves-bucket";
@@ -148,6 +172,8 @@ namespace uplink.NET.Test
         public async Task CleanupAsync()
         {
             await DeleteBucketAsync("createbucket-creates-newbucket");
+            await DeleteBucketAsync("ensurebucket-creates-newbucket");
+            await DeleteBucketAsync("ensurebucket-returns-bucketevenifitexistsalready");
             await DeleteBucketAsync("createbucket-fails-onbucketalreadyexisting");
             await DeleteBucketAsync("getbucket-retrieves-bucket");
             await DeleteBucketAsync("listbucket-lists-mytwobuckets-bucket1");
