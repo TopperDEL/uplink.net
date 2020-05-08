@@ -5,7 +5,7 @@
 - upload and download files
 
 It is - like Storj itself - open source and developed on github.</Description>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <AssemblyVersion>2.1.3.0</AssemblyVersion>
     <Authors>TopperDEL, Storj labs</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -18,13 +18,13 @@ It is - like Storj itself - open source and developed on github.</Description>
     <PackageProjectUrl>https://github.com/TopperDEL/uplink.net</PackageProjectUrl>
     <DocumentationFile Condition="'$(Configuration)' == 'Release'"></DocumentationFile>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.1.1.0</FileVersion>
+    <FileVersion>2.1.2.0</FileVersion>
     <PackageIcon>Storj-symbol.png</PackageIcon>
     <RepositoryUrl>https://github.com/TopperDEL/uplink.net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Should now - finally - work with .Net/UWP/Xamarin.Android</PackageReleaseNotes>
     <Copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</Copyright>
-    <Version>2.1.1</Version>
+    <Version>2.1.3</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath></OutputPath>
@@ -41,6 +41,10 @@ It is - like Storj itself - open source and developed on github.</Description>
     </Content>
 	<Content Include="runtimes\linux-x64\native\storj_uplink.so">
       <PackagePath>runtimes/linux-x64/native</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+	<Content Include="runtimes\osx-x64\native\storj_uplink.dylib">
+	  <PackagePath>runtimes/osx-x64/native</PackagePath>
       <Pack>true</Pack>
     </Content>
 	<Content Include="libs\arm64-v8a\libstorj_uplink.so">
