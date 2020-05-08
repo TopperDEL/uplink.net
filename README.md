@@ -118,6 +118,20 @@ Copy those files and build the shared-libray:
 
 Copy the generated storj_uplink.so to the runtimes/linux-x64/native-folder under uplink.Net.
 
+## Build (MacOS)
+
+For this task you need a Mac. The procedure is basically the same:
+* install go
+* install git
+* clone the uplink-c-repo
+* add the 4 files mentioned above
+* build using the following command:
+```
+go build -buildmode c-shared -o storj_uplink.dylib
+```
+
+Place the resulting file in the runtimes/osx-x64/native-folder.
+
 ## Testing
 
 To run the test within the VS-solution you have to set the VALID_API_KEY within TestConstants.cs of the test-project to a valid API-key. If you use a different satellite, change that address, too. Storj provides a local test-net you can spin up very quickly that would be possible to use, too.
