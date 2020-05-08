@@ -16,7 +16,7 @@ See the [wiki](https://github.com/TopperDEL/uplink.net/wiki) for details how to 
 
 You may also try the included sample-app for UWP and Android. There you should find additional details on how to use the library.
 
-## Build
+## Build (Windows and Android)
 
 **Prerequesits**
 
@@ -57,6 +57,66 @@ The files already got copied to the correct locations for the Visual Studio solu
 Build the solution.
 
 Feel good.
+
+## Build (Linux) with WSL
+
+**Prerequesits**
+
+Building the linux .so-file on Windows is possible with Windows Subsystem for Linux (WSL). Currently you need four files from the build-process above for Windows and Android.
+
+First of all make sure that git and go are installed on WSL. Starting with a fresh Debian, this would basically be the list of commands (according to [these instructions](https://sal.as/post/install-golan-on-wsl/)):
+
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install wget
+wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz (you might find a more current version, but the golang-go-package is NOT working)
+sudo tar -xvf go1.14.2.linux-amd64.tar.gz (adjust the version to the one downloaded in the step before)
+sudo mv go /usr/local
+sudo nano ~/.bashrc
+```
+
+Scroll down and add these to your .bashrc profile:
+```
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+```
+
+Save and close the file with "Ctrl + o" and "Ctrl + x". Then update the current session:
+```
+source ~/.bashrc
+```
+
+Then install git:
+```
+sudo apt-get install git
+```
+
+Clone and build the uplink-c-repo:
+```
+git clone --branch v1.0.2 https://github.com/storj/uplink-c.git
+cd uplink-c
+go build
+```
+
+If there are not errors, you can build the linux .so-file like this:
+```
+go build -buildmode c-shared -o storj_uplink.so
+```
+
+But be sure to copy the following files to the uplink-c-folder. You may just copy and paste them from the uplink-c-folder on Windows created above into that folder. Calling explorer on the current WSL-folder is as easy as this:
+```
+explorer.exe .
+```
+
+Copy those files and build the shared-libray:
+* storj_uplink_second_wrap.c
+* storj_uplink.h
+* custom_metadata_helper.go
+* restrict_scope_helper.go
+
+Copy the generated storj_uplink.so to the runtimes/linux-x64/native-folder under uplink.Net.
 
 ## Testing
 
