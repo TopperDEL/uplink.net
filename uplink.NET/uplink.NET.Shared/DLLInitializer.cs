@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace uplink.SWIG
@@ -27,26 +28,27 @@ namespace uplink.SWIG
 
         static DLLInitializer()
         {
-#if !__ANDROID__
-            if (System.Environment.Is64BitProcess)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                // Load 64-bit dll
-                var handle = LoadLibraryEx(@"x64/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
-                if (handle != System.IntPtr.Zero)
+                if (System.Environment.Is64BitProcess)
                 {
-                    //Ignore it - there is a possible fallback
+                    // Load 64-bit dll
+                    var handle = LoadLibraryEx(@"x64/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
+                    if (handle != System.IntPtr.Zero)
+                    {
+                        //Ignore it - there is a possible fallback
+                    }
+                }
+                else
+                {
+                    // Load 32-bit dll
+                    var handle = LoadLibraryEx(@"x86/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
+                    if (handle != System.IntPtr.Zero)
+                    {
+                        //Ignore it - there is a possible fallback
+                    }
                 }
             }
-            else
-            {
-                // Load 32-bit dll
-                var handle = LoadLibraryEx(@"x86/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
-                if (handle != System.IntPtr.Zero)
-                {
-                    //Ignore it - there is a possible fallback
-                }
-            }
-#endif
         }
 
         public static void Init()

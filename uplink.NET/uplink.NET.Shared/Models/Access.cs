@@ -147,9 +147,7 @@ namespace uplink.NET.Models
 
         private void Init(Config config = null)
         {
-#if !__ANDROID__
             SWIG.DLLInitializer.Init();
-#endif
 
             if (string.IsNullOrEmpty(TempDirectory))
                 throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
