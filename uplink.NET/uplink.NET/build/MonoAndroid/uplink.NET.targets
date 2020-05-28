@@ -7,22 +7,22 @@
 
   <!--Android-->
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\arm64-v8a\libstorj_uplink.so">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)\..\..\runtimes\native\libs\arm64-v8a\libstorj_uplink.so">
       <Link>$(_DNAGeneticNugetNativePath)arm64-v8a\libstorj_uplink.so</Link>
     </AndroidNativeLibrary >
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\armeabi-v7a\libstorj_uplink.so">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)\..\..\runtimes\native\libs\armeabi-v7a\libstorj_uplink.so">
       <Link>$(_DNAGeneticNugetNativePath)armeabi-v7a\libstorj_uplink.so</Link>
     </AndroidNativeLibrary >
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\x86\libstorj_uplink.so">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)\..\..\runtimes\native\libs\x86\libstorj_uplink.so">
       <Link>$(_DNAGeneticNugetNativePath)x86\libstorj_uplink.so</Link>
     </AndroidNativeLibrary >
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\x86_64\libstorj_uplink.so">
+    <AndroidNativeLibrary Include="$(MSBuildThisFileDirectory)\..\..\runtimes\native\libs\x86_64\libstorj_uplink.so">
       <Link>$(_DNAGeneticNugetNativePath)x86_64\libstorj_uplink.so</Link>
     </AndroidNativeLibrary>
   </ItemGroup>
