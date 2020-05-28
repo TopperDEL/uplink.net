@@ -62,7 +62,7 @@ Feel good.
 
 **Prerequesits**
 
-Building the linux .so-file on Windows is possible with Windows Subsystem for Linux (WSL). Currently you need four files from the build-process above for Windows and Android.
+Building the linux .so-file on Windows is possible with Windows Subsystem for Linux (WSL). Currently you need four files from the build-process above for Windows and Android. They are available in my fork of the uplink-c-repo.
 
 First of all make sure that git and go are installed on WSL. Starting with a fresh Debian, this would basically be the list of commands (according to [these instructions](https://sal.as/post/install-golan-on-wsl/)):
 
@@ -93,24 +93,23 @@ Then install git:
 sudo apt-get install git
 ```
 
-Clone and build the uplink-c-repo:
+Clone and build the forked uplink-c-repo:
 ```
-git clone --branch v1.0.2 https://github.com/storj/uplink-c.git
+git clone --branch v1.0.2 https://github.com/topperdel/uplink-c.git
 cd uplink-c
-go build
 ```
 
-If there are not errors, you can build the linux .so-file like this:
+Now build the linux .so-file like this:
 ```
-go build -buildmode c-shared -o storj_uplink.so
+sh build-linux.sh
 ```
 
-But be sure to copy the following files to the uplink-c-folder. You may just copy and paste them from the uplink-c-folder on Windows created above into that folder. Calling explorer on the current WSL-folder is as easy as this:
+The following files are included in the fork of uplink-c. If you needed to change those files you need to update them before calling build-linux.sh. Just for your convenience calling explorer on the current WSL-folder is as easy as this:
 ```
 explorer.exe .
 ```
 
-Copy those files and build the shared-libray:
+These files are necessary for building linux (and MacOS/iOS; see above):
 * storj_uplink_second_wrap.c
 * storj_uplink.h
 * custom_metadata_helper.go
@@ -120,17 +119,17 @@ Copy the generated storj_uplink.so to the runtimes/linux-x64/native-folder under
 
 ## Build (MacOS)
 
-For this task you need a Mac. The procedure is basically the same:
+For this task you need a Mac (oh Apple, you drive me nuts). The procedure is basically the same as for linux above:
 * install go
 * install git
-* clone the uplink-c-repo
-* add the 4 files mentioned above
-* build using the following command:
+* clone the forked uplink-c-repo
+* run the build-command:
 ```
-go build -buildmode c-shared -o storj_uplink.dylib
+sh build-macos-ios.sh
 ```
 
-Place the resulting file in the runtimes/osx-x64/native-folder.
+Place the resulting storj_uplink.dylib from the build/macos-folder to the runtimes/osx-x64/native-folder under uplink.Net.
+Place the resulting libstorj_uplink.dylib from the build-root-folder to the runtimes/ios/native- AND the libs/ios-folder under uplink.Net.
 
 ## Testing
 
