@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!--MacOS-Path-->
+    <_DNAGeneticNugetNativePath Condition="'$(_DNAGeneticNugetNativePath)' == ''">$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\</_DNAGeneticNugetNativePath>
+  </PropertyGroup>
+
+  <!--MacOS-->
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac'">
+    <NativeReference Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\mac\libstorj_uplink.dylib">
+      <Link>$(_DNAGeneticNugetNativePath)mac\libstorj_uplink.dylib</Link>
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac'">
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\mac\libstorj_uplink.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>libstorj_uplink.dylib</Link>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content>
+  </ItemGroup>
+</Project>
