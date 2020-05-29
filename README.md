@@ -128,7 +128,7 @@ For this task you need a Mac (oh Apple, you drive me nuts). The procedure is bas
 sh build-macos-ios.sh
 ```
 
-Place the resulting storj_uplink.dylib from the build/macos-folder to the runtimes/osx-x64/native-folder under uplink.Net.
+Place the resulting storj_uplink.dylib from the build/macos-folder to the runtimes/osx-x64/native-folder under uplink.Net and also to libs/mac/ renaming it to "libstorj.dylib".
 Place the resulting libstorj_uplink.dylib from the build-root-folder to the runtimes/ios/native- AND the libs/ios-folder under uplink.Net.
 
 ## Testing
