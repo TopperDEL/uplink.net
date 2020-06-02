@@ -11,7 +11,7 @@ namespace uplink.NET.Models
 
         /// <summary>
         /// Sets the temporary directory to use.
-        /// On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().
+        /// Best is to use System.IO.Path.GetTempPath().
         /// </summary>
         /// <param name="tempDir">The temporary directory</param>
         public static void SetTempDirectory(string tempDir)
@@ -150,7 +150,7 @@ namespace uplink.NET.Models
             SWIG.DLLInitializer.Init();
 
             if (string.IsNullOrEmpty(TempDirectory))
-                throw new ArgumentException("TempDir must be set! On Android use CacheDir.AbsolutePath. On Windows/UWP use System.IO.Path.GetTempPath().");
+                TempDirectory = System.IO.Path.GetTempPath();
 
             if (config == null)
             {
