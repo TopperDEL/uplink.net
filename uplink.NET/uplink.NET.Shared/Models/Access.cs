@@ -59,14 +59,14 @@ namespace uplink.NET.Models
         /// Creates a new access from a serialized string.
         /// An access contains info about the satellite-address, the passphrase and the API-Key.
         /// </summary>
-        /// <param name="accessString">The serialized access-string</param>
-        public Access(string accessString)
+        /// <param name="accessGrant">The serialized access grant</param>
+        public Access(string accessGrant)
         {
             Init();
 
             try
             {
-                _accessResult = SWIG.storj_uplink.parse_access(accessString);
+                _accessResult = SWIG.storj_uplink.parse_access(accessGrant);
                 if (_accessResult.error != null && !string.IsNullOrEmpty(_accessResult.error.message))
                     throw new ArgumentException(_accessResult.error.message);
 
