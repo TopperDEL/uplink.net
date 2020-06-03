@@ -54,6 +54,17 @@ namespace uplink.NET.Services
             return upload;
         }
 
+        public async Task<ChunkedUploadOperation> UploadObjectChunkedAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, CustomMetadata customMetadata)
+        {
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
+
+            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
+
+            ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
+
+            return upload;
+        }
+
         public async Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart = true)
         {
             var downloadOptionsSWIG = downloadOptions.ToSWIG();
