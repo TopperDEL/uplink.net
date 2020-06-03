@@ -5,7 +5,7 @@
 - upload and download files
 
 It is - like Storj itself - open source and developed on github.</Description>
-    <AssemblyVersion>2.2.2.0</AssemblyVersion>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
     <Authors>TopperDEL, Storj labs</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -18,13 +18,13 @@ It is - like Storj itself - open source and developed on github.</Description>
     <PackageProjectUrl>https://github.com/TopperDEL/uplink.net</PackageProjectUrl>
     <DocumentationFile Condition="'$(Configuration)' == 'Release'"></DocumentationFile>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.2.2.0</FileVersion>
+    <FileVersion>2.3.0.0</FileVersion>
     <PackageIcon>Storj-symbol.png</PackageIcon>
     <RepositoryUrl>https://github.com/TopperDEL/uplink.net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>Now works with .Net/UWP/Xamarin.Android/Xamarin.iOS/MacOS!</PackageReleaseNotes>
     <Copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</Copyright>
-    <Version>2.2.2</Version>
+    <Version>2.3.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath></OutputPath>

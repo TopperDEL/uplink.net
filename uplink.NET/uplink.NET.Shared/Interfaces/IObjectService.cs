@@ -52,6 +52,15 @@ namespace uplink.NET.Interfaces
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
         Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true);
         /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path via chunks. The chunks can be provided as they arrive.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="customMetadata">Adds custom metadata.</param>
+        /// <returns>A ChunkedUploadOperation that can be filled with byte-chunks by you</returns>
+        Task<ChunkedUploadOperation> UploadObjectChunkedAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, CustomMetadata customMetadata);
+        /// <summary>
         /// Lists all objects within a bucket
         /// </summary>
         /// <param name="bucket">The Bucket to list entries from</param>

@@ -20,7 +20,7 @@ namespace uplink.NET.Models
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public class UploadOperation : IDisposable
     {
-        private static Mutex mut = new Mutex();
+        internal static Mutex customMetadataMutex = new Mutex();
         private Stream _byteStreamToUpload;
         private SWIG.UploadResult _uploadResult;
         private Task _uploadTask;
@@ -204,7 +204,7 @@ namespace uplink.NET.Models
 
                     if (_customMetadata != null)
                     {
-                        if (mut.WaitOne(1000))
+                        if (customMetadataMutex.WaitOne(1000))
                         {
                             try
                             {
@@ -221,7 +221,7 @@ namespace uplink.NET.Models
                             }
                             finally
                             {
-                                mut.ReleaseMutex();
+                                customMetadataMutex.ReleaseMutex();
                             }
                         }
                     }
