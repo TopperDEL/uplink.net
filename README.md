@@ -70,22 +70,7 @@ First of all make sure that git and go are installed on WSL. Starting with a fre
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install wget
-wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz (you might find a more current version, but the golang-go-package is NOT working)
-sudo tar -xvf go1.14.2.linux-amd64.tar.gz (adjust the version to the one downloaded in the step before)
-sudo mv go /usr/local
-sudo nano ~/.bashrc
-```
-
-Scroll down and add these to your .bashrc profile:
-```
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-```
-
-Save and close the file with "Ctrl + o" and "Ctrl + x". Then update the current session:
-```
-source ~/.bashrc
+sudo apt-get install -t buster-backports golang
 ```
 
 Then install git:
