@@ -24,7 +24,7 @@ namespace uplink.NET.Services
                 if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                     throw new BucketCreationException(bucketName, bucketResult.error.message);
 
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, bucketResult);
+                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
 
                 return bucket;
             }
@@ -37,7 +37,7 @@ namespace uplink.NET.Services
                 if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                     throw new BucketCreationException(bucketName, bucketResult.error.message);
 
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, bucketResult);
+                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
 
                 return bucket;
             }
@@ -61,7 +61,7 @@ namespace uplink.NET.Services
                 if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
                     throw new BucketNotFoundException(bucketName, bucketResult.error.message);
 
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, bucketResult);
+                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
 
                 return bucket;
             }
@@ -82,7 +82,7 @@ namespace uplink.NET.Services
                 while (SWIG.storj_uplink.bucket_iterator_next(bucketIterator))
                 {
                     var bucket = SWIG.storj_uplink.bucket_iterator_item(bucketIterator);
-                    bucketList.Items.Add(Bucket.FromSWIG(bucket));
+                    bucketList.Items.Add(Bucket.FromSWIG(bucket, _access._project));
                 }
                 SWIG.storj_uplink.free_bucket_iterator(bucketIterator);
 

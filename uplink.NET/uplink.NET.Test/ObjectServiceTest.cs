@@ -195,7 +195,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _access);
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
             byte[] bytesReceived = new byte[50];
             await stream.ReadAsync(bytesReceived, 0, 50);
 
@@ -221,7 +221,7 @@ namespace uplink.NET.Test
             var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
             await uploadOperation.StartUploadAsync();
 
-            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt", _access);
+            var stream = new DownloadStream(bucket, bytesToUpload.Length, "myfile.txt");
             byte[] bytesReceived = new byte[50];
             stream.Seek(100, System.IO.SeekOrigin.Begin);
             await stream.ReadAsync(bytesReceived, 0, 50);
