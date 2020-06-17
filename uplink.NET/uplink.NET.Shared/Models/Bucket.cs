@@ -11,6 +11,7 @@ namespace uplink.NET.Models
     {
         internal SWIG.Bucket _bucketRef;
         internal SWIG.BucketResult _bucketResultRef;
+        internal SWIG.Project _projectRef;
 
         /// <summary>
         /// The name of the bucket
@@ -39,11 +40,12 @@ namespace uplink.NET.Models
 
         }
 
-        internal static Bucket FromSWIG(SWIG.Bucket original, SWIG.BucketResult bucketResult = null)
+        internal static Bucket FromSWIG(SWIG.Bucket original, SWIG.Project projectRef, SWIG.BucketResult bucketResult = null)
         {
             Bucket ret = new Bucket();
             ret._bucketRef = original;
             ret._bucketResultRef = bucketResult;
+            ret._projectRef = projectRef;
 
             return ret;
         }
@@ -62,6 +64,7 @@ namespace uplink.NET.Models
                 _bucketResultRef.Dispose();
                 _bucketResultRef = null;
             }
+            //Don't dispose the _projectRef - it might still be in use!
         }
     }
 }

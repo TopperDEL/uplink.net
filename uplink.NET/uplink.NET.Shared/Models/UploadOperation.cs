@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Net.NetworkInformation;
 
 namespace uplink.NET.Models
 {
@@ -18,7 +20,7 @@ namespace uplink.NET.Models
     /// </summary>
     /// <param name="uploadOperation">The UploadOperation that ended</param>
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
-    public class UploadOperation : IDisposable
+    public unsafe class UploadOperation : IDisposable
     {
         internal static Mutex customMetadataMutex = new Mutex();
         private Stream _byteStreamToUpload;
@@ -163,42 +165,48 @@ namespace uplink.NET.Models
                         bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
                         if (bytesToUploadCount > 0)
                         {
-                            SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(bytesToUpload.Take((int)bytesToUploadCount).ToArray(), 0), true), (uint)bytesToUploadCount);
-                            if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                            byte[] targetArray = bytesToUpload.Take((int)bytesToUploadCount).ToArray();
+                            fixed (byte* arrayPtr = targetArray)
                             {
-                                _errorMessage = sentResult.error.message;
-                                Failed = true;
-                                Running = false;
-                                UploadOperationEnded?.Invoke(this);
-                                return;
-                            }
-                            else
-                                BytesSent += sentResult.bytes_written;
+                                SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount);
 
-                            SWIG.storj_uplink.free_write_result(sentResult);
-                            if (_cancelled)
-                            {
-                                SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
-                                if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                                 {
+                                    _errorMessage = sentResult.error.message;
                                     Failed = true;
-                                    _errorMessage = abortError.message;
+                                    Running = false;
+                                    UploadOperationEnded?.Invoke(this);
+                                    return;
                                 }
                                 else
-                                    Cancelled = true;
-                                SWIG.storj_uplink.free_error(abortError);
+                                    BytesSent += sentResult.bytes_written;
 
-                                Running = false;
-                                UploadOperationEnded?.Invoke(this);
-                                return;
+                                SWIG.storj_uplink.free_write_result(sentResult);
+                                if (_cancelled)
+                                {
+                                    SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
+                                    if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                    {
+                                        Failed = true;
+                                        _errorMessage = abortError.message;
+                                    }
+                                    else
+                                        Cancelled = true;
+                                    SWIG.storj_uplink.free_error(abortError);
+
+                                    Running = false;
+                                    UploadOperationEnded?.Invoke(this);
+                                    return;
+                                }
+                                UploadOperationProgressChanged?.Invoke(this);
+                                if (!string.IsNullOrEmpty(_errorMessage))
+                                {
+                                    Failed = true;
+                                    UploadOperationEnded?.Invoke(this);
+                                    return;
+                                }
                             }
-                            UploadOperationProgressChanged?.Invoke(this);
-                            if (!string.IsNullOrEmpty(_errorMessage))
-                            {
-                                Failed = true;
-                                UploadOperationEnded?.Invoke(this);
-                                return;
-                            }
+
                         }
                     } while (bytesToUploadCount > 0);
 

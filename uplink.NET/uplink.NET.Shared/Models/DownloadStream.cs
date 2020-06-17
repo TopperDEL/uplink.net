@@ -10,9 +10,6 @@ namespace uplink.NET.Models
     public class DownloadStream : Stream
     {
         private Bucket _bucket;
-        private SWIG.DownloadResult _downloadResult;
-        private DownloadOperation _download;
-        private Access _access;
         private string _objectName;
         public override bool CanRead => true;
 
@@ -25,19 +22,11 @@ namespace uplink.NET.Models
 
         public override long Position { get; set; }
 
-        public DownloadStream(Bucket bucket, int totalBytes, string objectName, Access access) //TODO: better access-handling
+        public DownloadStream(Bucket bucket, int totalBytes, string objectName) 
         {
-            string error;
-
             _length = totalBytes;
             _bucket = bucket;
             _objectName = objectName;
-            _access = access;
-
-            _downloadResult = SWIG.storj_uplink.download_object(_access._project, bucket.Name, objectName, null); //TODO: make DownloadOptions available to caller
-            _download = new DownloadOperation(_downloadResult, totalBytes, objectName);
-            if (!_download.Running && !_download.Completed && !_download.Cancelled && !_download.Failed)
-                _download.StartDownloadAsync();
         }
 
         public override void Flush()
@@ -46,15 +35,23 @@ namespace uplink.NET.Models
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            while ((long)_download.BytesReceived < Position + count)
-                Task.Delay(100);
+            int received = 0;
 
-            int available = (int)_download.BytesReceived - offset;
-            if (available > count)
-                available = count;
+            var downloadResult = SWIG.storj_uplink.download_object(_bucket._projectRef, _bucket.Name, _objectName, new SWIG.DownloadOptions() { length = count, offset = Position });
 
-            Buffer.BlockCopy(_download.DownloadedBytes, (int)Position, buffer, offset, (int)available);
-            return available;
+            if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
+                throw new EndOfStreamException(downloadResult.error.message);
+
+            using (var download = new DownloadOperation(downloadResult, count, _objectName))
+            {
+                download.StartDownloadAsync().Wait();
+
+                Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
+
+                received = (int)download.BytesReceived;
+            }
+
+            return received;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -82,11 +79,6 @@ namespace uplink.NET.Models
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
         }
     }
 }
