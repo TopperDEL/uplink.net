@@ -60,9 +60,10 @@ namespace uplink.NET.Models
         /// An access contains info about the satellite-address, the passphrase and the API-Key.
         /// </summary>
         /// <param name="accessGrant">The serialized access grant</param>
-        public Access(string accessGrant)
+        /// <param name="config">The configuration (optional)</param>
+        public Access(string accessGrant, Config config = null)
         {
-            Init();
+            Init(config);
 
             try
             {
@@ -160,6 +161,7 @@ namespace uplink.NET.Models
             else
             {
                 _config = config.ToSWIG();
+                _config.temp_directory = TempDirectory;
             }
         }
 
