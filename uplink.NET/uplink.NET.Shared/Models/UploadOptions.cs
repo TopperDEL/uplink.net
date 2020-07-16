@@ -20,7 +20,7 @@ namespace uplink.NET.Models
             if (Expires != DateTime.MinValue)
                 options.expires = (new DateTimeOffset(Expires)).ToUnixTimeSeconds();
             else
-                options.expires = (new DateTimeOffset(DateTime.MaxValue)).ToUnixTimeSeconds();
+                options.expires = DateTimeOffset.MaxValue.ToUnixTimeSeconds();
 
             return options;
         }
