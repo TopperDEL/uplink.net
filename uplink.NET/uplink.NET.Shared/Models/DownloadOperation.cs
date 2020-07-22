@@ -20,7 +20,7 @@ namespace uplink.NET.Models
     /// <summary>
     /// A DownloadOperation handles a file download in background and informs about progress changes.
     /// </summary>
-    public class DownloadOperation : IDisposable
+    public unsafe class DownloadOperation : IDisposable
     {
         private readonly byte[] _bytesToDownload;
         /// <summary>
@@ -135,44 +135,49 @@ namespace uplink.NET.Models
                 {
                     //Fetch next bytes in batch
                     byte[] part = new byte[tenth];
-                    SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)tenth);
-                    if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                    fixed (byte* arrayPtr = part)
                     {
-                        _errorMessage = readResult.error.message;
-                        Failed = true;
-                        Running = false;
-                        DownloadOperationEnded?.Invoke(this);
-                        return;
+                        SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth);
+                        if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                        {
+                            _errorMessage = readResult.error.message;
+                            Failed = true;
+                            Running = false;
+                            DownloadOperationEnded?.Invoke(this);
+                            return;
+                        }
+                        if (readResult.bytes_read != 0)
+                        {
+                            Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                            BytesReceived += readResult.bytes_read;
+                        }
+                        SWIG.storj_uplink.free_read_result(readResult);
                     }
-                    if (readResult.bytes_read != 0)
-                    {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
-                        BytesReceived += readResult.bytes_read;
-                    }
-                    SWIG.storj_uplink.free_read_result(readResult);
                 }
                 else
                 {
                     //Fetch only the remaining bytes
                     var remaining = TotalBytes - BytesReceived;
                     byte[] part = new byte[remaining];
-
-                    SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(part, 0), true), (uint)remaining);
-
-                    if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                    fixed (byte* arrayPtr = part)
                     {
-                        _errorMessage = readResult.error.message;
-                        Failed = true;
-                        Running = false;
-                        DownloadOperationEnded?.Invoke(this);
-                        return;
+                        SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining);
+
+                        if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                        {
+                            _errorMessage = readResult.error.message;
+                            Failed = true;
+                            Running = false;
+                            DownloadOperationEnded?.Invoke(this);
+                            return;
+                        }
+                        if (readResult.bytes_read != 0)
+                        {
+                            Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                            BytesReceived += readResult.bytes_read;
+                        }
+                        SWIG.storj_uplink.free_read_result(readResult);
                     }
-                    if (readResult.bytes_read != 0)
-                    {
-                        Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
-                        BytesReceived += readResult.bytes_read;
-                    }
-                    SWIG.storj_uplink.free_read_result(readResult);
                 }
 
                 if (_cancelled)
