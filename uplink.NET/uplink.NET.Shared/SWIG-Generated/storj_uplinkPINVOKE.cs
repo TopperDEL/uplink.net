@@ -265,6 +265,9 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_access_share___")]
   public static extern global::System.IntPtr access_share(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, long jarg4);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_access_override_encryption_key___")]
+  public static extern global::System.IntPtr access_override_encryption_key(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_string_result___")]
   public static extern void free_string_result(global::System.Runtime.InteropServices.HandleRef jarg1);
 
@@ -342,6 +345,12 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_download_result___")]
   public static extern void free_download_result(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_derive_encryption_key___")]
+  public static extern global::System.IntPtr derive_encryption_key(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_encryption_key_result___")]
+  public static extern void free_encryption_key_result(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_free_error___")]
   public static extern void free_error(global::System.Runtime.InteropServices.HandleRef jarg1);
@@ -477,6 +486,18 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_Upload___")]
   public static extern void delete_Upload(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKey__handle_set___")]
+  public static extern void EncryptionKey__handle_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKey__handle_get___")]
+  public static extern uint EncryptionKey__handle_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_EncryptionKey___")]
+  public static extern global::System.IntPtr new_EncryptionKey();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_EncryptionKey___")]
+  public static extern void delete_EncryptionKey(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_Config_user_agent_set___")]
   public static extern void Config_user_agent_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
@@ -999,6 +1020,24 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_StringResult___")]
   public static extern void delete_StringResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKeyResult_encryption_key_set___")]
+  public static extern void EncryptionKeyResult_encryption_key_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKeyResult_encryption_key_get___")]
+  public static extern global::System.IntPtr EncryptionKeyResult_encryption_key_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKeyResult_error_set___")]
+  public static extern void EncryptionKeyResult_error_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EncryptionKeyResult_error_get___")]
+  public static extern global::System.IntPtr EncryptionKeyResult_error_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_EncryptionKeyResult___")]
+  public static extern global::System.IntPtr new_EncryptionKeyResult();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_EncryptionKeyResult___")]
+  public static extern void delete_EncryptionKeyResult(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_storj_version___")]
   public static extern string get_storj_version();

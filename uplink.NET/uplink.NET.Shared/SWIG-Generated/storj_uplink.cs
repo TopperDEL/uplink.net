@@ -32,6 +32,12 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static Error access_override_encryption_key(Access p0, string p1, string p2, EncryptionKey p3) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.access_override_encryption_key(Access.getCPtr(p0), p1, p2, EncryptionKey.getCPtr(p3));
+    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+    return ret;
+  }
+
   public static void free_string_result(StringResult p0) {
     storj_uplinkPINVOKE.free_string_result(StringResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
@@ -161,6 +167,16 @@ internal class storj_uplink {
 
   public static void free_download_result(DownloadResult p0) {
     storj_uplinkPINVOKE.free_download_result(DownloadResult.getCPtr(p0));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static EncryptionKeyResult derive_encryption_key(string p0, SWIGTYPE_p_void p1, uint p2) {
+    EncryptionKeyResult ret = new EncryptionKeyResult(storj_uplinkPINVOKE.derive_encryption_key(p0, SWIGTYPE_p_void.getCPtr(p1), p2), true);
+    return ret;
+  }
+
+  public static void free_encryption_key_result(EncryptionKeyResult p0) {
+    storj_uplinkPINVOKE.free_encryption_key_result(EncryptionKeyResult.getCPtr(p0));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
