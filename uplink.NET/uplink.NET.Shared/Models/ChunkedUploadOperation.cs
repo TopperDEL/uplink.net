@@ -5,7 +5,7 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public class ChunkedUploadOperation
+    public unsafe class ChunkedUploadOperation
     {
         private SWIG.UploadResult _uploadResult;
         private string _objectName;
@@ -27,16 +27,19 @@ namespace uplink.NET.Models
             while (bytesSent != buffer.Length)
             {
                 var uploadChunk = buffer.Take((int)(buffer.Length - bytesSent)).ToArray();
-                SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(uploadChunk, 0), true), (uint)uploadChunk.Length);
-                if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                fixed (byte* arrayPtr = uploadChunk)
                 {
-                    _errorMessage = sentResult.error.message;
-                    return false;
-                }
-                else
-                    bytesSent += sentResult.bytes_written;
+                    SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)uploadChunk.Length);
+                    if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                    {
+                        _errorMessage = sentResult.error.message;
+                        return false;
+                    }
+                    else
+                        bytesSent += sentResult.bytes_written;
 
-                SWIG.storj_uplink.free_write_result(sentResult);
+                    SWIG.storj_uplink.free_write_result(sentResult);
+                }
             }
 
             return true;

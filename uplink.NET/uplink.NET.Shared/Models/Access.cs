@@ -205,6 +205,26 @@ namespace uplink.NET.Models
             return new Access(accessResult.access);
         }
 
+        /// <summary>
+        /// OverrideEncryptionAccess overrides the root encryption key for the prefix in 
+        /// bucket with encryptionKey.
+        /// 
+        /// This function is useful for overriding the encryption key in user-specific
+        /// access grants when implementing multitenancy in a single app bucket.
+        /// </summary>
+        /// <param name="bucketName">The name of the bucket</param>
+        /// <param name="prefix">The prefix where the encryption key should be overwritten</param>
+        /// <param name="encryptionKey">The encryption key</param>
+        /// <returns>true, if overwriting worked - raises exception on error</returns>
+        public bool OverrideEncryptionAccess(string bucketName, string prefix, EncryptionKey encryptionKey)
+        {
+            var error = SWIG.storj_uplink.access_override_encryption_key(_access, bucketName, prefix, encryptionKey._encryptionKeyResulRef.encryption_key);
+            if(error != null && !string.IsNullOrEmpty(error.message))
+                throw new ArgumentException(error.message);
+
+            return true;
+        }
+
         public void Dispose()
         {
             if (_project != null)

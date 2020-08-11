@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\EncryptionKey.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListBucketsOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListObjectsOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Object.cs" />
@@ -52,6 +53,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\Download.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\DownloadOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\DownloadResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\EncryptionKey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\EncryptionKeyResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\Error.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\GoInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\GoSlice.cs" />
