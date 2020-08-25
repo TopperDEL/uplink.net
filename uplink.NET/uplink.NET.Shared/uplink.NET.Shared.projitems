@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IBucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IObjectService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IUploadQueueService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\BucketList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Bucket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ChunkedUploadOperation.cs" />
@@ -39,8 +40,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\SystemMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOperation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UploadOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UploadQueueEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\BucketService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ObjectService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\UploadQueueService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SizeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\Access.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SWIG-Generated\AccessResult.cs" />
