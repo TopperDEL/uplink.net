@@ -1,4 +1,5 @@
 # uplink.NET
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9bccb02c5914cbca6e60755d5c7d74a)](https://app.codacy.com/gh/TopperDEL/uplink.net?utm_source=github.com&utm_medium=referral&utm_content=TopperDEL/uplink.net&utm_campaign=Badge_Grade)
 [![Storj.io](https://storj.io/img/storj-badge.svg)](https://storj.io)
 
 **A .Net/C#-wrapper for Storj (v3)**
