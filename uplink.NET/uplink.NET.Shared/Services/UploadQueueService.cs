@@ -32,7 +32,7 @@ namespace uplink.NET.Services
         {
             if (_connection == null)
             {
-                var databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "uplinkNET.db");
+                var databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "uplinkNET.db");
                 _connection = new SQLiteAsyncConnection(databasePath);
 
                 await _connection.CreateTableAsync<UploadQueueEntry>();
@@ -104,7 +104,7 @@ namespace uplink.NET.Services
                         }
                         else
                         {
-
+                            //ToDo: Error handling
                         }
                     }
                     catch (Exception ex)
