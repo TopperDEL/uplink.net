@@ -13,11 +13,5 @@
       <SmartLink>False</SmartLink>
     </NativeReference>
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' Or '$(TargetFrameworkIdentifier)' ==  'xamarinios10' Or '$(TargetFrameworkIdentifier)' ==  'xamarinios'">
-    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\ios\libstorj_uplink.dylib">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>libstorj_uplink.dylib</Link>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
-  </ItemGroup>
+  
 </Project>
