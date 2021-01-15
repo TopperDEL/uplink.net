@@ -38,7 +38,7 @@ steps:
       
       echo *** Replacing the version-variable within the DLL
       fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
-
+      
       echo *** Installing DevOps-Helpers
       git clone https://github.com/TopperDEL/uplink.NET.DevOpsHelper.git DevOpsHelper
       
@@ -96,8 +96,9 @@ steps:
       echo *** Replacing ref-modifier from free_string-method
       fart "storj_uplink.cs" "storj_uplinkPINVOKE.free_string(ref tmpp0);" "storj_uplinkPINVOKE.free_string(tmpp0);"
       fart "storj_uplinkPINVOKE.cs" "public static extern void free_string(ref global::System.IntPtr jarg1);" "public static extern void free_string(global::System.IntPtr jarg1);"
+      
+      dir
     failOnStderr: true
-#- task: NuGetToolInstaller@1
 
 #- task: NuGetCommand@2
 #  inputs:
