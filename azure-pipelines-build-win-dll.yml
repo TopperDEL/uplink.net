@@ -34,14 +34,8 @@ steps:
       echo *** Replacing the version-variable within the DLL
       fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
 
-      echo *** Installing SWIG
-      curl.exe --output swig.zip --url https://deac-fra.dl.sourceforge.net/project/swig/swigwin/swigwin-4.0.2/swigwin-4.0.2.zip
-
-      - task: ExtractFiles@1
-        inputs:
-          archiveFilePatterns: '**/*.zip'
-          cleanDestinationFolder: false
-          overwriteExistingFiles: false
+      echo *** Installing DevOps-Helpers
+      git clone https://github.com/TopperDEL/uplink.NET.DevOpsHelper.git
       
       echo *** Running SWIG to generate a c-file to be add to the dll
       swig -csharp -namespace uplink.SWIG storj_uplink_first.i
