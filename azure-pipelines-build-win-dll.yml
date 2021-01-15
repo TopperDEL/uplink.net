@@ -40,10 +40,10 @@ steps:
       fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
 
       echo *** Installing DevOps-Helpers
-      git clone https://github.com/TopperDEL/uplink.NET.DevOpsHelper.git .
+      git clone https://github.com/TopperDEL/uplink.NET.DevOpsHelper.git DevOpsHelper
       
       echo *** Running SWIG to generate a c-file to be add to the dll
-      swig -csharp -namespace uplink.SWIG storj_uplink_first.i
+      .\DevOpsHelper\swig.exe -csharp -namespace uplink.SWIG storj_uplink_first.i
       
       echo *** Generating Windows-x64-DLL for the first time - this produces a necessary h-file
       set CC=gcc
