@@ -29,9 +29,9 @@ steps:
       dir 
       
       echo *** Copying necessary files
-      copy .\uplink.net\SWIG\*.i .\uplink-c\ /Y
-      copy .\uplink.net\SWIG\*.exe .\uplink-c\ /Y
-      copy .\uplink.net\GO\*.go .\uplink-c\ /Y
+      copy .\SWIG\*.i .\uplink-c\ /Y
+      copy .\SWIG\*.exe .\uplink-c\ /Y
+      copy .\GO\*.go .\uplink-c\ /Y
       
       cd .\uplink-c\
       
