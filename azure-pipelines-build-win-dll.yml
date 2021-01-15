@@ -3,8 +3,8 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
-trigger:
-- main
+#trigger:
+#- main
 
 pool:
   vmImage: 'windows-latest'
@@ -21,8 +21,12 @@ steps:
     script: |
       SET STORJ_VERSION=v1.1.0
       
+      dir
+
       echo *** Cloning uplink-c version %STORJ_VERSION%
       git clone --branch %STORJ_VERSION% https://github.com/storj/uplink-c.git
+      
+      dir 
       
       echo *** Copying necessary files
       copy .\uplink.net\SWIG\*.i .\uplink-c\ /Y
