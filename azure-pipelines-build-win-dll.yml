@@ -15,6 +15,11 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Install go
+- task: GoTool@0
+  inputs:
+    version: '1.15.6'
+
 #Clone the uplink-c-repo
 - task: CmdLine@2
   inputs:
