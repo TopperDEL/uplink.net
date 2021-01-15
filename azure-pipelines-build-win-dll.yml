@@ -19,9 +19,20 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      echo Write your commands here
+      SET STORJ_VERSION=v1.1.0
       
-      echo Hello world
+      echo *** Cloning uplink-c version %STORJ_VERSION%
+      git clone --branch %STORJ_VERSION% https://github.com/storj/uplink-c.git
+      
+      echo *** Copying necessary files
+      copy .\uplink.net\SWIG\*.i .\uplink-c\ /Y
+      copy .\uplink.net\SWIG\*.exe .\uplink-c\ /Y
+      copy .\uplink.net\GO\*.go .\uplink-c\ /Y
+      
+      cd .\uplink-c\
+      
+      echo *** Replacing the version-variable within the DLL
+      fart "storj_uplink_second.i" "STORJVERSION" "%STORJ_VERSION%"
     failOnStderr: true
 #- task: NuGetToolInstaller@1
 
