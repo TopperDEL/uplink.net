@@ -11,19 +11,12 @@ stages:
     - job: amd64
 
       steps:
-      - script: |
-          ls
-          rm *.yml
-          rm *.go
-          rm *.i
-          ls
-        displayName: 'Cleanup'
 
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '26'
+          definition: '31'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           itemPattern: |
@@ -61,19 +54,12 @@ stages:
   jobs:
     - job: i386
       steps:
-      - script: |
-          ls
-          rm *.yml
-          rm *.go
-          rm *.i
-          ls
-        displayName: 'Cleanup'
 
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '26'
+          definition: '31'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           itemPattern: |
