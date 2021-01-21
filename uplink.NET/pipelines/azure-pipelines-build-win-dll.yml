@@ -12,7 +12,7 @@ pool:
 steps:
 - script: |
     ls
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
@@ -20,8 +20,8 @@ steps:
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
-    cp uplink.net/SWIG/*.i uplink-c
-    cp uplink.net/GO/*.go uplink-c
+    cp SWIG/*.i uplink-c
+    cp GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
 
 - script: |
