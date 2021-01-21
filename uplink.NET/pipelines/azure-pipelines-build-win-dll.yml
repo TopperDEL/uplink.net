@@ -11,7 +11,8 @@ pool:
 
 steps:
 - script: |
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' storj_uplink_second.i
+    ls
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
@@ -19,8 +20,8 @@ steps:
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
-    cp *.i uplink-c
-    cp *.go uplink-c
+    cp uplink.net/SWIG/*.i uplink-c
+    cp uplink.net/GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
 
 - script: |
@@ -166,3 +167,15 @@ steps:
     artifact: 'uplink-c'
     publishLocation: 'pipeline'
   displayName: 'Publish uplink-c'
+
+- script: |
+    mkdir nuspec
+    cp uplink.NET/nuspec/*.nuspec nuspec
+  displayName: 'Copy NuSpec-Files'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'nuspec'
+    artifact: 'nuspec'
+    publishLocation: 'pipeline'
+  displayName: 'Publish nuspec'
