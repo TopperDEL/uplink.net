@@ -28,6 +28,25 @@ namespace uplink.NET.Models
             return SWIG.storj_uplink.get_storj_version();
         }
 
+        #region iOs-Init
+        /// <summary>
+        /// Init for iOs - this is needed to correctly find the uplink.Net-Binary
+        /// during runtime.
+        /// You need to provide the Bundle-Path (Foundation.NSBundle.MainBundle.BundlePath)
+        /// </summary>
+        /// <param name="bundlePath">Provide Foundation.NSBundle.MainBundle.BundlePath</param>
+        public static void Init_iOs(string bundlePath)
+        {
+            var fmw = @"storj_uplink.framework/storj_uplink";
+            var filepath = System.IO.Path.Combine(bundlePath, "Frameworks", fmw);
+
+            mono_dllmap_insert(IntPtr.Zero, "storj_uplink", null, filepath, null);
+        }
+
+        [System.Runtime.InteropServices.DllImport("__Internal", CharSet = System.Runtime.InteropServices.CharSet.Ansi)]
+        private static extern void mono_dllmap_insert(IntPtr assembly, string dll, string func, string tdll, string tfunc);
+        #endregion
+
         internal SWIG.Access _access { get; set; }
         internal SWIG.Project _project { get; set; }
         internal SWIG.Config _config { get; set; }
