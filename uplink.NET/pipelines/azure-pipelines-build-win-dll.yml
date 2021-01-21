@@ -168,11 +168,6 @@ steps:
     publishLocation: 'pipeline'
   displayName: 'Publish uplink-c'
 
-- script: |
-    mkdir nuspec
-    cp uplink.NET/nuspec/*.nuspec nuspec
-  displayName: 'Copy NuSpec-Files'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'nuspec'
