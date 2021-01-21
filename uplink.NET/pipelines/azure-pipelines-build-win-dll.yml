@@ -1,0 +1,168 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+steps:
+- script: |
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' storj_uplink_second.i
+  displayName: 'Inject the Storj-Version'
+
+- script: |
+    git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+  displayName: 'Clone uplink-c $(STORJ_VERSION)'
+
+- script: |
+    cp *.i uplink-c
+    cp *.go uplink-c
+  displayName: 'Copy specific files to uplink-c'
+
+- script: |
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
+  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+
+- task: GoTool@0
+  inputs:
+    version: '$(GOLANG_VERSION)'
+  displayName: 'Install Go $(GOLANG_VERSION)'
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install gcc-mingw-w64
+  displayName: 'Install cross compiler for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="x86_64-w64-mingw32-gcc"
+    export CXX="x86_64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="amd64"
+    export CGO_ENABLED="1"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink.dll -buildmode c-shared
+  displayName: 'Generating Windows-x64-DLL for the first time - we need an additional h-file'
+
+- script: |
+    cd uplink-c
+    rm *.cs
+    rm *.c
+    rm *.dll
+  displayName: 'Cleanup - remove some created files'
+
+- script: |
+    sed -i '/GoComplex/d' uplink-c/storj_uplink.h
+    sed -i '/pointer_matching_GoInt/d' uplink-c/storj_uplink.h
+  displayName: 'Remove some types that lead to errors with SWIG'
+
+- script: |
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
+  displayName: 'Running SWIG again with the second i-file. It includes more typemaps.'
+
+- script: |
+    cd uplink-c
+    export CC="i686-w64-mingw32-gcc"
+    export CXX="i686-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="386"
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -Wl,--kill-at"
+    export CGO_CXXFLAGS="-g -Wl,--kill-at"
+    export CGO_FFLAGS="-g -Wl,--kill-at"
+    export CGO_LDFLAGS="-g -Wl,--kill-at"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--pic-executable -static-libgcc -static-libstdc++'" -o storj_uplink-x86.dll -buildmode c-shared
+# not sure if -static-libgcc -static-libstdc++ is really changing something - can be deleted
+# pic-executable the same
+  displayName: 'Generating the final-x86-DLL for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="x86_64-w64-mingw32-gcc"
+    export CXX="x86_64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="amd64"
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -O2"
+    export CGO_CXXFLAGS="-g -O2"
+    export CGO_FFLAGS="-g -O2"
+    export CGO_LDFLAGS="-g -O2"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
+  displayName: 'Generating the final-x64-DLL for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="x86_64-w64-mingw32-gcc"
+    export CXX="x86_64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="amd64"
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -O2"
+    export CGO_CXXFLAGS="-g -O2"
+    export CGO_FFLAGS="-g -O2"
+    export CGO_LDFLAGS="-g -O2"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
+  displayName: 'Generating the final-ARM64-DLL for Windows'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink.h'
+    artifact: 'storj_uplink'
+    publishLocation: 'pipeline'
+  displayName: 'Publish storj_uplink.h'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink_second_wrap.c'
+    artifact: 'storj_uplink_second_wrap'
+    publishLocation: 'pipeline'
+  displayName: 'Publish storj_uplink_second_wrap.c'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-x86.dll'
+    artifact: 'win-x86-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-x86-dll'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-x64.dll'
+    artifact: 'win-x64-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-x64-dll'
+
+- script: |
+    sed -i 's/storj_uplinkPINVOKE.free_string(ref tmpp0)/storj_uplinkPINVOKE.free_string(tmpp0)/' uplink-c/storj_uplink.cs
+    sed -i 's/public static extern void free_string(ref global::System.IntPtr jarg1)/public static extern void free_string(global::System.IntPtr jarg1)/' uplink-c/storj_uplinkPINVOKE.cs
+  displayName: 'Replacing ref-modifier from free_string-method'
+
+- script: |
+    cd uplink-c
+    mkdir csfiles
+    cp *.cs csfiles
+  displayName: 'Extract generated cs-files'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/csfiles'
+    artifact: 'Csharp-files'
+    publishLocation: 'pipeline'
+  displayName: 'Publish all C#-files'
+
+- script: |
+    cd uplink-c
+    rm *.cs
+    rm *.dll
+    rm *.c
+  displayName: 'Cleanup uplink-c'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c'
+    artifact: 'uplink-c'
+    publishLocation: 'pipeline'
+  displayName: 'Publish uplink-c'
