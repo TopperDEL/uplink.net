@@ -12,10 +12,11 @@ pool:
 steps:
 - script: |
     git clone --depth 1 https://github.com/TopperDEL/uplink.net.git
-  displayName: 'Clone uplink-c $(STORJ_VERSION)'
+  displayName: 'Clone uplink.NET'
 
 - script: |
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.NET/SWIG/storj_uplink_second.i
+    ls
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
@@ -23,8 +24,8 @@ steps:
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
-    cp uplink.NET/SWIG/*.i uplink-c
-    cp uplink.NET/GO/*.go uplink-c
+    cp uplink.net/SWIG/*.i uplink-c
+    cp uplink.net/GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
 
 - script: |
@@ -173,7 +174,7 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: 'uplink.NET/nuspec'
+    targetPath: 'uplink.net/nuspec'
     artifact: 'nuspec'
     publishLocation: 'pipeline'
   displayName: 'Publish nuspec'
