@@ -28,7 +28,7 @@ set CC=gcc
 set CXX=g++
 set GOARCH=amd64
 set CGO_ENABLED=1
-go build -o storj_uplink.dll -buildmode c-shared
+go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink.dll -buildmode c-shared
 
 echo *** Deleting generated cs-files
 del *.cs
@@ -59,7 +59,7 @@ set CGO_CFLAGS=-g -O2 -Wl,--kill-at
 set CGO_CXXFLAGS=-g -O2 -Wl,--kill-at
 set CGO_FFLAGS=-g -O2 -Wl,--kill-at
 set CGO_LDFLAGS=-g -O2 -Wl,--kill-at
-go build -ldflags="-s -w" -o storj_uplink-x86.dll -buildmode c-shared
+go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'"  -o storj_uplink-x86.dll -buildmode c-shared
 echo *** Generating Windows-x64-DLL - this is the final-x64-DLL for Windows
 set CC=gcc
 set CXX=g++
@@ -69,7 +69,7 @@ set CGO_CFLAGS=-g -O2
 set CGO_CXXFLAGS=-g -O2
 set CGO_FFLAGS=-g -O2
 set CGO_LDFLAGS=-g -O2
-go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink.dll -buildmode c-shared
 
 echo *** Replacing ref-modifier from free_string-method
 fart "storj_uplink.cs" "storj_uplinkPINVOKE.free_string(ref tmpp0);" "storj_uplinkPINVOKE.free_string(tmpp0);"

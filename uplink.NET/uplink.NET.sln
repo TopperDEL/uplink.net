@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{DE9F92CC-DEE8-42A0-AA03-202FBB2158A2}"
 	ProjectSection(SolutionItems) = preProject
 		Package.nuspec = Package.nuspec
+		uplink.NET.iOs.nuspec = uplink.NET.iOs.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{16E659B4-8451-464B-9BE1-16DE7D03B7AE}"
