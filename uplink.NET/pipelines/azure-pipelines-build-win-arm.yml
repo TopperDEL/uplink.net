@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+steps:
+- script: |
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' storj_uplink_second.i
+  displayName: 'Inject the Storj-Version'
+
+- script: |
+    git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+  displayName: 'Clone uplink-c $(STORJ_VERSION)'
+
+- script: |
+    cp *.i uplink-c
+    cp *.go uplink-c
+  displayName: 'Copy specific files to uplink-c'
+
+- script: |
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
+  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+
+- task: GoTool@0
+  inputs:
+    version: '$(GOLANG_VERSION)'
+  displayName: 'Install Go $(GOLANG_VERSION)'
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install gcc-arm-none-eabi
+    cd /usr/bin
+  displayName: 'Install cross compiler for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="arm-none-eabi-gcc"
+    export CXX="arm-none-eabi-g++"
+    export GOOS="windows"
+    export GOARCH="arm"
+    export GOARM=7
+    export CGO_ENABLED="1"
+    go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+  displayName: 'Test-Generate Win-ARM'

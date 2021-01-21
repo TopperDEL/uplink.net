@@ -1,0 +1,254 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+stages:
+- stage: armeabi_v7a
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: armeabi_v7a
+
+      steps:
+      - script: |
+          ls
+          rm *.yml
+          rm *.go
+          rm *.i
+          ls
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          sed -i '/hlwapi/d' storj_uplink_second_wrap/storj_uplink_second_wrap.c
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        displayName: 'Removing unnecessary reference to Shwlapi.h'
+
+      - script: |
+          sed -i '/check_for_64_bit/d' storj_uplink/storj_uplink.h
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
+
+      - script: |
+          export GOOS=android
+          export CGO_ENABLED=1
+          export GOARCH=arm
+          export GOARM=7
+        displayName: 'Prepare for Target armeabi-v7a'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build armeabi-v7a'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-armeabi-v7a.so'
+          artifact: 'android_armeabi-v7a'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-armeabi-v7a.so'
+
+- stage: arm64_v8a
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: arm64_v8a
+      steps:
+      - script: |
+          ls
+          rm *.yml
+          rm *.go
+          rm *.i
+          ls
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          sed -i '/hlwapi/d' storj_uplink_second_wrap/storj_uplink_second_wrap.c
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        displayName: 'Removing unnecessary reference to Shwlapi.h'
+
+      - script: |
+          sed -i '/check_for_64_bit/d' storj_uplink/storj_uplink.h
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
+
+      - script: |
+          export GOOS=android
+          export CGO_ENABLED=1
+          export GOARCH=arm64
+          export GOARM=
+        displayName: 'Prepare for Target arm64-v8a'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build arm64-v8a'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-arm64-v8a.so'
+          artifact: 'android_arm64-v8a'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-arm64-v8a.so'
+
+- stage: i368
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: i386
+      steps:
+      - script: |
+          ls
+          rm *.yml
+          rm *.go
+          rm *.i
+          ls
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          sed -i '/hlwapi/d' storj_uplink_second_wrap/storj_uplink_second_wrap.c
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        displayName: 'Removing unnecessary reference to Shwlapi.h'
+
+      - script: |
+          sed -i '/check_for_64_bit/d' storj_uplink/storj_uplink.h
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
+
+      - script: |
+          export GOOS=android
+          export CGO_ENABLED=1
+          export GOARCH=386
+          export GOARM=
+        displayName: 'Prepare for Target 386'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build 386'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-386.so'
+          artifact: 'android_386'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-386.so'
+
+- stage: amd64
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: amd64
+      steps:
+      - script: |
+          ls
+          rm *.yml
+          rm *.go
+          rm *.i
+          ls
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          sed -i '/hlwapi/d' storj_uplink_second_wrap/storj_uplink_second_wrap.c
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        displayName: 'Removing unnecessary reference to Shwlapi.h'
+
+      - script: |
+          sed -i '/check_for_64_bit/d' storj_uplink/storj_uplink.h
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
+
+      - script: |
+          export GOOS=android
+          export CGO_ENABLED=1
+          export GOARCH=amd64
+          export GOARM=
+        displayName: 'Prepare for Target amd64'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build amd64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-amd64.so'
+          artifact: 'android_amd64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-amd64.so'

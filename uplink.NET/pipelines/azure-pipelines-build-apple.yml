@@ -1,0 +1,126 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+stages:
+- stage: MacOS
+  pool:
+    vmImage: 'macos-latest'
+  jobs:
+    - job: MacOS
+
+      steps:
+      - script: |
+          rm *.yml
+          rm *.go
+          rm *.i
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          export CGO_ENABLED=1
+          export GOARCH=amd64
+        displayName: 'Prepare for Target MacOS'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-buildmode c-shared -o storj_uplink-macos.dylib'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build MacOS'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos.dylib'
+          artifact: 'apple_macos'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-macos.dylib'
+
+- stage: iOs
+  pool:
+    vmImage: 'macos-latest'
+  jobs:
+    - job: iOs
+      steps:
+      - script: |
+          rm *.yml
+          rm *.go
+          rm *.i
+        displayName: 'Cleanup'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '26'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          cd uplink-c
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=arm64 \
+          CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
+          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
+          go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
+        displayName: 'Prepare and build target iOs arm64'
+
+      - script: |
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink-arm64.dylib"
+          rm "uplink-c/storj_uplink.a"
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink-arm64.dylib"
+        displayName: 'Generate Framework for arm64'
+
+      - script: |
+          cd uplink-c
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=amd64 \
+          CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          go build -ldflags -w -v -tags ios -o "storj_uplink-simx64.dylib" -buildmode=c-shared
+        displayName: 'Prepare and build target iOs simx64'
+
+      - script: |
+          lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib"
+        displayName: 'Create fat library containing all iOs-architectures'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/libstorj_uplink-ios.dylib'
+          artifact: 'apple_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-ios.dylib'
