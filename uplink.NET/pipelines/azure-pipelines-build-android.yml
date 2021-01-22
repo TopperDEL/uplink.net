@@ -234,7 +234,7 @@ stages:
           definition: '27'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
-          itemPattern: '*.so'
+          itemPattern: '**/*.so'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
