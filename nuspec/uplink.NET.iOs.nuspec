@@ -22,8 +22,8 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-    <file target="lib\xamarinios10\lib.txt" src="build\xamarinios\lib.txt"/>
-    <file target="build\xamarinios\uplink.NET.iOS.targets" src="build\xamarinios\uplink.NET.iOS.targets" />
-    <file target="build\xamarinios\storj_uplink.framework" src="build\xamarinios\storj_uplink.framework\**" />
+    <file target="lib\xamarinios10\lib.txt" src="xamarinios\lib.txt"/>
+    <file target="build\xamarinios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
+    <file target="build\xamarinios\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
   </files>
 </package>
