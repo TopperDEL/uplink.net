@@ -229,7 +229,11 @@ stages:
       steps:
       - task: DownloadPipelineArtifact@2
         inputs:
-          buildType: 'current'
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
           itemPattern: '*.so'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
@@ -248,4 +252,13 @@ stages:
 
       - script: |
           ls
-        displayName: 'Show content'
+          mkdir arm64-v8a
+          mv libstorj_uplink-arm64-v8a.so arm64-v8a\libstorj_uplink.so
+          mkdir armeabi-v7a
+          mv libstorj_uplink-armeabi-v7a.so armeabi-v7a\libstorj_uplink.so
+          mkdir x86
+          mv libstorj_uplink-386.so x86\libstorj_uplink.so
+          mkdir x86_64
+          mv libstorj_uplink-amd64.so x86_64\libstorj_uplink.so
+          ls
+        displayName: 'Copy binaries to nuget-location'
