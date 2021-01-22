@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>uplink.NET.Droid</id>
+    <title>uplink.NET Android Support</title>
+    <version>2.6.0</version>
+    <authors>Tim Parth</authors>
+    <owners>Tim Parth</owners>
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <icon>Storj-symbol.png</icon>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Xamarin Android native libraries for uplink.NET</description>
+    <releaseNotes>
+        For the latest release notes please have a look at uplink.NET itself.
+    </releaseNotes>
+    <copyright>Copyright 2021</copyright>
+    <tags>storj tardigrade uplink cloud storage android xamarin</tags>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="MonoAndroid" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+    <file target="build\monoandroid\uplink.NET.targets" src="build\monoandroid\uplink.NET.targets" />
+    <file target="arm64-v8a\libstorj_uplink.so" src="libs\arm64-v8a\libstorj_uplink.so" />
+	<file target="armeabi-v7a\libstorj_uplink.so" src="libs\armeabi-v7a\libstorj_uplink.so" />
+	<file target="x86\libstorj_uplink.so" src="libs\x86\libstorj_uplink.so" />
+	<file target="x86_64\libstorj_uplink.so" src="libs\x86_64\libstorj_uplink.so" />
+  </files>
+</package>
