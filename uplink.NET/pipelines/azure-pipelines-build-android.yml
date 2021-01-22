@@ -251,14 +251,12 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          ls
           mkdir arm64-v8a
-          mv libstorj_uplink-arm64-v8a.so arm64-v8a\libstorj_uplink.so
+          mv android_arm64-v8a\libstorj_uplink-arm64-v8a.so arm64-v8a\libstorj_uplink.so
           mkdir armeabi-v7a
-          mv libstorj_uplink-armeabi-v7a.so armeabi-v7a\libstorj_uplink.so
+          mv android_armeabi-v7a\libstorj_uplink-armeabi-v7a.so armeabi-v7a\libstorj_uplink.so
           mkdir x86
-          mv libstorj_uplink-386.so x86\libstorj_uplink.so
+          mv android_386\libstorj_uplink-386.so x86\libstorj_uplink.so
           mkdir x86_64
-          mv libstorj_uplink-amd64.so x86_64\libstorj_uplink.so
-          ls
+          mv android_amd64\libstorj_uplink-amd64.so x86_64\libstorj_uplink.so
         displayName: 'Copy binaries to nuget-location'
