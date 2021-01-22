@@ -22,10 +22,10 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-    <file target="build\monoandroid\uplink.NET.targets" src="build\monoandroid\uplink.NET.targets" />
-    <file target="arm64-v8a\libstorj_uplink.so" src="libs\arm64-v8a\libstorj_uplink.so" />
-	<file target="armeabi-v7a\libstorj_uplink.so" src="libs\armeabi-v7a\libstorj_uplink.so" />
-	<file target="x86\libstorj_uplink.so" src="libs\x86\libstorj_uplink.so" />
-	<file target="x86_64\libstorj_uplink.so" src="libs\x86_64\libstorj_uplink.so" />
+    <file target="build\monoandroid\uplink.NET.targets" src="monoandroid\uplink.NET.targets" />
+    <file target="libs\arm64-v8a\libstorj_uplink.so" src="arm64-v8a\libstorj_uplink.so" />
+	<file target="libs\armeabi-v7a\libstorj_uplink.so" src="armeabi-v7a\libstorj_uplink.so" />
+	<file target="libs\x86\libstorj_uplink.so" src="x86\libstorj_uplink.so" />
+	<file target="libs\x86_64\libstorj_uplink.so" src="x86_64\libstorj_uplink.so" />
   </files>
 </package>
