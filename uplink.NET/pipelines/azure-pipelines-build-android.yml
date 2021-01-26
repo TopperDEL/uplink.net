@@ -270,3 +270,16 @@ stages:
           configuration: 
           versioningScheme: 'off'
         displayName: 'Pack the Android-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_droid'
+          publishLocation: 'pipeline'
+        displayName: 'Publish Android-Nuget as Artifact'
