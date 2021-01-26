@@ -121,11 +121,11 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          ls
           mkdir linux-x64
-          mv storj_uplink-amd64.so linux-x64/storj_uplink.so
+          mv linux_386/storj_uplink-amd64.so linux-x64/storj_uplink.so
           mkdir linux-x86
-          mv storj_uplink-386.so linux-x86/storj_uplink.so
+          mv linux_amd64/storj_uplink-386.so linux-x86/storj_uplink.so
+          ls
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
