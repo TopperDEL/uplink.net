@@ -101,7 +101,7 @@ stages:
         inputs:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '27'
+          definition: '28'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           itemPattern: '**/*.so'
@@ -116,25 +116,29 @@ stages:
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'nuspec'
-          itemPattern: '*Droid*'
+          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
       - script: |
-          mkdir arm64-v8a
-          mv android_arm64-v8a/libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
-          mkdir armeabi-v7a
-          mv android_armeabi-v7a/libstorj_uplink-armeabi-v7a.so armeabi-v7a/libstorj_uplink.so
-          mkdir x86
-          mv android_386/libstorj_uplink-386.so x86/libstorj_uplink.so
-          mkdir x86_64
-          mv android_amd64/libstorj_uplink-amd64.so x86_64/libstorj_uplink.so
+          ls
+          mkdir linux-x64
+          mv storj_uplink-amd64.so linux-x64/storj_uplink.so
+          mkdir linux-x86
+          mv storj_uplink-386.so linux-x86/storj_uplink.so
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
         inputs:
           command: 'pack'
-          packagesToPack: 'uplink.NET.Droid.nuspec'
+          packagesToPack: 'uplink.NET.Linux.nuspec'
           configuration: 
           versioningScheme: 'off'
-        displayName: 'Pack the Android-Nuget'
+        displayName: 'Pack the Linux-Nuget'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink.NET.Linux*.nupkg'
+          artifact: 'nuget_linux'
+          publishLocation: 'pipeline'
+        displayName: 'Publish Linux-Nuget as Artifact'
