@@ -251,12 +251,6 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          echo 'bevor'
-          ls
-          cd android_arm64-v8a
-          echo 'drin'
-          ls
-          cd ..
           mkdir arm64-v8a
           mv android_arm64-v8a/libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
           mkdir armeabi-v7a
@@ -266,3 +260,11 @@ stages:
           mkdir x86_64
           mv android_amd64/libstorj_uplink-amd64.so x86_64/libstorj_uplink.so
         displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Droid.nuspec'
+          configuration: 
+          versioningScheme: 'off'
+        displayName: 'Pack the Android-Nuget'
