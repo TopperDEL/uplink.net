@@ -6,7 +6,7 @@
 stages:
 - stage: MacOS
   pool:
-    vmImage: 'macos-11.0'
+    vmImage: 'macos-latest'
   jobs:
     - job: MacOS
 
@@ -50,7 +50,7 @@ stages:
 
 - stage: iOs
   pool:
-    vmImage: 'macos-11.0'
+    vmImage: 'macos-latest'
   jobs:
     - job: iOs
       steps:
