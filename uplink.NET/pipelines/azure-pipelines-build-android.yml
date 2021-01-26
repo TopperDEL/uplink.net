@@ -246,7 +246,7 @@ stages:
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'nuspec'
-          itemPattern: '*Droid*'
+          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
