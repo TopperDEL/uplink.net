@@ -145,9 +145,8 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          echo 'Show what's there
           ls
-          mv libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
+          mv apple_ios/libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
