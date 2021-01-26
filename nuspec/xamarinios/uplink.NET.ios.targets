@@ -1,7 +1,0 @@
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ItemGroup>
-        <NativeReference Include="$(MSBuildThisFileDirectory)storj_uplink.framework">
-          <Kind>Framework</Kind>
-        </NativeReference>
-    </ItemGroup>
-</Project>
