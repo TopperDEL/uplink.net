@@ -140,14 +140,12 @@ stages:
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'nuspec'
-          itemPattern: '*iOs*'
+          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
       - script: |
+          echo 'Show what's there
           ls
-          #mkdir x86
-          #mv android_386\libstorj_uplink-386.so x86\libstorj_uplink.so
-          #mkdir x86_64
-          #mv android_amd64\libstorj_uplink-amd64.so x86_64\libstorj_uplink.so
+          mv libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
