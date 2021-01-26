@@ -234,7 +234,7 @@ stages:
           definition: '27'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
-          itemPattern: '**/*.so'
+          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
@@ -251,6 +251,7 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
           mkdir arm64-v8a
           mv android_arm64-v8a/libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
           mkdir armeabi-v7a
@@ -259,6 +260,7 @@ stages:
           mv android_386/libstorj_uplink-386.so x86/libstorj_uplink.so
           mkdir x86_64
           mv android_amd64/libstorj_uplink-amd64.so x86_64/libstorj_uplink.so
+          ls
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
