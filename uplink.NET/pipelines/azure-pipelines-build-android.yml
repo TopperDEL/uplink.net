@@ -251,9 +251,12 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          echo 'bevor'
           ls
           cd android_arm64-v8a
+          echo 'drin'
           ls
+          cd ..
           mkdir arm64-v8a
           mv android_arm64-v8a/libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
           mkdir armeabi-v7a
