@@ -90,3 +90,51 @@ stages:
           artifact: 'linux_386'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-386.so'
+
+- stage: nuget_pack
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: '**/*.so'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '*Droid*'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          mkdir arm64-v8a
+          mv android_arm64-v8a/libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
+          mkdir armeabi-v7a
+          mv android_armeabi-v7a/libstorj_uplink-armeabi-v7a.so armeabi-v7a/libstorj_uplink.so
+          mkdir x86
+          mv android_386/libstorj_uplink-386.so x86/libstorj_uplink.so
+          mkdir x86_64
+          mv android_amd64/libstorj_uplink-amd64.so x86_64/libstorj_uplink.so
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Droid.nuspec'
+          configuration: 
+          versioningScheme: 'off'
+        displayName: 'Pack the Android-Nuget'
