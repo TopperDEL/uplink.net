@@ -128,7 +128,7 @@ stages:
           definition: '29'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
-          itemPattern: '**/*.dylib'
+          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
@@ -149,3 +149,24 @@ stages:
           ls
           mv libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.iOs.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the iOs-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish iOs-Nuget as Artifact'
