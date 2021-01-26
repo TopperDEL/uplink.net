@@ -136,9 +136,15 @@ stages:
           versioningScheme: 'off'
         displayName: 'Pack the Linux-Nuget'
 
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/*.nupkg'
+          targetPath: 'nuget'
           artifact: 'nuget_linux'
           publishLocation: 'pipeline'
         displayName: 'Publish Linux-Nuget as Artifact'
