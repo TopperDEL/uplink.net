@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>uplink.NET.Mac</id>
+    <title>uplink.NET Mac Support</title>
+    <version>2.6.0</version>
+    <authors>Tim Parth</authors>
+    <owners>Tim Parth</owners>
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <icon>Storj-symbol.png</icon>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Xamarin Mac native libraries for uplink.NET</description>
+    <releaseNotes>
+        For the latest release notes please have a look at uplink.NET itself.
+    </releaseNotes>
+    <copyright>Copyright 2021</copyright>
+    <tags>storj tardigrade uplink cloud storage mac xamarin</tags>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="Xamarin.Mac" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+    <file target="lib\xamarinmac\lib.txt" src="xamarinmac\lib.txt"/>
+    <file target="build\xamarinmac\uplink.NET.Mac.targets" src="xamarinmac\uplink.NET.Mac.targets" />
+    <file target="build\xamarinmac\storj_uplink.framework" src="xamarinmac\storj_uplink.framework\**" />
+  </files>
+</package>

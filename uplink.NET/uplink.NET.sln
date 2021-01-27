@@ -7,14 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET", "uplink.NET\up
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uplink.NET.Test", "uplink.NET.Test\uplink.NET.Test.csproj", "{1C714B3C-551C-4DDD-810A-D8CD6917FB3C}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "uplink.NET.Shared", "uplink.NET.Shared\uplink.NET.Shared.shproj", "{A5A6FA4D-6FD1-48B1-86B1-0263262BC432}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{DE9F92CC-DEE8-42A0-AA03-202FBB2158A2}"
-	ProjectSection(SolutionItems) = preProject
-		Package.nuspec = Package.nuspec
-		uplink.NET.iOs.nuspec = uplink.NET.iOs.nuspec
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{16E659B4-8451-464B-9BE1-16DE7D03B7AE}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "uplink.NET.Sample.Shared", "uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
@@ -25,9 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uplink.NET.Sample.UWP", "up
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		uplink.NET.Shared\uplink.NET.Shared.projitems*{5bbe87ec-c89f-4676-84db-3f6a2678dc53}*SharedItemsImports = 5
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
-		uplink.NET.Shared\uplink.NET.Shared.projitems*{a5a6fa4d-6fd1-48b1-86b1-0263262bc432}*SharedItemsImports = 13
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{b399257b-a76c-4f6a-aeff-d9ee9db44f51}*SharedItemsImports = 4
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{baf9deac-d43d-4fb0-a793-948714547e4e}*SharedItemsImports = 4
 	EndGlobalSection
