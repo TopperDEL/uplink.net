@@ -146,12 +146,7 @@ stages:
 
       - script: |
           ls
-          cd xamarinios
-          ls
-          cd storj_uplink.framework
-          ls
-          cd $(System.DefaultWorkingDirectory)
-          mv libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
+          mv libstorj_uplink-ios.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
