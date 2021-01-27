@@ -19,6 +19,7 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+	<file target="build\net40\uplink.NET.Linux.targets" src="linux\uplink.NET.Linux.targets" />
 	<file target="runtime\linux-x64\native\storj_uplink.so" src="linux-x64\storj_uplink.so" />
 	<file target="runtime\linux-x86\native\storj_uplink.so" src="linux-x86\storj_uplink.so" />
   </files>
