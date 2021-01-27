@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-20.04'
 
 steps:
 - task: DownloadPipelineArtifact@2
@@ -36,7 +36,13 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      ls
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
       mv *.cs uplink.NET/uplink.NET/SWIG-Generated
-  displayName: 'Copy SWIG-files'
+      rm *.cs
+  displayName: 'Copy SWIG-files to solution'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
+  displayName: 'Build uplink.NET-library'
