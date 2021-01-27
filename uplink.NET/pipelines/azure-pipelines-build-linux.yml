@@ -136,9 +136,9 @@ stages:
           ls
           echo 'create'
           mkdir linux-x64
-          mv linux_amd64/storj_uplink-amd64.so linux-x64/storj_uplink.so
+          mv storj_uplink-amd64.so linux-x64/storj_uplink.so
           mkdir linux-x86
-          mv linux_386/storj_uplink-386.so linux-x86/storj_uplink.so
+          mv storj_uplink-386.so linux-x86/storj_uplink.so
           ls
         displayName: 'Copy binaries to nuget-location'
 
