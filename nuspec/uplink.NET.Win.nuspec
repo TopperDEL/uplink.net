@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>uplink.NET.Linux</id>
-    <title>uplink.NET Linux Support</title>
+    <id>uplink.NET.Win</id>
+    <title>uplink.NET Windows Support</title>
     <version>2.6.0</version>
     <authors>Tim Parth</authors>
     <owners>Tim Parth</owners>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
     <icon>Storj-symbol.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Linux native libraries for uplink.NET</description>
+    <description>Windows native libraries for uplink.NET</description>
     <releaseNotes>
         For the latest release notes please have a look at uplink.NET itself.
     </releaseNotes>
     <copyright>Copyright 2021</copyright>
-    <tags>storj tardigrade uplink cloud storage linux</tags>
+    <tags>storj tardigrade uplink cloud storage windows</tags>
     <language>en-US</language>
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-	<file target="runtime\linux-x64\native\storj_uplink.so" src="linux-x64\storj_uplink.so" />
-	<file target="runtime\linux-x86\native\storj_uplink.so" src="linux-x86\storj_uplink.so" />
+	<file target="runtime\win-x86\native\storj_uplink.dll" src="win-x86-dll\storj_uplink-x86.dll" />
+	<file target="runtime\win-x64\native\storj_uplink.dll" src="win-x64-dll\storj_uplink-x64.dll" />
   </files>
 </package>
