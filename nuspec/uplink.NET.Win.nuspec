@@ -19,6 +19,7 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+	<file target="build\net40\uplink.NET.Win.targets" src="net40\uplink.NET.Win.targets" />
 	<file target="runtime\win-x86\native\storj_uplink.dll" src="win-x86-dll\storj_uplink-x86.dll" />
 	<file target="runtime\win-x64\native\storj_uplink.dll" src="win-x64-dll\storj_uplink-x64.dll" />
   </files>
