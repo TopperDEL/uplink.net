@@ -38,5 +38,5 @@ steps:
     script: |
       ls
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
-      mv *.cs to uplink.NET/uplink.NET/SWIG-Generated
+      mv *.cs uplink.NET/uplink.NET/SWIG-Generated
   displayName: 'Copy SWIG-files'
