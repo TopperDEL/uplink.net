@@ -22,6 +22,19 @@ Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the addi
       <group targetFramework=".NETStandard2.0">
         <dependency id="sqlite-net-pcl" version="1.7.335" exclude="Build,Analyzers" />
       </group>
+	  <group targetFramework="MonoAndroid">
+        <dependency id="uplink.NET.Droid" version="2.6.0" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="Xamarin.iOS10">
+        <dependency id="uplink.NET.iOs" version="2.6.0" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="Xamarin.Mac">
+        <dependency id="uplink.NET.Mac" version="2.6.0" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="net40">
+        <dependency id="uplink.NET.Windows" version="2.6.0" exclude="Build,Analyzers" />
+        <dependency id="uplink.NET.Linux" version="2.6.0" exclude="Build,Analyzers" />
+      </group>
     </dependencies>
   </metadata>
   <files>
