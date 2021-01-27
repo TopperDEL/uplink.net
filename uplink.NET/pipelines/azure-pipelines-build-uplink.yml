@@ -46,3 +46,30 @@ steps:
     projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
     arguments: '--configuration Release'
   displayName: 'Build uplink.NET-library'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      mv uplink.NET/uplink.NET/bin/Release/netstandard2.0/uplink.NET.dll uplink.NET.dll
+  displayName: 'Place uplink-DLL at nuget-location'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'uplink.NET.nuspec'
+    packDestination: '$(System.DefaultWorkingDirectory)'
+    versioningScheme: 'off'
+  displayName: 'Pack the Win-Nuget'
+
+- script: |
+    mkdir nuget
+    mv *.nupkg nuget
+    ls
+  displayName: 'Copy binaries to nuget-location'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'nuget'
+    artifact: 'nuget_uplink'
+    publishLocation: 'pipeline'
+  displayName: 'Publish Uplink.NET-Nuget as Artifact'
