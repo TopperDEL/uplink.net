@@ -126,7 +126,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '29'
-          specificBuildWithTriggering: true
+          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'apple_ios'
           targetPath: '$(System.DefaultWorkingDirectory)'
