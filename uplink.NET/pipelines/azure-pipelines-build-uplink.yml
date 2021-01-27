@@ -38,7 +38,7 @@ steps:
     script: |
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
       mv *.cs uplink.NET/uplink.NET/SWIG-Generated
-      rm *.cs
+      rm ./*.cs
   displayName: 'Copy SWIG-files to solution'
 
 - task: DotNetCoreCLI@2
