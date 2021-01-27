@@ -129,7 +129,6 @@ stages:
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'apple_ios'
-          itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts (iOs-dylib)'
 
