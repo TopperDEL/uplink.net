@@ -10,10 +10,33 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+    definition: '31'
+    specificBuildWithTriggering: true
+    buildVersionToDownload: 'latest'
+    artifactName: 'nuspec'
+    targetPath: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get build-artifacts (nuspec)'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+    definition: '31'
+    specificBuildWithTriggering: true
+    buildVersionToDownload: 'latest'
+    artifactName: 'Csharp-files'
+    targetPath: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get build-artifacts (SWIG C#-files)'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      ls
+      rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
+      mv *.cs to uplink.NET/uplink.NET/SWIG-Generated
+  displayName: 'Copy SWIG-files'
