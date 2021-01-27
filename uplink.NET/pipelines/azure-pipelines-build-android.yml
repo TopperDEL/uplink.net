@@ -232,7 +232,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '27'
-          specificBuildWithTriggering: true
+          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'android_amd64'
           itemPattern: '**'
@@ -244,7 +244,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '27'
-          specificBuildWithTriggering: true
+          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'android_386'
           itemPattern: '**'
@@ -256,7 +256,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '27'
-          specificBuildWithTriggering: true
+          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'android_arm64-v8a'
           itemPattern: '**'
@@ -268,7 +268,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '27'
-          specificBuildWithTriggering: true
+          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'android_armeabi-v7a'
           itemPattern: '**'
