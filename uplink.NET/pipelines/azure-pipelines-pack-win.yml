@@ -45,7 +45,10 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          ls
+          mkdir win-x86-dll
+          mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
+          mkdir win-x64-dll
+          mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
         displayName: 'remove me'
 
       - task: NuGetCommand@2
