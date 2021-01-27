@@ -125,12 +125,10 @@ stages:
           cd linux-x64
           mkdir native
           cd ..
-          cd ..
           mv linux_amd64/storj_uplink-amd64.so linux-x64/native/storj_uplink.so
           mkdir linux-x86
           cd linux-x86
           mkdir native
-          cd ..
           cd ..
           mv linux_386/storj_uplink-386.so linux-x86/native/storj_uplink.so
           ls
