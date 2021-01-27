@@ -146,11 +146,7 @@ stages:
 
       - script: |
           ls
-          echo 'go in'
-          cd apple_ios
-          ls
-          cd ..
-          mv apple_ios/libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
+          mv libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
