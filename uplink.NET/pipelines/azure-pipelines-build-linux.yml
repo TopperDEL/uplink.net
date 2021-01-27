@@ -104,10 +104,22 @@ stages:
           definition: '28'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
+          artifactName: 'linux_386'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (linux-386)'
 
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '28'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'linux_amd64'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (linux-amd64)'
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -118,9 +130,11 @@ stages:
           artifactName: 'nuspec'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
+          ls
+          echo 'create'
           mkdir linux-x64
           mv linux_amd64/storj_uplink-amd64.so linux-x64/storj_uplink.so
           mkdir linux-x86
