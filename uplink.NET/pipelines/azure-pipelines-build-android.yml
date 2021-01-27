@@ -234,9 +234,46 @@ stages:
           definition: '27'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
+          artifactName: 'android_amd64'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (amd64)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_386'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (386)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_arm64-v8a'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (arm64-v8a)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_armeabi-v7a'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (armeabi-v7a)'
 
       - task: DownloadPipelineArtifact@2
         inputs:
