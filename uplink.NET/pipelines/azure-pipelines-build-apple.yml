@@ -128,9 +128,10 @@ stages:
           definition: '29'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
+          artifactName: 'apple_ios'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (iOs-dylib)'
 
       - task: DownloadPipelineArtifact@2
         inputs:
@@ -142,10 +143,14 @@ stages:
           artifactName: 'nuspec'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
           ls
+          echo 'go in'
+          cd apple_ios
+          ls
+          cd ..
           mv apple_ios/libstorj_uplink-ios.dylib xarmarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
