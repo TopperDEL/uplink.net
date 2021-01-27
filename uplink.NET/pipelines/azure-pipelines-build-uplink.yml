@@ -44,4 +44,5 @@ steps:
   inputs:
     command: 'build'
     projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
+    arguments: '--configuration Release'
   displayName: 'Build uplink.NET-library'
