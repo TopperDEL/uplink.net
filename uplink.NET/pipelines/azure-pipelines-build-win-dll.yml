@@ -81,9 +81,7 @@ steps:
     export CGO_CXXFLAGS="-g -Wl,--kill-at"
     export CGO_FFLAGS="-g -Wl,--kill-at"
     export CGO_LDFLAGS="-g -Wl,--kill-at"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--pic-executable -static-libgcc -static-libstdc++'" -o storj_uplink-x86.dll -buildmode c-shared
-# not sure if -static-libgcc -static-libstdc++ is really changing something - can be deleted
-# pic-executable the same
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-x86.dll -buildmode c-shared
   displayName: 'Generating the final-x86-DLL for Windows'
 
 - script: |
@@ -97,7 +95,7 @@ steps:
     export CGO_CXXFLAGS="-g -O2"
     export CGO_FFLAGS="-g -O2"
     export CGO_LDFLAGS="-g -O2"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink-x64.dll -buildmode c-shared
   displayName: 'Generating the final-x64-DLL for Windows'
 
 - task: PublishPipelineArtifact@1
