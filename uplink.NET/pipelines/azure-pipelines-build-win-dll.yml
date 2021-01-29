@@ -3,6 +3,8 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+name: $(Date:yyyy)
+
 trigger:
 - main
 
@@ -169,13 +171,13 @@ steps:
 
 - script: |
     CURRENTYEAR=date +"%Y"
-    echo Current year is: ${CURRENTYEAR}
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.Droid.nuspec
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.iOs.nuspec
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.Linux.nuspec
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.Mac.nuspec
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.nuspec
-    sed -i 's/%YEAR%/${CURRENTYEAR}/' uplink.net/nuspec/uplink.NET.Win.nuspec
+    echo Current year is: $(Build.BuildNumber)
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
   displayName: 'Replacing current year in nuspecs'
 
 - task: PublishPipelineArtifact@1
