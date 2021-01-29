@@ -73,3 +73,10 @@ steps:
     artifact: 'nuget_uplink'
     publishLocation: 'pipeline'
   displayName: 'Publish Uplink.NET-Nuget as Artifact'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
