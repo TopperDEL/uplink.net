@@ -39,22 +39,13 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
-          echo '**** VARIANTE 1'
-          ls ANDROID_NDK_ROOT
-          echo '**** VARIANTE 2'
-          ls ANDROID_NDK_ROOT/
-          echo '**** VARIANTE 3'
-          ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
-          echo '**** VARIANTE 4'
-          $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
-          echo '**** VARIANTE 5'
-          ls $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/
           cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=arm
           export GOARM=7
-          export cc=
+          export cc=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
+          export cxx=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang++
           go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so
         displayName: 'Build target armeabi-v7a'
 
@@ -104,6 +95,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=arm64
           export GOARM=
+          export cc=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
+          export cxx=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++
           go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so
         displayName: 'Build target arm64-v8a'
 
@@ -153,6 +146,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=386
           export GOARM=
+          export cc=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android16-clang
+          export cxx=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android16-clang++
           go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so
         displayName: 'Build target 386'
 
@@ -202,6 +197,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=amd64
           export GOARM=
+          export cc=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android21-clang
+          export cxx=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android21-clang++
           go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so
         displayName: 'Build target amd64'
 
