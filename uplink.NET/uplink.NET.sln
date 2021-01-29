@@ -23,7 +23,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "uplink.NET.Sample.Shared", 
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{022dc186-cdab-46c6-a78d-4832ae35de53}*SharedItemsImports = 4
+		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{262483d6-678f-42b2-ba26-69f0554dcf9a}*SharedItemsImports = 4
 		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{83a6a5e9-5f97-4282-bca8-161753b8a491}*SharedItemsImports = 4
+		uplink.NET.Sample\uplink.NET.Sample.Shared\uplink.NET.Sample.Shared.projitems*{ef3ef03d-cdfa-45ab-b8e1-f7ea485e351b}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

@@ -1,0 +1,73 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:uplink.NET.Sample.Shared"
+    xmlns:converter="using:uplink.NET.Sample.Shared.Converter"
+    xmlns:models="using:uplink.NET.Models"
+    xmlns:viewmodels="using:uplink.NET.Sample.Shared.ViewModels"
+    x:Class="uplink.NET.Sample.Shared.StorjDictionary">
+
+    <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <converter:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+
+    <Color x:Key="StorjColor">#2683ff</Color>
+    <SolidColorBrush Color="#2683ff" x:Name="StorjBlue"/>
+
+    <DataTemplate x:Key="BucketInfo" x:DataType="viewmodels:BucketInfoViewModel">
+        <StackPanel Orientation="Horizontal">
+            <BitmapIcon UriSource="ms-appx:///Assets/storj_folder.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="{x:Bind BucketInfo.Name}" Foreground="{StaticResource StorjBlue}"/>
+                <TextBlock Text="{x:Bind BucketInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+            </StackPanel>
+            <Button Content="Open" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind OpenBucketCommand}" CommandParameter="{Binding}"/>
+            <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteBucketCommand}" CommandParameter="{Binding}"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ObjectInfo" x:DataType="viewmodels:BucketEntryViewModel">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsObject, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_file.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind ObjectInfo.Key}" Foreground="{StaticResource StorjBlue}"/>
+                    <!--<StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind ObjectInfo.Created, Converter={StaticResource DateTimeToStringConverter}}" FontSize="11"/>
+                        <TextBlock Text="{x:Bind ObjectInfo.GetSizeString}" FontSize="11" Margin="10,0"/>
+                    </StackPanel>-->
+                </StackPanel>
+                <Button Content="Download" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DownloadObjectCommand}" CommandParameter="{Binding}"/>
+                <Button Content="Delete" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind DeleteObjectCommand}" CommandParameter="{Binding}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsUploadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_file_upload.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind UploadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
+                    <ProgressBar Value="{x:Bind UploadPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
+                                 ShowError="{x:Bind UploadFailed, Mode=OneWay}"
+                                 Visibility="{x:Bind UploadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Upload failed!" Foreground="Red" Visibility="{x:Bind UploadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                </StackPanel>
+                <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelUploadCommand}" CommandParameter="{Binding}"/>
+                <Button Content="Show error" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind ShowErrorCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind UploadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind IsDownloadOperation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <BitmapIcon UriSource="ms-appx:///Assets/storj_file_download.png" Foreground="{StaticResource StorjBlue}" Margin="10,2,10,2" Width="45" Height="45" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind DownloadOperation.ObjectName}" Foreground="{StaticResource StorjBlue}"/>
+                    <ProgressBar Value="{x:Bind DownloadPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Foreground="DarkGreen"
+                                 ShowError="{x:Bind DownloadFailed, Mode=OneWay}"
+                                 Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Download complete!" Foreground="DarkGreen" Visibility="{x:Bind DownloadComplete, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Download failed!" Foreground="Red" Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                    <TextBlock Text="Cancelled by user" Foreground="DarkOrange" Visibility="{x:Bind DownloadCancelled, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                </StackPanel>
+                <Button Content="Cancel" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind CancelDownloadCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind DownloadRunning, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                <Button Content="Show error" Margin="10" BorderThickness="2" BorderBrush="{StaticResource StorjBlue}" Background="White" FontSize="10" Foreground="{StaticResource StorjBlue}" Command="{x:Bind ShowErrorCommand}" CommandParameter="{Binding}"
+                        Visibility="{x:Bind DownloadFailed, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>
