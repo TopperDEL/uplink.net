@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="uplink.NET.Sample.Shared.Pages.BucketContentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:uplink.NET.Sample.Shared.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer>
+        <StackPanel>
+            <CommandBar Background="{StaticResource StorjBlue}" OverflowButtonVisibility="Collapsed">
+                <CommandBar.Content>
+                    <TextBlock Text="{x:Bind _vm.BucketName, Mode=OneWay}" Foreground="White" FontSize="25" Margin="10,0"/>
+                </CommandBar.Content>
+                <AppBarButton Label="Add photo..." Foreground="White" Command="{Binding UploadFileCommand}" CommandParameter="Photo">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_photo.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Add video..." Foreground="White" Command="{Binding UploadFileCommand}" CommandParameter="Video">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_upload_video.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton Label="Back" Foreground="White" Command="{Binding GoBackCommand}">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/storj_left.png"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+            <StackPanel Visibility="{x:Bind Path=_vm.Loading, Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
+                <ProgressRing IsActive="True" Foreground="{StaticResource StorjBlue}" Margin="50"/>
+            </StackPanel>
+            <ListView ItemsSource="{x:Bind _vm.Entries, Mode=OneWay}" ItemTemplate="{StaticResource ObjectInfo}" MaxWidth="700" HorizontalAlignment="Left"
+                  IsItemClickEnabled="False" SelectionMode="None">
+
+            </ListView>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

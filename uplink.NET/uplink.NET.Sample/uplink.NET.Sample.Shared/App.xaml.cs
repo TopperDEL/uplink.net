@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using uplink.NET.Sample.Shared.Pages;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -85,7 +86,26 @@ namespace uplink.NET.Sample
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    if (Shared.Services.Factory.LoginService.IsLoggedIn())
+                    {
+                        var loginData = Shared.Services.Factory.LoginService.GetLoginData();
+#if !__ANDROID__
+                        //Models.Scope.SetTempDirectory(System.IO.Path.GetTempPath());
+#endif
+
+                        try
+                        {
+                            Shared.Services.Factory.Access = new Models.Access(loginData.Satellite, loginData.APIKey, loginData.Secret);
+                            rootFrame.Navigate(typeof(BucketListPage), e.Arguments);
+                        }
+                        catch
+                        {
+                            Shared.Services.Factory.LoginService.Logout();
+                            rootFrame.Navigate(typeof(LogInPage), e.Arguments);
+                        }
+                    }
+                    else
+                        rootFrame.Navigate(typeof(LogInPage), e.Arguments);
                 }
                 // Ensure the current window is active
                 window.Activate();
