@@ -39,6 +39,7 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=arm
@@ -87,6 +88,7 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=arm64
@@ -135,6 +137,7 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=386
@@ -183,6 +186,7 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=amd64
