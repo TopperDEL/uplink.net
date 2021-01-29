@@ -98,20 +98,6 @@ steps:
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
   displayName: 'Generating the final-x64-DLL for Windows'
 
-- script: |
-    cd uplink-c
-    export CC="x86_64-w64-mingw32-gcc"
-    export CXX="x86_64-w64-mingw32-g++"
-    export GOOS="windows"
-    export GOARCH="amd64"
-    export CGO_ENABLED="1"
-    export CGO_CFLAGS="-g -O2"
-    export CGO_CXXFLAGS="-g -O2"
-    export CGO_FFLAGS="-g -O2"
-    export CGO_LDFLAGS="-g -O2"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
-  displayName: 'Generating the final-ARM64-DLL for Windows'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink.h'
