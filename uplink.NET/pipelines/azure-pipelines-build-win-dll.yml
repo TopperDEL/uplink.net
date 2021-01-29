@@ -171,6 +171,24 @@ steps:
     artifact: 'uplink-c'
     publishLocation: 'pipeline'
   displayName: 'Publish uplink-c'
+  
+- script: |
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/%BUILD%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing Build-Number in nuspecs'
+
+- script: |
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/%YEAR%/$(date +%Y)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing current year in nuspecs'
 
 - task: PublishPipelineArtifact@1
   inputs:
