@@ -43,14 +43,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=arm
           export GOARM=7
-        displayName: 'Prepare for Target armeabi-v7a'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build armeabi-v7a'
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so
+        displayName: 'Build target armeabi-v7a'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -97,14 +91,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=arm64
           export GOARM=
-        displayName: 'Prepare for Target arm64-v8a'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build arm64-v8a'
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so
+        displayName: 'Build target arm64-v8a'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -151,14 +139,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=386
           export GOARM=
-        displayName: 'Prepare for Target 386'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build 386'
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so
+        displayName: 'Build target 386'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -205,14 +187,8 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=amd64
           export GOARM=
-        displayName: 'Prepare for Target amd64'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build amd64'
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so
+        displayName: 'Build target amd64'
 
       - task: PublishPipelineArtifact@1
         inputs:
