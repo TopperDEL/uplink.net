@@ -161,22 +161,22 @@ steps:
   displayName: 'Publish uplink-c'
   
 - script: |
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
-    sed -i 's/%BUILD%/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Win.nuspec
   displayName: 'Replacing Build-Number in nuspecs'
 
 - script: |
     echo Current year is: $(Build.BuildNumber)
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
-    sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
   displayName: 'Replacing current year in nuspecs'
 
 - task: PublishPipelineArtifact@1
