@@ -24,9 +24,9 @@
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
 	<file target="lib\monoandroid\lib.txt" src="monoandroid\lib.txt"/>
     <file target="build\monoandroid\uplink.NET.Droid.targets" src="monoandroid\uplink.NET.Droid.targets" />
-    <file target="libs\arm64-v8a\libstorj_uplink.so" src="arm64-v8a\libstorj_uplink.so" />
-	<file target="libs\armeabi-v7a\libstorj_uplink.so" src="armeabi-v7a\libstorj_uplink.so" />
-	<file target="libs\x86\libstorj_uplink.so" src="x86\libstorj_uplink.so" />
-	<file target="libs\x86_64\libstorj_uplink.so" src="x86_64\libstorj_uplink.so" />
+    <file target="runtimes\native\libs\arm64-v8a\libstorj_uplink.so" src="arm64-v8a\libstorj_uplink.so" />
+	<file target="runtimes\native\libs\armeabi-v7a\libstorj_uplink.so" src="armeabi-v7a\libstorj_uplink.so" />
+	<file target="runtimes\native\libs\x86\libstorj_uplink.so" src="x86\libstorj_uplink.so" />
+	<file target="runtimes\native\libs\x86_64\libstorj_uplink.so" src="x86_64\libstorj_uplink.so" />
   </files>
 </package>
