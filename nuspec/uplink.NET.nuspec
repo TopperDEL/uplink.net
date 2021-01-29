@@ -17,7 +17,7 @@ Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the addi
     <releaseNotes>Reworking of the build-pipeline - based on uplink-c v1.1.0</releaseNotes>
     <copyright>Copyright YEAR - Tim Parth, Storj Labs Inc.</copyright>
 	<repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
-    <tags>storj tardigrade storage decentralised secure bucket file xamarin android</tags>
+    <tags>storj tardigrade storage decentralised secure bucket file xamarin android ios linux mac windows uwp</tags>
 	<dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="sqlite-net-pcl" version="1.7.335" exclude="Build,Analyzers" />
