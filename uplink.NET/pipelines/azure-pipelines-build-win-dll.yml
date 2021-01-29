@@ -170,7 +170,6 @@ steps:
   displayName: 'Replacing Build-Number in nuspecs'
 
 - script: |
-    CURRENTYEAR=date +"%Y"
     echo Current year is: $(Build.BuildNumber)
     sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
     sed -i 's/%YEAR%/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
