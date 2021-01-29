@@ -11,6 +11,8 @@ stages:
     - job: armeabi_v7a
 
       steps:
+      - bash: env
+        displayName: env vars
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -44,6 +46,7 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=arm
           export GOARM=7
+          export cc=
           go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so
         displayName: 'Build target armeabi-v7a'
 
