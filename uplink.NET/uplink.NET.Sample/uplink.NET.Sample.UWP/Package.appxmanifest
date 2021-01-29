@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="8916TimParth.uplink.NET-Sample"
-    Publisher="CN=07929E22-2FB8-4C9D-B9EB-B4A357099123"
-    Version="1.0.4.0" />
+    Name="022dc186-cdab-46c6-a78d-4832ae35de53"
+    Publisher="CN=Toppe"
+    Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="97fcfe38-fd16-4ecc-baec-3c56ed0ee302" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="fff97e7a-b213-4bef-b5bc-c424f51a9103" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>uplink.NET-Sample</DisplayName>
-    <PublisherDisplayName>Tim Parth</PublisherDisplayName>
+    <DisplayName>uplink.NET.Sample</DisplayName>
+    <PublisherDisplayName>uplink.NET.Sample</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -34,24 +34,16 @@
       <uap:VisualElements
         DisplayName="uplink.NET.Sample"
         Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\storj.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
         Description="uplink.NET.Sample"
-        BackgroundColor="white">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="uplink.NET-Sample" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square150x150Logo"/>
-            <uap:ShowOn Tile="wide310x150Logo"/>
-            <uap:ShowOn Tile="square310x310Logo"/>
-          </uap:ShowNameOnTiles>
-        </uap:DefaultTile >
-        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="white"/>
-        <uap:LockScreen BadgeLogo="Assets\BadgeLogo.png" Notification="badge"/>
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
 
   <Capabilities>
     <Capability Name="internetClient" />
-    <DeviceCapability Name="webcam"/>
   </Capabilities>
 </Package>
