@@ -6,17 +6,13 @@ using Android.Views;
 
 namespace uplink.NET.Sample.Droid
 {
-    [Activity(
-            MainLauncher = true,
-            ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize,
-            WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
-        )]
-    public class MainActivity : Windows.UI.Xaml.ApplicationActivity
-    {
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
-        {
-            Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
+	[Activity(
+			MainLauncher = true,
+			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
+			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
+		)]
+	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
+	{
+	}
 }
 
