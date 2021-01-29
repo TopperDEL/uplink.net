@@ -11,8 +11,6 @@ stages:
     - job: armeabi_v7a
 
       steps:
-      - bash: env
-        displayName: env vars
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -41,6 +39,16 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          echo '**** VARIANTE 1'
+          ls ANDROID_NDK_ROOT
+          echo '**** VARIANTE 2'
+          ls ANDROID_NDK_ROOT/
+          echo '**** VARIANTE 3'
+          ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
+          echo '**** VARIANTE 4'
+          $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
+          echo '**** VARIANTE 5'
+          ls $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/
           cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
