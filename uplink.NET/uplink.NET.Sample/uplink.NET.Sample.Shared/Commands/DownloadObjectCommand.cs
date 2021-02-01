@@ -92,7 +92,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 return;
             }
 #else
-            var path = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 
             try
             {
