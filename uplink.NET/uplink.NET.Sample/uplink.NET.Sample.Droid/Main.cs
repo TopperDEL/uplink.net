@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
+using Plugin.CurrentActivity;
 using Windows.UI.Xaml.Media;
 
 namespace uplink.NET.Sample.Droid
@@ -30,7 +31,11 @@ namespace uplink.NET.Sample.Droid
 
 		public override void OnCreate()
 		{
-			base.OnCreate();
+			Xamarin.Essentials.Platform.Init(this);
+			CrossCurrentActivity.Current.Init(this);
+			Plugin.Media.CrossMedia.Current.Initialize();
+
+            base.OnCreate();
 		}
 
 		private void ConfigureUniversalImageLoader()
