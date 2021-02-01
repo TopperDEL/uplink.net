@@ -280,7 +280,7 @@ stages:
         displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
-          ls
+          ls -l
           mkdir arm64-v8a
           mv libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
           mkdir armeabi-v7a
