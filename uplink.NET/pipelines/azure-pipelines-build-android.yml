@@ -281,15 +281,6 @@ stages:
 
       - script: |
           ls -l
-          mkdir arm64-v8a
-          mv libstorj_uplink-arm64-v8a.so arm64-v8a/libstorj_uplink.so
-          mkdir armeabi-v7a
-          mv libstorj_uplink-armeabi-v7a.so armeabi-v7a/libstorj_uplink.so
-          mkdir x86
-          mv libstorj_uplink-386.so x86/libstorj_uplink.so
-          mkdir x86_64
-          mv libstorj_uplink-amd64.so x86_64/libstorj_uplink.so
-          ls
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
@@ -304,7 +295,7 @@ stages:
           mkdir nuget
           mv *.nupkg nuget
           ls
-        displayName: 'Copy binaries to nuget-location'
+        displayName: 'Copy nuget'
 
       - task: PublishPipelineArtifact@1
         inputs:
