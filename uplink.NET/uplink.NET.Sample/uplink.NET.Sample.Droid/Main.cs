@@ -28,6 +28,11 @@ namespace uplink.NET.Sample.Droid
 			ConfigureUniversalImageLoader();
 		}
 
+		public override void OnCreate()
+		{
+			base.OnCreate();
+		}
+
 		private void ConfigureUniversalImageLoader()
 		{
 			// Create global configuration and initialize ImageLoader with this config
