@@ -98,19 +98,6 @@ stages:
           CC=cc \
           CXX=c++ \
           CGO_ENABLED=1 \
-          GOARCH=386 \
-          CGO_CFLAGS="-arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-          CGO_LDFLAGS="-arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-          go build -ldflags -w -v -tags ios -o "storj_uplink-simx86.dylib" -buildmode=c-shared
-        displayName: 'Prepare and build target iOs simx86'
-
-      - script: |
-          cd uplink-c
-          env \
-          GOOS='darwin' \
-          CC=cc \
-          CXX=c++ \
-          CGO_ENABLED=1 \
           GOARCH=amd64 \
           CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
           CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
@@ -118,7 +105,7 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib" "uplink-c/storj_uplink-simx86.dylib"
+          lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib"
           ls -l
         displayName: 'Create fat library containing all iOs-architectures'
 
@@ -160,8 +147,10 @@ stages:
 
       - script: |
           ls
+          echo 'File-Info'
           file libstorj_uplink-ios.dylib
-          lipo libstorj_uplink-ios.dylib 
+          echo 'lipo info'
+          lipo -info libstorj_uplink-ios.dylib 
           mv libstorj_uplink-ios.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
