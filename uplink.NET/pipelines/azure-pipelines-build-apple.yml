@@ -108,6 +108,10 @@ stages:
           lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib"
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
           ls -l
+          echo 'File-Info'
+          file storj_uplink.dylib
+          echo 'lipo info'
+          lipo -info storj_uplink.dylib 
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
@@ -147,11 +151,6 @@ stages:
         displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
-          ls
-          echo 'File-Info'
-          file storj_uplink.dylib
-          echo 'lipo info'
-          lipo -info storj_uplink.dylib 
           mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
