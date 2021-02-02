@@ -129,6 +129,11 @@ stages:
   jobs:
     - job: nuget_pack
       steps:
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
