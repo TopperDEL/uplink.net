@@ -86,9 +86,9 @@ stages:
         displayName: 'Prepare and build target iOs arm64'
 
       - script: |
-          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink-arm64.dylib"
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib"
           rm "uplink-c/storj_uplink.a"
-          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink-arm64.dylib"
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
         displayName: 'Generate Framework for arm64'
 
       - script: |
@@ -105,16 +105,17 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib"
+          lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib"
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
           ls -l
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/libstorj_uplink-ios.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.dylib'
           artifact: 'apple_ios'
           publishLocation: 'pipeline'
-        displayName: 'Publish libstorj_uplink-ios.dylib'
+        displayName: 'Publish storj_uplink.dylib'
 
 - stage: nuget_pack
   pool:
@@ -148,10 +149,10 @@ stages:
       - script: |
           ls
           echo 'File-Info'
-          file libstorj_uplink-ios.dylib
+          file storj_uplink.dylib
           echo 'lipo info'
-          lipo -info libstorj_uplink-ios.dylib 
-          mv libstorj_uplink-ios.dylib xamarinios/storj_uplink.framework/storj_uplink
+          lipo -info storj_uplink.dylib 
+          mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
