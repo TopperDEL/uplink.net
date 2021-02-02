@@ -106,6 +106,7 @@ stages:
 
       - script: |
           lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib"
+          ls -l
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
@@ -146,6 +147,8 @@ stages:
 
       - script: |
           ls
+          file libstorj_uplink-ios.dylib
+          lipo libstorj_uplink-ios.dylib 
           mv libstorj_uplink-ios.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
