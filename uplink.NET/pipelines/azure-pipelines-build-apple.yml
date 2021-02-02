@@ -105,8 +105,8 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib"
-          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
+          lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib" "uplink-c/storj_uplink.dylib"
+          #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
           ls -l
           echo 'File-Info'
           file storj_uplink.dylib
@@ -134,7 +134,6 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '29'
-          specificBuildWithTriggering: false
           buildVersionToDownload: 'latest'
           artifactName: 'apple_ios'
           targetPath: '$(System.DefaultWorkingDirectory)'
