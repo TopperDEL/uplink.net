@@ -151,6 +151,7 @@ stages:
         displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
+          ls -l
           mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
 
