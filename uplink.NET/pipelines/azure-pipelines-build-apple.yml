@@ -112,6 +112,8 @@ stages:
           file storj_uplink.dylib
           echo 'lipo info'
           lipo -info storj_uplink.dylib 
+          echo 'OTOOL'
+          otool -L storj_uplink.dylib
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
