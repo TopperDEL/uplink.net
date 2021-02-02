@@ -16,15 +16,23 @@ namespace uplink.NET.Services
         SQLiteAsyncConnection _connection;
         CancellationToken _uploadCancelToken;
         Task _uploadTask;
+        readonly string _databasePath;
 
         public UploadQueueService()
         {
-           
+            _databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "uplinkNET.db");
         }
 
-        public bool UploadInProgress { get
+        public UploadQueueService(string databasePath)
+        {
+            _databasePath = databasePath;
+        }
+
+        public bool UploadInProgress
+        {
+            get
             {
-                return _uploadTask != null && ( _uploadTask.Status == TaskStatus.Running || _uploadTask.Status == TaskStatus.WaitingToRun);
+                return _uploadTask != null && (_uploadTask.Status == TaskStatus.Running || _uploadTask.Status == TaskStatus.WaitingToRun);
             }
         }
 
@@ -32,8 +40,7 @@ namespace uplink.NET.Services
         {
             if (_connection == null)
             {
-                var databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "uplinkNET.db");
-                _connection = new SQLiteAsyncConnection(databasePath);
+                _connection = new SQLiteAsyncConnection(_databasePath);
 
                 await _connection.CreateTableAsync<UploadQueueEntry>();
             }
