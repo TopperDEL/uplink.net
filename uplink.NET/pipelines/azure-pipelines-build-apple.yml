@@ -75,7 +75,7 @@ stages:
       - script: |
           cd uplink-c
           echo 'SHOW SDK'
-          xcodebuild -showsdks
+          ls /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/
           echon 'FINISHED'
           env \
           GOOS='darwin' \
