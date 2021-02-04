@@ -4,49 +4,6 @@
 # https://aka.ms/yaml
 
 stages:
-- stage: MacOS
-  pool:
-    vmImage: 'macos-latest'
-  jobs:
-    - job: MacOS
-
-      steps:
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          export CGO_ENABLED=1
-          export GOARCH=amd64
-        displayName: 'Prepare for Target MacOS'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-macos.dylib'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build MacOS'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos.dylib'
-          artifact: 'apple_macos'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-macos.dylib'
 
 - stage: iOs
   pool:
@@ -88,9 +45,9 @@ stages:
       - script: |
           ls
           echo 'Running xcrun...'
-          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib"
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib" --verbose
           echo 'Removing archive...'
-          ls /uplink-c/
+          ls uplink-c/
           ls
           rm "uplink-c/storj_uplink.a"
           echo 'Running install_name_tool'
