@@ -135,10 +135,13 @@ steps:
 
 - script: |
     echo 'TEMP - save current PINVOKE-File for later!'
+    ls
     mv storj_uplinkPINVOKE.cs uplink-c/storj_uplinkPINVOKE.cs
+    ls uplink-c
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
+    ls csfiles
   displayName: 'Extract generated cs-files'
 
 - task: PublishPipelineArtifact@1
