@@ -22,7 +22,8 @@ steps:
   displayName: 'Inject the Storj-Version'
 
 - script: |
-    git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+    echo 'Cloning $(STORJ_VERSION)'
+    git clone -b $(STORJ_VERSION) https://github.com/storj/uplink-c.git
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
