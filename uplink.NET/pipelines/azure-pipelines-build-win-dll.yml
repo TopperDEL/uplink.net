@@ -135,6 +135,7 @@ steps:
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
+    rm csfiles/storj_uplinkPINVOKE.cs
   displayName: 'Extract generated cs-files'
 
 - task: PublishPipelineArtifact@1
