@@ -17,13 +17,15 @@ steps:
   displayName: 'Clone uplink.NET'
 
 - script: |
-    ls
     sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
     echo 'Cloning $(STORJ_VERSION)'
-    git clone -b '$(STORJ_VERSION)' https://github.com/storj/uplink-c.git
+    git clone https://github.com/storj/uplink-c.git
+    cd uplink-c
+    git checkout $(STORJ_VERSION) 
+    cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
