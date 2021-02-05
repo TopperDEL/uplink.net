@@ -32,6 +32,7 @@ stages:
       - script: |
           ls
           ls uplink-c
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           export CGO_ENABLED=1
           export GOARCH=amd64
         displayName: 'Prepare for Target MacOS'
@@ -75,6 +76,8 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
           ls
           env \
