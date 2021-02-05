@@ -55,6 +55,8 @@ steps:
   displayName: 'Generating Windows-x64-DLL for the first time - we need an additional h-file'
 
 - script: |
+    echo 'TEMP - save current PINVOKE-File for later!'
+    mv uplink-c/storj_uplinkPINVOKE.cs storj_uplinkPINVOKE.cs
     cd uplink-c
     rm *.cs
     rm *.c
@@ -132,10 +134,11 @@ steps:
   displayName: 'Replacing ref-modifier from free_string-method'
 
 - script: |
+    echo 'TEMP - save current PINVOKE-File for later!'
+    mv storj_uplinkPINVOKE.cs uplink-c/storj_uplinkPINVOKE.cs
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
-    rm csfiles/storj_uplinkPINVOKE.cs
   displayName: 'Extract generated cs-files'
 
 - task: PublishPipelineArtifact@1
