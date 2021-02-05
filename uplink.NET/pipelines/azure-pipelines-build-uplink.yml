@@ -36,6 +36,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      ls
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
       mv *.cs uplink.NET/uplink.NET/SWIG-Generated
   displayName: 'Copy SWIG-files to solution'
