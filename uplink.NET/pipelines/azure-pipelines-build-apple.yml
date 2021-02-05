@@ -30,6 +30,8 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
+          ls uplink-c
           export CGO_ENABLED=1
           export GOARCH=amd64
         displayName: 'Prepare for Target MacOS'
@@ -74,6 +76,7 @@ stages:
 
       - script: |
           cd uplink-c
+          ls
           env \
           GOOS='darwin' \
           CC=cc \
