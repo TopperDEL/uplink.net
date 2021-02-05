@@ -23,7 +23,7 @@ steps:
 
 - script: |
     echo 'Cloning $(STORJ_VERSION)'
-    git clone -b $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+    git clone -b '$(STORJ_VERSION)' https://github.com/storj/uplink-c.git
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
