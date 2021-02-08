@@ -15,7 +15,6 @@ steps:
     buildType: 'specific'
     project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
     definition: '31'
-    specificBuildWithTriggering: true
     buildVersionToDownload: 'latest'
     artifactName: 'nuspec'
     targetPath: '$(System.DefaultWorkingDirectory)'
@@ -26,7 +25,6 @@ steps:
     buildType: 'specific'
     project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
     definition: '31'
-    specificBuildWithTriggering: true
     buildVersionToDownload: 'latest'
     artifactName: 'Csharp-files'
     targetPath: '$(System.DefaultWorkingDirectory)'
@@ -36,9 +34,16 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      echo 'Local'
       ls
+      echo 'SWIG-Gen before'
+      ls uplink.NET/uplink.NET/SWIG-Generated
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
+      echo 'SWIG-Gen between'
+      ls uplink.NET/uplink.NET/SWIG-Generated
       mv *.cs uplink.NET/uplink.NET/SWIG-Generated
+      echo 'SWIG-Gen after'
+      ls uplink.NET/uplink.NET/SWIG-Generated
   displayName: 'Copy SWIG-files to solution'
 
 - task: DotNetCoreCLI@2
