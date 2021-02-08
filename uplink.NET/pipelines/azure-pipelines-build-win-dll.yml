@@ -137,6 +137,10 @@ steps:
 - script: |
     sed -i 's/namespace uplink.SWIG/using System; namespace uplink.SWIG/' uplink-c/storj_uplinkPINVOKE.cs
     sed -i 's/protected class SWIGExceptionHelper {/public class MonoPInvokeCallbackAttribute:Attribute{public MonoPInvokeCallbackAttribute(Type t){}} public class MonoNativeFunctionWrapperAttribute:Attribute {public MonoNativeFunctionWrapperAttribute() {}} protected class SWIGExceptionHelper {/' uplink-c/storj_uplinkPINVOKE.cs
+
+    sed -i 's/public delegate void ExceptionDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate void ExceptionArgumentDelegate(string message, string paramName)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionArgumentDelegate(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+
     sed -i 's/static void SetPendingApplicationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingApplicationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
     sed -i 's/static void SetPendingArithmeticException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArithmeticException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
     sed -i 's/static void SetPendingDivideByZeroException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingDivideByZeroException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
