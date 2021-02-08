@@ -34,9 +34,11 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      cat storj_uplinkPINVOKE.cs
       echo 'Local'
       ls
       echo 'SWIG-Gen before'
+      cat uplink.NET/uplink.NET/SWIG-Generated/storj_uplinkPINVOKE.cs
       ls uplink.NET/uplink.NET/SWIG-Generated
       rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
       echo 'SWIG-Gen between'
