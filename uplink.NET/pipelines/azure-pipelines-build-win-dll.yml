@@ -58,8 +58,6 @@ steps:
   displayName: 'Generating Windows-x64-DLL for the first time - we need an additional h-file'
 
 - script: |
-    echo 'TEMP - save current PINVOKE-File for later!'
-    mv uplink-c/storj_uplinkPINVOKE.cs storj_uplinkPINVOKE.cs
     cd uplink-c
     rm *.cs
     rm *.c
@@ -137,10 +135,26 @@ steps:
   displayName: 'Replacing ref-modifier from free_string-method'
 
 - script: |
-    echo 'TEMP - save current PINVOKE-File for later!'
-    ls
-    mv storj_uplinkPINVOKE.cs uplink-c/storj_uplinkPINVOKE.cs
-    ls uplink-c
+    sed -i 's/protected class SWIGExceptionHelper {/public class MonoPInvokeCallbackAttribute:Attribute{public MonoPInvokeCallbackAttribute(Type t){}} public class MonoNativeFunctionWrapperAttribute:Attribute {public MonoNativeFunctionWrapperAttribute() {}} protected class SWIGExceptionHelper {/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingApplicationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingApplicationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArithmeticException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArithmeticException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingDivideByZeroException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingDivideByZeroException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIndexOutOfRangeException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIndexOutOfRangeException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidCastException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidCastException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidOperationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidOperationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIOException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIOException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingNullReferenceException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingNullReferenceException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOutOfMemoryException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOutOfMemoryException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOverflowException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOverflowException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingSystemException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingSystemException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArgumentException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentNullException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArgumentNullException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentOutOfRangeException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArgumentOutOfRangeException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate string SWIGStringDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] [MonoNativeFunctionWrapper] public delegate string SWIGStringDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static string CreateString(string cString)/[MonoPInvokeCallback(typeof(SWIGStringDelegate))] static string CreateString(string cString)/' uplink-c/storj_uplinkPINVOKE.cs
+  displayName: 'Adding AOT-Attributes for iOs-Build'
+
+- script: |
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
