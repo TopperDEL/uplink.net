@@ -62,11 +62,11 @@ func access_share2(access *C.UplinkAccess, permission C.UplinkPermission) C.Upli
 
 	newAccess, err := acc.Share(perm, shareprefixes...)
 	if err != nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(err),
 		}
 	}
 	return C.AccessResult{
-		access: (*C.Access)(mallocHandle(universe.Add(&Access{newAccess}))),
+		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{newAccess}))),
 	}
 }
