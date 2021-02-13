@@ -66,7 +66,7 @@ func access_share2(access *C.UplinkAccess, permission C.UplinkPermission) C.Upli
 			error: mallocError(err),
 		}
 	}
-	return C.AccessResult{
+	return C.UplinkAccessResult{
 		access: (*C.UplinkAccess)(mallocHandle(universe.Add(&Access{newAccess}))),
 	}
 }
