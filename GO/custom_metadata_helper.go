@@ -23,7 +23,7 @@ func append_custommetadata(key *C.char, value *C.char){
 
 //export upload_set_custom_metadata2
 // upload_set_custom_metadata2 sets the customMetadata on an upload
-func upload_set_custom_metadata2(upload *C.Upload) *C.Error {
+func upload_set_custom_metadata2(upload *C.UplinkUpload) *C.UplinkError {
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("upload"))
@@ -39,7 +39,7 @@ var array []C.CustomMetadataEntry
 
 //export prepare_get_custommetadata
 // prepare_get_custommetadata 
-func prepare_get_custommetadata(object *C.Object) {
+func prepare_get_custommetadata(object *C.UplinkObject) {
 	index = 0
 	*(*reflect.SliceHeader)(unsafe.Pointer(&array)) = reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(object.custom.entries)),
@@ -49,7 +49,7 @@ func prepare_get_custommetadata(object *C.Object) {
 }
 
 //export get_next_custommetadata
-func get_next_custommetadata() C.CustomMetadataEntry {
+func get_next_custommetadata() C.UplinkCustomMetadataEntry {
 	var meta = array[index]
 	index = index + 1
 	
