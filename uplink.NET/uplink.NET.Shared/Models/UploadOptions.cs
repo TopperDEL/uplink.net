@@ -14,9 +14,9 @@ namespace uplink.NET.Models
         /// </summary>
         public DateTime Expires { get; set; }
 
-        internal SWIG.UploadOptions ToSWIG()
+        internal SWIG.UplinkUploadOptions ToSWIG()
         {
-            SWIG.UploadOptions options = new SWIG.UploadOptions();
+            SWIG.UplinkUploadOptions options = new SWIG.UplinkUploadOptions();
             if (Expires != DateTime.MinValue)
                 options.expires = (new DateTimeOffset(Expires)).ToUnixTimeSeconds();
             else

@@ -22,7 +22,7 @@ namespace uplink.NET.Models
             Entries = new List<CustomMetadataEntry>();
         }
 
-        internal static CustomMetadata FromSWIG(SWIG.Object obj)
+        internal static CustomMetadata FromSWIG(SWIG.UplinkObject obj)
         {
             CustomMetadata ret = new CustomMetadata();
             ret.Entries = new List<CustomMetadataEntry>();

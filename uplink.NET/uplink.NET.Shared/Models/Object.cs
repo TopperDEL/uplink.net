@@ -26,7 +26,7 @@ namespace uplink.NET.Models
         /// </summary>
         public CustomMetadata CustomMetaData { get; set; }
 
-        internal static Object FromSWIG(SWIG.Object original, bool disposeObjectInfo = true)
+        internal static Object FromSWIG(SWIG.UplinkObject original, bool disposeObjectInfo = true)
         {
             Object ret = new Object();
             ret.Key = original.key;
@@ -35,7 +35,7 @@ namespace uplink.NET.Models
             ret.CustomMetaData = CustomMetadata.FromSWIG(original);
 
             if (disposeObjectInfo)
-                SWIG.storj_uplink.free_object(original);
+                SWIG.storj_uplink.uplink_free_object(original);
 
             return ret;
         }
