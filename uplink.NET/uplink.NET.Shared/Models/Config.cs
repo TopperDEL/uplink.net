@@ -20,9 +20,9 @@ namespace uplink.NET.Models
         /// </summary>
         public string TempDirectory { get; set; }
 
-        internal SWIG.Config ToSWIG()
+        internal SWIG.UplinkConfig ToSWIG()
         {
-            SWIG.Config config = new SWIG.Config();
+            SWIG.UplinkConfig config = new SWIG.UplinkConfig();
             config.dial_timeout_milliseconds = DialTimeoutMilliseconds;
             config.temp_directory = TempDirectory;
             config.user_agent = UserAgent;

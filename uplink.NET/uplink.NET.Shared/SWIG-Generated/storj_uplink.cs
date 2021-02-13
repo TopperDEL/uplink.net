@@ -11,107 +11,117 @@
 namespace uplink.SWIG {
 
 internal class storj_uplink {
-  public static AccessResult parse_access(string p0) {
-    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.parse_access(p0), true);
+  public static UplinkAccessResult uplink_parse_access(string accessString) {
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_parse_access(accessString), true);
     return ret;
   }
 
-  public static AccessResult request_access_with_passphrase(string p0, string p1, string p2) {
-    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.request_access_with_passphrase(p0, p1, p2), true);
+  public static UplinkAccessResult uplink_request_access_with_passphrase(string satellite_address, string api_key, string passphrase) {
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_request_access_with_passphrase(satellite_address, api_key, passphrase), true);
     return ret;
   }
 
-  public static StringResult access_serialize(Access p0) {
-    StringResult ret = new StringResult(storj_uplinkPINVOKE.access_serialize(Access.getCPtr(p0)), true);
+  public static UplinkStringResult uplink_access_satellite_address(UplinkAccess access) {
+    UplinkStringResult ret = new UplinkStringResult(storj_uplinkPINVOKE.uplink_access_satellite_address(UplinkAccess.getCPtr(access)), true);
     return ret;
   }
 
-  public static AccessResult access_share(Access p0, Permission p1, SharePrefix p2, long p3) {
-    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.access_share(Access.getCPtr(p0), Permission.getCPtr(p1), SharePrefix.getCPtr(p2), p3), true);
+  public static UplinkStringResult uplink_access_serialize(UplinkAccess access) {
+    UplinkStringResult ret = new UplinkStringResult(storj_uplinkPINVOKE.uplink_access_serialize(UplinkAccess.getCPtr(access)), true);
+    return ret;
+  }
+
+  public static UplinkAccessResult uplink_access_share(UplinkAccess access, UplinkPermission permission, UplinkSharePrefix prefixes, long prefixes_count) {
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_access_share(UplinkAccess.getCPtr(access), UplinkPermission.getCPtr(permission), UplinkSharePrefix.getCPtr(prefixes), prefixes_count), true);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
-  public static Error access_override_encryption_key(Access p0, string p1, string p2, EncryptionKey p3) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.access_override_encryption_key(Access.getCPtr(p0), p1, p2, EncryptionKey.getCPtr(p3));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError uplink_access_override_encryption_key(UplinkAccess access, string bucket, string prefix, UplinkEncryptionKey encryptionKey) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_access_override_encryption_key(UplinkAccess.getCPtr(access), bucket, prefix, UplinkEncryptionKey.getCPtr(encryptionKey));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static void free_string_result(StringResult p0) {
-    storj_uplinkPINVOKE.free_string_result(StringResult.getCPtr(p0));
+  public static void uplink_free_string_result(UplinkStringResult result) {
+    storj_uplinkPINVOKE.uplink_free_string_result(UplinkStringResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_access_result(AccessResult p0) {
-    storj_uplinkPINVOKE.free_access_result(AccessResult.getCPtr(p0));
+  public static void uplink_free_access_result(UplinkAccessResult result) {
+    storj_uplinkPINVOKE.uplink_free_access_result(UplinkAccessResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static BucketResult stat_bucket(Project p0, string p1) {
-    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.stat_bucket(Project.getCPtr(p0), p1), true);
+  public static UplinkBucketResult uplink_stat_bucket(UplinkProject project, string bucket_name) {
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_stat_bucket(UplinkProject.getCPtr(project), bucket_name), true);
     return ret;
   }
 
-  public static BucketResult create_bucket(Project p0, string p1) {
-    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.create_bucket(Project.getCPtr(p0), p1), true);
+  public static UplinkBucketResult uplink_create_bucket(UplinkProject project, string bucket_name) {
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_create_bucket(UplinkProject.getCPtr(project), bucket_name), true);
     return ret;
   }
 
-  public static BucketResult ensure_bucket(Project p0, string p1) {
-    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.ensure_bucket(Project.getCPtr(p0), p1), true);
+  public static UplinkBucketResult uplink_ensure_bucket(UplinkProject project, string bucket_name) {
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_ensure_bucket(UplinkProject.getCPtr(project), bucket_name), true);
     return ret;
   }
 
-  public static BucketResult delete_bucket(Project p0, string p1) {
-    BucketResult ret = new BucketResult(storj_uplinkPINVOKE.delete_bucket(Project.getCPtr(p0), p1), true);
+  public static UplinkBucketResult uplink_delete_bucket(UplinkProject project, string bucket_name) {
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket(UplinkProject.getCPtr(project), bucket_name), true);
     return ret;
   }
 
-  public static void free_bucket_result(BucketResult p0) {
-    storj_uplinkPINVOKE.free_bucket_result(BucketResult.getCPtr(p0));
+  public static UplinkBucketResult uplink_delete_bucket_with_objects(UplinkProject project, string bucket_name) {
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket_with_objects(UplinkProject.getCPtr(project), bucket_name), true);
+    return ret;
+  }
+
+  public static void uplink_free_bucket_result(UplinkBucketResult result) {
+    storj_uplinkPINVOKE.uplink_free_bucket_result(UplinkBucketResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_bucket(Bucket p0) {
-    storj_uplinkPINVOKE.free_bucket(Bucket.getCPtr(p0));
+  public static void uplink_free_bucket(UplinkBucket bucket) {
+    storj_uplinkPINVOKE.uplink_free_bucket(UplinkBucket.getCPtr(bucket));
   }
 
-  public static BucketIterator list_buckets(Project p0, ListBucketsOptions p1) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.list_buckets(Project.getCPtr(p0), ListBucketsOptions.getCPtr(p1));
-    BucketIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new BucketIterator(cPtr, false);
+  public static UplinkBucketIterator uplink_list_buckets(UplinkProject project, UplinkListBucketsOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_buckets(UplinkProject.getCPtr(project), UplinkListBucketsOptions.getCPtr(options));
+    UplinkBucketIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkBucketIterator(cPtr, false);
     return ret;
   }
 
-  public static bool bucket_iterator_next(BucketIterator p0) {
-    bool ret = storj_uplinkPINVOKE.bucket_iterator_next(BucketIterator.getCPtr(p0));
+  public static bool uplink_bucket_iterator_next(UplinkBucketIterator iterator) {
+    bool ret = storj_uplinkPINVOKE.uplink_bucket_iterator_next(UplinkBucketIterator.getCPtr(iterator));
     return ret;
   }
 
-  public static Error bucket_iterator_err(BucketIterator p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.bucket_iterator_err(BucketIterator.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError uplink_bucket_iterator_err(UplinkBucketIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_bucket_iterator_err(UplinkBucketIterator.getCPtr(iterator));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static Bucket bucket_iterator_item(BucketIterator p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.bucket_iterator_item(BucketIterator.getCPtr(p0));
-    Bucket ret = (cPtr == global::System.IntPtr.Zero) ? null : new Bucket(cPtr, false);
+  public static UplinkBucket uplink_bucket_iterator_item(UplinkBucketIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_bucket_iterator_item(UplinkBucketIterator.getCPtr(iterator));
+    UplinkBucket ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkBucket(cPtr, false);
     return ret;
   }
 
-  public static void free_bucket_iterator(BucketIterator p0) {
-    storj_uplinkPINVOKE.free_bucket_iterator(BucketIterator.getCPtr(p0));
+  public static void uplink_free_bucket_iterator(UplinkBucketIterator iterator) {
+    storj_uplinkPINVOKE.uplink_free_bucket_iterator(UplinkBucketIterator.getCPtr(iterator));
   }
 
-  public static AccessResult config_request_access_with_passphrase(Config p0, string p1, string p2, string p3) {
-    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.config_request_access_with_passphrase(Config.getCPtr(p0), p1, p2, p3), true);
+  public static UplinkAccessResult uplink_config_request_access_with_passphrase(UplinkConfig config, string satellite_address, string api_key, string passphrase) {
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_config_request_access_with_passphrase(UplinkConfig.getCPtr(config), satellite_address, api_key, passphrase), true);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
-  public static ProjectResult config_open_project(Config p0, Access p1) {
-    ProjectResult ret = new ProjectResult(storj_uplinkPINVOKE.config_open_project(Config.getCPtr(p0), Access.getCPtr(p1)), true);
+  public static UplinkProjectResult uplink_config_open_project(UplinkConfig config, UplinkAccess access) {
+    UplinkProjectResult ret = new UplinkProjectResult(storj_uplinkPINVOKE.uplink_config_open_project(UplinkConfig.getCPtr(config), UplinkAccess.getCPtr(access)), true);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
@@ -120,192 +130,192 @@ internal class storj_uplink {
     storj_uplinkPINVOKE.prepare_custommetadata();
   }
 
-  public static void append_custommetadata(string p0, string p1) {
-    storj_uplinkPINVOKE.append_custommetadata(p0, p1);
+  public static void append_custommetadata(string key, string value) {
+    storj_uplinkPINVOKE.append_custommetadata(key, value);
   }
 
-  public static Error upload_set_custom_metadata2(Upload p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_set_custom_metadata2(Upload.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError upload_set_custom_metadata2(UplinkUpload upload) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_set_custom_metadata2(UplinkUpload.getCPtr(upload));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static void prepare_get_custommetadata(Object p0) {
-    storj_uplinkPINVOKE.prepare_get_custommetadata(Object.getCPtr(p0));
+  public static void prepare_get_custommetadata(UplinkObject object_) {
+    storj_uplinkPINVOKE.prepare_get_custommetadata(UplinkObject.getCPtr(object_));
   }
 
-  public static CustomMetadataEntry get_next_custommetadata() {
-    CustomMetadataEntry ret = new CustomMetadataEntry(storj_uplinkPINVOKE.get_next_custommetadata(), true);
+  public static UplinkCustomMetadataEntry get_next_custommetadata() {
+    UplinkCustomMetadataEntry ret = new UplinkCustomMetadataEntry(storj_uplinkPINVOKE.get_next_custommetadata(), true);
     return ret;
   }
 
-  public static DownloadResult download_object(Project p0, string p1, string p2, DownloadOptions p3) {
-    DownloadResult ret = new DownloadResult(storj_uplinkPINVOKE.download_object(Project.getCPtr(p0), p1, p2, DownloadOptions.getCPtr(p3)), true);
+  public static UplinkDownloadResult uplink_download_object(UplinkProject project, string bucket_name, string object_key, UplinkDownloadOptions options) {
+    UplinkDownloadResult ret = new UplinkDownloadResult(storj_uplinkPINVOKE.uplink_download_object(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkDownloadOptions.getCPtr(options)), true);
     return ret;
   }
 
-  public static ReadResult download_read(Download p0, SWIGTYPE_p_void p1, uint p2) {
-    ReadResult ret = new ReadResult(storj_uplinkPINVOKE.download_read(Download.getCPtr(p0), SWIGTYPE_p_void.getCPtr(p1), p2), true);
+  public static UplinkReadResult uplink_download_read(UplinkDownload download, SWIGTYPE_p_void bytes, uint length) {
+    UplinkReadResult ret = new UplinkReadResult(storj_uplinkPINVOKE.uplink_download_read(UplinkDownload.getCPtr(download), SWIGTYPE_p_void.getCPtr(bytes), length), true);
     return ret;
   }
 
-  public static ObjectResult download_info(Download p0) {
-    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.download_info(Download.getCPtr(p0)), true);
+  public static UplinkObjectResult uplink_download_info(UplinkDownload download) {
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_download_info(UplinkDownload.getCPtr(download)), true);
     return ret;
   }
 
-  public static void free_read_result(ReadResult p0) {
-    storj_uplinkPINVOKE.free_read_result(ReadResult.getCPtr(p0));
+  public static void uplink_free_read_result(UplinkReadResult result) {
+    storj_uplinkPINVOKE.uplink_free_read_result(UplinkReadResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static Error close_download(Download p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.close_download(Download.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError uplink_close_download(UplinkDownload download) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_close_download(UplinkDownload.getCPtr(download));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static void free_download_result(DownloadResult p0) {
-    storj_uplinkPINVOKE.free_download_result(DownloadResult.getCPtr(p0));
+  public static void uplink_free_download_result(UplinkDownloadResult result) {
+    storj_uplinkPINVOKE.uplink_free_download_result(UplinkDownloadResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static EncryptionKeyResult derive_encryption_key(string p0, SWIGTYPE_p_void p1, uint p2) {
-    EncryptionKeyResult ret = new EncryptionKeyResult(storj_uplinkPINVOKE.derive_encryption_key(p0, SWIGTYPE_p_void.getCPtr(p1), p2), true);
+  public static UplinkEncryptionKeyResult uplink_derive_encryption_key(string passphrase, SWIGTYPE_p_void salt, uint length) {
+    UplinkEncryptionKeyResult ret = new UplinkEncryptionKeyResult(storj_uplinkPINVOKE.uplink_derive_encryption_key(passphrase, SWIGTYPE_p_void.getCPtr(salt), length), true);
     return ret;
   }
 
-  public static void free_encryption_key_result(EncryptionKeyResult p0) {
-    storj_uplinkPINVOKE.free_encryption_key_result(EncryptionKeyResult.getCPtr(p0));
+  public static void uplink_free_encryption_key_result(UplinkEncryptionKeyResult result) {
+    storj_uplinkPINVOKE.uplink_free_encryption_key_result(UplinkEncryptionKeyResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_error(Error p0) {
-    storj_uplinkPINVOKE.free_error(Error.getCPtr(p0));
+  public static void uplink_free_error(UplinkError err) {
+    storj_uplinkPINVOKE.uplink_free_error(UplinkError.getCPtr(err));
   }
 
-  public static byte internal_UniverseIsEmpty() {
-    byte ret = storj_uplinkPINVOKE.internal_UniverseIsEmpty();
+  public static byte uplink_internal_UniverseIsEmpty() {
+    byte ret = storj_uplinkPINVOKE.uplink_internal_UniverseIsEmpty();
     return ret;
   }
 
-  public static ObjectResult stat_object(Project p0, string p1, string p2) {
-    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.stat_object(Project.getCPtr(p0), p1, p2), true);
+  public static UplinkObjectResult uplink_stat_object(UplinkProject project, string bucket_name, string object_key) {
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_stat_object(UplinkProject.getCPtr(project), bucket_name, object_key), true);
     return ret;
   }
 
-  public static ObjectResult delete_object(Project p0, string p1, string p2) {
-    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.delete_object(Project.getCPtr(p0), p1, p2), true);
+  public static UplinkObjectResult uplink_delete_object(UplinkProject project, string bucket_name, string object_key) {
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_delete_object(UplinkProject.getCPtr(project), bucket_name, object_key), true);
     return ret;
   }
 
-  public static void free_object_result(ObjectResult p0) {
-    storj_uplinkPINVOKE.free_object_result(ObjectResult.getCPtr(p0));
+  public static void uplink_free_object_result(UplinkObjectResult obj) {
+    storj_uplinkPINVOKE.uplink_free_object_result(UplinkObjectResult.getCPtr(obj));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_object(Object p0) {
-    storj_uplinkPINVOKE.free_object(Object.getCPtr(p0));
+  public static void uplink_free_object(UplinkObject obj) {
+    storj_uplinkPINVOKE.uplink_free_object(UplinkObject.getCPtr(obj));
   }
 
-  public static ObjectIterator list_objects(Project p0, string p1, ListObjectsOptions p2) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.list_objects(Project.getCPtr(p0), p1, ListObjectsOptions.getCPtr(p2));
-    ObjectIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new ObjectIterator(cPtr, false);
+  public static UplinkObjectIterator uplink_list_objects(UplinkProject project, string bucket_name, UplinkListObjectsOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_objects(UplinkProject.getCPtr(project), bucket_name, UplinkListObjectsOptions.getCPtr(options));
+    UplinkObjectIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkObjectIterator(cPtr, false);
     return ret;
   }
 
-  public static bool object_iterator_next(ObjectIterator p0) {
-    bool ret = storj_uplinkPINVOKE.object_iterator_next(ObjectIterator.getCPtr(p0));
+  public static bool uplink_object_iterator_next(UplinkObjectIterator iterator) {
+    bool ret = storj_uplinkPINVOKE.uplink_object_iterator_next(UplinkObjectIterator.getCPtr(iterator));
     return ret;
   }
 
-  public static Error object_iterator_err(ObjectIterator p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.object_iterator_err(ObjectIterator.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError uplink_object_iterator_err(UplinkObjectIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_object_iterator_err(UplinkObjectIterator.getCPtr(iterator));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static Object object_iterator_item(ObjectIterator p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.object_iterator_item(ObjectIterator.getCPtr(p0));
-    Object ret = (cPtr == global::System.IntPtr.Zero) ? null : new Object(cPtr, false);
+  public static UplinkObject uplink_object_iterator_item(UplinkObjectIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_object_iterator_item(UplinkObjectIterator.getCPtr(iterator));
+    UplinkObject ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkObject(cPtr, false);
     return ret;
   }
 
-  public static void free_object_iterator(ObjectIterator p0) {
-    storj_uplinkPINVOKE.free_object_iterator(ObjectIterator.getCPtr(p0));
+  public static void uplink_free_object_iterator(UplinkObjectIterator iterator) {
+    storj_uplinkPINVOKE.uplink_free_object_iterator(UplinkObjectIterator.getCPtr(iterator));
   }
 
-  public static ProjectResult open_project(Access p0) {
-    ProjectResult ret = new ProjectResult(storj_uplinkPINVOKE.open_project(Access.getCPtr(p0)), true);
+  public static UplinkProjectResult uplink_open_project(UplinkAccess access) {
+    UplinkProjectResult ret = new UplinkProjectResult(storj_uplinkPINVOKE.uplink_open_project(UplinkAccess.getCPtr(access)), true);
     return ret;
   }
 
-  public static Error close_project(Project p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.close_project(Project.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkError uplink_close_project(UplinkProject project) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_close_project(UplinkProject.getCPtr(project));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
-  public static void free_project_result(ProjectResult p0) {
-    storj_uplinkPINVOKE.free_project_result(ProjectResult.getCPtr(p0));
+  public static void uplink_free_project_result(UplinkProjectResult result) {
+    storj_uplinkPINVOKE.uplink_free_project_result(UplinkProjectResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void prepare_shareprefixes(uint p0) {
-    storj_uplinkPINVOKE.prepare_shareprefixes(p0);
+  public static void prepare_shareprefixes(uint shareprefixesLen) {
+    storj_uplinkPINVOKE.prepare_shareprefixes(shareprefixesLen);
   }
 
-  public static void append_shareprefix(string p0, string p1) {
-    storj_uplinkPINVOKE.append_shareprefix(p0, p1);
+  public static void append_shareprefix(string bucket, string prefix) {
+    storj_uplinkPINVOKE.append_shareprefix(bucket, prefix);
   }
 
-  public static AccessResult access_share2(Access p0, Permission p1) {
-    AccessResult ret = new AccessResult(storj_uplinkPINVOKE.access_share2(Access.getCPtr(p0), Permission.getCPtr(p1)), true);
-    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
-    return ret;
-  }
-
-  public static UploadResult upload_object(Project p0, string p1, string p2, UploadOptions p3) {
-    UploadResult ret = new UploadResult(storj_uplinkPINVOKE.upload_object(Project.getCPtr(p0), p1, p2, UploadOptions.getCPtr(p3)), true);
-    return ret;
-  }
-
-  public static WriteResult upload_write(Upload p0, SWIGTYPE_p_void p1, uint p2) {
-    WriteResult ret = new WriteResult(storj_uplinkPINVOKE.upload_write(Upload.getCPtr(p0), SWIGTYPE_p_void.getCPtr(p1), p2), true);
-    return ret;
-  }
-
-  public static Error upload_commit(Upload p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_commit(Upload.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
-    return ret;
-  }
-
-  public static Error upload_abort(Upload p0) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_abort(Upload.getCPtr(p0));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
-    return ret;
-  }
-
-  public static ObjectResult upload_info(Upload p0) {
-    ObjectResult ret = new ObjectResult(storj_uplinkPINVOKE.upload_info(Upload.getCPtr(p0)), true);
-    return ret;
-  }
-
-  public static Error upload_set_custom_metadata(Upload p0, CustomMetadata p1) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.upload_set_custom_metadata(Upload.getCPtr(p0), CustomMetadata.getCPtr(p1));
-    Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+  public static UplinkAccessResult access_share2(UplinkAccess access, UplinkPermission permission) {
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.access_share2(UplinkAccess.getCPtr(access), UplinkPermission.getCPtr(permission)), true);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
-  public static void free_write_result(WriteResult p0) {
-    storj_uplinkPINVOKE.free_write_result(WriteResult.getCPtr(p0));
+  public static UplinkUploadResult uplink_upload_object(UplinkProject project, string bucket_name, string object_key, UplinkUploadOptions options) {
+    UplinkUploadResult ret = new UplinkUploadResult(storj_uplinkPINVOKE.uplink_upload_object(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkUploadOptions.getCPtr(options)), true);
+    return ret;
+  }
+
+  public static UplinkWriteResult uplink_upload_write(UplinkUpload upload, SWIGTYPE_p_void bytes, uint length) {
+    UplinkWriteResult ret = new UplinkWriteResult(storj_uplinkPINVOKE.uplink_upload_write(UplinkUpload.getCPtr(upload), SWIGTYPE_p_void.getCPtr(bytes), length), true);
+    return ret;
+  }
+
+  public static UplinkError uplink_upload_commit(UplinkUpload upload) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_upload_commit(UplinkUpload.getCPtr(upload));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkError uplink_upload_abort(UplinkUpload upload) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_upload_abort(UplinkUpload.getCPtr(upload));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkObjectResult uplink_upload_info(UplinkUpload upload) {
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_upload_info(UplinkUpload.getCPtr(upload)), true);
+    return ret;
+  }
+
+  public static UplinkError uplink_upload_set_custom_metadata(UplinkUpload upload, UplinkCustomMetadata custom) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_upload_set_custom_metadata(UplinkUpload.getCPtr(upload), UplinkCustomMetadata.getCPtr(custom));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static void uplink_free_write_result(UplinkWriteResult result) {
+    storj_uplinkPINVOKE.uplink_free_write_result(UplinkWriteResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
-  public static void free_upload_result(UploadResult p0) {
-    storj_uplinkPINVOKE.free_upload_result(UploadResult.getCPtr(p0));
+  public static void uplink_free_upload_result(UplinkUploadResult result) {
+    storj_uplinkPINVOKE.uplink_free_upload_result(UplinkUploadResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
@@ -314,18 +324,18 @@ internal class storj_uplink {
     return ret;
   }
 
-  public static readonly int ERROR_INTERNAL = storj_uplinkPINVOKE.ERROR_INTERNAL_get();
-  public static readonly int ERROR_CANCELED = storj_uplinkPINVOKE.ERROR_CANCELED_get();
-  public static readonly int ERROR_INVALID_HANDLE = storj_uplinkPINVOKE.ERROR_INVALID_HANDLE_get();
-  public static readonly int ERROR_TOO_MANY_REQUESTS = storj_uplinkPINVOKE.ERROR_TOO_MANY_REQUESTS_get();
-  public static readonly int ERROR_BANDWIDTH_LIMIT_EXCEEDED = storj_uplinkPINVOKE.ERROR_BANDWIDTH_LIMIT_EXCEEDED_get();
-  public static readonly int ERROR_BUCKET_NAME_INVALID = storj_uplinkPINVOKE.ERROR_BUCKET_NAME_INVALID_get();
-  public static readonly int ERROR_BUCKET_ALREADY_EXISTS = storj_uplinkPINVOKE.ERROR_BUCKET_ALREADY_EXISTS_get();
-  public static readonly int ERROR_BUCKET_NOT_EMPTY = storj_uplinkPINVOKE.ERROR_BUCKET_NOT_EMPTY_get();
-  public static readonly int ERROR_BUCKET_NOT_FOUND = storj_uplinkPINVOKE.ERROR_BUCKET_NOT_FOUND_get();
-  public static readonly int ERROR_OBJECT_KEY_INVALID = storj_uplinkPINVOKE.ERROR_OBJECT_KEY_INVALID_get();
-  public static readonly int ERROR_OBJECT_NOT_FOUND = storj_uplinkPINVOKE.ERROR_OBJECT_NOT_FOUND_get();
-  public static readonly int ERROR_UPLOAD_DONE = storj_uplinkPINVOKE.ERROR_UPLOAD_DONE_get();
+  public static readonly int UPLINK_ERROR_INTERNAL = storj_uplinkPINVOKE.UPLINK_ERROR_INTERNAL_get();
+  public static readonly int UPLINK_ERROR_CANCELED = storj_uplinkPINVOKE.UPLINK_ERROR_CANCELED_get();
+  public static readonly int UPLINK_ERROR_INVALID_HANDLE = storj_uplinkPINVOKE.UPLINK_ERROR_INVALID_HANDLE_get();
+  public static readonly int UPLINK_ERROR_TOO_MANY_REQUESTS = storj_uplinkPINVOKE.UPLINK_ERROR_TOO_MANY_REQUESTS_get();
+  public static readonly int UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED_get();
+  public static readonly int UPLINK_ERROR_BUCKET_NAME_INVALID = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NAME_INVALID_get();
+  public static readonly int UPLINK_ERROR_BUCKET_ALREADY_EXISTS = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_ALREADY_EXISTS_get();
+  public static readonly int UPLINK_ERROR_BUCKET_NOT_EMPTY = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NOT_EMPTY_get();
+  public static readonly int UPLINK_ERROR_BUCKET_NOT_FOUND = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NOT_FOUND_get();
+  public static readonly int UPLINK_ERROR_OBJECT_KEY_INVALID = storj_uplinkPINVOKE.UPLINK_ERROR_OBJECT_KEY_INVALID_get();
+  public static readonly int UPLINK_ERROR_OBJECT_NOT_FOUND = storj_uplinkPINVOKE.UPLINK_ERROR_OBJECT_NOT_FOUND_get();
+  public static readonly int UPLINK_ERROR_UPLOAD_DONE = storj_uplinkPINVOKE.UPLINK_ERROR_UPLOAD_DONE_get();
 }
 
 }

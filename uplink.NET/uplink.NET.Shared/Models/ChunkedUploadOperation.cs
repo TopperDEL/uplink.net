@@ -7,13 +7,13 @@ namespace uplink.NET.Models
 {
     public unsafe class ChunkedUploadOperation
     {
-        private SWIG.UploadResult _uploadResult;
+        private SWIG.UplinkUploadResult _uploadResult;
         private string _objectName;
         private CustomMetadata _customMetadata;
         private string _errorMessage;
         public string ErrorMessage { get { return _errorMessage; } }
 
-        internal ChunkedUploadOperation(SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+        internal ChunkedUploadOperation(SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
             _uploadResult = uploadResult;
             _objectName = objectName;
@@ -29,7 +29,7 @@ namespace uplink.NET.Models
                 var uploadChunk = buffer.Take((int)(buffer.Length - bytesSent)).ToArray();
                 fixed (byte* arrayPtr = uploadChunk)
                 {
-                    SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)uploadChunk.Length);
+                    SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)uploadChunk.Length);
                     if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                     {
                         _errorMessage = sentResult.error.message;
@@ -38,7 +38,7 @@ namespace uplink.NET.Models
                     else
                         bytesSent += sentResult.bytes_written;
 
-                    SWIG.storj_uplink.free_write_result(sentResult);
+                    SWIG.storj_uplink.uplink_free_write_result(sentResult);
                 }
             }
 
@@ -54,13 +54,13 @@ namespace uplink.NET.Models
                     try
                     {
                         _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                        SWIG.Error customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
+                        SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
                         if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                         {
                             _errorMessage = customMetadataError.message;
                             return false;
                         }
-                        SWIG.storj_uplink.free_error(customMetadataError);
+                        SWIG.storj_uplink.uplink_free_error(customMetadataError);
                     }
                     finally
                     {
@@ -69,14 +69,14 @@ namespace uplink.NET.Models
                 }
             }
 
-            SWIG.Error commitError = SWIG.storj_uplink.upload_commit(_uploadResult.upload);
+            SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_uploadResult.upload);
             if (commitError != null && !string.IsNullOrEmpty(commitError.message))
             {
                 _errorMessage = commitError.message;
-                SWIG.storj_uplink.free_error(commitError);
+                SWIG.storj_uplink.uplink_free_error(commitError);
                 return false;
             }
-            SWIG.storj_uplink.free_error(commitError);
+            SWIG.storj_uplink.uplink_free_error(commitError);
             return true;
         }
     }
