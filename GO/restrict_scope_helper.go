@@ -32,16 +32,16 @@ func append_shareprefix(bucket *C.char, prefix *C.char){
 
 //export access_share2
 // access_share2 restricts a given scope with the provided caveat and the temporary encryption shareprefixes
-func access_share2(access *C.Access, permission C.Permission) C.AccessResult { //nolint:golint
+func access_share2(access *C.UplinkAccess, permission C.UplinkPermission) C.UplinkAccessResult { //nolint:golint
 	if access == nil {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("access")),
 		}
 	}
 
 	acc, ok := universe.Get(access._handle).(*Access)
 	if !ok {
-		return C.AccessResult{
+		return C.UplinkAccessResult{
 			error: mallocError(ErrInvalidHandle.New("access")),
 		}
 	}
