@@ -35,7 +35,7 @@ func upload_set_custom_metadata2(upload *C.UplinkUpload) *C.UplinkError {
 }
 
 var index = 0
-var array []C.CustomMetadataEntry
+var array []C.UplinkCustomMetadataEntry
 
 //export prepare_get_custommetadata
 // prepare_get_custommetadata 
