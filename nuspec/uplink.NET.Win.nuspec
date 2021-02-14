@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>uplink.NET.Win</id>
+    <title>uplink.NET Windows Support</title>
+    <version>2.6.BUILDNR</version>
+    <authors>Tim Parth</authors>
+    <owners>Tim Parth</owners>
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <icon>Storj-symbol.png</icon>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Windows native libraries for uplink.NET</description>
+    <releaseNotes>
+        For the latest release notes please have a look at uplink.NET itself.
+    </releaseNotes>
+    <copyright>Copyright YEAR</copyright>
+    <tags>storj tardigrade uplink cloud storage windows</tags>
+    <language>en-US</language>
+  </metadata>
+  <files>
+    <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+	<file target="build\net40\uplink.NET.Win.targets" src="net40\uplink.NET.Win.targets" />
+	<file target="runtimes\win-x86\native\storj_uplink.dll" src="win-x86-dll\storj_uplink-x86.dll" />
+	<file target="runtimes\win-x64\native\storj_uplink.dll" src="win-x64-dll\storj_uplink-x64.dll" />
+  </files>
+</package>

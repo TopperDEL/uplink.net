@@ -1,0 +1,91 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+    definition: '31'
+    buildVersionToDownload: 'latest'
+    artifactName: 'nuspec'
+    targetPath: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get build-artifacts (nuspec)'
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+    definition: '31'
+    buildVersionToDownload: 'latest'
+    artifactName: 'Csharp-files'
+    targetPath: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get build-artifacts (SWIG C#-files)'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      cat storj_uplinkPINVOKE.cs
+      echo 'Local'
+      ls
+      echo 'SWIG-Gen before'
+      cat uplink.NET/uplink.NET/SWIG-Generated/storj_uplinkPINVOKE.cs
+      ls uplink.NET/uplink.NET/SWIG-Generated
+      rm uplink.NET/uplink.NET/SWIG-Generated/*.cs
+      echo 'SWIG-Gen between'
+      ls uplink.NET/uplink.NET/SWIG-Generated
+      mv *.cs uplink.NET/uplink.NET/SWIG-Generated
+      echo 'SWIG-Gen after'
+      ls uplink.NET/uplink.NET/SWIG-Generated
+  displayName: 'Copy SWIG-files to solution'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
+    arguments: '--configuration Release'
+  displayName: 'Build uplink.NET-library'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      mv uplink.NET/uplink.NET/bin/Release/netstandard2.0/uplink.NET.dll uplink.NET.dll
+  displayName: 'Place uplink-DLL at nuget-location'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'uplink.NET.nuspec'
+    packDestination: '$(System.DefaultWorkingDirectory)'
+    versioningScheme: 'off'
+  displayName: 'Pack the Win-Nuget'
+
+- script: |
+    mkdir nuget
+    mv *.nupkg nuget
+    ls
+  displayName: 'Copy binaries to nuget-location'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'nuget'
+    artifact: 'nuget_uplink'
+    publishLocation: 'pipeline'
+  displayName: 'Publish Uplink.NET-Nuget as Artifact'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+  displayName: 'Publish to Dev-Feed'

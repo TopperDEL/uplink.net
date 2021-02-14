@@ -18,33 +18,40 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\ShowErrorCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelDownloadCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelUploadCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\DownloadObjectCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteObjectCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\OpenBucketCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteBucketCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\SaveBucketCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CreateBucketCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\LogoutCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteBucketCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DeleteObjectCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DownloadObjectCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\GoBackCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LoginCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\LogoutCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\OpenBucketCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\SaveBucketCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ShowErrorCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\UploadFileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter\DateTimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Models\LoginData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\LogInPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml.cs">
+      <DependentUpon>BucketContentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketListPage.xaml.cs">
+      <DependentUpon>BucketListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\CreateBucketPage.xaml.cs">
+      <DependentUpon>CreateBucketPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\LogInPage.xaml.cs">
+      <DependentUpon>LogInPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Services\Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LoginService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StorjDictionary.cs">
+      <DependentUpon>StorjDictionary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BaseViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketContentViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BucketEntryViewModel.cs" />
@@ -66,10 +73,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Pages\LogInPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -80,41 +83,27 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_add.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_download.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_upload.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_folder.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_left.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storjlogo.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_logout.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_photo.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_video.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\BucketContentPage.xaml.cs">
-      <DependentUpon>BucketContentPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\BucketListPage.xaml.cs">
-      <DependentUpon>BucketListPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\Users\Tim Parth\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\LogInPage.xaml.cs">
-      <DependentUpon>LogInPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\Users\T\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\Pages\CreateBucketPage.xaml.cs">
-      <DependentUpon>CreateBucketPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="C:\Users\T\Documents\GitHub\uplink.net\uplink.NET\uplink.NET.Sample\uplink.NET.Sample.Shared\ViewModels\CreateBucketViewModel.xaml.cs">
-      <DependentUpon>CreateBucketViewModel.xaml</DependentUpon>
-    </Compile>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\lockscreenlogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storelogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storjlogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_add.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_download.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_file_upload.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_folder.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_left.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_logout.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_photo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\storj_upload_video.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
   </ItemGroup>
 </Project>

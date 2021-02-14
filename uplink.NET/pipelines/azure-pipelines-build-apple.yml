@@ -30,6 +30,9 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
+          ls uplink-c
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           export CGO_ENABLED=1
           export GOARCH=amd64
         displayName: 'Prepare for Target MacOS'
@@ -73,7 +76,10 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
+          ls
           env \
           GOOS='darwin' \
           CC=cc \
@@ -86,9 +92,12 @@ stages:
         displayName: 'Prepare and build target iOs arm64'
 
       - script: |
-          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink-arm64.dylib"
-          rm "uplink-c/storj_uplink.a"
-          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink-arm64.dylib"
+          echo 'Running xcrun...'
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib" --verbose
+          echo 'Removing archive...'
+          rm "uplink-c/storj_uplink-arm64.a"
+          echo 'Running install_name_tool'
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
         displayName: 'Generate Framework for arm64'
 
       - script: |
@@ -105,12 +114,84 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "libstorj_uplink-ios.dylib" "uplink-c/storj_uplink-arm64.dylib" "uplink-c/storj_uplink-simx64.dylib"
+          lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib" "uplink-c/storj_uplink.dylib"
+          #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
+          ls -l
+          echo 'File-Info'
+          file storj_uplink.dylib
+          echo 'lipo info'
+          lipo -info storj_uplink.dylib 
+          echo 'OTOOL'
+          otool -L storj_uplink.dylib
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/libstorj_uplink-ios.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.dylib'
           artifact: 'apple_ios'
           publishLocation: 'pipeline'
-        displayName: 'Publish libstorj_uplink-ios.dylib'
+        displayName: 'Publish storj_uplink.dylib'
+
+- stage: nuget_pack
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack
+      steps:
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_ios'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (iOs-dylib)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+          mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.iOs.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the iOs-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish iOs-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+        displayName: 'Publish to Dev-Feed'

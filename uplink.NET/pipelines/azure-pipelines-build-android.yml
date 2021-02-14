@@ -39,18 +39,16 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=arm
           export GOARM=7
-        displayName: 'Prepare for Target armeabi-v7a'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build armeabi-v7a'
+          export CC=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang
+          export CXX=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi16-clang++
+          go env
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-armeabi-v7a.so
+        displayName: 'Build target armeabi-v7a'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -93,18 +91,16 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=arm64
           export GOARM=
-        displayName: 'Prepare for Target arm64-v8a'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build arm64-v8a'
+          export CC=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
+          export CXX=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++
+          go env
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-arm64-v8a.so
+        displayName: 'Build target arm64-v8a'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -147,18 +143,16 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=386
           export GOARM=
-        displayName: 'Prepare for Target 386'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build 386'
+          export CC=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android16-clang
+          export CXX=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android16-clang++
+          go env
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-386.so
+        displayName: 'Build target 386'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -201,18 +195,16 @@ stages:
         displayName: 'Removing 64bit-checks - otherwise the android 32-bit-so-files would not get generated'
 
       - script: |
+          cd uplink-c
           export GOOS=android
           export CGO_ENABLED=1
           export GOARCH=amd64
           export GOARM=
-        displayName: 'Prepare for Target amd64'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build amd64'
+          export CC=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android21-clang
+          export CXX=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android21-clang++
+          go env
+          go build -ldflags="-s -w" -tags linux -buildmode c-shared -o libstorj_uplink-amd64.so
+        displayName: 'Build target amd64'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -220,3 +212,102 @@ stages:
           artifact: 'android_amd64'
           publishLocation: 'pipeline'
         displayName: 'Publish libstorj_uplink-amd64.so'
+
+- stage: nuget_pack
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_amd64'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (amd64)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_386'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (386)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_arm64-v8a'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (arm64-v8a)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '27'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'android_armeabi-v7a'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (armeabi-v7a)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Droid.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the Android-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy nuget'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_droid'
+          publishLocation: 'pipeline'
+        displayName: 'Publish Android-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+        displayName: 'Publish to Dev-Feed'
