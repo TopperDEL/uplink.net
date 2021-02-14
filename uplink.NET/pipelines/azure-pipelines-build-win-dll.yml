@@ -6,7 +6,7 @@
 name: $(Date:yyyy)
 
 trigger:
-- main
+- release
 
 pool:
   vmImage: 'ubuntu-20.04'
