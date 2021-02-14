@@ -8,86 +8,69 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG {
+namespace uplink.SWIG
+{
 
-<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkAccess.cs
-internal class UplinkAccess : global::System.IDisposable {
-  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
-  protected bool swigCMemOwn;
+    internal class UplinkEncryptionKey : global::System.IDisposable
+    {
+        private global::System.Runtime.InteropServices.HandleRef swigCPtr;
+        protected bool swigCMemOwn;
 
-  internal UplinkAccess(global::System.IntPtr cPtr, bool cMemoryOwn) {
-=======
-internal class UplinkEncryptionKey : global::System.IDisposable {
-  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
-  protected bool swigCMemOwn;
-
-  internal UplinkEncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn) {
->>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkEncryptionKey.cs
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
-  }
-
-<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkAccess.cs
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkAccess obj) {
-    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
-  }
-
-  ~UplinkAccess() {
-=======
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKey obj) {
-    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
-  }
-
-  ~UplinkEncryptionKey() {
->>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkEncryptionKey.cs
-    Dispose(false);
-  }
-
-  public void Dispose() {
-    Dispose(true);
-    global::System.GC.SuppressFinalize(this);
-  }
-
-  protected virtual void Dispose(bool disposing) {
-    lock(this) {
-      if (swigCPtr.Handle != global::System.IntPtr.Zero) {
-        if (swigCMemOwn) {
-          swigCMemOwn = false;
-<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkAccess.cs
-          storj_uplinkPINVOKE.delete_UplinkAccess(swigCPtr);
-=======
-          storj_uplinkPINVOKE.delete_UplinkEncryptionKey(swigCPtr);
->>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkEncryptionKey.cs
+        internal UplinkEncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn)
+        {
+            swigCMemOwn = cMemoryOwn;
+            swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
         }
-        swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
-      }
+
+        internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKey obj)
+        {
+            return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
+        }
+
+        ~UplinkEncryptionKey()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            global::System.GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            lock (this)
+            {
+                if (swigCPtr.Handle != global::System.IntPtr.Zero)
+                {
+                    if (swigCMemOwn)
+                    {
+                        swigCMemOwn = false;
+                        storj_uplinkPINVOKE.delete_UplinkEncryptionKey(swigCPtr);
+                    }
+                    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
+                }
+            }
+        }
+
+        public uint _handle
+        {
+            set
+            {
+                storj_uplinkPINVOKE.UplinkEncryptionKey__handle_set(swigCPtr, value);
+            }
+            get
+            {
+                uint ret = storj_uplinkPINVOKE.UplinkEncryptionKey__handle_get(swigCPtr);
+                return ret;
+            }
+        }
+
+        public UplinkEncryptionKey() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKey(), true)
+        {
+        }
+
     }
-  }
-
-  public uint _handle {
-    set {
-<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkAccess.cs
-      storj_uplinkPINVOKE.UplinkAccess__handle_set(swigCPtr, value);
-    } 
-    get {
-      uint ret = storj_uplinkPINVOKE.UplinkAccess__handle_get(swigCPtr);
-=======
-      storj_uplinkPINVOKE.UplinkEncryptionKey__handle_set(swigCPtr, value);
-    } 
-    get {
-      uint ret = storj_uplinkPINVOKE.UplinkEncryptionKey__handle_get(swigCPtr);
->>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkEncryptionKey.cs
-      return ret;
-    } 
-  }
-
-<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkAccess.cs
-  public UplinkAccess() : this(storj_uplinkPINVOKE.new_UplinkAccess(), true) {
-=======
-  public UplinkEncryptionKey() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKey(), true) {
->>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkEncryptionKey.cs
-  }
-
-}
 
 }
