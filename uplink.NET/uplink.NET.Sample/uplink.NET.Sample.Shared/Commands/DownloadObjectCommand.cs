@@ -42,7 +42,7 @@ namespace uplink.NET.Sample.Shared.Commands
 #if!__ANDROID__
 
             FileSavePicker picker = new FileSavePicker();
-            if (bucketEntryVM.ObjectInfo.Path.Contains("mp4"))
+            if (bucketEntryVM.ObjectInfo.Key.Contains("mp4"))
             {
                 picker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
                 picker.FileTypeChoices.Add("Video", new List<string>() { ".mp4" });
@@ -53,7 +53,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 picker.FileTypeChoices.Add("Image", new List<string>() { ".jpg" });
             }
 
-            picker.SuggestedFileName = bucketEntryVM.ObjectInfo.Path;
+            picker.SuggestedFileName = bucketEntryVM.ObjectInfo.Key;
 
 
             var file = await picker.PickSaveFileAsync();
@@ -64,8 +64,8 @@ namespace uplink.NET.Sample.Shared.Commands
 
             try
             {
-                var bucket = await _bucketService.OpenBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
-                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Path, true);
+                var bucket = await _bucketService.GetBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
+                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Key,new DownloadOptions(), true);
                 downloadOperation.DownloadOperationEnded += async (operation) =>
                 {
                     if (!operation.Failed && !operation.Cancelled)
