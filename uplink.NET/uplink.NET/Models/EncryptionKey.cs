@@ -7,7 +7,7 @@ namespace uplink.NET.Models
 {
     public unsafe class EncryptionKey : IDisposable
     {
-        internal SWIG.EncryptionKeyResult _encryptionKeyResulRef;
+        internal SWIG.UplinkEncryptionKeyResult _encryptionKeyResulRef;
 
         /// <summary>
         /// The EncryptionKey to derive a salted encryption key for users when
@@ -19,7 +19,7 @@ namespace uplink.NET.Models
         {
             fixed (byte* arrayPtr = salt)
             {
-                _encryptionKeyResulRef = SWIG.storj_uplink.derive_encryption_key(passphrase, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)salt.Length);
+                _encryptionKeyResulRef = SWIG.storj_uplink.uplink_derive_encryption_key(passphrase, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)salt.Length);
             }
 
             if (_encryptionKeyResulRef.error != null && !string.IsNullOrEmpty(_encryptionKeyResulRef.error.message))
@@ -30,7 +30,7 @@ namespace uplink.NET.Models
         {
             if (_encryptionKeyResulRef != null)
             {
-                SWIG.storj_uplink.free_encryption_key_result(_encryptionKeyResulRef);
+                SWIG.storj_uplink.uplink_free_encryption_key_result(_encryptionKeyResulRef);
                 _encryptionKeyResulRef.Dispose();
                 _encryptionKeyResulRef = null;
             }

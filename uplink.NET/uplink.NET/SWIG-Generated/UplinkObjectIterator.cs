@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class SharePrefix : global::System.IDisposable {
+internal class UplinkObjectIterator : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal SharePrefix(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkObjectIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(SharePrefix obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkObjectIterator obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SharePrefix() {
+  ~UplinkObjectIterator() {
     Dispose(false);
   }
 
@@ -37,34 +37,24 @@ internal class SharePrefix : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_SharePrefix(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkObjectIterator(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public string bucket {
+  public uint _handle {
     set {
-      storj_uplinkPINVOKE.SharePrefix_bucket_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkObjectIterator__handle_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.SharePrefix_bucket_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkObjectIterator__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public string prefix {
-    set {
-      storj_uplinkPINVOKE.SharePrefix_prefix_set(swigCPtr, value);
-    } 
-    get {
-      string ret = storj_uplinkPINVOKE.SharePrefix_prefix_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public SharePrefix() : this(storj_uplinkPINVOKE.new_SharePrefix(), true) {
+  public UplinkObjectIterator() : this(storj_uplinkPINVOKE.new_UplinkObjectIterator(), true) {
   }
 
 }

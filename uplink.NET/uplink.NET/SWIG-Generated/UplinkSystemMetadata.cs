@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class ProjectResult : global::System.IDisposable {
+internal class UplinkSystemMetadata : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal ProjectResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkSystemMetadata(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ProjectResult obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkSystemMetadata obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~ProjectResult() {
+  ~UplinkSystemMetadata() {
     Dispose(false);
   }
 
@@ -37,36 +37,44 @@ internal class ProjectResult : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_ProjectResult(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkSystemMetadata(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public Project project {
+  public long created {
     set {
-      storj_uplinkPINVOKE.ProjectResult_project_set(swigCPtr, Project.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkSystemMetadata_created_set(swigCPtr, value);
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.ProjectResult_project_get(swigCPtr);
-      Project ret = (cPtr == global::System.IntPtr.Zero) ? null : new Project(cPtr, false);
+      long ret = storj_uplinkPINVOKE.UplinkSystemMetadata_created_get(swigCPtr);
       return ret;
     } 
   }
 
-  public Error error {
+  public long expires {
     set {
-      storj_uplinkPINVOKE.ProjectResult_error_set(swigCPtr, Error.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkSystemMetadata_expires_set(swigCPtr, value);
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.ProjectResult_error_get(swigCPtr);
-      Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+      long ret = storj_uplinkPINVOKE.UplinkSystemMetadata_expires_get(swigCPtr);
       return ret;
     } 
   }
 
-  public ProjectResult() : this(storj_uplinkPINVOKE.new_ProjectResult(), true) {
+  public long content_length {
+    set {
+      storj_uplinkPINVOKE.UplinkSystemMetadata_content_length_set(swigCPtr, value);
+    } 
+    get {
+      long ret = storj_uplinkPINVOKE.UplinkSystemMetadata_content_length_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public UplinkSystemMetadata() : this(storj_uplinkPINVOKE.new_UplinkSystemMetadata(), true) {
   }
 
 }

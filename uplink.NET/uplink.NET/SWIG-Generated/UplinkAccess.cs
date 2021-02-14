@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Handle : global::System.IDisposable {
+internal class UplinkAccess : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Handle(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkAccess(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Handle obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkAccess obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Handle() {
+  ~UplinkAccess() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class Handle : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Handle(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkAccess(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,15 +46,15 @@ internal class Handle : global::System.IDisposable {
 
   public uint _handle {
     set {
-      storj_uplinkPINVOKE.Handle__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkAccess__handle_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.Handle__handle_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkAccess__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public Handle() : this(storj_uplinkPINVOKE.new_Handle(), true) {
+  public UplinkAccess() : this(storj_uplinkPINVOKE.new_UplinkAccess(), true) {
   }
 
 }

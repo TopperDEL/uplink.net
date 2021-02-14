@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Upload : global::System.IDisposable {
+internal class UplinkDownload : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Upload(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkDownload(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Upload obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkDownload obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Upload() {
+  ~UplinkDownload() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class Upload : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Upload(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkDownload(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,15 +46,15 @@ internal class Upload : global::System.IDisposable {
 
   public uint _handle {
     set {
-      storj_uplinkPINVOKE.Upload__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkDownload__handle_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.Upload__handle_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkDownload__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public Upload() : this(storj_uplinkPINVOKE.new_Upload(), true) {
+  public UplinkDownload() : this(storj_uplinkPINVOKE.new_UplinkDownload(), true) {
   }
 
 }

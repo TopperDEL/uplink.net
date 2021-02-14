@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Error : global::System.IDisposable {
+internal class UplinkBucket : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Error(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkBucket(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Error obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkBucket obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Error() {
+  ~UplinkBucket() {
     Dispose(false);
   }
 
@@ -37,34 +37,34 @@ internal class Error : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Error(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkBucket(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public int code {
+  public string name {
     set {
-      storj_uplinkPINVOKE.Error_code_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkBucket_name_set(swigCPtr, value);
     } 
     get {
-      int ret = storj_uplinkPINVOKE.Error_code_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkBucket_name_get(swigCPtr);
       return ret;
     } 
   }
 
-  public string message {
+  public long created {
     set {
-      storj_uplinkPINVOKE.Error_message_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkBucket_created_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.Error_message_get(swigCPtr);
+      long ret = storj_uplinkPINVOKE.UplinkBucket_created_get(swigCPtr);
       return ret;
     } 
   }
 
-  public Error() : this(storj_uplinkPINVOKE.new_Error(), true) {
+  public UplinkBucket() : this(storj_uplinkPINVOKE.new_UplinkBucket(), true) {
   }
 
 }

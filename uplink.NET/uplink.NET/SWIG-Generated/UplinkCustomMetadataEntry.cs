@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class CustomMetadataEntry : global::System.IDisposable {
+internal class UplinkCustomMetadataEntry : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal CustomMetadataEntry(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkCustomMetadataEntry(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(CustomMetadataEntry obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkCustomMetadataEntry obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~CustomMetadataEntry() {
+  ~UplinkCustomMetadataEntry() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class CustomMetadataEntry : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_CustomMetadataEntry(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkCustomMetadataEntry(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,45 +46,45 @@ internal class CustomMetadataEntry : global::System.IDisposable {
 
   public string key {
     set {
-      storj_uplinkPINVOKE.CustomMetadataEntry_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.CustomMetadataEntry_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_get(swigCPtr);
       return ret;
     } 
   }
 
   public uint key_length {
     set {
-      storj_uplinkPINVOKE.CustomMetadataEntry_key_length_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_length_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.CustomMetadataEntry_key_length_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_length_get(swigCPtr);
       return ret;
     } 
   }
 
   public string value {
     set {
-      storj_uplinkPINVOKE.CustomMetadataEntry_value_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.CustomMetadataEntry_value_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_get(swigCPtr);
       return ret;
     } 
   }
 
   public uint value_length {
     set {
-      storj_uplinkPINVOKE.CustomMetadataEntry_value_length_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_length_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.CustomMetadataEntry_value_length_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_length_get(swigCPtr);
       return ret;
     } 
   }
 
-  public CustomMetadataEntry() : this(storj_uplinkPINVOKE.new_CustomMetadataEntry(), true) {
+  public UplinkCustomMetadataEntry() : this(storj_uplinkPINVOKE.new_UplinkCustomMetadataEntry(), true) {
   }
 
 }

@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class SystemMetadata : global::System.IDisposable {
+internal class UplinkSharePrefix : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal SystemMetadata(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkSharePrefix(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(SystemMetadata obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkSharePrefix obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SystemMetadata() {
+  ~UplinkSharePrefix() {
     Dispose(false);
   }
 
@@ -37,44 +37,34 @@ internal class SystemMetadata : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_SystemMetadata(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkSharePrefix(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public long created {
+  public string bucket {
     set {
-      storj_uplinkPINVOKE.SystemMetadata_created_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkSharePrefix_bucket_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.SystemMetadata_created_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkSharePrefix_bucket_get(swigCPtr);
       return ret;
     } 
   }
 
-  public long expires {
+  public string prefix {
     set {
-      storj_uplinkPINVOKE.SystemMetadata_expires_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkSharePrefix_prefix_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.SystemMetadata_expires_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkSharePrefix_prefix_get(swigCPtr);
       return ret;
     } 
   }
 
-  public long content_length {
-    set {
-      storj_uplinkPINVOKE.SystemMetadata_content_length_set(swigCPtr, value);
-    } 
-    get {
-      long ret = storj_uplinkPINVOKE.SystemMetadata_content_length_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public SystemMetadata() : this(storj_uplinkPINVOKE.new_SystemMetadata(), true) {
+  public UplinkSharePrefix() : this(storj_uplinkPINVOKE.new_UplinkSharePrefix(), true) {
   }
 
 }

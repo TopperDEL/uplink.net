@@ -10,7 +10,7 @@ namespace uplink.NET.Models
         public DateTime Expires { get; set; }
         public long ContentLength { get; set; }
 
-        internal static SystemMetadata FromSWIG(SWIG.SystemMetadata original)
+        internal static SystemMetadata FromSWIG(SWIG.UplinkSystemMetadata original)
         {
             SystemMetadata ret = new SystemMetadata();
             ret.ContentLength = original.content_length;
@@ -20,9 +20,9 @@ namespace uplink.NET.Models
             return ret;
         }
 
-        internal static SWIG.SystemMetadata ToSWIG(SystemMetadata original)
+        internal static SWIG.UplinkSystemMetadata ToSWIG(SystemMetadata original)
         {
-            SWIG.SystemMetadata ret = new SWIG.SystemMetadata();
+            SWIG.UplinkSystemMetadata ret = new SWIG.UplinkSystemMetadata();
             ret.content_length = original.ContentLength;
             ret.created = new DateTimeOffset(original.Created).ToUnixTimeSeconds();
             ret.expires = new DateTimeOffset(original.Expires).ToUnixTimeSeconds();

@@ -8,9 +8,9 @@ namespace uplink.NET.Models
     {
         public string Cursor { get; set; }
 
-        internal SWIG.ListBucketsOptions ToSWIG()
+        internal SWIG.UplinkListBucketsOptions ToSWIG()
         {
-            SWIG.ListBucketsOptions ret = new SWIG.ListBucketsOptions();
+            SWIG.UplinkListBucketsOptions ret = new SWIG.UplinkListBucketsOptions();
             ret.cursor = Cursor;
 
             return ret;

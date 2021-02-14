@@ -30,9 +30,9 @@ namespace uplink.NET.Models
         /// </summary>
         public bool Custom { get; set; }
 
-        internal SWIG.ListObjectsOptions ToSWIG()
+        internal SWIG.UplinkListObjectsOptions ToSWIG()
         {
-            SWIG.ListObjectsOptions ret = new SWIG.ListObjectsOptions();
+            SWIG.UplinkListObjectsOptions ret = new SWIG.UplinkListObjectsOptions();
             ret.prefix = Prefix;
             ret.cursor = Cursor;
             ret.recursive = Recursive;

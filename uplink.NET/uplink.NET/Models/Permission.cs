@@ -19,9 +19,9 @@ namespace uplink.NET.Models
             NotAfter = DateTime.MaxValue;
         }
 
-        internal SWIG.Permission ToSWIG()
+        internal SWIG.UplinkPermission ToSWIG()
         {
-            SWIG.Permission permission = new SWIG.Permission();
+            SWIG.UplinkPermission permission = new SWIG.UplinkPermission();
             permission.allow_download = AllowDownload;
             permission.allow_upload = AllowUpload;
             permission.allow_list = AllowList;
