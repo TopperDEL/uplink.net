@@ -32,7 +32,7 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
+            SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
 
             UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
             if (immediateStart)
@@ -45,7 +45,7 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
+            SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
 
             UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
             if (immediateStart)
@@ -58,7 +58,7 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
 
-            SWIG.UploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
+            SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG));
 
             ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
 
@@ -69,12 +69,12 @@ namespace uplink.NET.Services
         {
             var downloadOptionsSWIG = downloadOptions.ToSWIG();
 
-            SWIG.DownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG));
+            SWIG.UplinkDownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG));
 
             if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                 throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
 
-            SWIG.ObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.download_info(downloadResult.download));
+            SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_info(downloadResult.download));
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
 
@@ -82,34 +82,34 @@ namespace uplink.NET.Services
             if (immediateStart)
                 download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
 
-            SWIG.storj_uplink.free_object_result(objectResult);
+            SWIG.storj_uplink.uplink_free_object_result(objectResult);
 
             return download;
         }
 
         public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
-            SWIG.ObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.list_objects(_access._project, bucket.Name, listObjectsOptions.ToSWIG()));
+            SWIG.UplinkObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_objects(_access._project, bucket.Name, listObjectsOptions.ToSWIG()));
 
-            SWIG.Error error = SWIG.storj_uplink.object_iterator_err(objectIterator);
+            SWIG.UplinkError error = SWIG.storj_uplink.uplink_object_iterator_err(objectIterator);
             if (error != null && !string.IsNullOrEmpty(error.message))
                 throw new BucketListException(error.message);
-            SWIG.storj_uplink.free_error(error);
+            SWIG.storj_uplink.uplink_free_error(error);
 
             ObjectList objectList = new ObjectList();
 
-            while (SWIG.storj_uplink.object_iterator_next(objectIterator))
+            while (SWIG.storj_uplink.uplink_object_iterator_next(objectIterator))
             {
-                objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(objectIterator), true));
+                objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.uplink_object_iterator_item(objectIterator), true));
             }
-            SWIG.storj_uplink.free_object_iterator(objectIterator);
+            SWIG.storj_uplink.uplink_free_object_iterator(objectIterator);
 
             return objectList;
         }
 
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
-            var objectResult = await Task.Run(() => SWIG.storj_uplink.stat_object(_access._project, bucket.Name, targetPath));
+            var objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_object(_access._project, bucket.Name, targetPath));
 
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
@@ -119,12 +119,12 @@ namespace uplink.NET.Services
 
         public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
-            SWIG.ObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.delete_object(_access._project, bucket.Name, targetPath));
+            SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_delete_object(_access._project, bucket.Name, targetPath));
 
             if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 throw new ObjectNotFoundException(targetPath, objectResult.error.message);
 
-            SWIG.storj_uplink.free_object_result(objectResult);
+            SWIG.storj_uplink.uplink_free_object_result(objectResult);
         }
     }
 }

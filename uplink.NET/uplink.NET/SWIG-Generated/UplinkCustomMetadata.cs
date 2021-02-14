@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class EncryptionKey : global::System.IDisposable {
+internal class UplinkCustomMetadata : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal EncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkCustomMetadata(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(EncryptionKey obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkCustomMetadata obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~EncryptionKey() {
+  ~UplinkCustomMetadata() {
     Dispose(false);
   }
 
@@ -37,24 +37,35 @@ internal class EncryptionKey : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_EncryptionKey(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkCustomMetadata(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public uint _handle {
+  public UplinkCustomMetadataEntry entries {
     set {
-      storj_uplinkPINVOKE.EncryptionKey__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadata_entries_set(swigCPtr, UplinkCustomMetadataEntry.getCPtr(value));
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.EncryptionKey__handle_get(swigCPtr);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkCustomMetadata_entries_get(swigCPtr);
+      UplinkCustomMetadataEntry ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkCustomMetadataEntry(cPtr, false);
       return ret;
     } 
   }
 
-  public EncryptionKey() : this(storj_uplinkPINVOKE.new_EncryptionKey(), true) {
+  public uint count {
+    set {
+      storj_uplinkPINVOKE.UplinkCustomMetadata_count_set(swigCPtr, value);
+    } 
+    get {
+      uint ret = storj_uplinkPINVOKE.UplinkCustomMetadata_count_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public UplinkCustomMetadata() : this(storj_uplinkPINVOKE.new_UplinkCustomMetadata(), true) {
   }
 
 }

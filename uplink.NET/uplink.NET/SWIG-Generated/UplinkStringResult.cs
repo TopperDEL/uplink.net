@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Project : global::System.IDisposable {
+internal class UplinkStringResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Project(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkStringResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Project obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkStringResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Project() {
+  ~UplinkStringResult() {
     Dispose(false);
   }
 
@@ -37,24 +37,35 @@ internal class Project : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Project(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkStringResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public uint _handle {
+  public string string_ {
     set {
-      storj_uplinkPINVOKE.Project__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkStringResult_string__set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.Project__handle_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkStringResult_string__get(swigCPtr);
       return ret;
     } 
   }
 
-  public Project() : this(storj_uplinkPINVOKE.new_Project(), true) {
+  public UplinkError error {
+    set {
+      storj_uplinkPINVOKE.UplinkStringResult_error_set(swigCPtr, UplinkError.getCPtr(value));
+    } 
+    get {
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkStringResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+      return ret;
+    } 
+  }
+
+  public UplinkStringResult() : this(storj_uplinkPINVOKE.new_UplinkStringResult(), true) {
   }
 
 }

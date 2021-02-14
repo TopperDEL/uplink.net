@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class UploadOptions : global::System.IDisposable {
+internal class UplinkDownloadOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal UploadOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkDownloadOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UploadOptions obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkDownloadOptions obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~UploadOptions() {
+  ~UplinkDownloadOptions() {
     Dispose(false);
   }
 
@@ -37,24 +37,34 @@ internal class UploadOptions : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_UploadOptions(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkDownloadOptions(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public long expires {
+  public long offset {
     set {
-      storj_uplinkPINVOKE.UploadOptions_expires_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkDownloadOptions_offset_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.UploadOptions_expires_get(swigCPtr);
+      long ret = storj_uplinkPINVOKE.UplinkDownloadOptions_offset_get(swigCPtr);
       return ret;
     } 
   }
 
-  public UploadOptions() : this(storj_uplinkPINVOKE.new_UploadOptions(), true) {
+  public long length {
+    set {
+      storj_uplinkPINVOKE.UplinkDownloadOptions_length_set(swigCPtr, value);
+    } 
+    get {
+      long ret = storj_uplinkPINVOKE.UplinkDownloadOptions_length_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public UplinkDownloadOptions() : this(storj_uplinkPINVOKE.new_UplinkDownloadOptions(), true) {
   }
 
 }

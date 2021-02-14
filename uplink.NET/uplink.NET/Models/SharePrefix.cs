@@ -9,9 +9,9 @@ namespace uplink.NET.Models
         public string Bucket { get; set; }
         public string Prefix { get; set; }
 
-        internal SWIG.SharePrefix ToSWIG()
+        internal SWIG.UplinkSharePrefix ToSWIG()
         {
-            SWIG.SharePrefix sharePrefix = new SWIG.SharePrefix();
+            SWIG.UplinkSharePrefix sharePrefix = new SWIG.UplinkSharePrefix();
             sharePrefix.bucket = Bucket;
             sharePrefix.prefix = Prefix;
 

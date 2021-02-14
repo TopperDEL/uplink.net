@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Object : global::System.IDisposable {
+internal class UplinkObject : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Object(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkObject(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Object obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkObject obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Object() {
+  ~UplinkObject() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class Object : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Object(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkObject(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,47 +46,47 @@ internal class Object : global::System.IDisposable {
 
   public string key {
     set {
-      storj_uplinkPINVOKE.Object_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkObject_key_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.Object_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkObject_key_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool is_prefix {
     set {
-      storj_uplinkPINVOKE.Object_is_prefix_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkObject_is_prefix_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.Object_is_prefix_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkObject_is_prefix_get(swigCPtr);
       return ret;
     } 
   }
 
-  public SystemMetadata system {
+  public UplinkSystemMetadata system {
     set {
-      storj_uplinkPINVOKE.Object_system_set(swigCPtr, SystemMetadata.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkObject_system_set(swigCPtr, UplinkSystemMetadata.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.Object_system_get(swigCPtr);
-      SystemMetadata ret = (cPtr == global::System.IntPtr.Zero) ? null : new SystemMetadata(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkObject_system_get(swigCPtr);
+      UplinkSystemMetadata ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkSystemMetadata(cPtr, false);
       return ret;
     } 
   }
 
-  public CustomMetadata custom {
+  public UplinkCustomMetadata custom {
     set {
-      storj_uplinkPINVOKE.Object_custom_set(swigCPtr, CustomMetadata.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkObject_custom_set(swigCPtr, UplinkCustomMetadata.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.Object_custom_get(swigCPtr);
-      CustomMetadata ret = (cPtr == global::System.IntPtr.Zero) ? null : new CustomMetadata(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkObject_custom_get(swigCPtr);
+      UplinkCustomMetadata ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkCustomMetadata(cPtr, false);
       return ret;
     } 
   }
 
-  public Object() : this(storj_uplinkPINVOKE.new_Object(), true) {
+  public UplinkObject() : this(storj_uplinkPINVOKE.new_UplinkObject(), true) {
   }
 
 }

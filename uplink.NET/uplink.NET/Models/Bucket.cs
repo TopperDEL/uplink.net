@@ -9,9 +9,9 @@ namespace uplink.NET.Models
     /// </summary>
     public class Bucket: IDisposable
     {
-        internal SWIG.Bucket _bucketRef;
-        internal SWIG.BucketResult _bucketResultRef;
-        internal SWIG.Project _projectRef;
+        internal SWIG.UplinkBucket _bucketRef;
+        internal SWIG.UplinkBucketResult _bucketResultRef;
+        internal SWIG.UplinkProject _projectRef;
 
         /// <summary>
         /// The name of the bucket
@@ -40,7 +40,7 @@ namespace uplink.NET.Models
 
         }
 
-        internal static Bucket FromSWIG(SWIG.Bucket original, SWIG.Project projectRef, SWIG.BucketResult bucketResult = null)
+        internal static Bucket FromSWIG(SWIG.UplinkBucket original, SWIG.UplinkProject projectRef, SWIG.UplinkBucketResult bucketResult = null)
         {
             Bucket ret = new Bucket();
             ret._bucketRef = original;
@@ -54,13 +54,13 @@ namespace uplink.NET.Models
         {
             if(_bucketRef != null)
             {
-                SWIG.storj_uplink.free_bucket(_bucketRef);
+                SWIG.storj_uplink.uplink_free_bucket(_bucketRef);
                 _bucketRef.Dispose();
                 _bucketRef = null;
             }
             if (_bucketResultRef != null)
             {
-                SWIG.storj_uplink.free_bucket_result(_bucketResultRef);
+                SWIG.storj_uplink.uplink_free_bucket_result(_bucketResultRef);
                 _bucketResultRef.Dispose();
                 _bucketResultRef = null;
             }

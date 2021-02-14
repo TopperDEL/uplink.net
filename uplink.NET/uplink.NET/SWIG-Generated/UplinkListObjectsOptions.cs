@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class ListObjectsOptions : global::System.IDisposable {
+internal class UplinkListObjectsOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal ListObjectsOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkListObjectsOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ListObjectsOptions obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkListObjectsOptions obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~ListObjectsOptions() {
+  ~UplinkListObjectsOptions() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class ListObjectsOptions : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_ListObjectsOptions(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkListObjectsOptions(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,55 +46,55 @@ internal class ListObjectsOptions : global::System.IDisposable {
 
   public string prefix {
     set {
-      storj_uplinkPINVOKE.ListObjectsOptions_prefix_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.ListObjectsOptions_prefix_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_get(swigCPtr);
       return ret;
     } 
   }
 
   public string cursor {
     set {
-      storj_uplinkPINVOKE.ListObjectsOptions_cursor_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.ListObjectsOptions_cursor_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool recursive {
     set {
-      storj_uplinkPINVOKE.ListObjectsOptions_recursive_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_recursive_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.ListObjectsOptions_recursive_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_recursive_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool system {
     set {
-      storj_uplinkPINVOKE.ListObjectsOptions_system_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_system_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.ListObjectsOptions_system_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_system_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool custom {
     set {
-      storj_uplinkPINVOKE.ListObjectsOptions_custom_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_custom_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.ListObjectsOptions_custom_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_custom_get(swigCPtr);
       return ret;
     } 
   }
 
-  public ListObjectsOptions() : this(storj_uplinkPINVOKE.new_ListObjectsOptions(), true) {
+  public UplinkListObjectsOptions() : this(storj_uplinkPINVOKE.new_UplinkListObjectsOptions(), true) {
   }
 
 }

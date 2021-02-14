@@ -32,14 +32,14 @@ namespace uplink.NET.Models
             Items = new List<Object>();
         }
 
-        internal static ObjectList FromSWIG(SWIG.ObjectIterator iterator)
+        internal static ObjectList FromSWIG(SWIG.UplinkObjectIterator iterator)
         {
             ObjectList ret = new ObjectList();
             ret.Items = new List<Object>();
             
-            while(SWIG.storj_uplink.object_iterator_next(iterator))
+            while(SWIG.storj_uplink.uplink_object_iterator_next(iterator))
             {
-                ret.Items.Add(Object.FromSWIG(SWIG.storj_uplink.object_iterator_item(iterator)));
+                ret.Items.Add(Object.FromSWIG(SWIG.storj_uplink.uplink_object_iterator_item(iterator)));
             }
 
             return ret;

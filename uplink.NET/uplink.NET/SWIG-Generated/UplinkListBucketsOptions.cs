@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class CustomMetadata : global::System.IDisposable {
+internal class UplinkListBucketsOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal CustomMetadata(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkListBucketsOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(CustomMetadata obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkListBucketsOptions obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~CustomMetadata() {
+  ~UplinkListBucketsOptions() {
     Dispose(false);
   }
 
@@ -37,35 +37,24 @@ internal class CustomMetadata : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_CustomMetadata(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkListBucketsOptions(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public CustomMetadataEntry entries {
+  public string cursor {
     set {
-      storj_uplinkPINVOKE.CustomMetadata_entries_set(swigCPtr, CustomMetadataEntry.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_set(swigCPtr, value);
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.CustomMetadata_entries_get(swigCPtr);
-      CustomMetadataEntry ret = (cPtr == global::System.IntPtr.Zero) ? null : new CustomMetadataEntry(cPtr, false);
+      string ret = storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_get(swigCPtr);
       return ret;
     } 
   }
 
-  public uint count {
-    set {
-      storj_uplinkPINVOKE.CustomMetadata_count_set(swigCPtr, value);
-    } 
-    get {
-      uint ret = storj_uplinkPINVOKE.CustomMetadata_count_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public CustomMetadata() : this(storj_uplinkPINVOKE.new_CustomMetadata(), true) {
+  public UplinkListBucketsOptions() : this(storj_uplinkPINVOKE.new_UplinkListBucketsOptions(), true) {
   }
 
 }

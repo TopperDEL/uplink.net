@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class ObjectResult : global::System.IDisposable {
+internal class UplinkProjectResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal ObjectResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkProjectResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ObjectResult obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkProjectResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~ObjectResult() {
+  ~UplinkProjectResult() {
     Dispose(false);
   }
 
@@ -37,36 +37,36 @@ internal class ObjectResult : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_ObjectResult(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkProjectResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public Object object_ {
+  public UplinkProject project {
     set {
-      storj_uplinkPINVOKE.ObjectResult_object__set(swigCPtr, Object.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkProjectResult_project_set(swigCPtr, UplinkProject.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.ObjectResult_object__get(swigCPtr);
-      Object ret = (cPtr == global::System.IntPtr.Zero) ? null : new Object(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkProjectResult_project_get(swigCPtr);
+      UplinkProject ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkProject(cPtr, false);
       return ret;
     } 
   }
 
-  public Error error {
+  public UplinkError error {
     set {
-      storj_uplinkPINVOKE.ObjectResult_error_set(swigCPtr, Error.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkProjectResult_error_set(swigCPtr, UplinkError.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.ObjectResult_error_get(swigCPtr);
-      Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkProjectResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
       return ret;
     } 
   }
 
-  public ObjectResult() : this(storj_uplinkPINVOKE.new_ObjectResult(), true) {
+  public UplinkProjectResult() : this(storj_uplinkPINVOKE.new_UplinkProjectResult(), true) {
   }
 
 }

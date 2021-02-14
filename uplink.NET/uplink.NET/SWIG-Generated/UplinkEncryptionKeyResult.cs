@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class EncryptionKeyResult : global::System.IDisposable {
+internal class UplinkEncryptionKeyResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal EncryptionKeyResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkEncryptionKeyResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(EncryptionKeyResult obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKeyResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~EncryptionKeyResult() {
+  ~UplinkEncryptionKeyResult() {
     Dispose(false);
   }
 
@@ -37,36 +37,36 @@ internal class EncryptionKeyResult : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_EncryptionKeyResult(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkEncryptionKeyResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public EncryptionKey encryption_key {
+  public UplinkEncryptionKey encryption_key {
     set {
-      storj_uplinkPINVOKE.EncryptionKeyResult_encryption_key_set(swigCPtr, EncryptionKey.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkEncryptionKeyResult_encryption_key_set(swigCPtr, UplinkEncryptionKey.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.EncryptionKeyResult_encryption_key_get(swigCPtr);
-      EncryptionKey ret = (cPtr == global::System.IntPtr.Zero) ? null : new EncryptionKey(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkEncryptionKeyResult_encryption_key_get(swigCPtr);
+      UplinkEncryptionKey ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkEncryptionKey(cPtr, false);
       return ret;
     } 
   }
 
-  public Error error {
+  public UplinkError error {
     set {
-      storj_uplinkPINVOKE.EncryptionKeyResult_error_set(swigCPtr, Error.getCPtr(value));
+      storj_uplinkPINVOKE.UplinkEncryptionKeyResult_error_set(swigCPtr, UplinkError.getCPtr(value));
     } 
     get {
-      global::System.IntPtr cPtr = storj_uplinkPINVOKE.EncryptionKeyResult_error_get(swigCPtr);
-      Error ret = (cPtr == global::System.IntPtr.Zero) ? null : new Error(cPtr, false);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkEncryptionKeyResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
       return ret;
     } 
   }
 
-  public EncryptionKeyResult() : this(storj_uplinkPINVOKE.new_EncryptionKeyResult(), true) {
+  public UplinkEncryptionKeyResult() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKeyResult(), true) {
   }
 
 }

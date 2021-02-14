@@ -24,9 +24,9 @@ namespace uplink.NET.Models
             Offset = 0;
         }
 
-        internal SWIG.DownloadOptions ToSWIG()
+        internal SWIG.UplinkDownloadOptions ToSWIG()
         {
-            SWIG.DownloadOptions options = new SWIG.DownloadOptions();
+            SWIG.UplinkDownloadOptions options = new SWIG.UplinkDownloadOptions();
             options.length = Length;
             options.offset = Offset;
             

@@ -24,7 +24,7 @@ namespace uplink.NET.Models
     {
         internal static Mutex customMetadataMutex = new Mutex();
         private Stream _byteStreamToUpload;
-        private SWIG.UploadResult _uploadResult;
+        private SWIG.UplinkUploadResult _uploadResult;
         private Task _uploadTask;
         private bool _cancelled;
         private CustomMetadata _customMetadata;
@@ -102,7 +102,7 @@ namespace uplink.NET.Models
                 return (float)BytesSent / (float)TotalBytes * 100f;
             }
         }
-        internal UploadOperation(Stream stream, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+        internal UploadOperation(Stream stream, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
             _byteStreamToUpload = stream;
             _uploadResult = uploadResult;
@@ -117,7 +117,7 @@ namespace uplink.NET.Models
             }
         }
 
-        internal UploadOperation(byte[] bytesToUpload, SWIG.UploadResult uploadResult, string objectName, CustomMetadata customMetadata = null) :
+        internal UploadOperation(byte[] bytesToUpload, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null) :
             this(new MemoryStream(bytesToUpload), uploadResult, objectName, customMetadata)
         {
         }
@@ -168,7 +168,7 @@ namespace uplink.NET.Models
                             byte[] targetArray = bytesToUpload.Take((int)bytesToUploadCount).ToArray();
                             fixed (byte* arrayPtr = targetArray)
                             {
-                                SWIG.WriteResult sentResult = SWIG.storj_uplink.upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount);
+                                SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount);
 
                                 if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                                 {
@@ -181,10 +181,10 @@ namespace uplink.NET.Models
                                 else
                                     BytesSent += sentResult.bytes_written;
 
-                                SWIG.storj_uplink.free_write_result(sentResult);
+                                SWIG.storj_uplink.uplink_free_write_result(sentResult);
                                 if (_cancelled)
                                 {
-                                    SWIG.Error abortError = SWIG.storj_uplink.upload_abort(_uploadResult.upload);
+                                    SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_uploadResult.upload);
                                     if (abortError != null && !string.IsNullOrEmpty(abortError.message))
                                     {
                                         Failed = true;
@@ -192,7 +192,7 @@ namespace uplink.NET.Models
                                     }
                                     else
                                         Cancelled = true;
-                                    SWIG.storj_uplink.free_error(abortError);
+                                    SWIG.storj_uplink.uplink_free_error(abortError);
 
                                     Running = false;
                                     UploadOperationEnded?.Invoke(this);
@@ -217,7 +217,7 @@ namespace uplink.NET.Models
                             try
                             {
                                 _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                                SWIG.Error customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
+                                SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
                                 if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                                 {
                                     _errorMessage = customMetadataError.message;
@@ -225,7 +225,7 @@ namespace uplink.NET.Models
                                     UploadOperationEnded?.Invoke(this);
                                     return;
                                 }
-                                SWIG.storj_uplink.free_error(customMetadataError);
+                                SWIG.storj_uplink.uplink_free_error(customMetadataError);
                             }
                             finally
                             {
@@ -234,16 +234,16 @@ namespace uplink.NET.Models
                         }
                     }
 
-                    SWIG.Error commitError = SWIG.storj_uplink.upload_commit(_uploadResult.upload);
+                    SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_uploadResult.upload);
                     if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                     {
                         _errorMessage = commitError.message;
                         Failed = true;
                         UploadOperationEnded?.Invoke(this);
-                        SWIG.storj_uplink.free_error(commitError);
+                        SWIG.storj_uplink.uplink_free_error(commitError);
                         return;
                     }
-                    SWIG.storj_uplink.free_error(commitError);
+                    SWIG.storj_uplink.uplink_free_error(commitError);
                 }
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
@@ -271,7 +271,7 @@ namespace uplink.NET.Models
         {
             if (_uploadResult != null)
             {
-                SWIG.storj_uplink.free_upload_result(_uploadResult);
+                SWIG.storj_uplink.uplink_free_upload_result(_uploadResult);
                 _uploadResult.Dispose();
                 _uploadResult = null;
             }

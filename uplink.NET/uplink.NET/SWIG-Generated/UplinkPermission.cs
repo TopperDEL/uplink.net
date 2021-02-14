@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Permission : global::System.IDisposable {
+internal class UplinkPermission : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Permission(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkPermission(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Permission obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkPermission obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Permission() {
+  ~UplinkPermission() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class Permission : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Permission(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkPermission(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,65 +46,65 @@ internal class Permission : global::System.IDisposable {
 
   public bool allow_download {
     set {
-      storj_uplinkPINVOKE.Permission_allow_download_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_allow_download_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.Permission_allow_download_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkPermission_allow_download_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool allow_upload {
     set {
-      storj_uplinkPINVOKE.Permission_allow_upload_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_allow_upload_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.Permission_allow_upload_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkPermission_allow_upload_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool allow_list {
     set {
-      storj_uplinkPINVOKE.Permission_allow_list_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_allow_list_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.Permission_allow_list_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkPermission_allow_list_get(swigCPtr);
       return ret;
     } 
   }
 
   public bool allow_delete {
     set {
-      storj_uplinkPINVOKE.Permission_allow_delete_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_allow_delete_set(swigCPtr, value);
     } 
     get {
-      bool ret = storj_uplinkPINVOKE.Permission_allow_delete_get(swigCPtr);
+      bool ret = storj_uplinkPINVOKE.UplinkPermission_allow_delete_get(swigCPtr);
       return ret;
     } 
   }
 
   public long not_before {
     set {
-      storj_uplinkPINVOKE.Permission_not_before_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_not_before_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.Permission_not_before_get(swigCPtr);
+      long ret = storj_uplinkPINVOKE.UplinkPermission_not_before_get(swigCPtr);
       return ret;
     } 
   }
 
   public long not_after {
     set {
-      storj_uplinkPINVOKE.Permission_not_after_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPermission_not_after_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.Permission_not_after_get(swigCPtr);
+      long ret = storj_uplinkPINVOKE.UplinkPermission_not_after_get(swigCPtr);
       return ret;
     } 
   }
 
-  public Permission() : this(storj_uplinkPINVOKE.new_Permission(), true) {
+  public UplinkPermission() : this(storj_uplinkPINVOKE.new_UplinkPermission(), true) {
   }
 
 }

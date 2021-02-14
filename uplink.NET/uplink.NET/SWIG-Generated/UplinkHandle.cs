@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class Config : global::System.IDisposable {
+internal class UplinkHandle : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal Config(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkHandle(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(Config obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkHandle obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~Config() {
+  ~UplinkHandle() {
     Dispose(false);
   }
 
@@ -37,44 +37,24 @@ internal class Config : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_Config(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkHandle(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public string user_agent {
+  public uint _handle {
     set {
-      storj_uplinkPINVOKE.Config_user_agent_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkHandle__handle_set(swigCPtr, value);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.Config_user_agent_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkHandle__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public int dial_timeout_milliseconds {
-    set {
-      storj_uplinkPINVOKE.Config_dial_timeout_milliseconds_set(swigCPtr, value);
-    } 
-    get {
-      int ret = storj_uplinkPINVOKE.Config_dial_timeout_milliseconds_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public string temp_directory {
-    set {
-      storj_uplinkPINVOKE.Config_temp_directory_set(swigCPtr, value);
-    } 
-    get {
-      string ret = storj_uplinkPINVOKE.Config_temp_directory_get(swigCPtr);
-      return ret;
-    } 
-  }
-
-  public Config() : this(storj_uplinkPINVOKE.new_Config(), true) {
+  public UplinkHandle() : this(storj_uplinkPINVOKE.new_UplinkHandle(), true) {
   }
 
 }

@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class DownloadOptions : global::System.IDisposable {
+internal class UplinkWriteResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal DownloadOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkWriteResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(DownloadOptions obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkWriteResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~DownloadOptions() {
+  ~UplinkWriteResult() {
     Dispose(false);
   }
 
@@ -37,34 +37,35 @@ internal class DownloadOptions : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_DownloadOptions(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkWriteResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public long offset {
+  public uint bytes_written {
     set {
-      storj_uplinkPINVOKE.DownloadOptions_offset_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkWriteResult_bytes_written_set(swigCPtr, value);
     } 
     get {
-      long ret = storj_uplinkPINVOKE.DownloadOptions_offset_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkWriteResult_bytes_written_get(swigCPtr);
       return ret;
     } 
   }
 
-  public long length {
+  public UplinkError error {
     set {
-      storj_uplinkPINVOKE.DownloadOptions_length_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkWriteResult_error_set(swigCPtr, UplinkError.getCPtr(value));
     } 
     get {
-      long ret = storj_uplinkPINVOKE.DownloadOptions_length_get(swigCPtr);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkWriteResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
       return ret;
     } 
   }
 
-  public DownloadOptions() : this(storj_uplinkPINVOKE.new_DownloadOptions(), true) {
+  public UplinkWriteResult() : this(storj_uplinkPINVOKE.new_UplinkWriteResult(), true) {
   }
 
 }

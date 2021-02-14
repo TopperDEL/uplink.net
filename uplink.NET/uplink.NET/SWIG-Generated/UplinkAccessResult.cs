@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class ListBucketsOptions : global::System.IDisposable {
+internal class UplinkAccessResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal ListBucketsOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkAccessResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ListBucketsOptions obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkAccessResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~ListBucketsOptions() {
+  ~UplinkAccessResult() {
     Dispose(false);
   }
 
@@ -37,24 +37,36 @@ internal class ListBucketsOptions : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_ListBucketsOptions(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkAccessResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public string cursor {
+  public UplinkAccess access {
     set {
-      storj_uplinkPINVOKE.ListBucketsOptions_cursor_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkAccessResult_access_set(swigCPtr, UplinkAccess.getCPtr(value));
     } 
     get {
-      string ret = storj_uplinkPINVOKE.ListBucketsOptions_cursor_get(swigCPtr);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkAccessResult_access_get(swigCPtr);
+      UplinkAccess ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkAccess(cPtr, false);
       return ret;
     } 
   }
 
-  public ListBucketsOptions() : this(storj_uplinkPINVOKE.new_ListBucketsOptions(), true) {
+  public UplinkError error {
+    set {
+      storj_uplinkPINVOKE.UplinkAccessResult_error_set(swigCPtr, UplinkError.getCPtr(value));
+    } 
+    get {
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkAccessResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+      return ret;
+    } 
+  }
+
+  public UplinkAccessResult() : this(storj_uplinkPINVOKE.new_UplinkAccessResult(), true) {
   }
 
 }

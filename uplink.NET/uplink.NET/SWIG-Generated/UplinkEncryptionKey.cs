@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class ObjectIterator : global::System.IDisposable {
+internal class UplinkEncryptionKey : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal ObjectIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkEncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(ObjectIterator obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKey obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~ObjectIterator() {
+  ~UplinkEncryptionKey() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class ObjectIterator : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_ObjectIterator(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkEncryptionKey(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,15 +46,15 @@ internal class ObjectIterator : global::System.IDisposable {
 
   public uint _handle {
     set {
-      storj_uplinkPINVOKE.ObjectIterator__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkEncryptionKey__handle_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.ObjectIterator__handle_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkEncryptionKey__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public ObjectIterator() : this(storj_uplinkPINVOKE.new_ObjectIterator(), true) {
+  public UplinkEncryptionKey() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKey(), true) {
   }
 
 }

@@ -33,7 +33,7 @@ namespace uplink.NET.Models
                 return _bytesToDownload;
             }
         }
-        private SWIG.DownloadResult _downloadResult;
+        private SWIG.UplinkDownloadResult _downloadResult;
         private Task _downloadTask;
         private bool _cancelled;
 
@@ -95,7 +95,7 @@ namespace uplink.NET.Models
             }
         }
 
-        internal DownloadOperation(SWIG.DownloadResult downloadResult, long totalBytes, string objectName)
+        internal DownloadOperation(SWIG.UplinkDownloadResult downloadResult, long totalBytes, string objectName)
         {
             _downloadResult = downloadResult;
             TotalBytes = totalBytes;
@@ -137,7 +137,7 @@ namespace uplink.NET.Models
                     byte[] part = new byte[tenth];
                     fixed (byte* arrayPtr = part)
                     {
-                        SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth);
+                        SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth);
                         if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                         {
                             _errorMessage = readResult.error.message;
@@ -151,7 +151,7 @@ namespace uplink.NET.Models
                             Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
                             BytesReceived += readResult.bytes_read;
                         }
-                        SWIG.storj_uplink.free_read_result(readResult);
+                        SWIG.storj_uplink.uplink_free_read_result(readResult);
                     }
                 }
                 else
@@ -161,7 +161,7 @@ namespace uplink.NET.Models
                     byte[] part = new byte[remaining];
                     fixed (byte* arrayPtr = part)
                     {
-                        SWIG.ReadResult readResult = SWIG.storj_uplink.download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining);
+                        SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining);
 
                         if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                         {
@@ -176,13 +176,13 @@ namespace uplink.NET.Models
                             Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
                             BytesReceived += readResult.bytes_read;
                         }
-                        SWIG.storj_uplink.free_read_result(readResult);
+                        SWIG.storj_uplink.uplink_free_read_result(readResult);
                     }
                 }
 
                 if (_cancelled)
                 {
-                    SWIG.Error cancelError = SWIG.storj_uplink.close_download(_downloadResult.download);
+                    SWIG.UplinkError cancelError = SWIG.storj_uplink.uplink_close_download(_downloadResult.download);
                     if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
                     {
                         _errorMessage = cancelError.message;
@@ -190,7 +190,7 @@ namespace uplink.NET.Models
                     }
                     else
                         Cancelled = true;
-                    SWIG.storj_uplink.free_error(cancelError);
+                    SWIG.storj_uplink.uplink_free_error(cancelError);
 
                     Running = false;
                     DownloadOperationEnded?.Invoke(this);
@@ -206,7 +206,7 @@ namespace uplink.NET.Models
                 }
             }
 
-            SWIG.Error closeError = SWIG.storj_uplink.close_download(_downloadResult.download);
+            SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_download(_downloadResult.download);
 
             if (closeError != null && !string.IsNullOrEmpty(closeError.message))
             {
@@ -214,10 +214,10 @@ namespace uplink.NET.Models
                 Failed = true;
                 Running = false;
                 DownloadOperationEnded?.Invoke(this);
-                SWIG.storj_uplink.free_error(closeError);
+                SWIG.storj_uplink.uplink_free_error(closeError);
                 return;
             }
-            SWIG.storj_uplink.free_error(closeError);
+            SWIG.storj_uplink.uplink_free_error(closeError);
 
             Completed = true;
             Running = false;
@@ -228,7 +228,7 @@ namespace uplink.NET.Models
         {
             if (_downloadResult != null)
             {
-                SWIG.storj_uplink.free_download_result(_downloadResult);
+                SWIG.storj_uplink.uplink_free_download_result(_downloadResult);
                 _downloadResult.Dispose();
                 _downloadResult = null;
             }
