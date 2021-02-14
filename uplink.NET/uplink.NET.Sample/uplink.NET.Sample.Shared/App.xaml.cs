@@ -83,7 +83,7 @@ namespace uplink.NET.Sample
                     {
                         var loginData = Shared.Services.Factory.LoginService.GetLoginData();
 #if !__ANDROID__
-                        Models.Scope.SetTempDirectory(System.IO.Path.GetTempPath());
+                        Models.Access.SetTempDirectory(System.IO.Path.GetTempPath());
 #endif
 
                         try
