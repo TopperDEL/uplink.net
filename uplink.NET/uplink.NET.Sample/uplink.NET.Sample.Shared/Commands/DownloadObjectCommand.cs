@@ -65,7 +65,7 @@ namespace uplink.NET.Sample.Shared.Commands
             try
             {
                 var bucket = await _bucketService.GetBucketAsync(bucketEntryVM._bucketContentViewModel.BucketName);
-                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Key,new DownloadOptions(), true);
+                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, bucketEntryVM.ObjectInfo.Key, new DownloadOptions() { }, false);
                 downloadOperation.DownloadOperationEnded += async (operation) =>
                 {
                     if (!operation.Failed && !operation.Cancelled)
@@ -74,6 +74,7 @@ namespace uplink.NET.Sample.Shared.Commands
                         var status = await CachedFileManager.CompleteUpdatesAsync(file);
                     }
                 };
+                downloadOperation.StartDownloadAsync();
                 if (BucketContentViewModel.ActiveDownloadOperations.ContainsKey(_bucketName))
                     BucketContentViewModel.ActiveDownloadOperations[_bucketName].Add(downloadOperation);
                 else
@@ -91,7 +92,7 @@ namespace uplink.NET.Sample.Shared.Commands
                 return;
             }
 #else
-            var path = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 
             try
             {

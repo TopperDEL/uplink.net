@@ -3,6 +3,8 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+name: $(Date:yyyy)
+
 trigger:
 - main
 
@@ -15,12 +17,15 @@ steps:
   displayName: 'Clone uplink.NET'
 
 - script: |
-    ls
     sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
-    git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+    echo 'Cloning $(STORJ_VERSION)'
+    git clone https://github.com/storj/uplink-c.git
+    cd uplink-c
+    git checkout $(STORJ_VERSION) 
+    cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
@@ -79,9 +84,7 @@ steps:
     export CGO_CXXFLAGS="-g -Wl,--kill-at"
     export CGO_FFLAGS="-g -Wl,--kill-at"
     export CGO_LDFLAGS="-g -Wl,--kill-at"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--pic-executable -static-libgcc -static-libstdc++'" -o storj_uplink-x86.dll -buildmode c-shared
-# not sure if -static-libgcc -static-libstdc++ is really changing something - can be deleted
-# pic-executable the same
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-x86.dll -buildmode c-shared
   displayName: 'Generating the final-x86-DLL for Windows'
 
 - script: |
@@ -95,22 +98,8 @@ steps:
     export CGO_CXXFLAGS="-g -O2"
     export CGO_FFLAGS="-g -O2"
     export CGO_LDFLAGS="-g -O2"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink-x64.dll -buildmode c-shared
   displayName: 'Generating the final-x64-DLL for Windows'
-
-- script: |
-    cd uplink-c
-    export CC="x86_64-w64-mingw32-gcc"
-    export CXX="x86_64-w64-mingw32-g++"
-    export GOOS="windows"
-    export GOARCH="amd64"
-    export CGO_ENABLED="1"
-    export CGO_CFLAGS="-g -O2"
-    export CGO_CXXFLAGS="-g -O2"
-    export CGO_FFLAGS="-g -O2"
-    export CGO_LDFLAGS="-g -O2"
-    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va,--pic-executable'" -o storj_uplink-x64.dll -buildmode c-shared
-  displayName: 'Generating the final-ARM64-DLL for Windows'
 
 - task: PublishPipelineArtifact@1
   inputs:
@@ -146,9 +135,35 @@ steps:
   displayName: 'Replacing ref-modifier from free_string-method'
 
 - script: |
+    sed -i 's/namespace uplink.SWIG/using System; namespace uplink.SWIG/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/protected class SWIGExceptionHelper {/public class MonoPInvokeCallbackAttribute:Attribute{public MonoPInvokeCallbackAttribute(Type t){}} public class MonoNativeFunctionWrapperAttribute:Attribute {public MonoNativeFunctionWrapperAttribute() {}} protected class SWIGExceptionHelper {/' uplink-c/storj_uplinkPINVOKE.cs
+
+    sed -i 's/public delegate void ExceptionDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate void ExceptionArgumentDelegate(string message, string paramName)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionArgumentDelegate(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+
+    sed -i 's/static void SetPendingApplicationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingApplicationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArithmeticException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArithmeticException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingDivideByZeroException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingDivideByZeroException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIndexOutOfRangeException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIndexOutOfRangeException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidCastException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidCastException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidOperationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidOperationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIOException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIOException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingNullReferenceException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingNullReferenceException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOutOfMemoryException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOutOfMemoryException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOverflowException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOverflowException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingSystemException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingSystemException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentNullException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentNullException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentOutOfRangeException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentOutOfRangeException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate string SWIGStringDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] [MonoNativeFunctionWrapper] public delegate string SWIGStringDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static string CreateString(string cString)/[MonoPInvokeCallback(typeof(SWIGStringDelegate))] static string CreateString(string cString)/' uplink-c/storj_uplinkPINVOKE.cs
+  displayName: 'Adding AOT-Attributes for iOs-Build'
+
+- script: |
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
+    ls csfiles
   displayName: 'Extract generated cs-files'
 
 - task: PublishPipelineArtifact@1
@@ -171,6 +186,25 @@ steps:
     artifact: 'uplink-c'
     publishLocation: 'pipeline'
   displayName: 'Publish uplink-c'
+  
+- script: |
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing Build-Number in nuspecs'
+
+- script: |
+    echo Current year is: $(Build.BuildNumber)
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing current year in nuspecs'
 
 - task: PublishPipelineArtifact@1
   inputs:

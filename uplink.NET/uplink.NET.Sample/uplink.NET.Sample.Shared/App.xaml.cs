@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using uplink.NET.Sample.Shared.Pages;
-using uplink.NET.Sample.Shared.ViewModels;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -23,7 +22,7 @@ namespace uplink.NET.Sample
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -31,7 +30,7 @@ namespace uplink.NET.Sample
         /// </summary>
         public App()
         {
-            ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+            ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
 
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -42,7 +41,7 @@ namespace uplink.NET.Sample
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
@@ -50,7 +49,15 @@ namespace uplink.NET.Sample
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
-            Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+
+#if NET5_0 && WINDOWS
+			var window = new Window();
+			window.Activate();
+#else
+            var window = Windows.UI.Xaml.Window.Current;
+#endif
+
+            Frame rootFrame = window.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -67,12 +74,12 @@ namespace uplink.NET.Sample
                 }
 
                 // Place the frame in the current Window
-                Windows.UI.Xaml.Window.Current.Content = rootFrame;
+                window.Content = rootFrame;
             }
 
-            BaseViewModel.DispatcherToUse = Windows.UI.Xaml.Window.Current.Dispatcher; //Hack to support Uno.Android
-
+#if !(NET5_0 && WINDOWS)
             if (e.PrelaunchActivated == false)
+#endif
             {
                 if (rootFrame.Content == null)
                 {
@@ -83,7 +90,7 @@ namespace uplink.NET.Sample
                     {
                         var loginData = Shared.Services.Factory.LoginService.GetLoginData();
 #if !__ANDROID__
-                        Models.Access.SetTempDirectory(System.IO.Path.GetTempPath());
+                        //Models.Scope.SetTempDirectory(System.IO.Path.GetTempPath());
 #endif
 
                         try
@@ -101,7 +108,7 @@ namespace uplink.NET.Sample
                         rootFrame.Navigate(typeof(LogInPage), e.Arguments);
                 }
                 // Ensure the current window is active
-                Windows.UI.Xaml.Window.Current.Activate();
+                window.Activate();
             }
         }
 
@@ -112,7 +119,7 @@ namespace uplink.NET.Sample
         /// <param name="e">Details about the navigation failure</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
         }
 
         /// <summary>
@@ -136,39 +143,51 @@ namespace uplink.NET.Sample
         /// <param name="factory"></param>
         static void ConfigureFilters(ILoggerFactory factory)
         {
-//            factory
-//                .WithFilter(new FilterLoggerSettings
-//                    {
-//                        { "Uno", LogLevel.Warning },
-//                        { "Windows", LogLevel.Warning },
+            factory
+                .WithFilter(new FilterLoggerSettings
+                    {
+                        { "Uno", LogLevel.Warning },
+                        { "Windows", LogLevel.Warning },
 
-//						// Debug JS interop
-//						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
+						// Debug JS interop
+						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 
-//						// Generic Xaml events
-//						// { "Windows.UI.Xaml", LogLevel.Debug },
-//						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-//						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-//						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+						// Generic Xaml events
+						// { "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
 
-//						// Layouter specific messages
-//						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-//						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-//						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
-//						// { "Windows.Storage", LogLevel.Debug },
+						// Layouter specific messages
+						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Windows.Storage", LogLevel.Debug },
 
-//						// Binding related messages
-//						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
+						// Binding related messages
+						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
 
-//						// DependencyObject memory references tracking
-//						// { "ReferenceHolder", LogLevel.Debug },
-//					}
-//                )
-//#if DEBUG
-//				.AddConsole(LogLevel.Debug);
-//#else
-//                .AddConsole(LogLevel.Information);
-//#endif
+						// DependencyObject memory references tracking
+						// { "ReferenceHolder", LogLevel.Debug },
+
+						// ListView-related messages
+						// { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
+					}
+                )
+#if DEBUG
+				.AddConsole(LogLevel.Debug);
+#else
+                .AddConsole(LogLevel.Information);
+#endif
         }
     }
 }

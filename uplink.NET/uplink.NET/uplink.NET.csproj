@@ -1,110 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>This library provides access to the secure and decentralised Storj-network. It allows you to:
-- create and delete buckets
-- upload and download files
-
-It is - like Storj itself - open source and developed on github.
-
-Works with .Net/UWP/Xamarin.Android/Xamarin.iOS/MacOS.</Description>
-    <AssemblyVersion>2.5.0.0</AssemblyVersion>
-    <Authors>TopperDEL, Storj labs</Authors>
+    <Description></Description>
+    <AssemblyVersion>2.6.0.0</AssemblyVersion>
+    <Authors></Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>portable</DebugType>
     <AssemblyName>uplink.NET</AssemblyName>
-    <PackageId>uplink.NET</PackageId>
-    <PackagePrereleaseIdentifier></PackagePrereleaseIdentifier>
-    <PackageVersion>$(AssemblyVersion)$(PackagePrereleaseIdentifier)</PackageVersion>
-    <PackageTags>storj tardigrade storage decentralised secure bucket file xamarin android</PackageTags>
-    <PackageProjectUrl>https://github.com/TopperDEL/uplink.net</PackageProjectUrl>
-    <DocumentationFile Condition="'$(Configuration)' == 'Release'"></DocumentationFile>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.5.0.0</FileVersion>
-    <PackageIcon>Storj-symbol.png</PackageIcon>
-    <RepositoryUrl>https://github.com/TopperDEL/uplink.net.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Based on uplink-c v1.1.0
-Corrections for iOs - init with Access.Init_iOs()</PackageReleaseNotes>
-    <Copyright>(c) 2019-2020 TopperDEL, Storj Labs Inc.</Copyright>
-    <Version>2.5.0</Version>
+    <FileVersion>2.6.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath></OutputPath>
   </PropertyGroup>
-  
-  <PropertyGroup>
-</PropertyGroup>
-
-  <ItemGroup>
-	<!--Windows-Binaries-->
-	<Content Include="runtimes\win-x86\native\storj_uplink.dll">
-      <PackagePath>runtimes/win-x86/native</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-    <Content Include="runtimes\win-x64\native\storj_uplink.dll">
-      <PackagePath>runtimes/win-x64/native</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	
-	<!--Linux-Binaries-->
-	<Content Include="runtimes\linux-x64\native\storj_uplink.so">
-      <PackagePath>runtimes/linux-x64/native</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	
-	<!--MacOS-Binaries-->
-	<Content Include="runtimes\osx-x64\native\storj_uplink.framework\*">
-	  <PackagePath>runtimes/osx-x64/native</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	
-	<!--Android-Binaries-->
-	<Content Include="libs\arm64-v8a\libstorj_uplink.so">
-      <PackagePath>runtimes/native/libs/arm64-v8a</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	<Content Include="libs\armeabi-v7a\libstorj_uplink.so">
-      <PackagePath>runtimes/native/libs/armeabi-v7a</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	<Content Include="libs\x86\libstorj_uplink.so">
-      <PackagePath>runtimes/native/libs/x86</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	<Content Include="libs\x86_64\libstorj_uplink.so">
-      <PackagePath>runtimes/native/libs/x86_64</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	
-	<!--Build-Targets to deploy the binaries during compile-->
-	 <Content Include="build\net40\uplink.NET.targets">
-      <PackagePath>build/net40/uplink.NET.targets</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	<Content Include="build\MonoAndroid\uplink.NET.targets">
-      <PackagePath>build/MonoAndroid/uplink.NET.targets</PackagePath>
-      <Pack>true</Pack>
-    </Content>
-	<Content Include="build\xamarinmac\uplink.NET.targets">
-	  <PackagePath>build/xamarinmac/uplink.NET.targets</PackagePath>
-	  <Pack>true</Pack>
-	</Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\Storj-symbol.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="libs\mac\" />
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>

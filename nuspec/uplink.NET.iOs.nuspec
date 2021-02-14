@@ -3,7 +3,7 @@
   <metadata>
     <id>uplink.NET.iOS</id>
     <title>uplink.NET iOS Support</title>
-    <version>2.6.0</version>
+    <version>2.6.BUILDNR</version>
     <authors>Tim Parth</authors>
     <owners>Tim Parth</owners>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
@@ -13,7 +13,7 @@
     <releaseNotes>
         For the latest release notes please have a look at uplink.NET itself.
     </releaseNotes>
-    <copyright>Copyright 2021</copyright>
+    <copyright>Copyright YEAR</copyright>
     <tags>storj tardigrade uplink cloud storage ios xamarin</tags>
     <language>en-US</language>
     <dependencies>
@@ -22,8 +22,8 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-    <file target="lib\xamarinios10\lib.txt" src="build\xamarinios\lib.txt"/>
-    <file target="build\xamarinios\uplink.NET.iOS.targets" src="build\xamarinios\uplink.NET.iOS.targets" />
-    <file target="build\xamarinios\storj_uplink.framework" src="build\xamarinios\storj_uplink.framework\**" />
+    <file target="lib\xamarinios10\lib.txt" src="xamarinios\lib.txt"/>
+    <file target="build\xamarinios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
+    <file target="build\xamarinios\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
   </files>
 </package>

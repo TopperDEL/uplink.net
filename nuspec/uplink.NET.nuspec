@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>uplink.NET</id>
+    <version>2.6.BUILDNR</version>
+    <title>uplink.NET</title>
+    <authors>Tim Parth, Storj Labs Inc.</authors>
+    <owners>Tim Parth</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
+    <icon>Storj-symbol.png</icon>
+    <description>This library provides access to the secure and decentralised Storj-network.
+It is - like Storj itself - open source and developed on github.
+
+Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the additional platform-libraries if necessary.</description>
+    <releaseNotes>Reworking of the build-pipeline - based on uplink-c v1.1.0</releaseNotes>
+    <copyright>Copyright YEAR - Tim Parth, Storj Labs Inc.</copyright>
+	<repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
+    <tags>storj tardigrade storage decentralised secure bucket file xamarin android ios linux mac windows uwp</tags>
+	<dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="sqlite-net-pcl" version="1.7.335" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="MonoAndroid">
+        <dependency id="uplink.NET.Droid" version="2.6.BUILDNR" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="Xamarin.iOS10">
+        <dependency id="uplink.NET.iOs" version="2.6.BUILDNR" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="Xamarin.Mac">
+        <dependency id="uplink.NET.Mac" version="2.6.BUILDNR" exclude="Build,Analyzers" />
+      </group>
+	  <group targetFramework="net40">
+        <dependency id="uplink.NET.Windows" version="2.6.BUILDNR" exclude="Build,Analyzers" />
+        <dependency id="uplink.NET.Linux" version="2.6.BUILDNR" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file target="lib\netstandard2.0\uplink.NET.dll" src="uplink.NET.dll"/>
+    <file target="Storj-symbol.png" src="Storj-symbol.png"/>
+  </files>
+</package>

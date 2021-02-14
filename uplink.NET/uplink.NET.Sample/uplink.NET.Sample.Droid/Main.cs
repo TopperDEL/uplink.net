@@ -11,43 +11,43 @@ using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Plugin.CurrentActivity;
-using uplink.NET.Sample.Shared.Services;
 using Windows.UI.Xaml.Media;
 
 namespace uplink.NET.Sample.Droid
 {
-    [global::Android.App.ApplicationAttribute(
-        Label = "@string/ApplicationName",
-        LargeHeap = true,
-        HardwareAccelerated = true,
-        Theme = "@style/AppTheme"
-    )]
-    public class Application : Windows.UI.Xaml.NativeApplication
-    {
-        public Application(IntPtr javaReference, JniHandleOwnership transfer)
-            : base(new App(), javaReference, transfer)
-        {
-            ConfigureUniversalImageLoader();
-        }
+	[global::Android.App.ApplicationAttribute(
+		Label = "@string/ApplicationName",
+		LargeHeap = true,
+		HardwareAccelerated = true,
+		Theme = "@style/AppTheme"
+	)]
+	public class Application : Windows.UI.Xaml.NativeApplication
+	{
+		public Application(IntPtr javaReference, JniHandleOwnership transfer)
+			: base(() => new App(), javaReference, transfer)
+		{
+			ConfigureUniversalImageLoader();
+		}
 
-        public override void OnCreate()
-        {
+		public override void OnCreate()
+		{
+			Xamarin.Essentials.Platform.Init(this);
+			CrossCurrentActivity.Current.Init(this);
+			Plugin.Media.CrossMedia.Current.Initialize();
+
             base.OnCreate();
-            Models.Access.SetTempDirectory(CacheDir.AbsolutePath);
-            
-            CrossCurrentActivity.Current.Init(this);
-        }
-        
-        private void ConfigureUniversalImageLoader()
-        {
-            // Create global configuration and initialize ImageLoader with this config
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration
-                .Builder(Context)
-                .Build();
+		}
 
-            ImageLoader.Instance.Init(config);
+		private void ConfigureUniversalImageLoader()
+		{
+			// Create global configuration and initialize ImageLoader with this config
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration
+				.Builder(Context)
+				.Build();
 
-            ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
-        }
-    }
+			ImageLoader.Instance.Init(config);
+
+			ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+		}
+	}
 }

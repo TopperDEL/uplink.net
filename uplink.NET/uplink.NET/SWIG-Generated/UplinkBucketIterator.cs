@@ -10,20 +10,36 @@
 
 namespace uplink.SWIG {
 
+<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkObjectIterator.cs
+internal class UplinkObjectIterator : global::System.IDisposable {
+  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
+  protected bool swigCMemOwn;
+
+  internal UplinkObjectIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+=======
 internal class UplinkBucketIterator : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
   internal UplinkBucketIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+>>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkBucketIterator.cs
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
+<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkObjectIterator.cs
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkObjectIterator obj) {
+    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  ~UplinkObjectIterator() {
+=======
   internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkBucketIterator obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
   ~UplinkBucketIterator() {
+>>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkBucketIterator.cs
     Dispose(false);
   }
 
@@ -37,7 +53,11 @@ internal class UplinkBucketIterator : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
+<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkObjectIterator.cs
+          storj_uplinkPINVOKE.delete_UplinkObjectIterator(swigCPtr);
+=======
           storj_uplinkPINVOKE.delete_UplinkBucketIterator(swigCPtr);
+>>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkBucketIterator.cs
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,15 +66,26 @@ internal class UplinkBucketIterator : global::System.IDisposable {
 
   public uint _handle {
     set {
+<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkObjectIterator.cs
+      storj_uplinkPINVOKE.UplinkObjectIterator__handle_set(swigCPtr, value);
+    } 
+    get {
+      uint ret = storj_uplinkPINVOKE.UplinkObjectIterator__handle_get(swigCPtr);
+=======
       storj_uplinkPINVOKE.UplinkBucketIterator__handle_set(swigCPtr, value);
     } 
     get {
       uint ret = storj_uplinkPINVOKE.UplinkBucketIterator__handle_get(swigCPtr);
+>>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkBucketIterator.cs
       return ret;
     } 
   }
 
+<<<<<<< HEAD:uplink.NET/uplink.NET/SWIG-Generated/UplinkObjectIterator.cs
+  public UplinkObjectIterator() : this(storj_uplinkPINVOKE.new_UplinkObjectIterator(), true) {
+=======
   public UplinkBucketIterator() : this(storj_uplinkPINVOKE.new_UplinkBucketIterator(), true) {
+>>>>>>> master:uplink.NET/uplink.NET/SWIG-Generated/UplinkBucketIterator.cs
   }
 
 }
