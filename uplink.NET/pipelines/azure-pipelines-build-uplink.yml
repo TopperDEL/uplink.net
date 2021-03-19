@@ -52,7 +52,7 @@ steps:
   inputs:
     command: 'build'
     projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
-    arguments: '--configuration Release'
+    arguments: '--configuration Release -p:Version=$(Build.BuildId)'
   displayName: 'Build uplink.NET-library'
 
 - task: Bash@3
