@@ -13,6 +13,22 @@ namespace uplink.NET.Sample.Shared.ViewModels
 
         public LoginCommand LoginCommand { get; set; }
 
+        public string StorjVersion
+        {
+            get
+            {
+                return uplink.NET.Models.Access.GetStorjVersion();
+            }
+        }
+
+        public string UplinkVersion
+        {
+            get
+            {
+                return System.Reflection.Assembly.GetAssembly(typeof(uplink.NET.Models.Access)).GetName().Version.ToString();
+            }
+        }
+
         public LoginViewModel(ILoginService loginService)
         {
             LoginData = new LoginData();

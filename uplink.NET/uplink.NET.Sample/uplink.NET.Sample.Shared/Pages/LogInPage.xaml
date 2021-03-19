@@ -31,6 +31,14 @@
                         <Button Content="Login" Command="{x:Bind _vm.LoginCommand}" CommandParameter="{Binding}" Background="{StaticResource StorjBlue}" Foreground="White"/>
                     </StackPanel>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,60,0,0">
+                    <TextBlock Text="Storj-Version:" Foreground="{StaticResource StorjColor}" FontSize="10"/>
+                    <TextBlock Text="{x:Bind _vm.StorjVersion}" Foreground="{StaticResource StorjColor}" FontSize="10" Margin="10,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="uplink.NET-Version:" Foreground="{StaticResource StorjColor}" FontSize="10"/>
+                    <TextBlock Text="{x:Bind _vm.UplinkVersion}" Foreground="{StaticResource StorjColor}" FontSize="10" Margin="10,0,0,0"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>
