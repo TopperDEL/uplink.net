@@ -85,7 +85,7 @@ stages:
       - task: Go@0
         inputs:
           command: 'custom'
-          customCommand: 'version'
+          customCommand: 'env'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Check and show Go-Params'
 
