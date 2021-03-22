@@ -31,6 +31,8 @@ stages:
 
       - script: |
           ls
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
           export GOARCH=amd64
         displayName: 'Prepare for Target amd64'
@@ -74,6 +76,8 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
           export GOARCH=386
         displayName: 'Prepare for Target 386'
