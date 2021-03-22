@@ -22,7 +22,7 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-    <file target="lib\net40\lib.txt" src="xamarinmac\lib.txt"/>
+    <file target="lib\net472\lib.txt" src="xamarinmac\lib.txt"/>
     <file target="build\xamarinmac\uplink.NET.Mac.targets" src="xamarinmac\uplink.NET.Mac.targets" />
     <file target="build\xamarinmac\libstorj_uplink.framework" src="xamarinmac\libstorj_uplink.framework\**" />
   </files>
