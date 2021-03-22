@@ -16,8 +16,10 @@
     <copyright>Copyright YEAR</copyright>
     <tags>storj tardigrade uplink cloud storage ios xamarin</tags>
     <language>en-US</language>
-    <dependencies>
-      <group targetFramework="Xamarin.iOS10" />
+	<dependencies>
+      <group targetFramework="Xamarin.iOS10">
+		<dependency id="uplink.NET" version="2.6.BUILDNR" />
+	  </group>
     </dependencies>
   </metadata>
   <files>
