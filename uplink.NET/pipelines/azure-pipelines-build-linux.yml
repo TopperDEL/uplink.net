@@ -84,6 +84,13 @@ stages:
 
       - task: Go@0
         inputs:
+          command: 'custom'
+          customCommand: 'version'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Check and show Go-Params'
+
+      - task: Go@0
+        inputs:
           command: 'build'
           arguments: '-buildmode c-shared -o storj_uplink-386.so'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
