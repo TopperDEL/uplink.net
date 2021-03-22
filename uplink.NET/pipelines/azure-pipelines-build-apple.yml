@@ -132,11 +132,11 @@ stages:
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink.dylib'
 
-- stage: nuget_pack
+- stage: nuget_pack_ios
   pool:
     vmImage: 'ubuntu-20.04'
   jobs:
-    - job: nuget_pack
+    - job: nuget_pack_ios
       steps:
 
       - script: |
@@ -187,6 +187,70 @@ stages:
           artifact: 'nuget_ios'
           publishLocation: 'pipeline'
         displayName: 'Publish iOs-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+        displayName: 'Publish to Dev-Feed'
+
+- stage: nuget_pack_mac
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack_mac
+      steps:
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_macos'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (MacOS-dylib)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+          mv storj_uplink-macos.dylib xamarinmac/storj_uplink.framework/storj_uplink
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Mac.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the MacOS-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_mac'
+          publishLocation: 'pipeline'
+        displayName: 'Publish MacOS-Nuget as Artifact'
 
       - task: NuGetCommand@2
         inputs:
