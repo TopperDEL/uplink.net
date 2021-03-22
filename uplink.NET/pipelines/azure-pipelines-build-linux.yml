@@ -30,7 +30,6 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          ls
           cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
@@ -51,65 +50,12 @@ stages:
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-amd64.so'
 
-- stage: i368
-  pool:
-    vmImage: 'ubuntu-20.04'
-  jobs:
-    - job: i386
-      steps:
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
-          export CGO_ENABLED=1
-          export GOARCH=386
-          cd uplink-c
-          go env
-          go build -buildmode c-shared -o storj_uplink-386.so
-        displayName: 'Prepare and build for Target 386'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-386.so'
-          artifact: 'linux_386'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-386.so'
-
 - stage: nuget_pack
   pool:
     vmImage: 'ubuntu-20.04'
   jobs:
     - job: nuget_pack
       steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '28'
-          specificBuildWithTriggering: false
-          buildVersionToDownload: 'latest'
-          artifactName: 'linux_386'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (linux-386)'
-
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -134,13 +80,8 @@ stages:
         displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
-          ls
-          echo 'create'
           mkdir linux-x64
           mv storj_uplink-amd64.so linux-x64/storj_uplink.so
-          mkdir linux-x86
-          mv storj_uplink-386.so linux-x86/storj_uplink.so
-          ls
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
