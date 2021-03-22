@@ -30,6 +30,7 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          ls
           export CGO_ENABLED=1
           export GOARCH=amd64
         displayName: 'Prepare for Target amd64'
