@@ -17,7 +17,9 @@
     <tags>storj tardigrade uplink cloud storage mac xamarin</tags>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="Xamarin.Mac" />
+      <group targetFramework="Xamarin.Mac0.0">
+		<dependency id="uplink.NET" version="2.6.BUILDNR" />
+	  <group>
     </dependencies>
   </metadata>
   <files>
