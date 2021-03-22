@@ -80,21 +80,10 @@ stages:
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
           export GOARCH=386
-        displayName: 'Prepare for Target 386'
-
-      - task: Go@0
-        inputs:
-          command: 'custom'
-          customCommand: 'env'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Check and show Go-Params'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-386.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build 386'
+          cd uplink-c
+          go env
+          go build -buildmode c-shared -o storj_uplink-386.so
+        displayName: 'Prepare and build for Target 386'
 
       - task: PublishPipelineArtifact@1
         inputs:
