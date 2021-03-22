@@ -19,7 +19,7 @@
     <dependencies>
       <group targetFramework="Xamarin.Mac0.0">
 		<dependency id="uplink.NET" version="2.6.BUILDNR" />
-	  <group>
+	  </group>
     </dependencies>
   </metadata>
   <files>
