@@ -16,11 +16,15 @@
     <copyright>Copyright YEAR</copyright>
     <tags>storj tardigrade uplink cloud storage linux</tags>
     <language>en-US</language>
+	<dependencies>
+      <group>
+		<dependency id="uplink.NET" version="2.6.BUILDNR" />
+	  </group>
+    </dependencies>
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
 	<file target="build\net40\uplink.NET.Linux.targets" src="linux\uplink.NET.Linux.targets" />
 	<file target="runtimes\linux-x64\native\storj_uplink.so" src="linux-x64\storj_uplink.so" />
-	<file target="runtimes\linux-x86\native\storj_uplink.so" src="linux-x86\storj_uplink.so" />
   </files>
 </package>
