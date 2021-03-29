@@ -16,11 +16,6 @@
     <copyright>Copyright YEAR</copyright>
     <tags>storj tardigrade uplink cloud storage linux</tags>
     <language>en-US</language>
-	<dependencies>
-      <group>
-		<dependency id="uplink.NET" version="2.6.BUILDNR" />
-	  </group>
-    </dependencies>
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
