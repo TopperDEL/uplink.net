@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
+using System.Linq;
 
 namespace uplink.NET.Services
 {
@@ -28,9 +29,11 @@ namespace uplink.NET.Services
             _databasePath = databasePath;
         }
 
-        public bool UploadInProgress { get
+        public bool UploadInProgress
+        {
+            get
             {
-                return _uploadTask != null && ( _uploadTask.Status == TaskStatus.Running || _uploadTask.Status == TaskStatus.WaitingToRun);
+                return _uploadTask != null && (_uploadTask.Status == TaskStatus.Running || _uploadTask.Status == TaskStatus.WaitingToRun);
             }
         }
 
@@ -118,6 +121,13 @@ namespace uplink.NET.Services
                 }
             }
             catch { } //That's ok, nothing more to do.
+        }
+
+        public async Task<int> GetOpenUploadCountAsync()
+        {
+            await InitAsync();
+
+            return await _connection.Table<UploadQueueEntry>().CountAsync();
         }
     }
 }
