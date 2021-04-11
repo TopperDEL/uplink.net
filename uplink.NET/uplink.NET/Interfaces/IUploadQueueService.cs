@@ -13,5 +13,7 @@ namespace uplink.NET.Interfaces
         Task<List<UploadOperation>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
         void ProcessQueueInBackground();
+
+        Task<int> GetOpenUploadCountAsync();
     }
 }
