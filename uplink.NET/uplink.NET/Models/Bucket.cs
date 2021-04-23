@@ -13,6 +13,7 @@ namespace uplink.NET.Models
         internal SWIG.UplinkBucketResult _bucketResultRef;
         internal SWIG.UplinkProject _projectRef;
 
+        private string _name;
         /// <summary>
         /// The name of the bucket
         /// </summary>
@@ -20,10 +21,11 @@ namespace uplink.NET.Models
         {
             get
             {
-                return _bucketRef.name;
+                return _name;
             }
         }
-        
+
+        private DateTime _created;
         /// <summary>
         /// The DateTime the bucket was created
         /// </summary>
@@ -31,7 +33,7 @@ namespace uplink.NET.Models
         {
             get
             {
-                return DateTimeOffset.FromUnixTimeSeconds(_bucketRef.created).ToLocalTime().DateTime; ;
+                return _created;
             }
         }
 
@@ -46,6 +48,8 @@ namespace uplink.NET.Models
             ret._bucketRef = original;
             ret._bucketResultRef = bucketResult;
             ret._projectRef = projectRef;
+            ret._name = original.name;
+            ret._created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
 
             return ret;
         }
