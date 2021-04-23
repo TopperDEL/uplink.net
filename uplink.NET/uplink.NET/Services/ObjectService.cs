@@ -93,8 +93,12 @@ namespace uplink.NET.Services
 
             SWIG.UplinkError error = SWIG.storj_uplink.uplink_object_iterator_err(objectIterator);
             if (error != null && !string.IsNullOrEmpty(error.message))
-                throw new BucketListException(error.message);
-            SWIG.storj_uplink.uplink_free_error(error);
+            {
+                var errorMessage = error.message;
+                error.Dispose();
+                throw new BucketListException(errorMessage);
+            }
+            error.Dispose();
 
             ObjectList objectList = new ObjectList();
 
@@ -102,7 +106,7 @@ namespace uplink.NET.Services
             {
                 objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(SWIG.storj_uplink.uplink_object_iterator_item(objectIterator), true));
             }
-            SWIG.storj_uplink.uplink_free_object_iterator(objectIterator);
+            objectIterator.Dispose();
 
             return objectList;
         }
