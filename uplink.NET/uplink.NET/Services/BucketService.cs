@@ -76,10 +76,10 @@ namespace uplink.NET.Services
                 if (error != null && !string.IsNullOrEmpty(error.message))
                 {
                     var errorMessage = error.message;
-                    error.Dispose();
+                    error?.Dispose();
                     throw new BucketListException(errorMessage);
                 }
-                error.Dispose();
+                error?.Dispose();
 
                 BucketList bucketList = new BucketList();
 
