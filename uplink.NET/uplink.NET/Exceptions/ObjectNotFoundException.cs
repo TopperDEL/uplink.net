@@ -13,7 +13,12 @@ namespace uplink.NET.Exceptions
         /// The name of the object that could not be found
         /// </summary>
         public string TargetPath { get; private set; }
-        public ObjectNotFoundException(string targetPath, string error): base(error)
+        public ObjectNotFoundException(string targetPath): base()
+        {
+            TargetPath = targetPath;
+        }
+
+        public ObjectNotFoundException(string targetPath, string error) : base(error)
         {
             TargetPath = targetPath;
         }
