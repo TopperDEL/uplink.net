@@ -34,9 +34,8 @@ namespace uplink.NET.Models
             ret.SystemMetaData = SystemMetadata.FromSWIG(original.system);
             ret.CustomMetaData = CustomMetadata.FromSWIG(original);
 
-            //if (disposeObjectInfo)
+            if (disposeObjectInfo)
                 original.Dispose();
-             //   SWIG.storj_uplink.uplink_free_object(original);
 
             return ret;
         }

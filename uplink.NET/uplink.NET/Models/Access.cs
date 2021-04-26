@@ -7,6 +7,8 @@ namespace uplink.NET.Models
 {
     public class Access : IDisposable
     {
+        static List<UplinkConfig> _configs = new List<UplinkConfig>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkConfig
+
         private static string TempDirectory { get; set; }
 
         /// <summary>
@@ -49,10 +51,6 @@ namespace uplink.NET.Models
 
         internal SWIG.UplinkAccess _access { get; set; }
         internal SWIG.UplinkProject _project { get; set; }
-        //internal SWIG.UplinkConfig _config { get; set; }
-
-        //private SWIG.UplinkAccessResult _accessResult;
-        //private SWIG.UplinkProjectResult _projectResult;
 
         internal Access(SWIG.UplinkAccess access)
         {
@@ -62,15 +60,13 @@ namespace uplink.NET.Models
             {
                 _access = access;
 
-                using (var uplinkConfigSWIG = GetUplinkConfig())
+                var uplinkConfigSWIG = GetUplinkConfig();
+                using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                 {
-                    using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
-                    {
-                        if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                            throw new ArgumentException(projectResult.error.message);
+                    if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
+                        throw new ArgumentException(projectResult.error.message);
 
-                        _project = projectResult.project;
-                    }
+                    _project = projectResult.project;
                 }
             }
             catch (Exception ex)
@@ -98,15 +94,13 @@ namespace uplink.NET.Models
 
                     _access = accessResult.access;
 
-                    using (var uplinkConfigSWIG = GetUplinkConfig(config))
+                    var uplinkConfigSWIG = GetUplinkConfig(config);
+                    using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                     {
-                        using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
-                        {
-                            if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                                throw new ArgumentException(projectResult.error.message);
+                        if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
+                            throw new ArgumentException(projectResult.error.message);
 
-                            _project = projectResult.project;
-                        }
+                        _project = projectResult.project;
                     }
                 }
             }
@@ -135,15 +129,13 @@ namespace uplink.NET.Models
 
                     _access = accessResult.access;
 
-                    using (var uplinkConfigSWIG = GetUplinkConfig())
+                    var uplinkConfigSWIG = GetUplinkConfig();
+                    using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                     {
-                        using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
-                        {
-                            if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                                throw new ArgumentException(projectResult.error.message);
+                        if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
+                            throw new ArgumentException(projectResult.error.message);
 
-                            _project = projectResult.project;
-                        }
+                        _project = projectResult.project;
                     }
                 }
             }
@@ -166,22 +158,20 @@ namespace uplink.NET.Models
 
             try
             {
-                using (var uplinkConfigSWIG = GetUplinkConfig())
+                var uplinkConfigSWIG = GetUplinkConfig();
+                using (var accessResult = SWIG.storj_uplink.uplink_config_request_access_with_passphrase(uplinkConfigSWIG, satelliteAddress, apiKey, secret))
                 {
-                    using (var accessResult = SWIG.storj_uplink.uplink_config_request_access_with_passphrase(uplinkConfigSWIG, satelliteAddress, apiKey, secret))
+                    if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
+                        throw new ArgumentException(accessResult.error.message);
+
+                    _access = accessResult.access;
+
+                    using (var projectResult = SWIG.storj_uplink.uplink_open_project(_access))
                     {
-                        if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                            throw new ArgumentException(accessResult.error.message);
+                        if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
+                            throw new ArgumentException(projectResult.error.message);
 
-                        _access = accessResult.access;
-
-                        using (var projectResult = SWIG.storj_uplink.uplink_open_project(_access))
-                        {
-                            if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                                throw new ArgumentException(projectResult.error.message);
-
-                            _project = projectResult.project;
-                        }
+                        _project = projectResult.project;
                     }
                 }
             }
@@ -198,7 +188,7 @@ namespace uplink.NET.Models
             if (string.IsNullOrEmpty(TempDirectory))
                 TempDirectory = System.IO.Path.GetTempPath();
         }
-
+        
         private UplinkConfig GetUplinkConfig(Config config = null)
         {
             UplinkConfig uplinkConfig;
@@ -212,6 +202,8 @@ namespace uplink.NET.Models
                 uplinkConfig = config.ToSWIG();
                 uplinkConfig.temp_directory = TempDirectory;
             }
+
+            _configs.Add(uplinkConfig);
 
             return uplinkConfig;
         }

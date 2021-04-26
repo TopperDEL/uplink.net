@@ -11,6 +11,8 @@ namespace uplink.NET.Services
 {
     public class ObjectService : IObjectService
     {
+        static List<SWIG.UplinkListObjectsOptions> _listOptions = new List<SWIG.UplinkListObjectsOptions>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkListObjectsOptions
+
         Access _access;
 
         public ObjectService(Access access)
@@ -30,11 +32,11 @@ namespace uplink.NET.Services
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true)
         {
-            using (var uploadOptionsSWIG = uploadOptions.ToSWIG())
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
+            _uploadOptions.Add(uploadOptionsSWIG);
             {
                 using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
                 {
-
                     UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
                     if (immediateStart)
                         upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
@@ -43,32 +45,30 @@ namespace uplink.NET.Services
                 }
             }
         }
-
+        static List<SWIG.UplinkUploadOptions> _uploadOptions = new List<SWIG.UplinkUploadOptions>();
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true)
         {
-            using (var uploadOptionsSWIG = uploadOptions.ToSWIG())
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
+            _uploadOptions.Add(uploadOptionsSWIG);
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
             {
-                using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
-                {
-                    UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
-                    if (immediateStart)
-                        upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
+                UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
+                if (immediateStart)
+                    upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
-                    return upload;
-                }
+                return upload;
             }
         }
 
         public async Task<ChunkedUploadOperation> UploadObjectChunkedAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, CustomMetadata customMetadata)
         {
-            using (var uploadOptionsSWIG = uploadOptions.ToSWIG())
+            var uploadOptionsSWIG = uploadOptions.ToSWIG();
+            _uploadOptions.Add(uploadOptionsSWIG);
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
             {
-                using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
-                {
-                    ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
+                ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
 
-                    return upload;
-                }
+                return upload;
             }
         }
 
@@ -99,29 +99,29 @@ namespace uplink.NET.Services
 
         public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
-            using (var listObjectsOptionsSWIG = listObjectsOptions.ToSWIG())
+            var listObjectsOptionsSWIG = listObjectsOptions.ToSWIG();
+            _listOptions.Add(listObjectsOptionsSWIG);
+
+            using (SWIG.UplinkObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_objects(_access._project, bucket.Name, listObjectsOptionsSWIG)))
             {
-                using (SWIG.UplinkObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_objects(_access._project, bucket.Name, listObjectsOptionsSWIG)))
+                using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_object_iterator_err(objectIterator))
                 {
-                    using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_object_iterator_err(objectIterator))
+                    if (error != null && !string.IsNullOrEmpty(error.message))
                     {
-                        if (error != null && !string.IsNullOrEmpty(error.message))
-                        {
-                            throw new BucketListException(error.message);
-                        }
+                        throw new BucketListException(error.message);
                     }
-
-                    ObjectList objectList = new ObjectList();
-
-                    while (SWIG.storj_uplink.uplink_object_iterator_next(objectIterator))
-                    {
-                        using (var objectResult = SWIG.storj_uplink.uplink_object_iterator_item(objectIterator))
-                        {
-                            objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(objectResult, true));
-                        }
-                    }
-                    return objectList;
                 }
+
+                ObjectList objectList = new ObjectList();
+
+                while (SWIG.storj_uplink.uplink_object_iterator_next(objectIterator))
+                {
+                    using (var objectResult = SWIG.storj_uplink.uplink_object_iterator_item(objectIterator))
+                    {
+                        objectList.Items.Add(uplink.NET.Models.Object.FromSWIG(objectResult, true));
+                    }
+                }
+                return objectList;
             }
         }
 
