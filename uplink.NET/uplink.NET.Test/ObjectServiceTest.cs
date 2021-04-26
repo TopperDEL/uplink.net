@@ -20,14 +20,12 @@ namespace uplink.NET.Test
         IObjectService _objectService;
 
         [TestInitialize]
-        public async Task Init()
+        public void Init()
         {
             Access.SetTempDirectory(System.IO.Path.GetTempPath());
             _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_access);
             _objectService = new ObjectService(_access);
-
-            await CleanupAsync();
         }
 
         [TestMethod]
@@ -128,31 +126,29 @@ namespace uplink.NET.Test
         [TestMethod]
         public async Task DownloadObject_Downloads_256Bytes()
         {
-            await Download_X_Bytes(256);
+            await Download_X_Bytes(256, "downloadtest-256");
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2048Bytes()
         {
-            await Download_X_Bytes(2048);
+            await Download_X_Bytes(2048, "downloadtest-2048");
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_2500Bytes()
         {
-            await Download_X_Bytes(2500);
+            await Download_X_Bytes(2500, "downloadtest-2500");
         }
 
         [TestMethod]
         public async Task DownloadObject_Downloads_LargeFile()
         {
-            await Download_X_Bytes(1024*512);
+            await Download_X_Bytes(1024 * 512, "downloadtest-large");
         }
 
-        private async Task Download_X_Bytes(long bytes)
+        private async Task Download_X_Bytes(long bytes, string bucketname)
         {
-            string bucketname = "downloadtest";
-
             var result = await _bucketService.CreateBucketAsync(bucketname);
             var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
@@ -162,7 +158,7 @@ namespace uplink.NET.Test
 
             bool progressChangeCounterCalled = false;
 
-            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt",new DownloadOptions(), false);
+            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "myfile.txt", new DownloadOptions(), false);
             downloadOperation.DownloadOperationProgressChanged += (op) =>
             {
                 progressChangeCounterCalled = true;
@@ -377,7 +373,10 @@ namespace uplink.NET.Test
         public async Task CleanupAsync()
         {
             await DeleteBucketAsync("uploadtest");
-            await DeleteBucketAsync("downloadtest");
+            await DeleteBucketAsync("downloadtest-256");
+            await DeleteBucketAsync("downloadtest-2048");
+            await DeleteBucketAsync("downloadtest-2500");
+            await DeleteBucketAsync("downloadtest-large");
             await DeleteBucketAsync("downloadstreamtest1");
             await DeleteBucketAsync("downloadstreamtest2");
             await DeleteBucketAsync("listobject-lists-existingobjects");
@@ -394,7 +393,7 @@ namespace uplink.NET.Test
             {
                 var bucket = await _bucketService.GetBucketAsync(bucketName);
                 var result = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions() { Recursive = true });
-                foreach(var obj in result.Items)
+                foreach (var obj in result.Items)
                 {
                     await _objectService.DeleteObjectAsync(bucket, obj.Key);
                 }

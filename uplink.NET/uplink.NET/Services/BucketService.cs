@@ -10,6 +10,8 @@ namespace uplink.NET.Services
 {
     public class BucketService : IBucketService
     {
+        static List<SWIG.UplinkListBucketsOptions> _listOptions = new List<SWIG.UplinkListBucketsOptions>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkListBucketsOptions
+
         Access _access;
 
         public BucketService(Access access)
@@ -67,28 +69,27 @@ namespace uplink.NET.Services
 
         public async Task<BucketList> ListBucketsAsync(ListBucketsOptions listBucketsOptions)
         {
-            using (var listBucketsOptionsSWIG = listBucketsOptions.ToSWIG())
+            var listBucketsOptionsSWIG = listBucketsOptions.ToSWIG();
+            _listOptions.Add(listBucketsOptionsSWIG);
+            using (SWIG.UplinkBucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_buckets(_access._project, listBucketsOptionsSWIG)))
             {
-                using (SWIG.UplinkBucketIterator bucketIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_buckets(_access._project, listBucketsOptionsSWIG)))
+                using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_bucket_iterator_err(bucketIterator))
                 {
-                    using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_bucket_iterator_err(bucketIterator))
+                    if (error != null && !string.IsNullOrEmpty(error.message))
                     {
-                        if (error != null && !string.IsNullOrEmpty(error.message))
-                        {
-                            throw new BucketListException(error.message);
-                        }
+                        throw new BucketListException(error.message);
                     }
-
-                    BucketList bucketList = new BucketList();
-
-                    while (SWIG.storj_uplink.uplink_bucket_iterator_next(bucketIterator))
-                    {
-                        var bucket = SWIG.storj_uplink.uplink_bucket_iterator_item(bucketIterator);
-                        bucketList.Items.Add(Bucket.FromSWIG(bucket, _access._project));
-                    }
-
-                    return bucketList;
                 }
+
+                BucketList bucketList = new BucketList();
+
+                while (SWIG.storj_uplink.uplink_bucket_iterator_next(bucketIterator))
+                {
+                    var bucket = SWIG.storj_uplink.uplink_bucket_iterator_item(bucketIterator);
+                    bucketList.Items.Add(Bucket.FromSWIG(bucket, _access._project));
+                }
+
+                return bucketList;
             }
         }
     }
