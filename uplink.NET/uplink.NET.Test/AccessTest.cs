@@ -12,6 +12,7 @@ namespace uplink.NET.Test
     [TestClass]
     public class AccessTest
     {
+        static int SATELLITE_WAIT_DURATION = 3500;
         Access _access;
         IBucketService _bucketService;
         IObjectService _objectService;
@@ -89,7 +90,7 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
-            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+            await Task.Delay(SATELLITE_WAIT_DURATION); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try
@@ -132,7 +133,7 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
-            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+            await Task.Delay(SATELLITE_WAIT_DURATION); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try
@@ -175,7 +176,7 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
-            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+            await Task.Delay(SATELLITE_WAIT_DURATION); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try
@@ -222,7 +223,7 @@ namespace uplink.NET.Test
                 serializedAccess = restricted.Serialize();
             }
 
-            await Task.Delay(1500); //Wait a bit so that some things can happen on the satellite
+            await Task.Delay(SATELLITE_WAIT_DURATION); //Wait a bit so that some things can happen on the satellite
 
             Access restrictedEnv;
             try

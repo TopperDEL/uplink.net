@@ -37,21 +37,23 @@ namespace uplink.NET.Models
         {
             int received = 0;
 
-            var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, new SWIG.UplinkDownloadOptions() { length = count, offset = Position });
-
-            if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
-                throw new EndOfStreamException(downloadResult.error.message);
-
-            using (var download = new DownloadOperation(downloadResult, count, _objectName))
+            using (var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, new SWIG.UplinkDownloadOptions() { length = count, offset = Position }))
             {
-                download.StartDownloadAsync().Wait();
 
-                Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
+                if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
+                    throw new EndOfStreamException(downloadResult.error.message);
 
-                received = (int)download.BytesReceived;
+                using (var download = new DownloadOperation(downloadResult, count, _objectName))
+                {
+                    download.StartDownloadAsync().Wait();
+
+                    Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
+
+                    received = (int)download.BytesReceived;
+                }
+
+                return received;
             }
-
-            return received;
         }
 
         public override long Seek(long offset, SeekOrigin origin)

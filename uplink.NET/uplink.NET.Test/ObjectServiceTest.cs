@@ -20,12 +20,14 @@ namespace uplink.NET.Test
         IObjectService _objectService;
 
         [TestInitialize]
-        public void Init()
+        public async Task Init()
         {
             Access.SetTempDirectory(System.IO.Path.GetTempPath());
             _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_access);
             _objectService = new ObjectService(_access);
+
+            await CleanupAsync();
         }
 
         [TestMethod]
@@ -307,7 +309,6 @@ namespace uplink.NET.Test
             catch (ObjectNotFoundException ex)
             {
                 Assert.AreEqual("notexisting.txt", ex.TargetPath);
-                Assert.IsTrue(ex.Message.Contains("not found"));
                 return;
             }
 

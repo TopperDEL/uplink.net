@@ -35,8 +35,10 @@ namespace uplink.NET.Models
 
                     for (int i = 0; i < obj.custom.count; i++)
                     {
-                        var entry = SWIG.storj_uplink.get_next_custommetadata();
-                        ret.Entries.Add(new CustomMetadataEntry() { Key = entry.key, Value = entry.value });
+                        using (var entry = SWIG.storj_uplink.get_next_custommetadata())
+                        {
+                            ret.Entries.Add(new CustomMetadataEntry() { Key = entry.key, Value = entry.value });
+                        }
                     }
                 }
                 finally

@@ -17,15 +17,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\uplink.NET\runtimes\win-x64\native\storj_uplink.dll" Link="storj_uplink.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="uplink.NET.Win" Version="2.6.1427" />
   </ItemGroup>
 
   <ItemGroup>

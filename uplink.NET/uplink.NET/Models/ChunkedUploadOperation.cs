@@ -5,9 +5,9 @@ using System.Text;
 
 namespace uplink.NET.Models
 {
-    public unsafe class ChunkedUploadOperation
+    public unsafe class ChunkedUploadOperation : IDisposable
     {
-        private SWIG.UplinkUploadResult _uploadResult;
+        private SWIG.UplinkUpload _upload;
         private string _objectName;
         private CustomMetadata _customMetadata;
         private string _errorMessage;
@@ -15,7 +15,7 @@ namespace uplink.NET.Models
 
         internal ChunkedUploadOperation(SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
-            _uploadResult = uploadResult;
+            _upload = uploadResult.upload;
             _objectName = objectName;
             _customMetadata = customMetadata;
         }
@@ -29,16 +29,16 @@ namespace uplink.NET.Models
                 var uploadChunk = buffer.Take((int)(buffer.Length - bytesSent)).ToArray();
                 fixed (byte* arrayPtr = uploadChunk)
                 {
-                    SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)uploadChunk.Length);
-                    if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                    using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)uploadChunk.Length))
                     {
-                        _errorMessage = sentResult.error.message;
-                        return false;
+                        if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                        {
+                            _errorMessage = sentResult.error.message;
+                            return false;
+                        }
+                        else
+                            bytesSent += sentResult.bytes_written;
                     }
-                    else
-                        bytesSent += sentResult.bytes_written;
-
-                    SWIG.storj_uplink.uplink_free_write_result(sentResult);
                 }
             }
 
@@ -54,13 +54,14 @@ namespace uplink.NET.Models
                     try
                     {
                         _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                        SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
-                        if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
+                        using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
                         {
-                            _errorMessage = customMetadataError.message;
-                            return false;
+                            if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
+                            {
+                                _errorMessage = customMetadataError.message;
+                                return false;
+                            }
                         }
-                        SWIG.storj_uplink.uplink_free_error(customMetadataError);
                     }
                     finally
                     {
@@ -69,15 +70,24 @@ namespace uplink.NET.Models
                 }
             }
 
-            SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_uploadResult.upload);
-            if (commitError != null && !string.IsNullOrEmpty(commitError.message))
+            using (SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_upload))
             {
-                _errorMessage = commitError.message;
-                SWIG.storj_uplink.uplink_free_error(commitError);
-                return false;
+                if (commitError != null && !string.IsNullOrEmpty(commitError.message))
+                {
+                    _errorMessage = commitError.message;
+                    return false;
+                }
             }
-            SWIG.storj_uplink.uplink_free_error(commitError);
             return true;
+        }
+
+        public void Dispose()
+        {
+            if (_upload != null)
+            {
+                _upload.Dispose();
+                _upload = null;
+            }
         }
     }
 }

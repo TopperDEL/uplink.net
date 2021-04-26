@@ -26,7 +26,7 @@ namespace uplink.NET.Models
             config.dial_timeout_milliseconds = DialTimeoutMilliseconds;
             config.temp_directory = TempDirectory;
             config.user_agent = UserAgent;
-
+            
             return config;
         }
     }

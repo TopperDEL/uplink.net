@@ -24,7 +24,7 @@ namespace uplink.NET.Models
     {
         internal static Mutex customMetadataMutex = new Mutex();
         private Stream _byteStreamToUpload;
-        private SWIG.UplinkUploadResult _uploadResult;
+        private SWIG.UplinkUpload _upload;
         private Task _uploadTask;
         private bool _cancelled;
         private CustomMetadata _customMetadata;
@@ -105,7 +105,7 @@ namespace uplink.NET.Models
         internal UploadOperation(Stream stream, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
             _byteStreamToUpload = stream;
-            _uploadResult = uploadResult;
+            _upload = uploadResult.upload;
             ObjectName = objectName;
             _customMetadata = customMetadata;
 
@@ -168,31 +168,31 @@ namespace uplink.NET.Models
                             byte[] targetArray = bytesToUpload.Take((int)bytesToUploadCount).ToArray();
                             fixed (byte* arrayPtr = targetArray)
                             {
-                                SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_uploadResult.upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount);
-
-                                if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                                using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount))
                                 {
-                                    _errorMessage = sentResult.error.message;
-                                    Failed = true;
-                                    Running = false;
-                                    UploadOperationEnded?.Invoke(this);
-                                    return;
-                                }
-                                else
-                                    BytesSent += sentResult.bytes_written;
-
-                                SWIG.storj_uplink.uplink_free_write_result(sentResult);
-                                if (_cancelled)
-                                {
-                                    SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_uploadResult.upload);
-                                    if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                    if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                                     {
+                                        _errorMessage = sentResult.error.message;
                                         Failed = true;
-                                        _errorMessage = abortError.message;
+                                        Running = false;
+                                        UploadOperationEnded?.Invoke(this);
+                                        return;
                                     }
                                     else
-                                        Cancelled = true;
-                                    SWIG.storj_uplink.uplink_free_error(abortError);
+                                        BytesSent += sentResult.bytes_written;
+                                }
+                                if (_cancelled)
+                                {
+                                    using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                                    {
+                                        if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                        {
+                                            Failed = true;
+                                            _errorMessage = abortError.message;
+                                        }
+                                        else
+                                            Cancelled = true;
+                                    }
 
                                     Running = false;
                                     UploadOperationEnded?.Invoke(this);
@@ -217,15 +217,16 @@ namespace uplink.NET.Models
                             try
                             {
                                 _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                                SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_uploadResult.upload);
-                                if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
+                                using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
                                 {
-                                    _errorMessage = customMetadataError.message;
-                                    Failed = true;
-                                    UploadOperationEnded?.Invoke(this);
-                                    return;
+                                    if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
+                                    {
+                                        _errorMessage = customMetadataError.message;
+                                        Failed = true;
+                                        UploadOperationEnded?.Invoke(this);
+                                        return;
+                                    }
                                 }
-                                SWIG.storj_uplink.uplink_free_error(customMetadataError);
                             }
                             finally
                             {
@@ -234,16 +235,16 @@ namespace uplink.NET.Models
                         }
                     }
 
-                    SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_uploadResult.upload);
-                    if (commitError != null && !string.IsNullOrEmpty(commitError.message))
+                    using (SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_upload))
                     {
-                        _errorMessage = commitError.message;
-                        Failed = true;
-                        UploadOperationEnded?.Invoke(this);
-                        SWIG.storj_uplink.uplink_free_error(commitError);
-                        return;
+                        if (commitError != null && !string.IsNullOrEmpty(commitError.message))
+                        {
+                            _errorMessage = commitError.message;
+                            Failed = true;
+                            UploadOperationEnded?.Invoke(this);
+                            return;
+                        }
                     }
-                    SWIG.storj_uplink.uplink_free_error(commitError);
                 }
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
@@ -269,11 +270,10 @@ namespace uplink.NET.Models
 
         public void Dispose()
         {
-            if (_uploadResult != null)
+            if (_upload != null)
             {
-                SWIG.storj_uplink.uplink_free_upload_result(_uploadResult);
-                _uploadResult.Dispose();
-                _uploadResult = null;
+                _upload.Dispose();
+                _upload = null;
             }
         }
     }
