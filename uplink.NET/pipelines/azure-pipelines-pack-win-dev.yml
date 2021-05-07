@@ -3,87 +3,212 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-stages:
-- stage: nuget_pack
-  pool:
-    vmImage: 'ubuntu-20.04'
-  jobs:
-    - job: nuget_pack
-      steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'win-x86-dll'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (x86-dll)'
+name: $(Date:yyyy)
 
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'win-x64-dll'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (x64-dll)'
+trigger:
+- release
 
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'nuspec'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+pool:
+  vmImage: 'ubuntu-20.04'
 
-      - script: |
-          mkdir win-x86-dll
-          mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
-          mkdir win-x64-dll
-          mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
-        displayName: 'remove me'
+steps:
+- script: |
+    git clone --depth 1 https://github.com/TopperDEL/uplink.net.git
+  displayName: 'Clone uplink.NET'
 
-      - task: NuGetCommand@2
-        inputs:
-          command: 'pack'
-          packagesToPack: 'uplink.NET.Win.nuspec'
-          packDestination: '$(System.DefaultWorkingDirectory)'
-          versioningScheme: 'off'
-        displayName: 'Pack the Win-Nuget'
+- script: |
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
+  displayName: 'Inject the Storj-Version'
 
-      - script: |
-          mkdir nuget
-          mv *.nupkg nuget
-          ls
-        displayName: 'Copy binaries to nuget-location'
+- script: |
+    echo 'Cloning $(STORJ_VERSION)'
+    git clone https://github.com/storj/uplink-c.git
+    cd uplink-c
+    git checkout $(STORJ_VERSION) 
+    cd ..
+  displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: 'nuget'
-          artifact: 'nuget_win'
-          publishLocation: 'pipeline'
-        displayName: 'Publish Windows-Nuget as Artifact'
+- script: |
+    cp uplink.net/SWIG/*.i uplink-c
+    cp uplink.net/GO/*.go uplink-c
+  displayName: 'Copy specific files to uplink-c'
 
-      - task: NuGetCommand@2
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'internal'
-          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
-        displayName: 'Publish to Dev-Feed'
-        
-      - task: NuGetCommand@2
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'NugetOrg'
-        displayName: 'Publish to Nuget.org'
+- script: |
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
+  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+
+- task: GoTool@0
+  inputs:
+    version: '$(GOLANG_VERSION)'
+  displayName: 'Install Go $(GOLANG_VERSION)'
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install gcc-mingw-w64
+  displayName: 'Install cross compiler for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="x86_64-w64-mingw32-gcc"
+    export CXX="x86_64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="amd64"
+    export CGO_ENABLED="1"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink.dll -buildmode c-shared
+  displayName: 'Generating Windows-x64-DLL for the first time - we need an additional h-file'
+
+- script: |
+    cd uplink-c
+    rm *.cs
+    rm *.c
+    rm *.dll
+  displayName: 'Cleanup - remove some created files'
+
+- script: |
+    sed -i '/GoComplex/d' uplink-c/storj_uplink.h
+    sed -i '/pointer_matching_GoInt/d' uplink-c/storj_uplink.h
+  displayName: 'Remove some types that lead to errors with SWIG'
+
+- script: |
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
+  displayName: 'Running SWIG again with the second i-file. It includes more typemaps.'
+
+- script: |
+    cd uplink-c
+    export CC="i686-w64-mingw32-gcc"
+    export CXX="i686-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="386"
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -Wl,--kill-at"
+    export CGO_CXXFLAGS="-g -Wl,--kill-at"
+    export CGO_FFLAGS="-g -Wl,--kill-at"
+    export CGO_LDFLAGS="-g -Wl,--kill-at"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-x86.dll -buildmode c-shared
+  displayName: 'Generating the final-x86-DLL for Windows'
+
+- script: |
+    cd uplink-c
+    export CC="x86_64-w64-mingw32-gcc"
+    export CXX="x86_64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="amd64"
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -O2"
+    export CGO_CXXFLAGS="-g -O2"
+    export CGO_FFLAGS="-g -O2"
+    export CGO_LDFLAGS="-g -O2"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink-x64.dll -buildmode c-shared
+  displayName: 'Generating the final-x64-DLL for Windows'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink.h'
+    artifact: 'storj_uplink'
+    publishLocation: 'pipeline'
+  displayName: 'Publish storj_uplink.h'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink_second_wrap.c'
+    artifact: 'storj_uplink_second_wrap'
+    publishLocation: 'pipeline'
+  displayName: 'Publish storj_uplink_second_wrap.c'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-x86.dll'
+    artifact: 'win-x86-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-x86-dll'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-x64.dll'
+    artifact: 'win-x64-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-x64-dll'
+
+- script: |
+    sed -i 's/storj_uplinkPINVOKE.free_string(ref tmpp0)/storj_uplinkPINVOKE.free_string(tmpp0)/' uplink-c/storj_uplink.cs
+    sed -i 's/public static extern void free_string(ref global::System.IntPtr jarg1)/public static extern void free_string(global::System.IntPtr jarg1)/' uplink-c/storj_uplinkPINVOKE.cs
+  displayName: 'Replacing ref-modifier from free_string-method'
+
+- script: |
+    sed -i 's/namespace uplink.SWIG/using System; namespace uplink.SWIG/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/protected class SWIGExceptionHelper {/public class MonoPInvokeCallbackAttribute:Attribute{public MonoPInvokeCallbackAttribute(Type t){}} public class MonoNativeFunctionWrapperAttribute:Attribute {public MonoNativeFunctionWrapperAttribute() {}} protected class SWIGExceptionHelper {/' uplink-c/storj_uplinkPINVOKE.cs
+
+    sed -i 's/public delegate void ExceptionDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate void ExceptionArgumentDelegate(string message, string paramName)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] public delegate void ExceptionArgumentDelegate(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+
+    sed -i 's/static void SetPendingApplicationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingApplicationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArithmeticException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingArithmeticException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingDivideByZeroException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingDivideByZeroException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIndexOutOfRangeException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIndexOutOfRangeException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidCastException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidCastException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingInvalidOperationException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingInvalidOperationException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingIOException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingIOException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingNullReferenceException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingNullReferenceException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOutOfMemoryException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOutOfMemoryException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingOverflowException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingOverflowException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingSystemException(string message)/[MonoPInvokeCallback(typeof(ExceptionDelegate))] static void SetPendingSystemException(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentNullException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentNullException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static void SetPendingArgumentOutOfRangeException(string message, string paramName)/[MonoPInvokeCallback(typeof(ExceptionArgumentDelegate))] static void SetPendingArgumentOutOfRangeException(string message, string paramName)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/public delegate string SWIGStringDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] [MonoNativeFunctionWrapper] public delegate string SWIGStringDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
+    sed -i 's/static string CreateString(string cString)/[MonoPInvokeCallback(typeof(SWIGStringDelegate))] static string CreateString(string cString)/' uplink-c/storj_uplinkPINVOKE.cs
+  displayName: 'Adding AOT-Attributes for iOs-Build'
+
+- script: |
+    cd uplink-c
+    mkdir csfiles
+    cp *.cs csfiles
+    ls csfiles
+  displayName: 'Extract generated cs-files'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/csfiles'
+    artifact: 'Csharp-files'
+    publishLocation: 'pipeline'
+  displayName: 'Publish all C#-files'
+
+- script: |
+    cd uplink-c
+    rm *.cs
+    rm *.dll
+    rm *.c
+  displayName: 'Cleanup uplink-c'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c'
+    artifact: 'uplink-c'
+    publishLocation: 'pipeline'
+  displayName: 'Publish uplink-c'
+  
+- script: |
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing Build-Number in nuspecs'
+
+- script: |
+    echo Current year is: $(Build.BuildNumber)
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
+    sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
+  displayName: 'Replacing current year in nuspecs'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink.net/nuspec'
+    artifact: 'nuspec'
+    publishLocation: 'pipeline'
+  displayName: 'Publish nuspec'
