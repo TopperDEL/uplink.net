@@ -364,6 +364,81 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_internal_UniverseIsEmpty___")]
   public static extern byte uplink_internal_UniverseIsEmpty();
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_begin_upload___")]
+  public static extern global::System.IntPtr uplink_begin_upload(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_upload_info_result___")]
+  public static extern void uplink_free_upload_info_result(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_upload_info___")]
+  public static extern void uplink_free_upload_info(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_commit_upload___")]
+  public static extern global::System.IntPtr uplink_commit_upload(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_commit_upload_result___")]
+  public static extern void uplink_free_commit_upload_result(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_abort_upload___")]
+  public static extern global::System.IntPtr uplink_abort_upload(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_upload_part___")]
+  public static extern global::System.IntPtr uplink_upload_part(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4, uint jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_upload_write___")]
+  public static extern global::System.IntPtr uplink_part_upload_write(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, uint jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_upload_commit___")]
+  public static extern global::System.IntPtr uplink_part_upload_commit(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_upload_abort___")]
+  public static extern global::System.IntPtr uplink_part_upload_abort(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_upload_set_etag___")]
+  public static extern global::System.IntPtr uplink_part_upload_set_etag(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_upload_info___")]
+  public static extern global::System.IntPtr uplink_part_upload_info(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_part_result___")]
+  public static extern void uplink_free_part_result(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_part_upload_result___")]
+  public static extern void uplink_free_part_upload_result(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_part___")]
+  public static extern void uplink_free_part(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_list_uploads___")]
+  public static extern global::System.IntPtr uplink_list_uploads(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_upload_iterator_next___")]
+  public static extern bool uplink_upload_iterator_next(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_upload_iterator_err___")]
+  public static extern global::System.IntPtr uplink_upload_iterator_err(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_upload_iterator_item___")]
+  public static extern global::System.IntPtr uplink_upload_iterator_item(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_upload_iterator___")]
+  public static extern void uplink_free_upload_iterator(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_list_upload_parts___")]
+  public static extern global::System.IntPtr uplink_list_upload_parts(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_iterator_next___")]
+  public static extern bool uplink_part_iterator_next(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_iterator_err___")]
+  public static extern global::System.IntPtr uplink_part_iterator_err(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_part_iterator_item___")]
+  public static extern global::System.IntPtr uplink_part_iterator_item(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_free_part_iterator___")]
+  public static extern void uplink_free_part_iterator(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_uplink_stat_object___")]
   public static extern global::System.IntPtr uplink_stat_object(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
@@ -504,6 +579,18 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkEncryptionKey___")]
   public static extern void delete_UplinkEncryptionKey(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUpload__handle_set___")]
+  public static extern void UplinkPartUpload__handle_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUpload__handle_get___")]
+  public static extern uint UplinkPartUpload__handle_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkPartUpload___")]
+  public static extern global::System.IntPtr new_UplinkPartUpload();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPartUpload___")]
+  public static extern void delete_UplinkPartUpload(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkConfig_user_agent_set___")]
   public static extern void UplinkConfig_user_agent_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
@@ -715,6 +802,42 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkListObjectsOptions___")]
   public static extern void delete_UplinkListObjectsOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_prefix_set___")]
+  public static extern void UplinkListUploadsOptions_prefix_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_prefix_get___")]
+  public static extern string UplinkListUploadsOptions_prefix_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_cursor_set___")]
+  public static extern void UplinkListUploadsOptions_cursor_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_cursor_get___")]
+  public static extern string UplinkListUploadsOptions_cursor_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_recursive_set___")]
+  public static extern void UplinkListUploadsOptions_recursive_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_recursive_get___")]
+  public static extern bool UplinkListUploadsOptions_recursive_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_system_set___")]
+  public static extern void UplinkListUploadsOptions_system_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_system_get___")]
+  public static extern bool UplinkListUploadsOptions_system_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_custom_set___")]
+  public static extern void UplinkListUploadsOptions_custom_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadsOptions_custom_get___")]
+  public static extern bool UplinkListUploadsOptions_custom_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkListUploadsOptions___")]
+  public static extern global::System.IntPtr new_UplinkListUploadsOptions();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkListUploadsOptions___")]
+  public static extern void delete_UplinkListUploadsOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListBucketsOptions_cursor_set___")]
   public static extern void UplinkListBucketsOptions_cursor_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
@@ -750,6 +873,30 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkBucketIterator___")]
   public static extern void delete_UplinkBucketIterator(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadIterator__handle_set___")]
+  public static extern void UplinkUploadIterator__handle_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadIterator__handle_get___")]
+  public static extern uint UplinkUploadIterator__handle_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkUploadIterator___")]
+  public static extern global::System.IntPtr new_UplinkUploadIterator();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkUploadIterator___")]
+  public static extern void delete_UplinkUploadIterator(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartIterator__handle_set___")]
+  public static extern void UplinkPartIterator__handle_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartIterator__handle_get___")]
+  public static extern uint UplinkPartIterator__handle_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkPartIterator___")]
+  public static extern global::System.IntPtr new_UplinkPartIterator();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPartIterator___")]
+  public static extern void delete_UplinkPartIterator(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPermission_allow_download_set___")]
   public static extern void UplinkPermission_allow_download_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
@@ -792,6 +939,42 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPermission___")]
   public static extern void delete_UplinkPermission(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_part_number_set___")]
+  public static extern void UplinkPart_part_number_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_part_number_get___")]
+  public static extern uint UplinkPart_part_number_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_size_set___")]
+  public static extern void UplinkPart_size_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_size_get___")]
+  public static extern uint UplinkPart_size_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_modified_set___")]
+  public static extern void UplinkPart_modified_set(global::System.Runtime.InteropServices.HandleRef jarg1, long jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_modified_get___")]
+  public static extern long UplinkPart_modified_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_etag_set___")]
+  public static extern void UplinkPart_etag_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_etag_get___")]
+  public static extern string UplinkPart_etag_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_etag_length_set___")]
+  public static extern void UplinkPart_etag_length_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPart_etag_length_get___")]
+  public static extern uint UplinkPart_etag_length_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkPart___")]
+  public static extern global::System.IntPtr new_UplinkPart();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPart___")]
+  public static extern void delete_UplinkPart(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkSharePrefix_bucket_set___")]
   public static extern void UplinkSharePrefix_bucket_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
@@ -955,6 +1138,24 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkUploadResult___")]
   public static extern void delete_UplinkUploadResult(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUploadResult_part_upload_set___")]
+  public static extern void UplinkPartUploadResult_part_upload_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUploadResult_part_upload_get___")]
+  public static extern global::System.IntPtr UplinkPartUploadResult_part_upload_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUploadResult_error_set___")]
+  public static extern void UplinkPartUploadResult_error_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartUploadResult_error_get___")]
+  public static extern global::System.IntPtr UplinkPartUploadResult_error_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkPartUploadResult___")]
+  public static extern global::System.IntPtr new_UplinkPartUploadResult();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPartUploadResult___")]
+  public static extern void delete_UplinkPartUploadResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkDownloadResult_download_set___")]
   public static extern void UplinkDownloadResult_download_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
@@ -1044,6 +1245,120 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkEncryptionKeyResult___")]
   public static extern void delete_UplinkEncryptionKeyResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_upload_id_set___")]
+  public static extern void UplinkUploadInfo_upload_id_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_upload_id_get___")]
+  public static extern string UplinkUploadInfo_upload_id_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_key_set___")]
+  public static extern void UplinkUploadInfo_key_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_key_get___")]
+  public static extern string UplinkUploadInfo_key_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_is_prefix_set___")]
+  public static extern void UplinkUploadInfo_is_prefix_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_is_prefix_get___")]
+  public static extern bool UplinkUploadInfo_is_prefix_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_system_set___")]
+  public static extern void UplinkUploadInfo_system_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_system_get___")]
+  public static extern global::System.IntPtr UplinkUploadInfo_system_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_custom_set___")]
+  public static extern void UplinkUploadInfo_custom_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfo_custom_get___")]
+  public static extern global::System.IntPtr UplinkUploadInfo_custom_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkUploadInfo___")]
+  public static extern global::System.IntPtr new_UplinkUploadInfo();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkUploadInfo___")]
+  public static extern void delete_UplinkUploadInfo(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfoResult_info_set___")]
+  public static extern void UplinkUploadInfoResult_info_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfoResult_info_get___")]
+  public static extern global::System.IntPtr UplinkUploadInfoResult_info_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfoResult_error_set___")]
+  public static extern void UplinkUploadInfoResult_error_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkUploadInfoResult_error_get___")]
+  public static extern global::System.IntPtr UplinkUploadInfoResult_error_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkUploadInfoResult___")]
+  public static extern global::System.IntPtr new_UplinkUploadInfoResult();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkUploadInfoResult___")]
+  public static extern void delete_UplinkUploadInfoResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadOptions_custom_metadata_set___")]
+  public static extern void UplinkCommitUploadOptions_custom_metadata_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadOptions_custom_metadata_get___")]
+  public static extern global::System.IntPtr UplinkCommitUploadOptions_custom_metadata_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkCommitUploadOptions___")]
+  public static extern global::System.IntPtr new_UplinkCommitUploadOptions();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkCommitUploadOptions___")]
+  public static extern void delete_UplinkCommitUploadOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadResult_object__set___")]
+  public static extern void UplinkCommitUploadResult_object__set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadResult_object__get___")]
+  public static extern global::System.IntPtr UplinkCommitUploadResult_object__get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadResult_error_set___")]
+  public static extern void UplinkCommitUploadResult_error_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkCommitUploadResult_error_get___")]
+  public static extern global::System.IntPtr UplinkCommitUploadResult_error_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkCommitUploadResult___")]
+  public static extern global::System.IntPtr new_UplinkCommitUploadResult();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkCommitUploadResult___")]
+  public static extern void delete_UplinkCommitUploadResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartResult_part_set___")]
+  public static extern void UplinkPartResult_part_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartResult_part_get___")]
+  public static extern global::System.IntPtr UplinkPartResult_part_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartResult_error_set___")]
+  public static extern void UplinkPartResult_error_set(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkPartResult_error_get___")]
+  public static extern global::System.IntPtr UplinkPartResult_error_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkPartResult___")]
+  public static extern global::System.IntPtr new_UplinkPartResult();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkPartResult___")]
+  public static extern void delete_UplinkPartResult(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadPartsOptions_cursor_set___")]
+  public static extern void UplinkListUploadPartsOptions_cursor_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UplinkListUploadPartsOptions_cursor_get___")]
+  public static extern uint UplinkListUploadPartsOptions_cursor_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_UplinkListUploadPartsOptions___")]
+  public static extern global::System.IntPtr new_UplinkListUploadPartsOptions();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_delete_UplinkListUploadPartsOptions___")]
+  public static extern void delete_UplinkListUploadPartsOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_storj_version___")]
   public static extern string get_storj_version();

@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class UplinkBucketIterator : global::System.IDisposable {
+internal class UplinkPartResult : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal UplinkBucketIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkPartResult(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkBucketIterator obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkPartResult obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~UplinkBucketIterator() {
+  ~UplinkPartResult() {
     Dispose(false);
   }
 
@@ -37,24 +37,36 @@ internal class UplinkBucketIterator : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_UplinkBucketIterator(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkPartResult(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public uint _handle {
+  public UplinkPart part {
     set {
-      storj_uplinkPINVOKE.UplinkBucketIterator__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPartResult_part_set(swigCPtr, UplinkPart.getCPtr(value));
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.UplinkBucketIterator__handle_get(swigCPtr);
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkPartResult_part_get(swigCPtr);
+      UplinkPart ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkPart(cPtr, false);
       return ret;
     } 
   }
 
-  public UplinkBucketIterator() : this(storj_uplinkPINVOKE.new_UplinkBucketIterator(), true) {
+  public UplinkError error {
+    set {
+      storj_uplinkPINVOKE.UplinkPartResult_error_set(swigCPtr, UplinkError.getCPtr(value));
+    } 
+    get {
+      global::System.IntPtr cPtr = storj_uplinkPINVOKE.UplinkPartResult_error_get(swigCPtr);
+      UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+      return ret;
+    } 
+  }
+
+  public UplinkPartResult() : this(storj_uplinkPINVOKE.new_UplinkPartResult(), true) {
   }
 
 }

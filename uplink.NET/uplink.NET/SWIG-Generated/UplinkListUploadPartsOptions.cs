@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class UplinkBucketIterator : global::System.IDisposable {
+internal class UplinkListUploadPartsOptions : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal UplinkBucketIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkListUploadPartsOptions(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkBucketIterator obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkListUploadPartsOptions obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~UplinkBucketIterator() {
+  ~UplinkListUploadPartsOptions() {
     Dispose(false);
   }
 
@@ -37,24 +37,24 @@ internal class UplinkBucketIterator : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_UplinkBucketIterator(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkListUploadPartsOptions(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
     }
   }
 
-  public uint _handle {
+  public uint cursor {
     set {
-      storj_uplinkPINVOKE.UplinkBucketIterator__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListUploadPartsOptions_cursor_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.UplinkBucketIterator__handle_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkListUploadPartsOptions_cursor_get(swigCPtr);
       return ret;
     } 
   }
 
-  public UplinkBucketIterator() : this(storj_uplinkPINVOKE.new_UplinkBucketIterator(), true) {
+  public UplinkListUploadPartsOptions() : this(storj_uplinkPINVOKE.new_UplinkListUploadPartsOptions(), true) {
   }
 
 }

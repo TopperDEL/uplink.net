@@ -10,20 +10,20 @@
 
 namespace uplink.SWIG {
 
-internal class UplinkBucketIterator : global::System.IDisposable {
+internal class UplinkPartIterator : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal UplinkBucketIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal UplinkPartIterator(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkBucketIterator obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkPartIterator obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~UplinkBucketIterator() {
+  ~UplinkPartIterator() {
     Dispose(false);
   }
 
@@ -37,7 +37,7 @@ internal class UplinkBucketIterator : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          storj_uplinkPINVOKE.delete_UplinkBucketIterator(swigCPtr);
+          storj_uplinkPINVOKE.delete_UplinkPartIterator(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -46,15 +46,15 @@ internal class UplinkBucketIterator : global::System.IDisposable {
 
   public uint _handle {
     set {
-      storj_uplinkPINVOKE.UplinkBucketIterator__handle_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPartIterator__handle_set(swigCPtr, value);
     } 
     get {
-      uint ret = storj_uplinkPINVOKE.UplinkBucketIterator__handle_get(swigCPtr);
+      uint ret = storj_uplinkPINVOKE.UplinkPartIterator__handle_get(swigCPtr);
       return ret;
     } 
   }
 
-  public UplinkBucketIterator() : this(storj_uplinkPINVOKE.new_UplinkBucketIterator(), true) {
+  public UplinkPartIterator() : this(storj_uplinkPINVOKE.new_UplinkPartIterator(), true) {
   }
 
 }
