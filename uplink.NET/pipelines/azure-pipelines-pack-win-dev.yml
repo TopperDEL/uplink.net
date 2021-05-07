@@ -1,0 +1,89 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+stages:
+- stage: nuget_pack
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'win-x86-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (x86-dll)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'win-x64-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (x64-dll)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          mkdir win-x86-dll
+          mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
+          mkdir win-x64-dll
+          mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
+        displayName: 'remove me'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Win.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the Win-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_win'
+          publishLocation: 'pipeline'
+        displayName: 'Publish Windows-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+        displayName: 'Publish to Dev-Feed'
+        
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NugetOrg'
+        displayName: 'Publish to Nuget.org'
