@@ -8,69 +8,55 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
-namespace uplink.SWIG
-{
+namespace uplink.SWIG {
 
-    internal class UplinkEncryptionKey : global::System.IDisposable
-    {
-        private global::System.Runtime.InteropServices.HandleRef swigCPtr;
-        protected bool swigCMemOwn;
+internal class UplinkEncryptionKey : global::System.IDisposable {
+  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
+  protected bool swigCMemOwn;
 
-        internal UplinkEncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn)
-        {
-            swigCMemOwn = cMemoryOwn;
-            swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
+  internal UplinkEncryptionKey(global::System.IntPtr cPtr, bool cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
+  }
+
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKey obj) {
+    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  ~UplinkEncryptionKey() {
+    Dispose(false);
+  }
+
+  public void Dispose() {
+    Dispose(true);
+    global::System.GC.SuppressFinalize(this);
+  }
+
+  protected virtual void Dispose(bool disposing) {
+    lock(this) {
+      if (swigCPtr.Handle != global::System.IntPtr.Zero) {
+        if (swigCMemOwn) {
+          swigCMemOwn = false;
+          storj_uplinkPINVOKE.delete_UplinkEncryptionKey(swigCPtr);
         }
-
-        internal static global::System.Runtime.InteropServices.HandleRef getCPtr(UplinkEncryptionKey obj)
-        {
-            return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
-        }
-
-        ~UplinkEncryptionKey()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            global::System.GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            lock (this)
-            {
-                if (swigCPtr.Handle != global::System.IntPtr.Zero)
-                {
-                    if (swigCMemOwn)
-                    {
-                        swigCMemOwn = false;
-                        storj_uplinkPINVOKE.delete_UplinkEncryptionKey(swigCPtr);
-                    }
-                    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
-                }
-            }
-        }
-
-        public uint _handle
-        {
-            set
-            {
-                storj_uplinkPINVOKE.UplinkEncryptionKey__handle_set(swigCPtr, value);
-            }
-            get
-            {
-                uint ret = storj_uplinkPINVOKE.UplinkEncryptionKey__handle_get(swigCPtr);
-                return ret;
-            }
-        }
-
-        public UplinkEncryptionKey() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKey(), true)
-        {
-        }
-
+        swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
+      }
     }
+  }
+
+  public uint _handle {
+    set {
+      storj_uplinkPINVOKE.UplinkEncryptionKey__handle_set(swigCPtr, value);
+    } 
+    get {
+      uint ret = storj_uplinkPINVOKE.UplinkEncryptionKey__handle_get(swigCPtr);
+      return ret;
+    } 
+  }
+
+  public UplinkEncryptionKey() : this(storj_uplinkPINVOKE.new_UplinkEncryptionKey(), true) {
+  }
+
+}
 
 }

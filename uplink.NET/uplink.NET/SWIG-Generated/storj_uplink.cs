@@ -199,6 +199,137 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static UplinkUploadInfoResult uplink_begin_upload(UplinkProject project, string bucket_name, string object_key, UplinkUploadOptions options) {
+    UplinkUploadInfoResult ret = new UplinkUploadInfoResult(storj_uplinkPINVOKE.uplink_begin_upload(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkUploadOptions.getCPtr(options)), true);
+    return ret;
+  }
+
+  public static void uplink_free_upload_info_result(UplinkUploadInfoResult result) {
+    storj_uplinkPINVOKE.uplink_free_upload_info_result(UplinkUploadInfoResult.getCPtr(result));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void uplink_free_upload_info(UplinkUploadInfo info) {
+    storj_uplinkPINVOKE.uplink_free_upload_info(UplinkUploadInfo.getCPtr(info));
+  }
+
+  public static UplinkCommitUploadResult uplink_commit_upload(UplinkProject project, string bucket_name, string object_key, string upload_id, UplinkCommitUploadOptions options) {
+    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, UplinkCommitUploadOptions.getCPtr(options)), true);
+    return ret;
+  }
+
+  public static void uplink_free_commit_upload_result(UplinkCommitUploadResult result) {
+    storj_uplinkPINVOKE.uplink_free_commit_upload_result(UplinkCommitUploadResult.getCPtr(result));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static UplinkError uplink_abort_upload(UplinkProject project, string bucket_name, string object_key, string upload_id) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_abort_upload(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id);
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkPartUploadResult uplink_upload_part(UplinkProject project, string bucket_name, string object_key, string upload_id, uint part_number) {
+    UplinkPartUploadResult ret = new UplinkPartUploadResult(storj_uplinkPINVOKE.uplink_upload_part(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, part_number), true);
+    return ret;
+  }
+
+  public static UplinkWriteResult uplink_part_upload_write(UplinkPartUpload upload, SWIGTYPE_p_void bytes, uint length) {
+    UplinkWriteResult ret = new UplinkWriteResult(storj_uplinkPINVOKE.uplink_part_upload_write(UplinkPartUpload.getCPtr(upload), SWIGTYPE_p_void.getCPtr(bytes), length), true);
+    return ret;
+  }
+
+  public static UplinkError uplink_part_upload_commit(UplinkPartUpload upload) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_upload_commit(UplinkPartUpload.getCPtr(upload));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkError uplink_part_upload_abort(UplinkPartUpload upload) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_upload_abort(UplinkPartUpload.getCPtr(upload));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkError uplink_part_upload_set_etag(UplinkPartUpload upload, string etag) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_upload_set_etag(UplinkPartUpload.getCPtr(upload), etag);
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkPartResult uplink_part_upload_info(UplinkPartUpload upload) {
+    UplinkPartResult ret = new UplinkPartResult(storj_uplinkPINVOKE.uplink_part_upload_info(UplinkPartUpload.getCPtr(upload)), true);
+    return ret;
+  }
+
+  public static void uplink_free_part_result(UplinkPartResult result) {
+    storj_uplinkPINVOKE.uplink_free_part_result(UplinkPartResult.getCPtr(result));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void uplink_free_part_upload_result(UplinkPartUploadResult result) {
+    storj_uplinkPINVOKE.uplink_free_part_upload_result(UplinkPartUploadResult.getCPtr(result));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void uplink_free_part(UplinkPart part) {
+    storj_uplinkPINVOKE.uplink_free_part(UplinkPart.getCPtr(part));
+  }
+
+  public static UplinkUploadIterator uplink_list_uploads(UplinkProject project, string bucket_name, UplinkListUploadsOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_uploads(UplinkProject.getCPtr(project), bucket_name, UplinkListUploadsOptions.getCPtr(options));
+    UplinkUploadIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkUploadIterator(cPtr, false);
+    return ret;
+  }
+
+  public static bool uplink_upload_iterator_next(UplinkUploadIterator iterator) {
+    bool ret = storj_uplinkPINVOKE.uplink_upload_iterator_next(UplinkUploadIterator.getCPtr(iterator));
+    return ret;
+  }
+
+  public static UplinkError uplink_upload_iterator_err(UplinkUploadIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_upload_iterator_err(UplinkUploadIterator.getCPtr(iterator));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkUploadInfo uplink_upload_iterator_item(UplinkUploadIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_upload_iterator_item(UplinkUploadIterator.getCPtr(iterator));
+    UplinkUploadInfo ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkUploadInfo(cPtr, false);
+    return ret;
+  }
+
+  public static void uplink_free_upload_iterator(UplinkUploadIterator iterator) {
+    storj_uplinkPINVOKE.uplink_free_upload_iterator(UplinkUploadIterator.getCPtr(iterator));
+  }
+
+  public static UplinkPartIterator uplink_list_upload_parts(UplinkProject project, string bucket_name, string object_key, string upload_id, UplinkListUploadPartsOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_upload_parts(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, UplinkListUploadPartsOptions.getCPtr(options));
+    UplinkPartIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkPartIterator(cPtr, false);
+    return ret;
+  }
+
+  public static bool uplink_part_iterator_next(UplinkPartIterator iterator) {
+    bool ret = storj_uplinkPINVOKE.uplink_part_iterator_next(UplinkPartIterator.getCPtr(iterator));
+    return ret;
+  }
+
+  public static UplinkError uplink_part_iterator_err(UplinkPartIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_iterator_err(UplinkPartIterator.getCPtr(iterator));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
+  public static UplinkPart uplink_part_iterator_item(UplinkPartIterator iterator) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_iterator_item(UplinkPartIterator.getCPtr(iterator));
+    UplinkPart ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkPart(cPtr, false);
+    return ret;
+  }
+
+  public static void uplink_free_part_iterator(UplinkPartIterator iterator) {
+    storj_uplinkPINVOKE.uplink_free_part_iterator(UplinkPartIterator.getCPtr(iterator));
+  }
+
   public static UplinkObjectResult uplink_stat_object(UplinkProject project, string bucket_name, string object_key) {
     UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_stat_object(UplinkProject.getCPtr(project), bucket_name, object_key), true);
     return ret;
