@@ -54,6 +54,15 @@ namespace uplink.NET.Services
             }
         }
 
+        public async Task DeleteBucketWithObjectsAsync(string bucketName)
+        {
+            using (SWIG.UplinkBucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_delete_bucket_with_objects(_access._project, bucketName)))
+            {
+                if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
+                    throw new BucketDeletionException(bucketName, bucketResult.error.message);
+            }
+        }
+
         public async Task<Bucket> GetBucketAsync(string bucketName)
         {
             using (SWIG.UplinkBucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_bucket(_access._project, bucketName)))
