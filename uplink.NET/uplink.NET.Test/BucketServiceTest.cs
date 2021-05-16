@@ -14,6 +14,7 @@ namespace uplink.NET.Test
     public class BucketServiceTest
     {
         IBucketService _service;
+        IObjectService _objectService;
         Access _access;
 
         [TestInitialize]
@@ -22,6 +23,7 @@ namespace uplink.NET.Test
             Access.SetTempDirectory(System.IO.Path.GetTempPath());
             _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
             _service = new BucketService(_access);
+            _objectService = new ObjectService(_access);
         }
 
         [TestMethod]
@@ -148,6 +150,50 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task DeleteBucketWithObjects_Deletes_Bucket()
+        {
+            string bucketname = "deletebucketwithobjects-deletes-bucket";
+
+            var bucket = await _service.CreateBucketAsync(bucketname);
+
+            var upload = await _objectService.UploadObjectAsync(bucket, "test.txt", new UploadOptions(), new byte[] { 1, 2, 3, 4 }, false);
+            await upload.StartUploadAsync();
+            Assert.IsTrue(upload.Completed);
+
+            await _service.DeleteBucketWithObjectsAsync(bucketname);
+
+            try
+            {
+                await _service.GetBucketAsync(bucketname);
+            }
+            catch (BucketNotFoundException ex)
+            {
+                Assert.AreEqual(bucketname, ex.BucketName);
+                return;
+            }
+
+            Assert.IsTrue(false, "DeleteBucket did not delete Bucket as it seems to still exist");
+        }
+
+        [TestMethod]
+        public async Task DeleteBucketWithObjects_Fails_OnNotExistingBucket()
+        {
+            string bucketname = "deletebucketwithobjects-fails-onnotexistingbucket";
+
+            try
+            {
+                await _service.DeleteBucketWithObjectsAsync(bucketname);
+            }
+            catch (BucketDeletionException ex)
+            {
+                Assert.AreEqual(bucketname, ex.BucketName);
+                return;
+            }
+
+            Assert.IsTrue(false, "DeleteBucketWithObject did not throw exception on not existing bucket");
+        }
+
+        [TestMethod]
         public async Task ListBuckets_Lists_TwoNewlyCreatedBuckets()
         {
             string bucketname1 = "listbucket-lists-mytwobuckets-bucket1";
@@ -179,6 +225,7 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("listbucket-lists-mytwobuckets-bucket1");
             await DeleteBucketAsync("listbucket-lists-mytwobuckets-bucket2");
             await DeleteBucketAsync("deletebucket-deletes-bucket");
+            await DeleteBucketAsync("deletebucketwithobjects-deletes-bucket");
         }
 
         private async Task DeleteBucketAsync(string bucketName)

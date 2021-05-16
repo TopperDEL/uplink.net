@@ -36,9 +36,14 @@ namespace uplink.NET.Interfaces
         /// <returns>The BucketList containing the found buckets or throws a BucketListException</returns>
         Task<BucketList> ListBucketsAsync(ListBucketsOptions listBucketsOptions);
         /// <summary>
-        /// Delets a bucket together with it's possible content
+        /// Delets a bucket if it's empty
         /// </summary>
         /// <param name="bucketName">The name of the bucket to delete</param>
         Task DeleteBucketAsync(string bucketName);
+        /// <summary>
+        /// Delets a bucket together with it's possible content
+        /// </summary>
+        /// <param name="bucketName">The name of the bucket to delete</param>
+        Task DeleteBucketWithObjectsAsync(string bucketName);
     }
 }
