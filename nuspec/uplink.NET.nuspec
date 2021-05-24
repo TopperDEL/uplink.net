@@ -14,7 +14,7 @@
 It is - like Storj itself - open source and developed on github.
 
 Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the additional platform-libraries if necessary.</description>
-    <releaseNotes>Reworking of the build-pipeline - based on uplink-c v1.1.0</releaseNotes>
+    <releaseNotes>Includes MultipartUploadService - based on uplink-c v1.3.0-rc.1</releaseNotes>
     <copyright>Copyright YEAR - Tim Parth, Storj Labs Inc.</copyright>
 	<repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android ios linux mac windows uwp</tags>
