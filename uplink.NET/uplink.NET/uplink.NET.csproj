@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description></Description>
-    <AssemblyVersion>2.6.0.0</AssemblyVersion>
+    <AssemblyVersion>2.7.0.0</AssemblyVersion>
     <Authors></Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -11,7 +11,8 @@
     <DebugType>portable</DebugType>
     <AssemblyName>uplink.NET</AssemblyName>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.6.0.0</FileVersion>
+    <FileVersion>2.7.0.0</FileVersion>
+    <Version>2.7.0-alpha</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath></OutputPath>
@@ -24,7 +25,7 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+	<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
