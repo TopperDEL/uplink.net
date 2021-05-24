@@ -34,6 +34,7 @@ namespace uplink.NET.Models
         internal static UploadInfo FromSWIG(SWIG.UplinkUploadInfo original)
         {
             UploadInfo ret = new UploadInfo();
+            ret.UploadId = original.upload_id; 
             ret.Key = original.key;
             ret.IsPrefix = original.is_prefix;
             ret.SystemMetadata = SystemMetadata.FromSWIG(original.system);
