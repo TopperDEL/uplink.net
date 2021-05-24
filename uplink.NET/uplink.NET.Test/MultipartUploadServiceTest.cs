@@ -24,29 +24,26 @@ namespace uplink.NET.Test
             _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
             _bucketService = new BucketService(_access);
             _objectService = new ObjectService(_access);
+            _multipartUploadService = new MultipartUploadService(_access);
         }
 
-        private async Task Upload_X_Bytes(long bytes)
+        [DataTestMethod]
+        [DataRow(512)]
+        public async Task MultipartUpload_X_BytesInOneTake(long bytes)
         {
-            string bucketname = "uploadtest";
+            string bucketname = "multipartuploadtest";
+            string objectKey = "multipart.txt";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname);
-            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            await _bucketService.CreateBucketAsync(bucketname);
             byte[] bytesToUpload = GetRandomBytes(bytes);
 
-            bool progressChangeCounterCalled = false;
+            var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
+            var partResult = await _multipartUploadService.UploadPartAsync(bucketname, objectKey, multipart.UploadId, 1, bytesToUpload);
+            Assert.AreEqual(bytes, partResult.BytesWritten);
 
-            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
-            uploadOperation.UploadOperationProgressChanged += (op) =>
-            {
-                progressChangeCounterCalled = true;
-            };
-
-            await uploadOperation.StartUploadAsync();
-
-            Assert.IsTrue(progressChangeCounterCalled);
-            Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
-            Assert.AreEqual(bytes, uploadOperation.BytesSent);
+            var uploadResult = await _multipartUploadService.CommitUploadAsync(bucketname, objectKey, multipart.UploadId, new CommitUploadOptions());
+            Assert.IsNotNull(uploadResult.Object);
+            Assert.AreEqual(objectKey, uploadResult.Object.Key);
         }
 
         public static byte[] GetRandomBytes(long length)
@@ -61,7 +58,7 @@ namespace uplink.NET.Test
         [TestCleanup]
         public async Task CleanupAsync()
         {
-            //await DeleteBucketAsync("uploadtest");
+            await DeleteBucketAsync("multipartuploadtest");
         }
 
         private async Task DeleteBucketAsync(string bucketName)
@@ -79,7 +76,7 @@ namespace uplink.NET.Test
             { }
             try
             {
-                await _bucketService.DeleteBucketAsync(bucketName);
+                await _bucketService.DeleteBucketWithObjectsAsync(bucketName);
             }
             catch
             { }
