@@ -12,6 +12,7 @@ namespace uplink.NET.Services
     public class ObjectService : IObjectService
     {
         static List<SWIG.UplinkListObjectsOptions> _listOptions = new List<SWIG.UplinkListObjectsOptions>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkListObjectsOptions
+        static List<SWIG.UplinkUploadOptions> _uploadOptions = new List<SWIG.UplinkUploadOptions>();
 
         Access _access;
 
@@ -34,22 +35,22 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
-            {
-                using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
-                {
-                    UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
-                    if (immediateStart)
-                        upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
-                    return upload;
-                }
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
+            {
+                UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
+                if (immediateStart)
+                    upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
+
+                return upload;
             }
         }
-        static List<SWIG.UplinkUploadOptions> _uploadOptions = new List<SWIG.UplinkUploadOptions>();
+
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true)
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
+
             using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
             {
                 UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
