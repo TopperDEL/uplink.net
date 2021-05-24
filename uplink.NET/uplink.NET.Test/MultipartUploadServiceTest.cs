@@ -37,7 +37,7 @@ namespace uplink.NET.Test
             if (bytes == 0)
                 return;
 
-            string bucketname = "multipartuploadtest";
+            string bucketname = "multipartuploadtestsingle";
             string objectKey = "multipart.txt";
 
             await _bucketService.CreateBucketAsync(bucketname);
@@ -89,6 +89,94 @@ namespace uplink.NET.Test
             await VerifyUploadByDownloadingAndCompareAsync(bucketname, objectKey, bytesToUpload);
         }
 
+        [DataTestMethod]
+        [DataRow(10 * 512, 10, 2)]
+        public async Task AbortMultipartUpload_AfterXParts(long bytes, int partCount, int cancelAfter)
+        {
+            if (bytes == 0 || partCount == 0)
+                return;
+
+            string bucketname = "abortmultipartuploadtest";
+            string objectKey = "multipart.txt";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(bytes);
+
+            var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
+
+            for (int i = 0; i < partCount; i++)
+            {
+                var partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).Take((int)(bytes / partCount)).ToArray();
+                if (i == partCount - 1)
+                {
+                    partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).ToArray();
+                }
+
+                if (i == cancelAfter - 1)
+                {
+                    break;
+                }
+                else
+                {
+                    var partResult = await _multipartUploadService.UploadPartAsync(bucketname, objectKey, multipart.UploadId, (uint)i, partBytes);
+                    Assert.AreEqual(partBytes.Length, (int)partResult.BytesWritten);
+                }
+            }
+
+            var uploadListBefore = await _multipartUploadService.ListUploadsAsync(bucketname, new ListUploadOptions() { Recursive = true });
+            Assert.AreEqual(1, uploadListBefore.Items.Count);
+
+            await _multipartUploadService.AbortUploadAsync(bucketname, objectKey, multipart.UploadId);
+
+            var uploadListAfter = await _multipartUploadService.ListUploadsAsync(bucketname, new ListUploadOptions() { Recursive = true });
+            Assert.AreEqual(0, uploadListAfter.Items.Count);
+
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            var bucketContent = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions() { Recursive = true });
+            Assert.AreEqual(0, bucketContent.Items.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(10 * 512, 10)]
+        public async Task ListMultipartUploads_Lists_OpenUploads(long bytes, int partCount)
+        {
+            if (bytes == 0 || partCount == 0)
+                return;
+
+            string bucketname = "abortmultipartuploadtest";
+            string objectKey = "multipart.txt";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+
+            var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
+
+            var uploadListBefore = await _multipartUploadService.ListUploadsAsync(bucketname, new ListUploadOptions() { Recursive = true });
+            Assert.AreEqual(1, uploadListBefore.Items.Count);
+        }
+
+        [DataTestMethod]
+        [DataRow(10 * 512, 10)]
+        public async Task AbortMultipartUploads_Aborts_OpenUpload(long bytes, int partCount)
+        {
+            if (bytes == 0 || partCount == 0)
+                return;
+
+            string bucketname = "abortmultipartuploadtest";
+            string objectKey = "multipart.txt";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+
+            var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
+
+            var uploadListBefore = await _multipartUploadService.ListUploadsAsync(bucketname, new ListUploadOptions() { Recursive = true });
+            Assert.AreEqual(1, uploadListBefore.Items.Count);
+
+            await _multipartUploadService.AbortUploadAsync(bucketname, objectKey, multipart.UploadId);
+
+            var uploadListAfter = await _multipartUploadService.ListUploadsAsync(bucketname, new ListUploadOptions() { Recursive = true });
+            Assert.AreEqual(0, uploadListAfter.Items.Count);
+        }
+
         private async Task VerifyUploadByDownloadingAndCompareAsync(string bucketname, string objectKey, byte[] sentBytes)
         {
             var bucket = await _bucketService.GetBucketAsync(bucketname);
@@ -126,7 +214,9 @@ namespace uplink.NET.Test
         [TestCleanup]
         public async Task CleanupAsync()
         {
+            await DeleteBucketAsync("multipartuploadtestsingle");
             await DeleteBucketAsync("multipartuploadtest");
+            await DeleteBucketAsync("abortmultipartuploadtest");
         }
 
         private async Task DeleteBucketAsync(string bucketName)
