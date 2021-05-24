@@ -14,8 +14,16 @@ namespace uplink.NET.Models
         {
             SystemMetadata ret = new SystemMetadata();
             ret.ContentLength = original.content_length;
-            ret.Created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
-            ret.Expires = DateTimeOffset.FromUnixTimeSeconds(original.expires).ToLocalTime().DateTime;
+            try
+            {
+                ret.Created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
+                ret.Expires = DateTimeOffset.FromUnixTimeSeconds(original.expires).ToLocalTime().DateTime;
+            }
+            catch
+            {
+                ret.Created = DateTime.MinValue;
+                ret.Expires = DateTime.MaxValue;
+            }
 
             return ret;
         }

@@ -49,7 +49,16 @@ namespace uplink.NET.Models
             ret._bucketResultRef = bucketResult;
             ret._projectRef = projectRef;
             ret._name = original.name;
-            ret._created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
+
+            //Temporary to fix a calloc-issue. Should already be fixed - so just to be safe.
+            try
+            {
+                ret._created = DateTimeOffset.FromUnixTimeSeconds(original.created).ToLocalTime().DateTime;
+            }
+            catch
+            {
+                ret._created = DateTime.Now;
+            }
 
             return ret;
         }
