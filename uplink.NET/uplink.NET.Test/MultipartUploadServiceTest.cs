@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using uplink.NET.Services;
+using System.Linq;
 
 namespace uplink.NET.Test
 {
@@ -33,6 +34,9 @@ namespace uplink.NET.Test
         [DataRow(1024 * 512)]
         public async Task MultipartUpload_X_BytesInOneTake(long bytes)
         {
+            if (bytes == 0)
+                return;
+
             string bucketname = "multipartuploadtest";
             string objectKey = "multipart.txt";
 
@@ -42,6 +46,41 @@ namespace uplink.NET.Test
             var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
             var partResult = await _multipartUploadService.UploadPartAsync(bucketname, objectKey, multipart.UploadId, 1, bytesToUpload);
             Assert.AreEqual(bytes, partResult.BytesWritten);
+
+            var uploadResult = await _multipartUploadService.CommitUploadAsync(bucketname, objectKey, multipart.UploadId, new CommitUploadOptions());
+            Assert.IsNotNull(uploadResult.Object);
+            Assert.AreEqual(objectKey, uploadResult.Object.Key);
+
+            await VerifyUploadByDownloadingAndCompareAsync(bucketname, objectKey, bytesToUpload);
+        }
+
+        [DataTestMethod]
+        [DataRow(512, 1)]
+        [DataRow(10 * 512, 10)]
+        [DataRow(1024 * 512, 10)]
+        public async Task MultipartUpload_X_BytesByMultipleParts(long bytes, int partCount)
+        {
+            if (bytes == 0 || partCount == 0)
+                return;
+
+            string bucketname = "multipartuploadtest";
+            string objectKey = "multipart.txt";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(bytes);
+
+            var multipart = await _multipartUploadService.BeginUploadAsync(bucketname, objectKey, new UploadOptions());
+
+            for (int i = 0; i < partCount; i++)
+            {
+                var partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).Take((int)(bytes / partCount)).ToArray();
+                if(i == partCount - 1)
+                {
+                    partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).ToArray();
+                }
+                var partResult = await _multipartUploadService.UploadPartAsync(bucketname, objectKey, multipart.UploadId, (uint)i, partBytes);
+                Assert.AreEqual(partBytes.Length, (int)partResult.BytesWritten);
+            }
 
             var uploadResult = await _multipartUploadService.CommitUploadAsync(bucketname, objectKey, multipart.UploadId, new CommitUploadOptions());
             Assert.IsNotNull(uploadResult.Object);
