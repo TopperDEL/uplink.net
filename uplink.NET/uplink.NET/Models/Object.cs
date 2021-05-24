@@ -20,19 +20,19 @@ namespace uplink.NET.Models
         /// <summary>
         /// 
         /// </summary>
-        public SystemMetadata SystemMetaData { get; set; }
+        public SystemMetadata SystemMetadata { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public CustomMetadata CustomMetaData { get; set; }
+        public CustomMetadata CustomMetadata { get; set; }
 
         internal static Object FromSWIG(SWIG.UplinkObject original, bool disposeObjectInfo = true)
         {
             Object ret = new Object();
             ret.Key = original.key;
             ret.IsPrefix = original.is_prefix;
-            ret.SystemMetaData = SystemMetadata.FromSWIG(original.system);
-            ret.CustomMetaData = CustomMetadata.FromSWIG(original);
+            ret.SystemMetadata = SystemMetadata.FromSWIG(original.system);
+            ret.CustomMetadata = CustomMetadata.FromSWIG(original);
 
             if (disposeObjectInfo)
                 original.Dispose();
