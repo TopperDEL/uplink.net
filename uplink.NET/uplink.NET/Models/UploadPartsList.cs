@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 
 namespace uplink.NET.Models
 {
     /// <summary>
-    /// The list of objects found with a search operation
+    /// The list of part upload found with a search operation
     /// </summary>
-    public class ObjectList
+    public class UploadPartsList
     {
         /// <summary>
         /// The items within this list
         /// </summary>
-        public List<Object> Items { get; set; }
+        public List<Part> Items { get; set; }
 
-        public ObjectList()
+        public UploadPartsList()
         {
-            Items = new List<Object>();
+            Items = new List<Part>();
         }
     }
 }

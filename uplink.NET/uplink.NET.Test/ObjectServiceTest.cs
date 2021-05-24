@@ -265,7 +265,7 @@ namespace uplink.NET.Test
             var storjObject = await _objectService.GetObjectAsync(bucket, "myfile.txt");
 
             Assert.AreEqual("myfile.txt", storjObject.Key);
-            Assert.AreEqual(2048, storjObject.SystemMetaData.ContentLength);
+            Assert.AreEqual(2048, storjObject.SystemMetadata.ContentLength);
         }
 
         [TestMethod]
@@ -353,11 +353,11 @@ namespace uplink.NET.Test
             var objectList = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
 
             Assert.AreEqual(1, objectList.Items.Count);
-            Assert.AreEqual(2, stat.CustomMetaData.Entries.Count);
-            Assert.AreEqual("my-key 1", stat.CustomMetaData.Entries[0].Key);
-            Assert.AreEqual("my-value 1", stat.CustomMetaData.Entries[0].Value);
-            Assert.AreEqual("my-key 2", stat.CustomMetaData.Entries[1].Key);
-            Assert.AreEqual("my-value 2", stat.CustomMetaData.Entries[1].Value);
+            Assert.AreEqual(2, stat.CustomMetadata.Entries.Count);
+            Assert.AreEqual("my-key 1", stat.CustomMetadata.Entries[0].Key);
+            Assert.AreEqual("my-value 1", stat.CustomMetadata.Entries[0].Value);
+            Assert.AreEqual("my-key 2", stat.CustomMetadata.Entries[1].Key);
+            Assert.AreEqual("my-value 2", stat.CustomMetadata.Entries[1].Value);
         }
 
         public static byte[] GetRandomBytes(long length)
