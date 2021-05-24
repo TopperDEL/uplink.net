@@ -29,6 +29,8 @@ namespace uplink.NET.Test
 
         [DataTestMethod]
         [DataRow(512)]
+        [DataRow(10 * 512)]
+        [DataRow(1024 * 512)]
         public async Task MultipartUpload_X_BytesInOneTake(long bytes)
         {
             string bucketname = "multipartuploadtest";
@@ -44,6 +46,33 @@ namespace uplink.NET.Test
             var uploadResult = await _multipartUploadService.CommitUploadAsync(bucketname, objectKey, multipart.UploadId, new CommitUploadOptions());
             Assert.IsNotNull(uploadResult.Object);
             Assert.AreEqual(objectKey, uploadResult.Object.Key);
+
+            await VerifyUploadByDownloadingAndCompareAsync(bucketname, objectKey, bytesToUpload);
+        }
+
+        private async Task VerifyUploadByDownloadingAndCompareAsync(string bucketname, string objectKey, byte[] sentBytes)
+        {
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+
+            bool progressChangeCounterCalled = false;
+
+            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, objectKey, new DownloadOptions(), false);
+            downloadOperation.DownloadOperationProgressChanged += (op) =>
+            {
+                progressChangeCounterCalled = true;
+            };
+
+            await downloadOperation.StartDownloadAsync();
+
+            Assert.IsTrue(progressChangeCounterCalled);
+            Assert.IsTrue(downloadOperation.Completed);
+            Assert.AreEqual(sentBytes.Length, downloadOperation.BytesReceived);
+            int index = 0;
+            foreach (var b in downloadOperation.DownloadedBytes)
+            {
+                Assert.AreEqual(sentBytes[index], b);
+                index++;
+            }
         }
 
         public static byte[] GetRandomBytes(long length)
