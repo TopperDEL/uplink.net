@@ -43,8 +43,8 @@ steps:
     go get -v golang.org/dl/go1.17beta1
     ls
     go env
-    $GOPATH
-    $GOPATH/go/bin/go1.17beta1 version
+    ls /home/vsts/go
+    /home/vsts/go/bin/go1.17beta1 version
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
 
 - script: |
@@ -61,5 +61,5 @@ steps:
     export GOARCH="arm"
     export GOARM=7
     export CGO_ENABLED="1"
-    $GOPATH/go/bin/go1.17beta1 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+    /home/vsts/go/bin/go1.17beta1 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
   displayName: 'Test-Generate Win-ARM'
