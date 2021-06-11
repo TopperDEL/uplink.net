@@ -10,22 +10,28 @@ pool:
   vmImage: 'ubuntu-20.04'
 
 steps:
-- script: |
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' storj_uplink_second.i
-  displayName: 'Inject the Storj-Version'
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+    definition: '31'
+    specificBuildWithTriggering: true
+    buildVersionToDownload: 'latest'
+    itemPattern: |
+      **
+      !*.cs
+      !*.dll
+      !win-x86-dll
+      !win-x64-dll
+      !Csharp-files
+    targetPath: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get build-artifacts'
 
 - script: |
-    git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
-  displayName: 'Clone uplink-c $(STORJ_VERSION)'
-
-- script: |
-    cp *.i uplink-c
-    cp *.go uplink-c
-  displayName: 'Copy specific files to uplink-c'
-
-- script: |
-    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
-  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+    ls
+    ls uplink-c
+    mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+  displayName: 'Prepare for Target ARM'
 
 - task: GoTool@0
   inputs:
