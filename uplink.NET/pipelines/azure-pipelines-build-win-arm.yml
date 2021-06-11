@@ -39,13 +39,8 @@ steps:
   displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
-    ls
     go get -v golang.org/dl/go1.17beta1
-    ls
-    go env
-    go help gopath
-    which go
-    ls /home/vsts/go
+    /home/vsts/go/bin/go1.17beta1 download
     /home/vsts/go/bin/go1.17beta1 version
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
 
