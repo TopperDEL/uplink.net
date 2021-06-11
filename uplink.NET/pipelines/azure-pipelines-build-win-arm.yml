@@ -40,8 +40,9 @@ steps:
 
 - script: |
     ls
-    go get golang.org/dl/go1.17beta1
+    go get -v golang.org/dl/go1.17beta1
     ls
+    go env
     $GOPATH
     $GOPATH/go/bin/go1.17beta1 version
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
