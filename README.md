@@ -1,10 +1,11 @@
 # uplink.NET
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d9bccb02c5914cbca6e60755d5c7d74a)](https://app.codacy.com/gh/TopperDEL/uplink.net?utm_source=github.com&utm_medium=referral&utm_content=TopperDEL/uplink.net&utm_campaign=Badge_Grade)
-[![Storj.io](https://storj.io/img/storj-badge.svg)](https://storj.io)
+[![Storj.io](./storj-logo.svg)](https://storj.io)
 
 **A .Net/C#-wrapper for Storj (v3)**
 
-This library enables you to connect to the [storj](https://storj.io)-network to upload and retrieve files to the distributed and secure cloud-storage. It is based on "uplink-c", the C-bindings provided from Storj-labs to connect to the storj-network.
+This library enables you to connect to the [Storj](https://storj.io) network to upload and retrieve files to the distributed and secure cloud-storage. It is based on [uplink-c](https://github.com/storj/uplink-c), the C-bindings provided from Storj-labs to connect to the Storj network.
 
 The library is quite new and may contain bugs or missing documentation. Use at your own risk!
 
@@ -12,7 +13,16 @@ If you want to help out, check the open issues, create some or open a PR.
 
 ## Use
 
-Search for "[uplink.NET](https://www.nuget.org/packages/uplink.NET)" on Nuget and install the latest version into your project.
+Install [uplink.NET](https://www.nuget.org/packages/uplink.NET) from NuGet. 
+
+Also install the applicable platform-specific library:
+
+* [uplink.NET.Win](https://www.nuget.org/packages/uplink.NET.Win)
+* [uplink.NET.Linux](https://www.nuget.org/packages/uplink.NET.Linux)
+* [uplink.NET.Droid](https://www.nuget.org/packages/uplink.NET.Droid)
+* [uplink.NET.Mac](https://www.nuget.org/packages/uplink.NET.Mac)
+* [uplink.NET.iOS](https://www.nuget.org/packages/uplink.NET.iOS)
+
 See the [wiki](https://github.com/TopperDEL/uplink.net/wiki) for details how to use the library.
 
 You may also try the included sample-app for UWP and Android. There you should find additional details on how to use the library.
