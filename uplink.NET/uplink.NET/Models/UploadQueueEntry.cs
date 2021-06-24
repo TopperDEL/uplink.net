@@ -13,6 +13,11 @@ namespace uplink.NET.Models
         public string AccessGrant { get; set; }
         public string BucketName { get; set; }
         public string Key { get; set; }
-        public byte[] Bytes { get; set; }
+        public string UploadId { get; set; }
+        public int TotalBytes { get; set; }
+        public int BytesCompleted { get; set; }
+        public uint CurrentPartNumber { get; set; }
+        public bool Failed { get; set; }
+        public string FailedMessage { get; set; }
     }
 }

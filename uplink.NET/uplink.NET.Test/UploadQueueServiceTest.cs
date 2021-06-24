@@ -34,9 +34,17 @@ namespace uplink.NET.Test
             await Upload_X_Bytes(2048);
         }
 
+        [TestMethod]
+        public async Task UploadObject_Uploads_512KiB()
+        {
+            await Upload_X_Bytes(524288);
+        }
+
         private async Task Upload_X_Bytes(long bytes)
         {
             string bucketname = "uploadqueuetest";
+
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
 
             var result = await _bucketService.CreateBucketAsync(bucketname);
             var bucket = await _bucketService.GetBucketAsync(bucketname);
@@ -49,6 +57,8 @@ namespace uplink.NET.Test
             _uploadQueueService.ProcessQueueInBackground();
             while(_uploadQueueService.UploadInProgress)
                 await Task.Delay(100);
+
+            _uploadQueueService.StopQueueInBackground();
 
             var download1 = await _objectService.DownloadObjectAsync(bucket, "myqueuefile1.txt", new DownloadOptions(), false);
             await download1.StartDownloadAsync();
@@ -93,7 +103,7 @@ namespace uplink.NET.Test
             { }
             try
             {
-                await _bucketService.DeleteBucketAsync(bucketName);
+                await _bucketService.DeleteBucketWithObjectsAsync(bucketName);
             }
             catch
             { }

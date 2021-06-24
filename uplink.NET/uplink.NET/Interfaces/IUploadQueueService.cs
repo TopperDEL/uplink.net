@@ -9,10 +9,11 @@ namespace uplink.NET.Interfaces
     public interface IUploadQueueService
     {
         bool UploadInProgress { get; }
-        Task AddObjectToUploadQueue(string bucketName, string key, string accessGrant, byte[] objectData, string identifier = null);
+        Task AddObjectToUploadQueue(string bucketName, string key, string accessGrant, byte[] objectData, string identifier);
         Task<List<UploadOperation>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
         void ProcessQueueInBackground();
+        void StopQueueInBackground();
 
         Task<int> GetOpenUploadCountAsync();
     }
