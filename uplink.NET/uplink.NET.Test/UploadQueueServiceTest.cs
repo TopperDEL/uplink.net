@@ -34,11 +34,19 @@ namespace uplink.NET.Test
             await Upload_X_Bytes(2048);
         }
 
+        [TestMethod]
+        public async Task UploadObject_Uploads_512KiB()
+        {
+            await Upload_X_Bytes(524288);
+        }
+
         private async Task Upload_X_Bytes(long bytes)
         {
             string bucketname = "uploadqueuetest";
 
-            var result = await _bucketService.CreateBucketAsync(bucketname);
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
+
+            await _bucketService.CreateBucketAsync(bucketname);
             var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload1 = GetRandomBytes(bytes);
             byte[] bytesToUpload2 = GetRandomBytes(bytes * 2);
@@ -47,8 +55,10 @@ namespace uplink.NET.Test
             await _uploadQueueService.AddObjectToUploadQueue(bucketname, "myqueuefile2.txt", _access.Serialize(), bytesToUpload2, "file2");
 
             _uploadQueueService.ProcessQueueInBackground();
-            while(_uploadQueueService.UploadInProgress)
+            while (_uploadQueueService.UploadInProgress)
                 await Task.Delay(100);
+
+            _uploadQueueService.StopQueueInBackground();
 
             var download1 = await _objectService.DownloadObjectAsync(bucket, "myqueuefile1.txt", new DownloadOptions(), false);
             await download1.StartDownloadAsync();
@@ -61,6 +71,80 @@ namespace uplink.NET.Test
 
             Assert.IsTrue(download2.Completed);
             Assert.AreEqual(bytesToUpload2.Count(), download2.BytesReceived);
+        }
+
+        [TestMethod]
+        public async Task UploadProvidesCorrectCount()
+        {
+            string bucketname = "uploadqueuetest";
+
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(524288);
+
+            Assert.AreEqual(0, await _uploadQueueService.GetOpenUploadCountAsync());
+
+            await _uploadQueueService.AddObjectToUploadQueue(bucketname, "mycountedqueuefile1.txt", _access.Serialize(), bytesToUpload1, "file1");
+
+            Assert.AreEqual(1, await _uploadQueueService.GetOpenUploadCountAsync());
+
+            _uploadQueueService.ProcessQueueInBackground();
+
+            while (_uploadQueueService.UploadInProgress)
+            {
+                Assert.AreEqual(1, await _uploadQueueService.GetOpenUploadCountAsync());
+                await Task.Delay(100);
+            }
+
+            _uploadQueueService.StopQueueInBackground();
+
+            Assert.AreEqual(0, await _uploadQueueService.GetOpenUploadCountAsync());
+        }
+
+        [TestMethod]
+        public async Task UploadsWithInteruption()
+        {
+            string bucketname = "uploadqueuetest";
+
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2); //~around 1MB
+
+
+            await _uploadQueueService.AddObjectToUploadQueue(bucketname, "myinteruptedqueuefile1.txt", _access.Serialize(), bytesToUpload1, "file1");
+
+            _uploadQueueService.ProcessQueueInBackground();
+
+            while (_uploadQueueService.UploadInProgress)
+            {
+                //if at ~ 25%, force cancellation of the token
+                var uploads = await _uploadQueueService.GetAwaitingUploadsAsync();
+                Assert.AreEqual(1, uploads.Count);
+                if (uploads[0].BytesCompleted > 524288/2)
+                {
+                    _uploadQueueService.StopQueueInBackground();
+                }
+                await Task.Delay(100);
+            }
+
+            _uploadQueueService.ProcessQueueInBackground();
+
+            while (_uploadQueueService.UploadInProgress)
+            {
+                await Task.Delay(100);
+            }
+
+            _uploadQueueService.StopQueueInBackground();
+
+            var download1 = await _objectService.DownloadObjectAsync(bucket, "myinteruptedqueuefile1.txt", new DownloadOptions(), false);
+            await download1.StartDownloadAsync();
+
+            Assert.IsTrue(download1.Completed);
+            Assert.AreEqual(bytesToUpload1.Count(), download1.BytesReceived);
         }
 
         public static byte[] GetRandomBytes(long length)
@@ -93,7 +177,7 @@ namespace uplink.NET.Test
             { }
             try
             {
-                await _bucketService.DeleteBucketAsync(bucketName);
+                await _bucketService.DeleteBucketWithObjectsAsync(bucketName);
             }
             catch
             { }
