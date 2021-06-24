@@ -95,14 +95,16 @@ namespace uplink.NET.Services
             }
         }
 
-        public Task<List<UploadOperation>> GetAwaitingUploadsAsync()
+        public async Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync()
         {
-            throw new NotImplementedException();
+            await InitAsync();
+
+            return await _connection.Table<UploadQueueEntry>().ToListAsync();
         }
 
         public void ProcessQueueInBackground()
         {
-            if (_uploadTask == null)
+            if (_uploadTask == null || _uploadTask.Status == TaskStatus.RanToCompletion)
             {
                 _source = new CancellationTokenSource();
                 var uploadCancelToken = _source.Token;
