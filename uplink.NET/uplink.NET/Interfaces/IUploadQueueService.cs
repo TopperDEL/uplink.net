@@ -10,7 +10,7 @@ namespace uplink.NET.Interfaces
     {
         bool UploadInProgress { get; }
         Task AddObjectToUploadQueue(string bucketName, string key, string accessGrant, byte[] objectData, string identifier);
-        Task<List<UploadOperation>> GetAwaitingUploadsAsync();
+        Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
         void ProcessQueueInBackground();
         void StopQueueInBackground();
