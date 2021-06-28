@@ -19,6 +19,8 @@ namespace uplink.NET.Services
         Task _uploadTask;
         readonly string _databasePath;
 
+        public event UploadQueueChangedEventHandler UploadQueueChangedEvent;
+
         public UploadQueueService()
         {
             _databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "uplinkNET.db");
@@ -80,6 +82,8 @@ namespace uplink.NET.Services
             await _connection.InsertAsync(entryData);
 
             ProcessQueueInBackground();
+
+            UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryAdded, entry);
         }
 
         public async Task CancelUploadAsync(string key)
@@ -89,9 +93,7 @@ namespace uplink.NET.Services
             var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync();
             if (entry != null)
             {
-                var id = entry.Id;
-                await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == id);
-                await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == id);
+                await RemoveEntry(entry);
             }
         }
 
@@ -176,8 +178,7 @@ namespace uplink.NET.Services
                                 var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, new CommitUploadOptions());
                                 if (string.IsNullOrEmpty(commitResult.Error))
                                 {
-                                    await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == toUpload.Id);
-                                    await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == toUpload.Id);
+                                    await RemoveEntry(toUpload);
                                 }
                                 else
                                 {
@@ -186,6 +187,8 @@ namespace uplink.NET.Services
 
                                     //Save the current state
                                     await _connection.UpdateAsync(toUpload);
+
+                                    UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                 }
                             }
                         }
@@ -212,6 +215,14 @@ namespace uplink.NET.Services
             await InitAsync();
 
             return await _connection.Table<UploadQueueEntry>().CountAsync();
+        }
+
+        private async Task RemoveEntry(UploadQueueEntry entry)
+        {
+            await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == entry.Id);
+            await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == entry.Id);
+
+            UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryRemoved, entry);
         }
     }
 }
