@@ -168,6 +168,8 @@ namespace uplink.NET.Services
 
                                         //Save the current state
                                         await _connection.UpdateAsync(toUpload);
+
+                                        UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                     }
                                 }
                             }
@@ -187,8 +189,6 @@ namespace uplink.NET.Services
 
                                     //Save the current state
                                     await _connection.UpdateAsync(toUpload);
-
-                                    UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                 }
                             }
                         }

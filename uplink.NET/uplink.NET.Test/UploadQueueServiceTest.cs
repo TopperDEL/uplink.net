@@ -104,7 +104,7 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task UploadsWithInteruption()
+        public async Task UploadsWithInteruptionAndEvents()
         {
             string bucketname = "uploadqueuetest";
 
@@ -118,7 +118,8 @@ namespace uplink.NET.Test
             int changed = 0;
             int removed = 0;
 
-            _uploadQueueService.UploadQueueChangedEvent += (changeType, entry)=> {
+            _uploadQueueService.UploadQueueChangedEvent += (changeType, entry) =>
+            {
                 if (changeType == QueueChangeType.EntryAdded)
                 {
                     added++;
@@ -141,7 +142,7 @@ namespace uplink.NET.Test
                 //if at ~ 25%, force cancellation of the token
                 var uploads = await _uploadQueueService.GetAwaitingUploadsAsync();
                 Assert.AreEqual(1, uploads.Count);
-                if (uploads[0].BytesCompleted > 524288/2)
+                if (uploads[0].BytesCompleted > 524288 / 2)
                 {
                     _uploadQueueService.StopQueueInBackground();
                 }
