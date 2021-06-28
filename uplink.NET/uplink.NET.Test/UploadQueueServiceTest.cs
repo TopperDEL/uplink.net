@@ -114,7 +114,24 @@ namespace uplink.NET.Test
             var bucket = await _bucketService.GetBucketAsync(bucketname);
             byte[] bytesToUpload1 = GetRandomBytes(524288 * 2); //~around 1MB
 
+            int added = 0;
+            int changed = 0;
+            int removed = 0;
 
+            _uploadQueueService.UploadQueueChangedEvent += (changeType, entry)=> {
+                if (changeType == QueueChangeType.EntryAdded)
+                {
+                    added++;
+                }
+                else if (changeType == QueueChangeType.EntryUpdated)
+                {
+                    changed++;
+                }
+                else if (changeType == QueueChangeType.EntryRemoved)
+                {
+                    removed++;
+                }
+            };
             await _uploadQueueService.AddObjectToUploadQueue(bucketname, "myinteruptedqueuefile1.txt", _access.Serialize(), bytesToUpload1, "file1");
 
             _uploadQueueService.ProcessQueueInBackground();
@@ -145,6 +162,15 @@ namespace uplink.NET.Test
 
             Assert.IsTrue(download1.Completed);
             Assert.AreEqual(bytesToUpload1.Count(), download1.BytesReceived);
+
+            Assert.AreEqual(1, added);
+            Assert.AreEqual(1, removed);
+            Assert.IsTrue(changed > 1);
+        }
+
+        private void _uploadQueueService_UploadQueueChangedEvent(QueueChangeType queueChangeType, UploadQueueEntry entry)
+        {
+            throw new NotImplementedException();
         }
 
         public static byte[] GetRandomBytes(long length)

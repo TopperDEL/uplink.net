@@ -6,6 +6,13 @@ using uplink.NET.Models;
 
 namespace uplink.NET.Interfaces
 {
+    public enum QueueChangeType
+    {
+        EntryAdded,
+        EntryRemoved,
+        EntryUpdated
+    }
+    public delegate void UploadQueueChangedEventHandler(QueueChangeType queueChangeType, UploadQueueEntry entry);
     public interface IUploadQueueService
     {
         bool UploadInProgress { get; }
@@ -16,5 +23,7 @@ namespace uplink.NET.Interfaces
         void StopQueueInBackground();
 
         Task<int> GetOpenUploadCountAsync();
+
+        event UploadQueueChangedEventHandler UploadQueueChangedEvent;
     }
 }
