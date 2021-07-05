@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using uplink.NET.Models;
@@ -16,7 +17,8 @@ namespace uplink.NET.Interfaces
     public interface IUploadQueueService
     {
         bool UploadInProgress { get; }
-        Task AddObjectToUploadQueue(string bucketName, string key, string accessGrant, byte[] objectData, string identifier);
+        Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier);
+        Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier);
         Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
         void ProcessQueueInBackground();
