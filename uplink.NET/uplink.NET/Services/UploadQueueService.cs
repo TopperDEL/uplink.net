@@ -61,7 +61,12 @@ namespace uplink.NET.Services
             }
         }
 
-        public async Task AddObjectToUploadQueue(string bucketName, string key, string accessGrant, byte[] objectData, string identifier)
+        public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier)
+        {
+            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier);
+        }
+
+        public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier)
         {
             await InitAsync();
 
@@ -70,14 +75,15 @@ namespace uplink.NET.Services
             entry.Identifier = identifier;
             entry.BucketName = bucketName;
             entry.Key = key;
-            entry.TotalBytes = objectData.Length;
+            entry.TotalBytes = (int)stream.Length;
             entry.BytesCompleted = 0;
 
             await _connection.InsertAsync(entry);
 
             var entryData = new UploadQueueEntryData();
             entryData.UploadQueueEntryId = entry.Id;
-            entryData.Bytes = objectData;
+            entryData.Bytes = new byte[stream.Length];
+            var read = stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
             await _connection.InsertAsync(entryData);
 
@@ -117,7 +123,7 @@ namespace uplink.NET.Services
 
         public void StopQueueInBackground()
         {
-            if(_source!= null && _source.Token.CanBeCanceled)
+            if (_source != null && _source.Token.CanBeCanceled)
             {
                 _source.Cancel();
             }
