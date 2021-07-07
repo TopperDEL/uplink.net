@@ -211,6 +211,81 @@ namespace uplink.NET.Test
             Assert.IsTrue(changed > 1);
         }
 
+        [TestMethod]
+        public async Task UploadsWithInteruptionAndRetry()
+        {
+            string bucketname = "uploadqueuetest";
+
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2); //~around 1MB
+
+            int added = 0;
+            int changed = 0;
+            int removed = 0;
+
+            _uploadQueueService.UploadQueueChangedEvent += (changeType, entry) =>
+            {
+                if (changeType == QueueChangeType.EntryAdded)
+                {
+                    added++;
+                }
+                else if (changeType == QueueChangeType.EntryUpdated)
+                {
+                    changed++;
+                }
+                else if (changeType == QueueChangeType.EntryRemoved)
+                {
+                    removed++;
+                }
+            };
+            await _uploadQueueService.AddObjectToUploadQueueAsync(bucketname, "myinteruptedqueuefile1.txt", _access.Serialize(), bytesToUpload1, "file1");
+
+            _uploadQueueService.ProcessQueueInBackground();
+
+            while (_uploadQueueService.UploadInProgress)
+            {
+                //if at ~ 25%, force cancellation of the token
+                var uploads = await _uploadQueueService.GetAwaitingUploadsAsync();
+                Assert.AreEqual(1, uploads.Count);
+                if (uploads[0].BytesCompleted > 524288 / 2)
+                {
+                    _uploadQueueService.StopQueueInBackground();
+                }
+                await Task.Delay(100);
+            }
+
+            var uploadsVerify = await _uploadQueueService.GetAwaitingUploadsAsync();
+            Assert.IsTrue(uploadsVerify[0].BytesCompleted > 0);
+            await _uploadQueueService.RetryAsync("myinteruptedqueuefile1.txt");
+            var uploadsVerify2 = await _uploadQueueService.GetAwaitingUploadsAsync();
+            Assert.IsFalse(uploadsVerify2[0].Failed);
+            Assert.AreEqual(0, uploadsVerify2[0].BytesCompleted);
+            Assert.AreEqual(0, (int)uploadsVerify2[0].CurrentPartNumber);
+            Assert.AreEqual(string.Empty, uploadsVerify2[0].UploadId);
+
+            _uploadQueueService.ProcessQueueInBackground();
+
+            while (_uploadQueueService.UploadInProgress)
+            {
+                await Task.Delay(100);
+            }
+
+            _uploadQueueService.StopQueueInBackground();
+
+            var download1 = await _objectService.DownloadObjectAsync(bucket, "myinteruptedqueuefile1.txt", new DownloadOptions(), false);
+            await download1.StartDownloadAsync();
+
+            Assert.IsTrue(download1.Completed);
+            Assert.AreEqual(bytesToUpload1.Count(), download1.BytesReceived);
+
+            Assert.AreEqual(1, added);
+            Assert.AreEqual(1, removed);
+            Assert.IsTrue(changed > 1);
+        }
+
         private void _uploadQueueService_UploadQueueChangedEvent(QueueChangeType queueChangeType, UploadQueueEntry entry)
         {
             throw new NotImplementedException();
