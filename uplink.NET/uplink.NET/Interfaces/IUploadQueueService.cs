@@ -21,6 +21,7 @@ namespace uplink.NET.Interfaces
         Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier);
         Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
+        Task RetryAsync(string key);
         void ProcessQueueInBackground();
         void StopQueueInBackground();
 
