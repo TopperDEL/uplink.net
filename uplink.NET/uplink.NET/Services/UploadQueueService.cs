@@ -103,6 +103,32 @@ namespace uplink.NET.Services
             }
         }
 
+        public async Task RetryAsync(string key)
+        {
+            await InitAsync();
+
+            var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync();
+            if (entry != null)
+            {
+                try
+                {
+                    var access = new Access(entry.AccessGrant);
+                    var multipartUploadService = new MultipartUploadService(access);
+                    await multipartUploadService.AbortUploadAsync(entry.BucketName, entry.Key, entry.UploadId);
+                }
+                catch { }
+
+                entry.BytesCompleted = 0;
+                entry.Failed = false;
+                entry.FailedMessage = string.Empty;
+                entry.CurrentPartNumber = 0;
+                entry.UploadId = string.Empty;
+                await _connection.UpdateAsync(entry);
+
+                UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, entry);
+            }
+        }
+
         public async Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync()
         {
             await InitAsync();
