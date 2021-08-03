@@ -52,8 +52,8 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="arm-none-eabi-gcc"
-    export CXX="arm-none-eabi-g++"
+    export CC="arm-linux-eabi-gcc"
+    export CXX="arm-linux-eabi-g++"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
