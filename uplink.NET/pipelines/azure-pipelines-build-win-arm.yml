@@ -51,7 +51,7 @@ steps:
     zig targets
     echo "#!/bin/sh zig cc $@" >> zcc.sh
     echo "test"
-    zcc.sh version
+    bash zcc.sh version
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
@@ -60,7 +60,7 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="zig cc -target aarch64-windows-gnu"
+    export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
     export GOARCH="arm64"
