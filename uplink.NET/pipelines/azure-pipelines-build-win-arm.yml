@@ -51,7 +51,10 @@ steps:
     zig version
     echo "#!/bin/sh zig cc $@" >> zcc.sh
     echo "test"
+    chmod +x zcc.sh
     sh zcc.sh "version"
+    echo "test two"
+    bash zcc.sh "version"
     echo "test done"
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
@@ -61,7 +64,7 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="zig cc -target aarch64-windows-gnu"
+    export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
     export GOARCH="arm64"
