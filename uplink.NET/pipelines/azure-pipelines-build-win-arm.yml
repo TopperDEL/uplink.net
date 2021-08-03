@@ -50,9 +50,9 @@ steps:
     sudo snap install zig --classic --beta
     zig version
     echo $PATH
-    echo "#!/bin/sh zig cc $@" >> zcc.sh
+    echo "#!/bin/sh zig cc $@" >> /snap/bin/zcc.sh
     echo "test"
-    chmod +x zcc.sh
+    chmod +x /snap/bin/zcc.sh
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
