@@ -48,6 +48,7 @@ steps:
     sudo apt-get update
     sudo apt-get install g++-arm-linux-gnueabi
     sudo apt-get install gcc-arm*
+    sudo apt-get install ia32-libs
     cd /usr/bin
   displayName: 'Install cross compiler for Windows'
 
