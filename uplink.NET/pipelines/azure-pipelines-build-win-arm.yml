@@ -48,6 +48,7 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
+    zig targets
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
@@ -56,11 +57,11 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="gcc-arm-linux-gnueabi"
-    export CXX="g++-arm-linux-gnueabi"
+    export CC="zig cc -target aarch64-windows"
+    export CXX="zig c++ -target aarch64-windows"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared --tags extended
   displayName: 'Test-Generate Win-ARM'
