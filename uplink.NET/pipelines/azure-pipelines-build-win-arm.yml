@@ -49,14 +49,10 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
+    echo $PATH
     echo "#!/bin/sh zig cc $@" >> zcc.sh
     echo "test"
     chmod +x zcc.sh
-    sh zcc.sh "version"
-    echo "test two"
-    bash zcc.sh "version"
-    bash zcc2.sh "version"
-    echo "test done"
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
@@ -65,10 +61,6 @@ steps:
 
 - script: |
     cd uplink-c
-    echo "#!/bin/sh zig cc $@" >> zcc.sh
-    echo "test"
-    chmod +x zcc.sh
-    sh zcc.sh "version"
     export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
