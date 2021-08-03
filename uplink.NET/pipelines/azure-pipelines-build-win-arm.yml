@@ -61,11 +61,11 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="zig cc -target x86_64-linux"
-    export CXX="zig c++ -target x86_64-linux"
-    export GOOS="linux"
-    export GOARCH="amd64"
+    export CC="zig cc -target aarch64-windows-gnu"
+    export CXX="zig c++ -target aarch64-windows-gnu"
+    export GOOS="windows"
+    export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared --tags extended 
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended 
   displayName: 'Test-Generate Win-ARM'
