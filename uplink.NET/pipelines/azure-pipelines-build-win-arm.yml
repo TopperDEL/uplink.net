@@ -61,7 +61,7 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="zcc -target aarch64-windows-gnu"
+    export CC="zig cc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
     export GOARCH="arm64"
