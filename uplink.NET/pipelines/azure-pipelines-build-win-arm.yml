@@ -52,7 +52,7 @@ steps:
     echo $PATH
     export PATH=$PATH:$(pwd)
     echo $PATH
-    echo $'#!/bin/sh \n zig cc $@ \n echo "hallo welt"' >> zcc
+    echo $'#!/bin/sh \n zig cc $@' >> zcc
     echo "test"
     sudo chmod +x zcc
     zcc
@@ -64,6 +64,7 @@ steps:
   displayName: 'Install cross compiler for Windows'
 
 - script: |
+    cd uplink-c
     export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
