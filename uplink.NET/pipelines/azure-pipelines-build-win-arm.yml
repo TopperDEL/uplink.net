@@ -65,6 +65,9 @@ steps:
 
 - script: |
     cd uplink-c
+    export PATH=$PATH:$(pwd)
+    echo $'#!/bin/sh \n zig cc $@' >> zcc
+    sudo chmod +x zcc
     export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
