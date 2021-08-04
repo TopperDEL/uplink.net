@@ -52,9 +52,11 @@ steps:
     echo $PATH
     export PATH=$PATH:$(pwd)
     echo $PATH
-    sudo echo "#!/bin/sh\nzig cc $@" >> zcc
+    echo $'#!/bin/sh \n zig cc $@ \n echo "hallo welt"' >> zcc
     echo "test"
     sudo chmod +x zcc
+    zcc
+    echo "test2"
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
@@ -62,13 +64,6 @@ steps:
   displayName: 'Install cross compiler for Windows'
 
 - script: |
-    echo $PATH
-    export PATH=$PATH:$(pwd)
-    echo $PATH
-    cd uplink-c
-    echo $PATH
-    export PATH=$PATH:$(pwd)
-    echo $PATH
     export CC="zcc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
