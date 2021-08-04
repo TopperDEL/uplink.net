@@ -52,9 +52,9 @@ steps:
     echo $PATH
     export PATH=$PATH:$(pwd)
     echo $PATH
-    sudo echo "#!/bin/sh\nzig cc $@" >> zcc.sh
+    sudo echo "#!/bin/sh\nzig cc $@" >> zcc
     echo "test"
-    sudo chmod +x zcc.sh
+    sudo chmod +x zcc
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
