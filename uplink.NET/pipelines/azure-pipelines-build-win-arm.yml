@@ -50,9 +50,11 @@ steps:
     sudo snap install zig --classic --beta
     zig version
     echo $PATH
-    sudo echo "#!/bin/sh zig cc $@" >> /snap/bin/zcc.sh
+    export PATH=$PATH:$(pwd)
+    echo $PATH
+    sudo echo "#!/bin/sh\nzig cc $@" >> zcc.sh
     echo "test"
-    sudo chmod +x /snap/bin/zcc.sh
+    sudo chmod +x zcc.sh
     #sudo apt-get install g++-arm-linux-gnueabi
     #sudo apt-get install gcc-arm*
     #sudo apt-get install ia32-libs
@@ -60,7 +62,13 @@ steps:
   displayName: 'Install cross compiler for Windows'
 
 - script: |
+    echo $PATH
+    export PATH=$PATH:$(pwd)
+    echo $PATH
     cd uplink-c
+    echo $PATH
+    export PATH=$PATH:$(pwd)
+    echo $PATH
     export CC="zig cc -target aarch64-windows-gnu"
     export CXX="zig c++ -target aarch64-windows-gnu"
     export GOOS="windows"
