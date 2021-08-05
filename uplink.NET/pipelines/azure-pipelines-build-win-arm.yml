@@ -99,6 +99,7 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
+    zig targets
   displayName: 'Install cross compiler for Windows'
 
 - script: |
