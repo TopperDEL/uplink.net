@@ -60,7 +60,7 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended 
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Feddisch 1"
 
     export CC="aarch64-w64-mingw32uwp-gcc"
@@ -69,9 +69,9 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended 
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended -v
     echo "Feddisch 2"
-    ls
+    ls -al
     echo "feddisch 3"
   displayName: 'Test-Generate Win-ARM with LLVM'
 
