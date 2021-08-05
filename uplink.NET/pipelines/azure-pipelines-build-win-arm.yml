@@ -45,17 +45,17 @@ steps:
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
 
 - script: |
-    wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-arm-none-eabi.tar.xz
-    tar -xf gcc-arm-10.3-2021.07-x86_64-arm-none-eabi.tar.xz
-    cd gcc-arm-10.3-2021.07-x86_64-arm-none-eabi
+    wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
+    tar -xf gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
+    cd gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf
     cd bin
     export PATH=$PATH:$(pwd)
     cd ..
     cd ..
     cd uplink-c
 
-    export CC="arm-none-eabi-gcc"
-    export CXX="arm-none-eabi-g++"
+    export CC="aarch64-none-elf-gcc"
+    export CXX="aarch64-none-elf-g++"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
