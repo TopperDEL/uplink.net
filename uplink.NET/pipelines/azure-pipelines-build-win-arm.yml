@@ -53,19 +53,15 @@ steps:
     cd ..
     cd ..
     cd uplink-c
-    echo "welches"
-    which aarch64-none-elf-gcc
-    echo "^^die da"
     #export CC="aarch64-none-elf-gcc"
     #export CXX="aarch64-none-elf-g++"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -o storj_uplink.dll -buildmode c-shared
-    echo "Feddisch 1"
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+    echo "Sollte dll enthalten:"
     ls -al
-    echo "feddisch 2"
   displayName: 'Test-Generate Win-ARM with ARM'
 
 - script: |
@@ -77,7 +73,7 @@ steps:
     cd ..
     cd ..
     cd uplink-c
-
+    
     export CC="aarch64-w64-mingw32-gcc -v"
     export CXX="aarch64-w64-mingw32-g++ -v"
     export GOOS="windows"
@@ -85,7 +81,8 @@ steps:
     export GOARM=7
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
-    echo "Feddisch 1"
+    echo "Sollte DLL enthalten:"
+    ls -al
 
     export CC="aarch64-w64-mingw32uwp-gcc"
     export CXX="aarch64-w64-mingw32uwp-g++"
@@ -94,9 +91,8 @@ steps:
     export GOARM=7
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w -v" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended -v
-    echo "Feddisch 2"
+    echo "Sollte DLL enthalten:"
     ls -al
-    echo "feddisch 3"
   displayName: 'Test-Generate Win-ARM with LLVM'
 
 - script: |
