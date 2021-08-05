@@ -108,10 +108,10 @@ steps:
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc $@' >> zcc
     sudo chmod +x zcc
-    export CC="zcc -target arm-windows-gnu -v"
-    export CXX="zig c++ -target arm-windows-gnu -v"
+    export CC="zcc -target native-native-msvc -v"
+    export CXX="zig c++ -target native-native-msvc -v"
     export GOOS="windows"
-    export GOARCH="arm"
+    export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
