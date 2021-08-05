@@ -45,6 +45,28 @@ steps:
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
 
 - script: |
+    wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-aarch64-arm-none-linux-gnueabihf.tar.xz
+    tar -xf gcc-arm-10.3-2021.07-aarch64-arm-none-linux-gnueabihf.tar.xz
+    cd gcc-arm-10.3-2021.07-aarch64-arm-none-linux-gnueabihf
+    cd bin
+    export PATH=$PATH:$(pwd)
+    cd ..
+    cd ..
+    cd uplink-c
+
+    export CC="arm-none-linux-gnueabihf-gcc -v"
+    export CXX="arm-none-linux-gnueabihf-g++ -v"
+    export GOOS="windows"
+    export GOARCH="arm64"
+    export GOARM=7
+    export CGO_ENABLED="1"
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    echo "Feddisch 1"
+    ls -al
+    echo "feddisch 2"
+  displayName: 'Test-Generate Win-ARM with ARM'
+
+- script: |
     wget https://github.com/mstorsjo/llvm-mingw/releases/download/20210423/llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64.tar.xz
     tar -xf llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64.tar.xz
     cd llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64
