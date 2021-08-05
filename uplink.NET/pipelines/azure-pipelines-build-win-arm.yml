@@ -56,8 +56,8 @@ steps:
     echo "welches"
     which aarch64-none-elf-gcc
     echo "^^die da"
-    export CC="aarch64-none-elf-gcc"
-    export CXX="aarch64-none-elf-g++"
+    #export CC="aarch64-none-elf-gcc"
+    #export CXX="aarch64-none-elf-g++"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
