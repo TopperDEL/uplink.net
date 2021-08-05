@@ -33,6 +33,17 @@ steps:
     mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
   displayName: 'Prepare for Target ARM'
 
+- task: GoTool@0
+  inputs:
+    version: '$(GOLANG_VERSION)'
+  displayName: 'Install Go $(GOLANG_VERSION)'
+
+- script: |
+    go get -v golang.org/dl/go1.17rc2
+    /home/vsts/go/bin/go1.17rc2 download
+    /home/vsts/go/bin/go1.17rc2 version
+  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+
 - script: |
     wget https://github.com/mstorsjo/llvm-mingw/releases/download/20210423/llvm-mingw-20210423-ucrt-ubuntu-18.04-aarch64.tar.xz
     tar -xf llvm-mingw-20210423-ucrt-ubuntu-18.04-aarch64.tar.xz
@@ -51,18 +62,6 @@ steps:
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended 
   displayName: 'Test-Generate Win-ARM with LLVM'
-
-- task: GoTool@0
-  inputs:
-    version: '$(GOLANG_VERSION)'
-  displayName: 'Install Go $(GOLANG_VERSION)'
-
-- script: |
-    go get -v golang.org/dl/go1.17rc2
-    /home/vsts/go/bin/go1.17rc2 download
-    /home/vsts/go/bin/go1.17rc2 version
-  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
-
 
 - script: |
     sudo apt-get update
