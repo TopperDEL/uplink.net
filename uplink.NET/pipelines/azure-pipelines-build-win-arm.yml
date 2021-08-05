@@ -33,6 +33,25 @@ steps:
     mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
   displayName: 'Prepare for Target ARM'
 
+- script: |
+    wget https://github.com/mstorsjo/llvm-mingw/releases/download/20210423/llvm-mingw-20210423-ucrt-ubuntu-18.04-aarch64.tar.xz
+    tar -xf llvm-mingw-20210423-ucrt-ubuntu-18.04-aarch64.tar.xz
+    cd llvm-mingw-20210423-ucrt-ubuntu-18.04-aarch64
+    cd bin
+    export PATH=$PATH:$(pwd)
+    cd ..
+    cd ..
+    cd uplink-c
+
+    export CC="aarch64-w64-mingw32-gcc"
+    export CXX="aarch64-w64-mingw32-g++"
+    export GOOS="windows"
+    export GOARCH="arm64"
+    export GOARM=7
+    export CGO_ENABLED="1"
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended 
+  displayName: 'Test-Generate Win-ARM with LLVM'
+
 - task: GoTool@0
   inputs:
     version: '$(GOLANG_VERSION)'
