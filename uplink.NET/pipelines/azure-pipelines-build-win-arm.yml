@@ -54,8 +54,8 @@ steps:
     cd ..
     cd uplink-c
 
-    export CC="aarch64-w64-mingw32-gcc"
-    export CXX="aarch64-w64-mingw32-g++"
+    export CC="aarch64-w64-mingw32-gcc -v"
+    export CXX="aarch64-w64-mingw32-g++ -v"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
@@ -69,7 +69,7 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended -v
+    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w -v" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended -v
     echo "Feddisch 2"
     ls -al
     echo "feddisch 3"
