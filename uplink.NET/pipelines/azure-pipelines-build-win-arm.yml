@@ -53,7 +53,9 @@ steps:
     cd ..
     cd ..
     cd uplink-c
-
+    echo "welches"
+    which aarch64-none-elf-gcc
+    echo "^^die da"
     export CC="aarch64-none-elf-gcc"
     export CXX="aarch64-none-elf-g++"
     export GOOS="windows"
