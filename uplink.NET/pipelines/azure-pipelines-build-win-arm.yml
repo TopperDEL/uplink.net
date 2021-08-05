@@ -108,8 +108,8 @@ steps:
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc $@' >> zcc
     sudo chmod +x zcc
-    export CC="zcc -target native-native-msvc -v"
-    export CXX="zig c++ -target native-native-msvc -v"
+    export CC="zcc -target aarch64-linux-gnu -v"
+    export CXX="zig c++ -target aarch64-linux-gnu -v"
     export GOOS="windows"
     export GOARCH="arm64"
     export GOARM=7
