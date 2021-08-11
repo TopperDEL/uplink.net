@@ -106,9 +106,9 @@ steps:
     cd uplink-c
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-pc-windows-msvc -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-pc-windows-msvc -v $@' >> zxx
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
@@ -117,7 +117,7 @@ steps:
     export AR="zar"
     export GOOS="windows"
     export GOARCH="arm64"
-    export GOARM=8
+    export GOARM=7
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
