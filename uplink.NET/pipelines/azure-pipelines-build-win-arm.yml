@@ -106,13 +106,13 @@ steps:
     cd uplink-c
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-linux-gnu -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-linux-gnu -v $@' >> zxx
     sudo chmod +x zxx
     export CC="zcc"
     export CXX="zxx"
-    export GOOS="windows"
+    export GOOS="linux"
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
