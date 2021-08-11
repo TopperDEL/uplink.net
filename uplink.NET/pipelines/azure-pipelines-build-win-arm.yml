@@ -117,4 +117,6 @@ steps:
     export GOARM=7
     export CGO_ENABLED="1"
     /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    echo "Build succeeded"
+    ls -al
   displayName: 'Test-Generate Win-ARM'
