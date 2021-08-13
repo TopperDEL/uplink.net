@@ -101,7 +101,7 @@ steps:
     zig version
     cd /snap/zig/current/lib/libc/mingw/math
     ls
-    wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
+    sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
     echo "downloaded"
     ls
     echo "done"
