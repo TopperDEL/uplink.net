@@ -99,7 +99,7 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
-    cd /snap/zig/current/lib/libc/mingw/math
+    cd /snap/zig/3678/lib/libc/mingw/math/
     ls
     sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
     echo "downloaded"
