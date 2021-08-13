@@ -127,9 +127,9 @@ steps:
     echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -v $@' >> zxx
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
