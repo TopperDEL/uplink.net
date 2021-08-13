@@ -109,6 +109,7 @@ steps:
 
 - script: |
     cd uplink-c
+    sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -v $@' >> zcc
