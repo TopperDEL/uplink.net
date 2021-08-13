@@ -117,7 +117,9 @@ steps:
     cd uplink-c
     sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
     echo "*** make symlink"
-    sudo mount --bind -o nodev,ro $(pwd)/bsd_private.h /snap/zig/3678/lib/libc/mingw/math/bsd_private.h
+    mkdir math
+    cp -r /snap/zig/3678/lib/libc/mingw/ math
+    sudo mount --bind -o nodev,ro $(pwd)/math /snap/zig/3678/lib/libc/mingw/math
     echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
