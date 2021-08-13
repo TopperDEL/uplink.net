@@ -99,25 +99,21 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
+    cd /snap/zig/current/lib/libc/mingw/math
+    ls
+    wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
+    echo "downloaded"
+    ls
+    echo "done"
   displayName: 'Install cross compiler for Windows'
 
 - script: |
     cd uplink-c
-    which zig
-    echo "** List /snap/bin/"
-    ls /snap/bin/
-    echo "** List /snap/bin/zig"
-    ls /snap/bin/zig
-    echo "** find"
-    find /snap/ -name cephes_emath.c
-    echo "** done"
-    ls /snap/zig/current/lib
-    echo "** done2"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows-msvc -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-msvc -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -v $@' >> zxx
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
