@@ -109,8 +109,10 @@ steps:
     echo "** List /snap/bin/zig"
     ls /snap/bin/zig
     echo "** find"
-    find /snap/bin -name cephes_emath.c
+    find /snap/bin/zig/lib -name cephes_emath.c
     echo "** done"
+    ls /snap/bin/zig/lib
+    echo "** done2"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-msvc -v $@' >> zcc
