@@ -115,12 +115,14 @@ steps:
 
 - script: |
     cd uplink-c
-    sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
     echo "*** make symlink"
     mkdir math
     cp -r -a /snap/zig/3678/lib/libc/mingw/math/. ./math/
     echo "** listing math"
     ls ./math
+    cd math
+    sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
+    cd ..
     sudo mount --bind -o nodev,ro $(pwd)/math /snap/zig/3678/lib/libc/mingw/math
     echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
