@@ -103,7 +103,14 @@ steps:
   displayName: 'Install cross compiler for Windows'
 
 - script: |
+    echo "*** find first"
+    find . -name cephes_emath.c
+    echo "*** find second"
+    find /home -name cephes_emath.c
+    echo "*** find third"
+    find /usr -name cephes_emath.c
     cd uplink-c
+    which zig
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-msvc -v $@' >> zcc
