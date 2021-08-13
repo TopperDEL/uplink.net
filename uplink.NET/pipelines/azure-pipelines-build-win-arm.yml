@@ -99,18 +99,18 @@ steps:
     sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
-    zig targets
   displayName: 'Install cross compiler for Windows'
 
 - script: |
-    echo "*** find first"
-    find . -name cephes_emath.c
-    echo "*** find second"
-    find /home -name cephes_emath.c
-    echo "*** find third"
-    find /usr -name cephes_emath.c
     cd uplink-c
     which zig
+    echo "** List /snap/bin/"
+    ls /snap/bin/
+    echo "** List /snap/bin/zig"
+    ls /snap/bin/zig
+    echo "** find"
+    find /snap/bin -name cephes_emath.c
+    echo "** done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-msvc -v $@' >> zcc
