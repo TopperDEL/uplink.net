@@ -39,65 +39,6 @@ steps:
   displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
-    go version
-#    go get -v golang.org/dl/go1.17rc2
-#    /home/vsts/go/bin/go1.17rc2 download
-#    /home/vsts/go/bin/go1.17rc2 version
-  displayName: 'Check Go-version'
-
-#- script: |
-#    wget https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
-#    tar -xf gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
-#    cd gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf
-#    cd bin
-#    export PATH=$PATH:$(pwd)
-#    cd ..
-#    cd ..
-#    cd uplink-c
-#    #export CC="aarch64-none-elf-gcc"
-#    #export CXX="aarch64-none-elf-g++"
-#    export GOOS="windows"
-#    export GOARCH="arm64"
-#    export GOARM=7
-#    export CGO_ENABLED="1"
-#    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
-#    echo "Sollte dll enthalten:"
-#    ls -al
-#  displayName: 'Test-Generate Win-ARM with ARM'
-
-#- script: |
-#    wget https://github.com/mstorsjo/llvm-mingw/releases/download/20210423/llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64.tar.xz
-#    tar -xf llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64.tar.xz
-#    cd llvm-mingw-20210423-ucrt-ubuntu-18.04-x86_64
-#    cd bin
-#    export PATH=$PATH:$(pwd)
-#    cd ..
-#    cd ..
-#    cd uplink-c
-#    
-#    export CC="aarch64-w64-mingw32-gcc -v"
-#    export CXX="aarch64-w64-mingw32-g++ -v"
-#    export GOOS="windows"
-#    export GOARCH="arm64"
-#    export GOARM=7
-#    export CGO_ENABLED="1"
-#    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
-#    echo "Sollte DLL enthalten:"
-#    ls -al
-
-#    export CC="aarch64-w64-mingw32uwp-gcc"
-#    export CXX="aarch64-w64-mingw32uwp-g++"
-#    export GOOS="windows"
-#    export GOARCH="arm64"
-#    export GOARM=7
-#    export CGO_ENABLED="1"
-#    /home/vsts/go/bin/go1.17rc2 build -ldflags="-s -w -v" -o storj_uplinkuwp.dll -buildmode c-shared -tags extended -v
-#    echo "Sollte DLL enthalten:"
-#    ls -al
-#  displayName: 'Test-Generate Win-ARM with LLVM'
-
-- script: |
-    sudo apt-get update
     sudo snap install zig --classic --beta
     zig version
     echo "*** realpath"
@@ -134,7 +75,7 @@ steps:
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
-    export CC="zig cc -target aarch64-windows-gnu -v"
+    export CC="zcc"
     export CXX="zxx"
     export AR="zar"
     export GOOS="windows"
