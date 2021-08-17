@@ -134,7 +134,7 @@ steps:
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
-    export CC="zcc"
+    export CC="zig cc -target aarch64-windows-gnu -v"
     export CXX="zxx"
     export AR="zar"
     export GOOS="windows"
