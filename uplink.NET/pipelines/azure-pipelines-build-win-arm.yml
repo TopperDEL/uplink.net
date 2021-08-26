@@ -57,7 +57,8 @@ steps:
 
 - script: |
     cd uplink-c
-    sudo wget https://raw.githubusercontent.com/TopperDEL/uplink.net/azure-pipelines-arm/uplink.NET/pipelines/types_windows_arm64.go
+    #sudo wget https://raw.githubusercontent.com/TopperDEL/uplink.net/azure-pipelines-arm/uplink.NET/pipelines/types_windows_arm64.go
+    go get -u golang.org/x/sys
     echo "*** make symlink"
     mkdir math
     cp -r -a /snap/zig/3678/lib/libc/mingw/math/. ./math/
