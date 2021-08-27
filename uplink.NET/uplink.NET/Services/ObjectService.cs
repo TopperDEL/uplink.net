@@ -23,12 +23,12 @@ namespace uplink.NET.Services
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
         {
-            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, null, immediateStart);
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, null, immediateStart).ConfigureAwait(false);
         }
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart = true)
         {
-            return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, null, immediateStart);
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, null, immediateStart).ConfigureAwait(false);
         }
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true)
@@ -36,7 +36,7 @@ namespace uplink.NET.Services
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
                 UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
                 if (immediateStart)
@@ -51,7 +51,7 @@ namespace uplink.NET.Services
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
                 UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
                 if (immediateStart)
@@ -65,7 +65,7 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)))
+            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
                 ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
 
@@ -77,13 +77,13 @@ namespace uplink.NET.Services
         {
             using (var downloadOptionsSWIG = downloadOptions.ToSWIG())
             {
-                using (SWIG.UplinkDownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG)))
+                using (SWIG.UplinkDownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG)).ConfigureAwait(false))
                 {
 
                     if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                         throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
 
-                    using (SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_info(downloadResult.download)))
+                    using (SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_info(downloadResult.download)).ConfigureAwait(false))
                     {
                         if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                             throw new ObjectNotFoundException(targetPath, objectResult.error.message);
@@ -103,7 +103,7 @@ namespace uplink.NET.Services
             var listObjectsOptionsSWIG = listObjectsOptions.ToSWIG();
             _listOptions.Add(listObjectsOptionsSWIG);
 
-            using (SWIG.UplinkObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_objects(_access._project, bucket.Name, listObjectsOptionsSWIG)))
+            using (SWIG.UplinkObjectIterator objectIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_objects(_access._project, bucket.Name, listObjectsOptionsSWIG)).ConfigureAwait(false))
             {
                 using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_object_iterator_err(objectIterator))
                 {
@@ -128,7 +128,7 @@ namespace uplink.NET.Services
 
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
-            using (var objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_object(_access._project, bucket.Name, targetPath)))
+            using (var objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_object(_access._project, bucket.Name, targetPath)).ConfigureAwait(false))
             {
                 if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                     throw new ObjectNotFoundException(targetPath, objectResult.error.message);
@@ -139,7 +139,7 @@ namespace uplink.NET.Services
 
         public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
-            using (SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_delete_object(_access._project, bucket.Name, targetPath)))
+            using (SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_delete_object(_access._project, bucket.Name, targetPath)).ConfigureAwait(false))
             {
                 if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                 {

@@ -28,12 +28,12 @@ namespace uplink.NET.Services
 
         public async Task ClearAllPendingUploadsAsync()
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
-            await _connection.DropTableAsync<UploadQueueEntry>();
-            await _connection.DropTableAsync<UploadQueueEntryData>();
+            await _connection.DropTableAsync<UploadQueueEntry>().ConfigureAwait(false);
+            await _connection.DropTableAsync<UploadQueueEntryData>().ConfigureAwait(false);
 
-            await _connection.CloseAsync();
+            await _connection.CloseAsync().ConfigureAwait(false);
             _connection = null;
         }
 
@@ -56,19 +56,19 @@ namespace uplink.NET.Services
             {
                 _connection = new SQLiteAsyncConnection(_databasePath);
 
-                await _connection.CreateTableAsync<UploadQueueEntry>();
-                await _connection.CreateTableAsync<UploadQueueEntryData>();
+                await _connection.CreateTableAsync<UploadQueueEntry>().ConfigureAwait(false);
+                await _connection.CreateTableAsync<UploadQueueEntryData>().ConfigureAwait(false);
             }
         }
 
         public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier)
         {
-            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier);
+            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier).ConfigureAwait(false);
         }
 
         public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier)
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
             var entry = new UploadQueueEntry();
             entry.AccessGrant = accessGrant;
@@ -78,14 +78,14 @@ namespace uplink.NET.Services
             entry.TotalBytes = (int)stream.Length;
             entry.BytesCompleted = 0;
 
-            await _connection.InsertAsync(entry);
+            await _connection.InsertAsync(entry).ConfigureAwait(false);
 
             var entryData = new UploadQueueEntryData();
             entryData.UploadQueueEntryId = entry.Id;
             entryData.Bytes = new byte[stream.Length];
             var read = stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
-            await _connection.InsertAsync(entryData);
+            await _connection.InsertAsync(entryData).ConfigureAwait(false);
 
             ProcessQueueInBackground();
 
@@ -94,27 +94,27 @@ namespace uplink.NET.Services
 
         public async Task CancelUploadAsync(string key)
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
-            var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync();
+            var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync().ConfigureAwait(false);
             if (entry != null)
             {
-                await RemoveEntry(entry);
+                await RemoveEntry(entry).ConfigureAwait(false);
             }
         }
 
         public async Task RetryAsync(string key)
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
-            var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync();
+            var entry = await _connection.Table<UploadQueueEntry>().Where(e => e.Key == key).FirstOrDefaultAsync().ConfigureAwait(false);
             if (entry != null)
             {
                 try
                 {
                     var access = new Access(entry.AccessGrant);
                     var multipartUploadService = new MultipartUploadService(access);
-                    await multipartUploadService.AbortUploadAsync(entry.BucketName, entry.Key, entry.UploadId);
+                    await multipartUploadService.AbortUploadAsync(entry.BucketName, entry.Key, entry.UploadId).ConfigureAwait(false);
                 }
                 catch { }
 
@@ -123,7 +123,7 @@ namespace uplink.NET.Services
                 entry.FailedMessage = string.Empty;
                 entry.CurrentPartNumber = 0;
                 entry.UploadId = string.Empty;
-                await _connection.UpdateAsync(entry);
+                await _connection.UpdateAsync(entry).ConfigureAwait(false);
 
                 UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, entry);
             }
@@ -131,9 +131,9 @@ namespace uplink.NET.Services
 
         public async Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync()
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
-            return await _connection.Table<UploadQueueEntry>().ToListAsync();
+            return await _connection.Table<UploadQueueEntry>().ToListAsync().ConfigureAwait(false);
         }
 
         public void ProcessQueueInBackground()
@@ -157,49 +157,49 @@ namespace uplink.NET.Services
 
         private async Task DoUploadAsync(CancellationToken token)
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
             try
             {
                 while (!token.IsCancellationRequested)
                 {
-                    var toUpload = await _connection.Table<UploadQueueEntry>().Where(e => !e.Failed).FirstOrDefaultAsync();
+                    var toUpload = await _connection.Table<UploadQueueEntry>().Where(e => !e.Failed).FirstOrDefaultAsync().ConfigureAwait(false);
                     if (toUpload != null)
                     {
                         try
                         {
                             var access = new Access(toUpload.AccessGrant);
                             var bucketService = new BucketService(access);
-                            var bucket = await bucketService.GetBucketAsync(toUpload.BucketName);
+                            var bucket = await bucketService.GetBucketAsync(toUpload.BucketName).ConfigureAwait(false);
                             var multipartUploadService = new MultipartUploadService(access);
 
                             //If the upload has not UploadId, begin it
                             if (!token.IsCancellationRequested && string.IsNullOrEmpty(toUpload.UploadId))
                             {
-                                var uploadInfo = await multipartUploadService.BeginUploadAsync(toUpload.BucketName, toUpload.Key, new UploadOptions());
+                                var uploadInfo = await multipartUploadService.BeginUploadAsync(toUpload.BucketName, toUpload.Key, new UploadOptions()).ConfigureAwait(false);
                                 toUpload.UploadId = uploadInfo.UploadId;
 
                                 //Save the UploadId
-                                await _connection.UpdateAsync(toUpload);
+                                await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
                             }
 
                             if (!token.IsCancellationRequested)
                             {
-                                var toUploadData = await _connection.Table<UploadQueueEntryData>().Where(d => d.UploadQueueEntryId == toUpload.Id).FirstOrDefaultAsync();
+                                var toUploadData = await _connection.Table<UploadQueueEntryData>().Where(d => d.UploadQueueEntryId == toUpload.Id).FirstOrDefaultAsync().ConfigureAwait(false);
                                 if (toUploadData != null)
                                 {
                                     while (!token.IsCancellationRequested && toUpload.BytesCompleted != toUpload.TotalBytes)
                                     {
                                         //Now upload batches of 256 KiB (262144 bytes)
                                         var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(262144).ToArray();
-                                        var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload);
+                                        var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload).ConfigureAwait(false);
 
                                         //Refresh the uploaded bytes counter and define the next part number
                                         toUpload.BytesCompleted += (int)upload.BytesWritten;
                                         toUpload.CurrentPartNumber++;
 
                                         //Save the current state
-                                        await _connection.UpdateAsync(toUpload);
+                                        await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
 
                                         UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                     }
@@ -209,10 +209,10 @@ namespace uplink.NET.Services
                             //If all bytes are uploaded, commit the upload.
                             if (!token.IsCancellationRequested && toUpload.BytesCompleted == toUpload.TotalBytes)
                             {
-                                var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, new CommitUploadOptions());
+                                var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, new CommitUploadOptions()).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(commitResult.Error))
                                 {
-                                    await RemoveEntry(toUpload);
+                                    await RemoveEntry(toUpload).ConfigureAwait(false);
                                 }
                                 else
                                 {
@@ -220,7 +220,7 @@ namespace uplink.NET.Services
                                     toUpload.FailedMessage = commitResult.Error;
 
                                     //Save the current state
-                                    await _connection.UpdateAsync(toUpload);
+                                    await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -230,7 +230,7 @@ namespace uplink.NET.Services
                             toUpload.FailedMessage = ex.Message;
 
                             //Save the current state
-                            await _connection.UpdateAsync(toUpload);
+                            await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
                         }
                     }
                     else
@@ -244,15 +244,15 @@ namespace uplink.NET.Services
 
         public async Task<int> GetOpenUploadCountAsync()
         {
-            await InitAsync();
+            await InitAsync().ConfigureAwait(false);
 
-            return await _connection.Table<UploadQueueEntry>().CountAsync();
+            return await _connection.Table<UploadQueueEntry>().CountAsync().ConfigureAwait(false);
         }
 
         private async Task RemoveEntry(UploadQueueEntry entry)
         {
-            await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == entry.Id);
-            await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == entry.Id);
+            await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == entry.Id).ConfigureAwait(false);
+            await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == entry.Id).ConfigureAwait(false);
 
             UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryRemoved, entry);
         }
