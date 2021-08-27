@@ -165,7 +165,7 @@ namespace uplink.NET.Models
                         bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
                         if (bytesToUploadCount > 0)
                         {
-                            byte[] targetArray = bytesToUpload.Take((int)bytesToUploadCount).ToArray();
+                            byte[] targetArray = bytesToUpload.Take(bytesToUploadCount).ToArray();
                             fixed (byte* arrayPtr = targetArray)
                             {
                                 using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount))
@@ -259,7 +259,6 @@ namespace uplink.NET.Models
             {
                 Failed = true;
                 _errorMessage = ex.Message;
-                return;
             }
             finally
             {

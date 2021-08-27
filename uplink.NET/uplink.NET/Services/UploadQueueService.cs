@@ -83,7 +83,7 @@ namespace uplink.NET.Services
             var entryData = new UploadQueueEntryData();
             entryData.UploadQueueEntryId = entry.Id;
             entryData.Bytes = new byte[stream.Length];
-            var read = stream.Read(entryData.Bytes, 0, (int)stream.Length);
+            stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
             await _connection.InsertAsync(entryData).ConfigureAwait(false);
 
@@ -170,7 +170,6 @@ namespace uplink.NET.Services
                         {
                             var access = new Access(toUpload.AccessGrant);
                             var bucketService = new BucketService(access);
-                            var bucket = await bucketService.GetBucketAsync(toUpload.BucketName).ConfigureAwait(false);
                             var multipartUploadService = new MultipartUploadService(access);
 
                             //If the upload has not UploadId, begin it
