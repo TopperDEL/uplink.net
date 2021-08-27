@@ -149,7 +149,7 @@ namespace uplink.NET.Models
                             }
                             if (readResult.bytes_read != 0)
                             {
-                                Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                                Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
                                 BytesReceived += readResult.bytes_read;
                             }
                         }
@@ -174,7 +174,7 @@ namespace uplink.NET.Models
                             }
                             if (readResult.bytes_read != 0)
                             {
-                                Array.Copy(part, 0, _bytesToDownload, (long)BytesReceived, readResult.bytes_read);
+                                Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
                                 BytesReceived += readResult.bytes_read;
                             }
                         }

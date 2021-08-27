@@ -37,7 +37,7 @@ namespace uplink.NET.Models
                     {
                         using (var entry = SWIG.storj_uplink.get_next_custommetadata())
                         {
-                            ret.Entries.Add(new CustomMetadataEntry() { Key = entry.key, Value = entry.value });
+                            ret.Entries.Add(new CustomMetadataEntry { Key = entry.key, Value = entry.value });
                         }
                     }
                 }
