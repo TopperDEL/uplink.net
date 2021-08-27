@@ -8,8 +8,8 @@ namespace uplink.NET.Models
     public unsafe class ChunkedUploadOperation : IDisposable
     {
         private SWIG.UplinkUpload _upload;
-        private string _objectName;
-        private CustomMetadata _customMetadata;
+        private readonly string _objectName;
+        private readonly CustomMetadata _customMetadata;
         private string _errorMessage;
         public string ErrorMessage { get { return _errorMessage; } }
 

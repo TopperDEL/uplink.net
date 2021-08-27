@@ -9,8 +9,8 @@ namespace uplink.NET.Models
 {
     public class DownloadStream : Stream
     {
-        private Bucket _bucket;
-        private string _objectName;
+        private readonly Bucket _bucket;
+        private readonly string _objectName;
         public override bool CanRead => true;
 
         public override bool CanSeek => true;
@@ -68,6 +68,8 @@ namespace uplink.NET.Models
                     break;
                 case SeekOrigin.Current:
                     Position += offset;
+                    break;
+                default:
                     break;
             }
             return Position;
