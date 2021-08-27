@@ -17,7 +17,7 @@ namespace uplink.NET.Models
 
         public override bool CanWrite => false;
 
-        private long _length;
+        private readonly long _length;
         public override long Length => _length;
 
         public override long Position { get; set; }
@@ -70,7 +70,7 @@ namespace uplink.NET.Models
                     Position += offset;
                     break;
                 default:
-                    break;
+                    throw new NotSupportedException();
             }
             return Position;
         }

@@ -22,8 +22,8 @@ namespace uplink.NET.Models
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public unsafe class UploadOperation : IDisposable
     {
-        internal static Mutex customMetadataMutex = new Mutex();
-        private Stream _byteStreamToUpload;
+        internal static readonly Mutex customMetadataMutex = new Mutex();
+        private readonly Stream _byteStreamToUpload;
         private SWIG.UplinkUpload _upload;
         private Task _uploadTask;
         private bool _cancelled;
