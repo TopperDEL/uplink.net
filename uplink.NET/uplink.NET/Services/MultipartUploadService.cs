@@ -14,7 +14,7 @@ namespace uplink.NET.Services
         static List<SWIG.UplinkListUploadsOptions> _listUploadsOptions = new List<SWIG.UplinkListUploadsOptions>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkListObjectsOptions
         static List<SWIG.UplinkUploadOptions> _uploadOptions = new List<SWIG.UplinkUploadOptions>();
 
-        Access _access;
+        private readonly Access _access;
 
         public MultipartUploadService(Access access)
         {

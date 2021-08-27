@@ -27,7 +27,7 @@ namespace uplink.NET.Models
         private SWIG.UplinkUpload _upload;
         private Task _uploadTask;
         private bool _cancelled;
-        private CustomMetadata _customMetadata;
+        private readonly CustomMetadata _customMetadata;
 
         /// <summary>
         /// The name of the object uploading
