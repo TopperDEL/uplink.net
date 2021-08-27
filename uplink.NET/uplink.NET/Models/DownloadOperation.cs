@@ -33,7 +33,7 @@ namespace uplink.NET.Models
                 return _bytesToDownload;
             }
         }
-        private SWIG.UplinkDownload _download;
+        private readonly SWIG.UplinkDownload _download;
         private Task _downloadTask;
         private bool _cancelled;
 
