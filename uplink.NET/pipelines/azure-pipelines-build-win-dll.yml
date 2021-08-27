@@ -25,6 +25,7 @@ steps:
     git clone https://github.com/storj/uplink-c.git
     cd uplink-c
     git checkout $(STORJ_VERSION) 
+    git pull https://review.dev.storj.io/storj/uplink-c refs/changes/82/5582/5
     cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
