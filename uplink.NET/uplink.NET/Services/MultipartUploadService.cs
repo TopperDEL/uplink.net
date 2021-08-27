@@ -26,7 +26,7 @@ namespace uplink.NET.Services
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
-            using (SWIG.UplinkUploadInfoResult uploadinfoResult = await Task.Run(() => SWIG.storj_uplink.uplink_begin_upload(_access._project, bucketName, objectKey, uploadOptionsSWIG)))
+            using (SWIG.UplinkUploadInfoResult uploadinfoResult = await Task.Run(() => SWIG.storj_uplink.uplink_begin_upload(_access._project, bucketName, objectKey, uploadOptionsSWIG)).ConfigureAwait(false))
             {
                 if (uploadinfoResult.error != null && !string.IsNullOrEmpty(uploadinfoResult.error.message))
                     throw new MultipartUploadFailedException(objectKey, uploadinfoResult.error.message);
@@ -37,7 +37,7 @@ namespace uplink.NET.Services
 
         public async Task<PartUploadResult> UploadPartAsync(string bucketName, string objectKey, string uploadId, uint partNumber, byte[] partBytes)
         {
-            using (var partUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_part(_access._project, bucketName, objectKey, uploadId, partNumber)))
+            using (var partUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_part(_access._project, bucketName, objectKey, uploadId, partNumber)).ConfigureAwait(false))
             {
                 PartUploadResult result = new PartUploadResult(partUploadResult.part_upload);
 
@@ -49,7 +49,7 @@ namespace uplink.NET.Services
                 {
                     try
                     {
-                        result.BytesWritten = await Task.Run(() => DoUnsafeUpload(partUploadResult.part_upload, objectKey, partBytes));
+                        result.BytesWritten = await Task.Run(() => DoUnsafeUpload(partUploadResult.part_upload, objectKey, partBytes)).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -82,14 +82,14 @@ namespace uplink.NET.Services
 
         public async Task UploadPartSetETagAsync(PartUpload partUpload, string eTag)
         {
-            var result = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_set_etag(partUpload._partUpload, eTag));
+            var result = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_set_etag(partUpload._partUpload, eTag)).ConfigureAwait(false);
             if (result != null && !string.IsNullOrEmpty(result.message))
                 throw new SetETagFailedException(result.message);
         }
 
         public async Task AbortUploadAsync(string bucketName, string objectKey, string uploadId)
         {
-            var result = await Task.Run(() => SWIG.storj_uplink.uplink_abort_upload(_access._project, bucketName, objectKey, uploadId));
+            var result = await Task.Run(() => SWIG.storj_uplink.uplink_abort_upload(_access._project, bucketName, objectKey, uploadId)).ConfigureAwait(false);
             if (result != null && !string.IsNullOrEmpty(result.message))
                 throw new SetETagFailedException(result.message);
         }
@@ -100,7 +100,7 @@ namespace uplink.NET.Services
 
             var uplinkCommitUploadOptions = new SWIG.UplinkCommitUploadOptions();
 
-            using (var commitUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_commit_upload(_access._project, bucketName, objectKey, uploadId, uplinkCommitUploadOptions)))
+            using (var commitUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_commit_upload(_access._project, bucketName, objectKey, uploadId, uplinkCommitUploadOptions)).ConfigureAwait(false))
             {
                 if (commitUploadResult.error != null && !string.IsNullOrEmpty(commitUploadResult.error.message))
                 {
@@ -117,7 +117,7 @@ namespace uplink.NET.Services
 
         public async Task<PartResult> GetPartUploadInfoAsync(PartUpload partUpload)
         {
-            using (var uplinkPartResult = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_info(partUpload._partUpload)))
+            using (var uplinkPartResult = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_info(partUpload._partUpload)).ConfigureAwait(false))
             {
                 var partResult = new PartResult();
                 if (uplinkPartResult.error != null && !string.IsNullOrEmpty(uplinkPartResult.error.message))
@@ -138,7 +138,7 @@ namespace uplink.NET.Services
             var listUploadPartsOptionsSWIG = listUploadPartOptions.ToSWIG();
             _listUploadPartsOptions.Add(listUploadPartsOptionsSWIG);
 
-            using (SWIG.UplinkPartIterator partIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_upload_parts(_access._project, bucketName, objectKey, uploadId, listUploadPartsOptionsSWIG)))
+            using (SWIG.UplinkPartIterator partIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_upload_parts(_access._project, bucketName, objectKey, uploadId, listUploadPartsOptionsSWIG)).ConfigureAwait(false))
             {
                 using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_part_iterator_err(partIterator))
                 {
@@ -166,7 +166,7 @@ namespace uplink.NET.Services
             var listUploadsOptionsSWIG = listUploadOptions.ToSWIG();
             _listUploadsOptions.Add(listUploadsOptionsSWIG);
 
-            using (SWIG.UplinkUploadIterator uploadIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_uploads(_access._project, bucketName, listUploadsOptionsSWIG)))
+            using (SWIG.UplinkUploadIterator uploadIterator = await Task.Run(() => SWIG.storj_uplink.uplink_list_uploads(_access._project, bucketName, listUploadsOptionsSWIG)).ConfigureAwait(false))
             {
                 using (SWIG.UplinkError error = SWIG.storj_uplink.uplink_upload_iterator_err(uploadIterator))
                 {
