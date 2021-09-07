@@ -56,8 +56,8 @@ steps:
   displayName: 'Install cross compiler for Windows'
 
 - script: |
-    #cd uplink-c
-    #go get -u golang.org/x/sys
+    cd uplink-c
+    go get -u golang.org/x/sys
     #echo "*** make symlink"
     #mkdir math
     #cp -r -a /snap/zig/3678/lib/libc/mingw/math/. ./math/
