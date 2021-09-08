@@ -39,7 +39,7 @@ steps:
   displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
-    sudo snap install zig --classic --beta
+    sudo snap install zig --classic --edge
     zig version
     #echo "*** realpath"
     #realpath /snap/zig/3678/lib/libc/mingw/math/
