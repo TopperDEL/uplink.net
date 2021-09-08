@@ -83,7 +83,7 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    go build -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
   displayName: 'Test-Generate Win-ARM'
