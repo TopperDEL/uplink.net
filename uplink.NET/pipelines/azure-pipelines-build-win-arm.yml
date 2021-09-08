@@ -87,3 +87,10 @@ steps:
     echo "Build succeeded"
     ls -al
   displayName: 'Test-Generate Win-ARM'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+      targetPath: 'uplink-c/storj_uplink.dll'
+      artifact: 'arm64_dll'
+      publishLocation: 'pipeline'
+  displayName: 'Publish DLL as Artifact'
