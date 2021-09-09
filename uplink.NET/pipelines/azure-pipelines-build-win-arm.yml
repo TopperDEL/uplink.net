@@ -70,9 +70,9 @@ steps:
     #echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -Xclang -target-cpu -Xclang cortex-a75 -fno-sanitize-trap=undefined -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -Xclang -target-cpu -Xclang cortex-a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -Xclang -target-cpu -Xclang cortex-a75 -fno-sanitize-trap=undefined -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -Xclang -target-cpu -Xclang cortex-a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
