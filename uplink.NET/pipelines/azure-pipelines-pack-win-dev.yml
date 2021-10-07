@@ -71,7 +71,7 @@ steps:
 
 - script: |
     cat -n uplink-c/storj_uplink.h
-    swig -E -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
+    swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
   displayName: 'Running SWIG again with the second i-file. It includes more typemaps.'
 
 - script: |
