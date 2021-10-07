@@ -41,23 +41,11 @@ steps:
 - script: |
     sudo snap install zig --classic --edge
     zig version
-    #echo "*** realpath"
-    #realpath /snap/zig/3678/lib/libc/mingw/math/
-    #realpath /snap/zig/3678/lib/libc/mingw/math/cephes_emath.c
-    #echo "*** ll"
-    #ll /snap/zig/3678/lib/libc/mingw/math/
-    #ll /snap/zig/3678/lib/libc/mingw/math/cephes_emath.c
-    #cd /snap/zig/3678/lib/libc/mingw/math/
-    #ls
-    #sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
-    #echo "downloaded"
-    #ls
-    #echo "done"
-  displayName: 'Install cross compiler for Windows'
+  displayName: 'Install Zig'
 
 - script: |
     cd uplink-c
-    go get -u golang.org/x/sys
+    #go get -u golang.org/x/sys
     #echo "*** make symlink"
     #mkdir math
     #cp -r -a /snap/zig/3678/lib/libc/mingw/math/. ./math/
