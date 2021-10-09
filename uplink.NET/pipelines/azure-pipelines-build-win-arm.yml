@@ -32,7 +32,7 @@ steps:
     ls uplink-c
     rm uplink-c/util.go
     rm uplink-c/upload.go
-    #rm uplink-c/scope.go
+    rm uplink-c/scope.go
     rm uplink-c/restrict_scope_helper.go
     rm uplink-c/project.go
     rm uplink-c/objects.go
