@@ -77,7 +77,7 @@ steps:
     ls -al
     echo "*** Hole pdb"
     cd ..
-    cp /home/vsts/*pdb uplink-c
+    find /home/vsts/ -type f | grep -i pdb$ | xargs -i cp {} uplink-c
   displayName: 'Test-Generate Win-ARM'
 
 - task: PublishPipelineArtifact@1
