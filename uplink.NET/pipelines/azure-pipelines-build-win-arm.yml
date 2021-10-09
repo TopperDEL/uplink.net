@@ -30,9 +30,9 @@ steps:
 - script: |
     ls
     ls uplink-c
-    rm uplink-c/util.go
+    #rm uplink-c/util.go
     rm uplink-c/upload.go
-    rm uplink-c/scope.go
+    #rm uplink-c/scope.go
     rm uplink-c/restrict_scope_helper.go
     rm uplink-c/project.go
     rm uplink-c/objects.go
@@ -40,7 +40,7 @@ steps:
     rm uplink-c/multipart.go
     #rm uplink-c/handles_test.go
     #rm uplink-c/handles.go
-    rm uplink-c/error.go
+    #rm uplink-c/error.go
     rm uplink-c/encryption.go
     rm uplink-c/edge_share.go
     rm uplink-c/edge_access.go
