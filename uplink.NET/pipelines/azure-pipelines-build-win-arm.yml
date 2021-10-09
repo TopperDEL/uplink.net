@@ -75,6 +75,9 @@ steps:
     go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
+    echo "*** Hole pdb"
+    cd ..
+    cp /home/vsts/*pdb uplink-c
   displayName: 'Test-Generate Win-ARM'
 
 - task: PublishPipelineArtifact@1
@@ -83,3 +86,10 @@ steps:
       artifact: 'arm64_dll'
       publishLocation: 'pipeline'
   displayName: 'Publish DLL as Artifact'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+      targetPath: 'uplink-c/storj_uplink.pdb'
+      artifact: 'arm64_dll_pdb'
+      publishLocation: 'pipeline'
+  displayName: 'Publish PDB as Artifact'
