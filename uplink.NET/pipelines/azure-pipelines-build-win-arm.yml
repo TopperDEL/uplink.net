@@ -54,7 +54,7 @@ steps:
     rm uplink-c/access.go
     echo "deleted"
     ls uplink-c
-    mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+    #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
   displayName: 'Prepare for Target ARM'
 
 - task: GoTool@0
