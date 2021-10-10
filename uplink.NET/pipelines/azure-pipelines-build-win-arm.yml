@@ -36,7 +36,7 @@ steps:
     rm uplink-c/restrict_scope_helper.go
     rm uplink-c/project.go
     rm uplink-c/objects.go
-    rm uplink-c/object.go
+    #rm uplink-c/object.go
     rm uplink-c/multipart.go
     #rm uplink-c/handles_test.go
     #rm uplink-c/handles.go
