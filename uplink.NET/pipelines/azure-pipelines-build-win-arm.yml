@@ -53,7 +53,7 @@ steps:
     rm uplink-c/bucket.go
     #rm uplink-c/access.go
     sed -i uplink-c/access.go -re '69,223d'
-    sed -i uplink-c/access.go -re '10,12d'
+    sed -i uplink-c/access.go -re '9,12d'
     sed -i uplink-c/access.go -re '56,62d'
     echo "deleted"
     ls uplink-c
