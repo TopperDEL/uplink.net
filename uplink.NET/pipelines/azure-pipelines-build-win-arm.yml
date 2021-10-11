@@ -54,9 +54,10 @@ steps:
     #rm uplink-c/access.go
     #Remove freeProject-call from uplink_free_project_result
     #sed -i uplink-c/project.go -re '71,71d'
+    sed -i uplink-c/project.go -re '87,90d'
     sed -i uplink-c/project.go -re '82,82d'
     sed -i '81s/.*/_, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
-    sed -i uplink-c/project.go -re '87,90d'
+    
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,65d'
     #Remove uplink_request_access_with_passphrase and "context"
