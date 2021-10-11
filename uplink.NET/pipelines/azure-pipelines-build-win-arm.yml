@@ -54,6 +54,7 @@ steps:
     #rm uplink-c/access.go
     #Remove freeProject-call from uplink_free_project_result
     #sed -i uplink-c/project.go -re '71,71d'
+    sed -i '81s/.*/_,_ := universe.Get(project._handle).(*Project)/' uplink-c/project.go
     sed -i uplink-c/project.go -re '82,90d'
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,65d'
@@ -69,7 +70,7 @@ steps:
     sed -i uplink-c/config.go -re '9,9d'
 
     echo "*** hier kommt die Maus ***"
-    cat uplink-c/access.go
+    cat uplink-c/project.go
     echo "*** deleted ***"
     ls uplink-c
     #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
