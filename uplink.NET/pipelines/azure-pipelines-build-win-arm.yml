@@ -54,6 +54,8 @@ steps:
     #rm uplink-c/access.go
     sed -i uplink-c/access.go -re '37,67d'
     sed -i uplink-c/access.go -re '9,9d'
+    sed -i uplink-c/config.go -re '15,48d'
+    sed -i uplink-c/config.go -re '9,9d'
     echo "*** hier kommt die Maus ***"
     cat uplink-c/access.go
     echo "*** deleted ***"
