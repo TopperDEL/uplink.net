@@ -116,6 +116,7 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
+    export GODEBUG=inittrace=1
     go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
