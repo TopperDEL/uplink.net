@@ -57,10 +57,7 @@ steps:
     #sed -i uplink-c/project.go -re '87,88d'
     #sed -i uplink-c/project.go -re '82,82d'
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
-    sed -i '17s/.*/fmt.Fprintf(os.Stderr, "this is stderr\n")/' uplink-c/main.go
-    sed -i '18s/.*/return universe.Empty()/' uplink-c/main.go
-    sed -i '19s/.*/}/' uplink-c/main.go
-    cat uplink-c/main.go
+    
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,49d'
     #Remove uplink_request_access_with_passphrase and "context"
