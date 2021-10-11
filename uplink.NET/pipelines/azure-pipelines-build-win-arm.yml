@@ -30,7 +30,28 @@ steps:
 - script: |
     ls
     ls uplink-c
-    
+    #rm uplink-c/util.go
+    rm uplink-c/upload.go
+    #rm uplink-c/scope.go
+    rm uplink-c/restrict_scope_helper.go
+    rm uplink-c/project.go
+    rm uplink-c/objects.go
+    rm uplink-c/object.go
+    rm uplink-c/multipart.go
+    #rm uplink-c/handles_test.go
+    #rm uplink-c/handles.go
+    #rm uplink-c/error.go
+    #rm uplink-c/encryption.go
+    rm uplink-c/edge_share.go
+    rm uplink-c/edge_access.go
+    rm uplink-c/download.go
+    #rm uplink-c/custommetadata_test.go
+    #rm uplink-c/custommetadata.go
+    rm uplink-c/custom_metadata_helper.go
+    rm uplink-c/config.go
+    rm uplink-c/buckets.go
+    rm uplink-c/bucket.go
+    #rm uplink-c/access.go
     sed -i uplink-c/access.go -re '37,67d'
     sed -i uplink-c/access.go -re '9,9d'
     echo "*** hier kommt die Maus ***"
