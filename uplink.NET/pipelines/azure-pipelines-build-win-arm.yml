@@ -54,7 +54,7 @@ steps:
     #rm uplink-c/access.go
     sed -i uplink-c/access.go -re '69,223d'
     sed -i uplink-c/access.go -re '65,65d'
-    sed -i uplink-c/access.go -re '56,62d'
+    sed -i uplink-c/access.go -re '57,62d'
     sed -i uplink-c/access.go -re '9,12d'
     echo "*** hier kommt die Maus ***"
     cat uplink-c/access.go
