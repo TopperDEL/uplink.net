@@ -52,6 +52,8 @@ steps:
     rm uplink-c/buckets.go
     rm uplink-c/bucket.go
     #rm uplink-c/access.go
+    sed -i uplink-c/project.go -re '51,91d'
+    sed -i uplink-c/project.go -re '9,9d'
     sed -i uplink-c/access.go -re '37,67d'
     sed -i uplink-c/access.go -re '9,9d'
     sed -i uplink-c/config.go -re '50,79d'
