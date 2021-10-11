@@ -41,7 +41,7 @@ steps:
     #rm uplink-c/handles_test.go
     #rm uplink-c/handles.go
     #rm uplink-c/error.go
-    rm uplink-c/encryption.go
+    #rm uplink-c/encryption.go
     rm uplink-c/edge_share.go
     rm uplink-c/edge_access.go
     rm uplink-c/download.go
