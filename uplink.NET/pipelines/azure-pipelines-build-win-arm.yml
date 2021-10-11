@@ -55,7 +55,7 @@ steps:
     sed -i '62s/.*/_ = ctx/' uplink-c/access.go
     sed -i uplink-c/access.go -re '69,223d'
     sed -i uplink-c/access.go -re '65,65d'
-    sed -i uplink-c/access.go -re '57,62d'
+    sed -i uplink-c/access.go -re '57,61d'
     sed -i uplink-c/access.go -re '10,12d'
     echo "*** hier kommt die Maus ***"
     cat uplink-c/access.go
