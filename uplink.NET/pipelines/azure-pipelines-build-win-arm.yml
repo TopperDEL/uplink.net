@@ -61,11 +61,11 @@ steps:
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,65d'
     #Remove uplink_request_access_with_passphrase and "context"
-    sed -i uplink-c/access.go -re '37,67d'
-    sed -i uplink-c/access.go -re '9,9d'
+    #sed -i uplink-c/access.go -re '37,67d'
+    #sed -i uplink-c/access.go -re '9,9d'
 
     #Remove uplink_config_open_project [rootScope]
-    #sed -i uplink-c/config.go -re '50,79d'
+    sed -i uplink-c/config.go -re '50,79d'
     
     #uplink_config_request_access_with_passphrase and "context"
     sed -i uplink-c/config.go -re '15,48d'
