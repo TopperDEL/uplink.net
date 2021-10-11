@@ -52,7 +52,7 @@ steps:
     rm uplink-c/buckets.go
     rm uplink-c/bucket.go
     #rm uplink-c/access.go
-    sed '22,223d' uplink-c/access.go > uplink-c/access.go
+    sed -i uplink-c/access.go -re '22,223d'
     echo "deleted"
     ls uplink-c
     #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
