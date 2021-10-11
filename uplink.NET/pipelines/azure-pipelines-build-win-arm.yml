@@ -59,7 +59,7 @@ steps:
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
     
     #Remove uplink_close_project und uplink_open_project [rootScope]
-    sed -i uplink-c/project.go -re '20,65d'
+    sed -i uplink-c/project.go -re '20,49d'
     #Remove uplink_request_access_with_passphrase and "context"
     sed -i uplink-c/access.go -re '37,67d'
     sed -i uplink-c/access.go -re '9,9d'
