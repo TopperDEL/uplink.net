@@ -51,7 +51,7 @@ steps:
     rm uplink-c/config.go
     rm uplink-c/buckets.go
     rm uplink-c/bucket.go
-    #rm uplink-c/access.go
+    rm uplink-c/access.go
     echo "deleted"
     ls uplink-c
     #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
