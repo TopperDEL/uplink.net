@@ -66,7 +66,7 @@ steps:
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '51,65d'
     
-    echo "set memory 1"
+    go get golang.org/x/sync@v0.0.0-20210220032951-036812b2e83c
     sed -i '10s/.*/"golang.org\/x\/sync\/errgroup"/' uplink-c/project.go
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
