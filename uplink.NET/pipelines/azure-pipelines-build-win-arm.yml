@@ -67,7 +67,7 @@ steps:
     sed -i uplink-c/project.go -re '51,65d'
     
     echo "set memory 1"
-    sed -i '10s/.*/"storj.io/common/memory"/' uplink-c/project.go
+    sed -i '10s/.*/  "storj.io/common/memory"/' uplink-c/project.go
     echo "set memory 2"
     sed -i '10s/.*/"storj.io/common/memory"/' uplink-c/project.go
     echo "set memory done"
