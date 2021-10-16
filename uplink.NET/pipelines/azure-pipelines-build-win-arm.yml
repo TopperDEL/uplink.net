@@ -66,20 +66,20 @@ steps:
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '51,65d'
     
-    sed -i '10s/.*/"storj.io\/common\/rpc"/' uplink-c/project.go
+    #sed -i '10s/.*/"storj.io\/common\/rpc"/' uplink-c/project.go
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
     
-    sed -i '23s/.*/dialer := rpc.Dialer/' uplink-c/project.go
-    sed -i '24s/.*/if rpc != nil {/' uplink-c/project.go
-    sed -i '25s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
-    sed -i '26s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
-    sed -i '27s/.*/}/' uplink-c/project.go
-    sed -i '28s/.*/}/' uplink-c/project.go
-    sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
-    sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
-    sed -i '31s/.*/}/' uplink-c/project.go
-    sed -i uplink-c/project.go -re '32,48d'
+    #sed -i '23s/.*/dialer := rpc.Dialer/' uplink-c/project.go
+    #sed -i '24s/.*/if rpc != nil {/' uplink-c/project.go
+    #sed -i '25s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
+    #sed -i '26s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
+    #sed -i '27s/.*/}/' uplink-c/project.go
+    #sed -i '28s/.*/}/' uplink-c/project.go
+    #sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
+    #sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
+    #sed -i '31s/.*/}/' uplink-c/project.go
+    sed -i uplink-c/project.go -re '20,48d'
     
     #Remove uplink_request_access_with_passphrase and "context"
     sed -i uplink-c/access.go -re '37,67d'
