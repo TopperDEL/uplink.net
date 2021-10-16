@@ -56,6 +56,7 @@ steps:
     #sed -i uplink-c/scope.go -re '21,25d'
     #sed -i uplink-c/scope.go -re '9,9d'
     
+    
     #Remove freeProject-call from uplink_free_project_result
     sed -i uplink-c/project.go -re '71,71d'
     #sed -i uplink-c/project.go -re '87,88d'
@@ -63,7 +64,18 @@ steps:
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
     
     #Remove uplink_close_project und uplink_open_project [rootScope]
-    sed -i uplink-c/project.go -re '20,65d'
+    sed -i uplink-c/project.go -re '51,65d'
+    sed -i '23s/.*/scope := rootScope("")/' uplink-c/project.go
+    sed -i '24s/.*/if scope == nil {/' uplink-c/project.go
+    sed -i '25s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
+    sed -i '26s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
+    sed -i '27s/.*/}/' uplink-c/project.go
+    sed -i '28s/.*/}/' uplink-c/project.go
+    sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
+    sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
+    sed -i '31s/.*/}/' uplink-c/project.go
+    sed -i uplink-c/project.go -re '32,48d'
+    
     #Remove uplink_request_access_with_passphrase and "context"
     sed -i uplink-c/access.go -re '37,67d'
     sed -i uplink-c/access.go -re '9,9d'
