@@ -68,6 +68,8 @@ steps:
     
     echo "set memory 1"
     sed -i '10s/.*/"storj.io\/common\/memory"/' uplink-c/project.go
+    sed -i '12s/.*/"fmt"/' uplink-c/project.go
+    sed -i '13s/.*/}/' uplink-c/project.go
     
     sed -i '23s/.*/scope := rootScope("")/' uplink-c/project.go
     sed -i '24s/.*/if scope.ctx == nil {/' uplink-c/project.go
@@ -76,7 +78,7 @@ steps:
     sed -i '27s/.*/}/' uplink-c/project.go
     sed -i '28s/.*/}/' uplink-c/project.go
     sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
-    sed -i '30s/.*/error: mallocError(ErrNull.New(memory.ParseString("access"))),/' uplink-c/project.go
+    sed -i '30s/.*/error: mallocError(ErrNull.New(fmt.Sprintf("%b",memory.ParseString("access")))),/' uplink-c/project.go
     sed -i '31s/.*/}/' uplink-c/project.go
     sed -i uplink-c/project.go -re '32,48d'
     
