@@ -103,9 +103,9 @@ steps:
     #echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target arm-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target arm-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
+    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
     sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
@@ -113,7 +113,7 @@ steps:
     export CXX="zxx"
     export AR="zar"
     export GOOS="windows"
-    export GOARCH="arm64"
+    export GOARCH="arm"
     export GOARM=7
     export CGO_ENABLED="1"
     #export GODEBUG=inittrace=1
