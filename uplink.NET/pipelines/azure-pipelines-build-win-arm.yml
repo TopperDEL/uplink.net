@@ -72,13 +72,13 @@ steps:
     #sed -i '13s/.*/)/' uplink-c/project.go
     
     sed -i '23s/.*/parsed = memory.ParseString("access")/' uplink-c/project.go
-    sed -i '24s/.*/if parsed {/' uplink-c/project.go
+    sed -i '24s/.*/if parsed > 0 {/' uplink-c/project.go
     sed -i '25s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
     sed -i '26s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
     sed -i '27s/.*/}/' uplink-c/project.go
     sed -i '28s/.*/}/' uplink-c/project.go
     sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
-    sed -i '30s/.*/error: mallocError(ErrNull.New("access"),/' uplink-c/project.go
+    sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
     sed -i '31s/.*/}/' uplink-c/project.go
     sed -i uplink-c/project.go -re '32,48d'
     
