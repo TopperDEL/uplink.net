@@ -71,7 +71,7 @@ steps:
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
     
-    sed -i '23s/.*/parsed = memory.ParseString("access")/' uplink-c/project.go
+    sed -i '23s/.*/parsed,_ = memory.ParseString("access")/' uplink-c/project.go
     sed -i '24s/.*/if parsed > 0 {/' uplink-c/project.go
     sed -i '25s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
     sed -i '26s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
