@@ -52,6 +52,10 @@ steps:
     rm uplink-c/buckets.go
     rm uplink-c/bucket.go
     #rm uplink-c/access.go
+    
+    sed -i uplink-c/scope.go -re '21,25d'
+    sed -i uplink-c/scope.go -re '9,9d'
+    
     #Remove freeProject-call from uplink_free_project_result
     #sed -i uplink-c/project.go -re '71,71d'
     #sed -i uplink-c/project.go -re '87,88d'
