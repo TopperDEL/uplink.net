@@ -66,7 +66,7 @@ steps:
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,65d'
     
-    #sed -i '10s/.*/_ "github.com\/zeebo\/errs"/' uplink-c/project.go
+    sed -i '10s/.*/_ "github.com\/zeebo\/errs"/' uplink-c/project.go
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
     
