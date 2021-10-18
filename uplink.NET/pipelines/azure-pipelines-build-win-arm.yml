@@ -64,9 +64,9 @@ steps:
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
     
     #Remove uplink_close_project und uplink_open_project [rootScope]
-    sed -i uplink-c/project.go -re '51,65d'
+    sed -i uplink-c/project.go -re '20,65d'
     
-    #sed -i '10s/.*/"storj.io\/common\/rpc"/' uplink-c/project.go
+    #sed -i '10s/.*/_ "github.com\/zeebo\/errs"/' uplink-c/project.go
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
     
@@ -79,7 +79,7 @@ steps:
     #sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
     #sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
     #sed -i '31s/.*/}/' uplink-c/project.go
-    sed -i uplink-c/project.go -re '20,65d'
+    #sed -i uplink-c/project.go -re '20,65d'
     
     #Remove uplink_request_access_with_passphrase and "context"
     sed -i uplink-c/access.go -re '37,67d'
