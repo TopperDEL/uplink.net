@@ -79,7 +79,7 @@ steps:
     #sed -i '29s/.*/return C.UplinkProjectResult{/' uplink-c/project.go
     #sed -i '30s/.*/error: mallocError(ErrNull.New("access")),/' uplink-c/project.go
     #sed -i '31s/.*/}/' uplink-c/project.go
-    sed -i uplink-c/project.go -re '20,48d'
+    sed -i uplink-c/project.go -re '20,49d'
     
     #Remove uplink_request_access_with_passphrase and "context"
     sed -i uplink-c/access.go -re '37,67d'
