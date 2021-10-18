@@ -65,8 +65,18 @@ steps:
     
     #Remove uplink_close_project und uplink_open_project [rootScope]
     sed -i uplink-c/project.go -re '20,65d'
-    
-    sed -i '10s/.*/_ "golang.org\/x\/sync\/errgroup"/' uplink-c/project.go
+    sed '10 a "github.com\/zeebo\/errs"' uplink-c/project.go
+    sed '10 a "golang.org\/x\/sync\/errgroup"' uplink-c/project.go
+    sed '10 a "storj.io\/common\/memory"' uplink-c/project.go
+    sed '10 a "storj.io\/common\/rpc"' uplink-c/project.go
+    sed '10 a "storj.io\/common\/storj"' uplink-c/project.go
+    sed '10 a "storj.io\/uplink\/internal\/telemetryclient"' uplink-c/project.go
+    sed '10 a "storj.ioß/uplink\/private\/ecclient"' uplink-c/project.go
+    sed '10 a "storj.io\/uplink\/private\/metaclient"' uplink-c/project.go
+    sed '10 a "storj.io\/uplink\/private\/storage/streams"' uplink-c/project.go
+    sed '10 a "storj.io\/uplink\/private\/testuplink"' uplink-c/project.go
+    sed '10 a "storj.io\/uplink\/private\/version"' uplink-c/project.go
+    #sed -i '10s/.*/_ "golang.org\/x\/sync\/errgroup"/' uplink-c/project.go
     #sed -i '12s/.*/"fmt"/' uplink-c/project.go
     #sed -i '13s/.*/)/' uplink-c/project.go
     
