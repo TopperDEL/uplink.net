@@ -58,7 +58,7 @@ steps:
     
     
     #Remove freeProject-call from uplink_free_project_result
-    sed -i uplink-c/project.go -re '71,71d'
+    #sed -i uplink-c/project.go -re '71,71d'
     #sed -i uplink-c/project.go -re '87,88d'
     #sed -i uplink-c/project.go -re '82,82d'
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
