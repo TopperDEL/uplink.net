@@ -136,6 +136,7 @@ steps:
 
 - script: |
     cd uplink-c
+    export GOPATH=/home/vsts/work/1/s/go
     #go get -u golang.org/x/sys
     #echo "*** make symlink"
     #mkdir math
@@ -166,7 +167,7 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    /go/bin/go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
