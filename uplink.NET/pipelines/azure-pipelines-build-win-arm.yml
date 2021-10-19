@@ -123,6 +123,7 @@ steps:
     cd ..
     cd bin
     go version
+    export PATH=/home/vsts/work/1/s/go/bin:$PATH
     echo "done installing go"
     sudo snap install zig --classic --edge
     zig version
