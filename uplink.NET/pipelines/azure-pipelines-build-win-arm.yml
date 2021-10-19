@@ -112,6 +112,11 @@ steps:
 
 
 - script: |
+    sudo snap install zig --classic --edge
+    zig version
+  displayName: 'Install Zig'
+
+- script: |
     echo "clone go"
     which go
     git clone --branch go1.17.2 --depth 1 https://go.googlesource.com/go
@@ -130,11 +135,8 @@ steps:
     which go
     go version
     echo "done installing go"
-    sudo snap install zig --classic --edge
-    zig version
-  displayName: 'Install Zig'
-
-- script: |
+    cd ..
+    cd ..
     cd uplink-c
     export GOPATH=/home/vsts/work/1/s/go
     #go get -u golang.org/x/sys
