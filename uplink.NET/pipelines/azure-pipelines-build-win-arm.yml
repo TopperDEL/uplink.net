@@ -113,14 +113,17 @@ steps:
 
 - script: |
     echo "clone go"
-    git clone https://go.googlesource.com/go
+    git clone --branch go1.17.2 --depths 1 https://go.googlesource.com/go
     cd go
     echo "get patch"
     git fetch https://go.googlesource.com/go refs/changes/89/321789/6 && git cherry-pick FETCH_HEAD
     cd src
     echo "build go"
     ./all.bash
-
+    cd ..
+    cd bin
+    go version
+    echo "done installing go"
     sudo snap install zig --classic --edge
     zig version
   displayName: 'Install Zig'
