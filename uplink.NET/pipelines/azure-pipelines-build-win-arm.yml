@@ -109,12 +109,18 @@ steps:
     #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
   displayName: 'Prepare for Target ARM'
 
-- task: GoTool@0
-  inputs:
-    version: '$(GOLANG_VERSION)'
-  displayName: 'Install Go $(GOLANG_VERSION)'
+
 
 - script: |
+    echo "clone go"
+    git clone https://go.googlesource.com/go
+    cd go
+    echo "get patch"
+    git fetch https://go.googlesource.com/go refs/changes/89/321789/6 && git cherry-pick FETCH_HEAD
+    cd src
+    echo "build go"
+    ./all.bash
+
     sudo snap install zig --classic --edge
     zig version
   displayName: 'Install Zig'
@@ -151,7 +157,7 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    /go/bin/go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
