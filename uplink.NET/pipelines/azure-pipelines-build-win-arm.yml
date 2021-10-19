@@ -64,7 +64,7 @@ steps:
     #sed -i '81s/.*/proj, ok := universe.Get(project._handle).(*Project)/' uplink-c/project.go
     
     #Remove uplink_close_project und uplink_open_project [rootScope]
-    sed -i uplink-c/project.go -re '20,65d'
+    #sed -i uplink-c/project.go -re '20,65d'
     sed '10 a "github.com\/zeebo\/errs"' uplink-c/project.go
     sed '10 a "golang.org\/x\/sync\/errgroup"' uplink-c/project.go
     sed '10 a "storj.io\/common\/memory"' uplink-c/project.go
@@ -151,7 +151,7 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    go build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
