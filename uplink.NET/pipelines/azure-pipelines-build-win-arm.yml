@@ -124,6 +124,8 @@ steps:
     echo "get patch"
     git fetch https://go.googlesource.com/go refs/changes/89/321789/6 && git cherry-pick FETCH_HEAD
     cd src
+    sed -i '75s/.*/_StackMin = 2048*8/' runtime/stack.go
+    cat runtime/stack.go
     echo "build go"
     ./all.bash
     cd ..
