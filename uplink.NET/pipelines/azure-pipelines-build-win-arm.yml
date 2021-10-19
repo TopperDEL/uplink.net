@@ -113,6 +113,7 @@ steps:
 
 - script: |
     echo "clone go"
+    which go
     git clone --branch go1.17.2 --depth 1 https://go.googlesource.com/go
     cd go
     echo "get patch"
@@ -122,8 +123,12 @@ steps:
     ./all.bash
     cd ..
     cd bin
-    go version
+    which go
     export PATH=/home/vsts/work/1/s/go/bin:$PATH
+    which go
+    export GOPATH=/home/vsts/work/1/s/go
+    which go
+    go version
     echo "done installing go"
     sudo snap install zig --classic --edge
     zig version
