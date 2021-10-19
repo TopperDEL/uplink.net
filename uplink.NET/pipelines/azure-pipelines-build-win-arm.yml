@@ -56,6 +56,10 @@ steps:
     #sed -i uplink-c/scope.go -re '21,25d'
     #sed -i uplink-c/scope.go -re '9,9d'
     
+    sed '9 a import "fmt"' uplink-c/main.go
+    sed '10 a func init(){' uplink-c/main.go
+    sed '11 a fmt.Println("Hier ist der erste init!")' uplink-c/main.go
+    sed '12 a }' uplink-c/main.go
     
     #Remove freeProject-call from uplink_free_project_result
     #sed -i uplink-c/project.go -re '71,71d'
@@ -109,7 +113,10 @@ steps:
     #mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
   displayName: 'Prepare for Target ARM'
 
-
+- task: GoTool@0
+  inputs:
+    version: '$(GOLANG_VERSION)'
+  displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
     sudo snap install zig --classic --edge
@@ -117,30 +124,7 @@ steps:
   displayName: 'Install Zig'
 
 - script: |
-    echo "clone go"
-    which go
-    git clone --branch go1.17.2 --depth 1 https://go.googlesource.com/go
-    cd go
-    echo "get patch"
-    git fetch https://go.googlesource.com/go refs/changes/89/321789/6 && git cherry-pick FETCH_HEAD
-    cd src
-    sed -i '73s/.*/_StackMin = 2048*8/' runtime/stack.go
-    cat runtime/stack.go
-    echo "build go"
-    ./all.bash
-    cd ..
-    cd bin
-    which go
-    export PATH=/home/vsts/work/1/s/go/bin:$PATH
-    which go
-    export GOPATH=/home/vsts/work/1/s/go
-    which go
-    go version
-    echo "done installing go"
-    cd ..
-    cd ..
     cd uplink-c
-    export GOPATH=/home/vsts/work/1/s/go
     #go get -u golang.org/x/sys
     #echo "*** make symlink"
     #mkdir math
@@ -171,7 +155,7 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    go build -ldflags="-s -w" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    go build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
