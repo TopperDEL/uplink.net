@@ -155,7 +155,8 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    go build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    gotip download
+    gotip build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
