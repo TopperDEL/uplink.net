@@ -27,11 +27,11 @@ steps:
     targetPath: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get build-artifacts'
 
- - script: |
-          ls
-          ls uplink-c
-          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-        displayName: 'Add SWIG-Code'
+- script: |
+    ls
+    ls uplink-c
+    mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+  displayName: 'Add SWIG-Code'
 
 - task: GoTool@0
   inputs:
