@@ -29,6 +29,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task UploadObject_Uploads_VeryLargeFile()
+        {
+            await Upload_X_Bytes(1024 * 512 * 100);
+        }
+
+        [TestMethod]
         public async Task UploadObject_Uploads_LargeFile()
         {
             await Upload_X_Bytes(1024 * 512);

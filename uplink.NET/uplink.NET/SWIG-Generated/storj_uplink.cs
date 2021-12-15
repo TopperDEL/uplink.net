@@ -180,6 +180,26 @@ internal class storj_uplink {
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public static EdgeCredentialsResult edge_register_access(EdgeConfig config, UplinkAccess access, EdgeRegisterAccessOptions options) {
+    EdgeCredentialsResult ret = new EdgeCredentialsResult(storj_uplinkPINVOKE.edge_register_access(EdgeConfig.getCPtr(config), UplinkAccess.getCPtr(access), EdgeRegisterAccessOptions.getCPtr(options)), true);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
+  public static void edge_free_credentials_result(EdgeCredentialsResult result) {
+    storj_uplinkPINVOKE.edge_free_credentials_result(EdgeCredentialsResult.getCPtr(result));
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public static void edge_free_credentials(EdgeCredentials credentials) {
+    storj_uplinkPINVOKE.edge_free_credentials(EdgeCredentials.getCPtr(credentials));
+  }
+
+  public static UplinkStringResult edge_join_share_url(string baseURL, string accessKeyID, string bucket, string key, EdgeShareURLOptions options) {
+    UplinkStringResult ret = new UplinkStringResult(storj_uplinkPINVOKE.edge_join_share_url(baseURL, accessKeyID, bucket, key, EdgeShareURLOptions.getCPtr(options)), true);
+    return ret;
+  }
+
   public static UplinkEncryptionKeyResult uplink_derive_encryption_key(string passphrase, SWIGTYPE_p_void salt, uint length) {
     UplinkEncryptionKeyResult ret = new UplinkEncryptionKeyResult(storj_uplinkPINVOKE.uplink_derive_encryption_key(passphrase, SWIGTYPE_p_void.getCPtr(salt), length), true);
     return ret;
@@ -196,6 +216,12 @@ internal class storj_uplink {
 
   public static byte uplink_internal_UniverseIsEmpty() {
     byte ret = storj_uplinkPINVOKE.uplink_internal_UniverseIsEmpty();
+    return ret;
+  }
+
+  public static UplinkError uplink_move_object(UplinkProject project, string old_bucket_name, string old_object_key, string new_bucket_name, string new_object_key, UplinkMoveObjectOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_move_object(UplinkProject.getCPtr(project), old_bucket_name, old_object_key, new_bucket_name, new_object_key, UplinkMoveObjectOptions.getCPtr(options));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
@@ -349,6 +375,13 @@ internal class storj_uplink {
     storj_uplinkPINVOKE.uplink_free_object(UplinkObject.getCPtr(obj));
   }
 
+  public static UplinkError uplink_update_object_metadata(UplinkProject project, string bucket_name, string object_key, UplinkCustomMetadata new_metadata, UplinkUploadObjectMetadataOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_update_object_metadata(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkCustomMetadata.getCPtr(new_metadata), UplinkUploadObjectMetadataOptions.getCPtr(options));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
+    return ret;
+  }
+
   public static UplinkObjectIterator uplink_list_objects(UplinkProject project, string bucket_name, UplinkListObjectsOptions options) {
     global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_objects(UplinkProject.getCPtr(project), bucket_name, UplinkListObjectsOptions.getCPtr(options));
     UplinkObjectIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkObjectIterator(cPtr, false);
@@ -467,6 +500,8 @@ internal class storj_uplink {
   public static readonly int UPLINK_ERROR_OBJECT_KEY_INVALID = storj_uplinkPINVOKE.UPLINK_ERROR_OBJECT_KEY_INVALID_get();
   public static readonly int UPLINK_ERROR_OBJECT_NOT_FOUND = storj_uplinkPINVOKE.UPLINK_ERROR_OBJECT_NOT_FOUND_get();
   public static readonly int UPLINK_ERROR_UPLOAD_DONE = storj_uplinkPINVOKE.UPLINK_ERROR_UPLOAD_DONE_get();
+  public static readonly int EDGE_ERROR_AUTH_DIAL_FAILED = storj_uplinkPINVOKE.EDGE_ERROR_AUTH_DIAL_FAILED_get();
+  public static readonly int EDGE_ERROR_REGISTER_ACCESS_FAILED = storj_uplinkPINVOKE.EDGE_ERROR_REGISTER_ACCESS_FAILED_get();
 }
 
 }
