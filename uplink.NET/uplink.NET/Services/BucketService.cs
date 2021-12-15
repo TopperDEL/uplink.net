@@ -12,7 +12,7 @@ namespace uplink.NET.Services
     {
         static List<SWIG.UplinkListBucketsOptions> _listOptions = new List<SWIG.UplinkListBucketsOptions>(); //ToDo: Temporary until SWIG does not enforce IDisposable on UplinkListBucketsOptions
 
-        Access _access;
+        private readonly Access _access;
 
         public BucketService(Access access)
         {
