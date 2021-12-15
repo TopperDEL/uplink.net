@@ -24,8 +24,7 @@ steps:
     echo 'Cloning $(STORJ_VERSION)'
     git clone https://github.com/storj/uplink-c.git
     cd uplink-c
-    git checkout $(STORJ_VERSION) 
-    git pull https://review.dev.storj.io/storj/uplink-c refs/changes/82/5582/5
+    git checkout $(STORJ_VERSION)
     cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
@@ -35,6 +34,8 @@ steps:
   displayName: 'Copy specific files to uplink-c'
 
 - script: |
+    sed -i 's/__declspec(dllexport)//' uplink-c/storj_uplink.h
+    cat -n uplink-c/storj_uplink.h
     swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
 
