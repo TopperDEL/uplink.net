@@ -111,7 +111,7 @@ namespace uplink.NET.Models
         }
 
         /// <summary>
-        /// Creates a new access based on the satellite-adress, the API-key and the secret passphrase.
+        /// Creates a new access based on the satellite-address, the API-key and the secret passphrase.
         /// </summary>
         /// <param name="satelliteAddress">The satellite address</param>
         /// <param name="apiKey">The API-key</param>
@@ -188,7 +188,7 @@ namespace uplink.NET.Models
             if (string.IsNullOrEmpty(TempDirectory))
                 TempDirectory = System.IO.Path.GetTempPath();
         }
-        
+
         private UplinkConfig GetUplinkConfig(Config config = null)
         {
             UplinkConfig uplinkConfig;
@@ -272,6 +272,36 @@ namespace uplink.NET.Models
                     throw new ArgumentException(error.message);
 
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <param name="key"></param>
+        /// <param name="raw">No landing page, directly access the file</param>
+        /// <param name="is_public">Wether objects can be read using only the access_key_id</param>
+        /// <returns></returns>
+        public string CreateShareURL(string bucketName, string key, bool raw, bool is_public)
+        {
+            using (EdgeConfig edgeConfig = new EdgeConfig { auth_service_address = "auth.eu1.storjshare.io:7777" })
+            using (EdgeRegisterAccessOptions edgeRegisterAccessOptions = new EdgeRegisterAccessOptions { is_public = is_public })
+            using (EdgeShareURLOptions edgeShareURLOptions = new EdgeShareURLOptions { raw = raw })
+            {
+                using (var registeredAccess = SWIG.storj_uplink.edge_register_access(edgeConfig, _access, edgeRegisterAccessOptions))
+                {
+                    if (registeredAccess.error != null && !string.IsNullOrEmpty(registeredAccess.error.message))
+                        throw new ArgumentException(registeredAccess.error.message);
+
+                    using (var shareUrl = SWIG.storj_uplink.edge_join_share_url(registeredAccess.credentials.endpoint, registeredAccess.credentials.access_key_id, bucketName, key, edgeShareURLOptions))
+                    {
+                        if (shareUrl.error != null && !string.IsNullOrEmpty(shareUrl.error.message))
+                            throw new ArgumentException(shareUrl.error.message);
+
+                        return shareUrl.string_;
+                    }
+                }
             }
         }
 

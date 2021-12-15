@@ -15,6 +15,7 @@ namespace uplink.NET.Test
     {
         IBucketService _service;
         IObjectService _objectService;
+        IBucketService _bucketService;
         Access _access;
 
         [TestInitialize]
@@ -24,6 +25,23 @@ namespace uplink.NET.Test
             _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
             _service = new BucketService(_access);
             _objectService = new ObjectService(_access);
+            _bucketService = new BucketService(_access);
+        }
+
+        [TestMethod]
+        public async Task RegisterAccess_FirstTest()
+        {
+            string bucketname = "register-access";
+
+            _ = await _service.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), Encoding.UTF8.GetBytes("Storj is awesome!"), false);
+            await uploadOperation.StartUploadAsync();
+
+            var url = _access.CreateShareURL(bucketname, "myfile.txt", true, true);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(url));
         }
 
         [TestMethod]
@@ -217,6 +235,7 @@ namespace uplink.NET.Test
         [TestCleanup]
         public async Task CleanupAsync()
         {
+            await DeleteBucketAsync("register-access");
             await DeleteBucketAsync("createbucket-creates-newbucket");
             await DeleteBucketAsync("ensurebucket-creates-newbucket");
             await DeleteBucketAsync("ensurebucket-returns-bucketevenifitexistsalready");
@@ -230,6 +249,13 @@ namespace uplink.NET.Test
 
         private async Task DeleteBucketAsync(string bucketName)
         {
+            try
+            {
+                await _service.DeleteBucketWithObjectsAsync(bucketName);
+            }
+            catch
+            { }
+
             try
             {
                 await _service.DeleteBucketAsync(bucketName);
