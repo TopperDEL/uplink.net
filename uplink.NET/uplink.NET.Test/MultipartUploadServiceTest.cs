@@ -55,10 +55,9 @@ namespace uplink.NET.Test
         }
 
         [DataTestMethod]
-        [DataRow(512, 1)]
-        [DataRow(10 * 512 * 1024 * 2, 2)]
-        //[DataRow(1024 * 15 * 1024, 4)] Currently failing as the part size does not reach the minimum of 5MiB
-        public async Task MultipartUpload_X_BytesByMultipleParts(long bytes, int partCount)
+        [DataRow(512, 1, 5 * 1024 * 1024)]
+        [DataRow(7 * 1024 * 1024, 2, 5 * 1024 * 1024)] //7MB
+        public async Task MultipartUpload_X_BytesByMultipleParts(long bytes, int partCount, int partByteSize)
         {
             if (bytes == 0 || partCount == 0)
                 return;
@@ -73,10 +72,10 @@ namespace uplink.NET.Test
 
             for (int i = 0; i < partCount; i++)
             {
-                var partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).Take((int)(bytes / partCount)).ToArray();
+                var partBytes = bytesToUpload.Skip(i * partByteSize).Take(partByteSize).ToArray();
                 if (i == partCount - 1)
                 {
-                    partBytes = bytesToUpload.Skip(i * (int)(bytes / partCount)).ToArray();
+                    partBytes = bytesToUpload.Skip(i * partByteSize).ToArray();
                 }
                 var partResult = await _multipartUploadService.UploadPartAsync(bucketname, objectKey, multipart.UploadId, (uint)i, partBytes);
                 Assert.AreEqual(partBytes.Length, (int)partResult.BytesWritten);
