@@ -191,8 +191,8 @@ namespace uplink.NET.Services
                                 {
                                     while (!token.IsCancellationRequested && toUpload.BytesCompleted != toUpload.TotalBytes)
                                     {
-                                        //Now upload batches of 256 KiB (262144 bytes)
-                                        var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(262144).ToArray();
+                                        //Now upload batches of 5 MiB (5242880 bytes)
+                                        var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(5242880).ToArray();
                                         var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload).ConfigureAwait(false);
 
                                         //Refresh the uploaded bytes counter and define the next part number
