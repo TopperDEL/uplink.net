@@ -154,7 +154,7 @@ namespace uplink.NET.Test
 
             await _bucketService.CreateBucketAsync(bucketname);
             var bucket = await _bucketService.GetBucketAsync(bucketname);
-            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2); //~around 1MB
+            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2 * 10); //~around 10MB
 
             int added = 0;
             int changed = 0;
@@ -184,7 +184,7 @@ namespace uplink.NET.Test
                 //if at ~ 25%, force cancellation of the token
                 var uploads = await _uploadQueueService.GetAwaitingUploadsAsync();
                 Assert.AreEqual(1, uploads.Count);
-                if (uploads[0].BytesCompleted > 524288 / 2)
+                if (uploads[0].BytesCompleted > 524288 * 10 / 2)
                 {
                     _uploadQueueService.StopQueueInBackground();
                 }
@@ -220,7 +220,7 @@ namespace uplink.NET.Test
 
             await _bucketService.CreateBucketAsync(bucketname);
             var bucket = await _bucketService.GetBucketAsync(bucketname);
-            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2); //~around 1MB
+            byte[] bytesToUpload1 = GetRandomBytes(524288 * 2 * 10); //~around 10MB
 
             int added = 0;
             int changed = 0;
@@ -250,7 +250,7 @@ namespace uplink.NET.Test
                 //if at ~ 25%, force cancellation of the token
                 var uploads = await _uploadQueueService.GetAwaitingUploadsAsync();
                 Assert.AreEqual(1, uploads.Count);
-                if (uploads[0].BytesCompleted > 524288 / 2)
+                if (uploads[0].BytesCompleted > 524288 * 10 / 2)
                 {
                     _uploadQueueService.StopQueueInBackground();
                 }
