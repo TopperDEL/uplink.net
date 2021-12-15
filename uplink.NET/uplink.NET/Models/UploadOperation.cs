@@ -22,12 +22,12 @@ namespace uplink.NET.Models
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public unsafe class UploadOperation : IDisposable
     {
-        internal static Mutex customMetadataMutex = new Mutex();
-        private Stream _byteStreamToUpload;
+        internal static readonly Mutex customMetadataMutex = new Mutex();
+        private readonly Stream _byteStreamToUpload;
         private SWIG.UplinkUpload _upload;
         private Task _uploadTask;
         private bool _cancelled;
-        private CustomMetadata _customMetadata;
+        private readonly CustomMetadata _customMetadata;
 
         /// <summary>
         /// The name of the object uploading
@@ -165,7 +165,7 @@ namespace uplink.NET.Models
                         bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
                         if (bytesToUploadCount > 0)
                         {
-                            byte[] targetArray = bytesToUpload.Take((int)bytesToUploadCount).ToArray();
+                            byte[] targetArray = bytesToUpload.Take(bytesToUploadCount).ToArray();
                             fixed (byte* arrayPtr = targetArray)
                             {
                                 using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount))
@@ -259,7 +259,6 @@ namespace uplink.NET.Models
             {
                 Failed = true;
                 _errorMessage = ex.Message;
-                return;
             }
             finally
             {

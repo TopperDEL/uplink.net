@@ -9,15 +9,15 @@ namespace uplink.NET.Models
 {
     public class DownloadStream : Stream
     {
-        private Bucket _bucket;
-        private string _objectName;
+        private readonly Bucket _bucket;
+        private readonly string _objectName;
         public override bool CanRead => true;
 
         public override bool CanSeek => true;
 
         public override bool CanWrite => false;
 
-        private long _length;
+        private readonly long _length;
         public override long Length => _length;
 
         public override long Position { get; set; }
@@ -37,22 +37,25 @@ namespace uplink.NET.Models
         {
             int received = 0;
 
-            using (var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, new SWIG.UplinkDownloadOptions() { length = count, offset = Position }))
+            using (var opts = new SWIG.UplinkDownloadOptions { length = count, offset = Position })
             {
-
-                if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
-                    throw new EndOfStreamException(downloadResult.error.message);
-
-                using (var download = new DownloadOperation(downloadResult, count, _objectName))
+                using (var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, opts))
                 {
-                    download.StartDownloadAsync().Wait();
 
-                    Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
+                    if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
+                        throw new EndOfStreamException(downloadResult.error.message);
 
-                    received = (int)download.BytesReceived;
+                    using (var download = new DownloadOperation(downloadResult, count, _objectName))
+                    {
+                        download.StartDownloadAsync().Wait();
+
+                        Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
+
+                        received = (int)download.BytesReceived;
+                    }
+
+                    return received;
                 }
-
-                return received;
             }
         }
 
@@ -69,6 +72,8 @@ namespace uplink.NET.Models
                 case SeekOrigin.Current:
                     Position += offset;
                     break;
+                default:
+                    throw new NotSupportedException();
             }
             return Position;
         }

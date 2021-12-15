@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace uplink.NET.Services
 {
-    public class UploadQueueService : IUploadQueueService
+    public class UploadQueueService : IUploadQueueService, IDisposable
     {
         SQLiteAsyncConnection _connection;
         CancellationTokenSource _source;
@@ -83,7 +83,7 @@ namespace uplink.NET.Services
             var entryData = new UploadQueueEntryData();
             entryData.UploadQueueEntryId = entry.Id;
             entryData.Bytes = new byte[stream.Length];
-            var read = stream.Read(entryData.Bytes, 0, (int)stream.Length);
+            stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
             await _connection.InsertAsync(entryData).ConfigureAwait(false);
 
@@ -116,7 +116,10 @@ namespace uplink.NET.Services
                     var multipartUploadService = new MultipartUploadService(access);
                     await multipartUploadService.AbortUploadAsync(entry.BucketName, entry.Key, entry.UploadId).ConfigureAwait(false);
                 }
-                catch { }
+                catch
+                {
+                    //Ignore errors - we restart that upload anyways
+                }
 
                 entry.BytesCompleted = 0;
                 entry.Failed = false;
@@ -169,8 +172,6 @@ namespace uplink.NET.Services
                         try
                         {
                             var access = new Access(toUpload.AccessGrant);
-                            var bucketService = new BucketService(access);
-                            var bucket = await bucketService.GetBucketAsync(toUpload.BucketName).ConfigureAwait(false);
                             var multipartUploadService = new MultipartUploadService(access);
 
                             //If the upload has not UploadId, begin it
@@ -239,7 +240,10 @@ namespace uplink.NET.Services
                     }
                 }
             }
-            catch { } //That's ok, simply quit. The next run should fix it.
+            catch
+            {
+                //That's ok, simply quit. The next run should fix it.
+            }
         }
 
         public async Task<int> GetOpenUploadCountAsync()
@@ -255,6 +259,15 @@ namespace uplink.NET.Services
             await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == entry.Id).ConfigureAwait(false);
 
             UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryRemoved, entry);
+        }
+
+        public void Dispose()
+        {
+            if(_source!= null)
+            {
+                _source.Dispose();
+                _source = null;
+            }
         }
     }
 }
