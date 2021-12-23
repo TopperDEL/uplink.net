@@ -22,6 +22,9 @@
 	<file target="lib\monoandroid\lib.txt" src="monoandroid\lib.txt"/>
 	<file target="lib\net6-android30.0\lib.txt" src="monoandroid\lib.txt"/>
     <file target="build\monoandroid\uplink.NET.Droid.targets" src="monoandroid\uplink.NET.Droid.targets" />
+	<file target="build\net6-android30\uplink.NET.Droid.targets" src="monoandroid\uplink.NET.Droid.targets" />
+    <file target="buildTransitive\monoandroid\uplink.NET.Droid.targets" src="monoandroid\uplink.NET.Droid.targets" />
+	<file target="buildTransitive\net6-android30\uplink.NET.Droid.targets" src="monoandroid\uplink.NET.Droid.targets" />
     <file target="runtimes\native\libs\arm64-v8a\libstorj_uplink.so" src="libstorj_uplink-arm64-v8a.so" />
 	<file target="runtimes\native\libs\armeabi-v7a\libstorj_uplink.so" src="libstorj_uplink-armeabi-v7a.so" />
 	<file target="runtimes\native\libs\x86\libstorj_uplink.so" src="libstorj_uplink-386.so" />
