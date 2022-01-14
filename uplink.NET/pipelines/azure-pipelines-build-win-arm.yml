@@ -45,17 +45,6 @@ steps:
 
 - script: |
     cd uplink-c
-    #go get -u golang.org/x/sys
-    #echo "*** make symlink"
-    #mkdir math
-    #cp -r -a /snap/zig/3678/lib/libc/mingw/math/. ./math/
-    #echo "** listing math"
-    #ls ./math
-    #cd math
-    #sudo wget https://raw.githubusercontent.com/ziglang/zig/de04ee9213f284cc277d35a409b7f821fb09b456/lib/libc/mingw/math/bsd_private_base.h
-    #cd ..
-    #sudo mount --bind -o nodev,ro $(pwd)/math /snap/zig/3678/lib/libc/mingw/math
-    #echo "*** make symlink done"
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
@@ -71,7 +60,6 @@ steps:
     export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    #export GODEBUG=inittrace=1
     echo "listing deps"
     go list -deps
     echo "done listing deps"
