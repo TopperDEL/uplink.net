@@ -63,7 +63,8 @@ steps:
     echo "listing deps"
     go list -deps
     echo "done listing deps"
-    go build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    #vorher: go build -ldflags="-s -w -c" -gcflags="-dwarflocationlists=true" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
+    go build -ldflags="-s -w -c -APPCONTAINER WindowsApp.lib" -gcflags="-dwarflocationlists=true -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00" -gcflags=all="-N -l" -o storj_uplink.dll -buildmode c-shared -tags extended -v
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
