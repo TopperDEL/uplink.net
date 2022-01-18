@@ -151,5 +151,17 @@ namespace uplink.NET.Services
                 }
             }
         }
+
+        public async Task MoveObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey)
+        {
+            using(var options = new SWIG.UplinkMoveObjectOptions())
+            using (SWIG.UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_move_object(_access._project, oldBucket.Name, oldKey, newBucket.Name, newKey, options)))
+            {
+                if(error != null && !string.IsNullOrEmpty(error.message))
+                {
+                    throw new ObjectNotFoundException(error.message);
+                }
+            }
+        }
     }
 }

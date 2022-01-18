@@ -72,7 +72,7 @@ namespace uplink.NET.Interfaces
         /// </summary>
         /// <param name="bucket">The Bucket where the object resides in</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
-        /// <returns>The object an ObjectNotFoundException</returns>
+        /// <returns>The object or raises an ObjectNotFoundException</returns>
         Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath);
         /// <summary>
         /// Downloads an object from the given bucket and the given Target-Path.
@@ -89,5 +89,14 @@ namespace uplink.NET.Interfaces
         /// <param name="bucket">The Bucket where the object resides in</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
         Task DeleteObjectAsync(Bucket bucket, string targetPath);
+        /// <summary>
+        /// Moves an object from one bucket/key to another bucket/key. The bucket may differ or be the same one.
+        /// </summary>
+        /// <param name="oldBucket">The old bucket (from-bucket)</param>
+        /// <param name="oldKey">The old key (from-key)</param>
+        /// <param name="newBucket">The new bucket (to-bucket)</param>
+        /// <param name="newKey">The new key (to-key)</param>
+        /// <returns>Nothing on success or raises an ObjectMoveException</returns>
+        Task MoveObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey);
     }
 }
