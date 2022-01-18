@@ -276,10 +276,10 @@ namespace uplink.NET.Models
         }
 
         /// <summary>
-        /// 
+        /// Creates a URL that gives access to the provided key.
         /// </summary>
-        /// <param name="bucketName"></param>
-        /// <param name="key"></param>
+        /// <param name="bucketName">The name of the bucket</param>
+        /// <param name="key">The key to share</param>
         /// <param name="raw">No landing page, directly access the file</param>
         /// <param name="is_public">Wether objects can be read using only the access_key_id</param>
         /// <returns></returns>
