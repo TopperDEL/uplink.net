@@ -12,7 +12,7 @@ namespace uplink.NET.Test
     [TestClass]
     public class AccessTest
     {
-        static int SATELLITE_WAIT_DURATION = 10000;
+        static int SATELLITE_WAIT_DURATION = 30000;
         Access _access;
         IBucketService _bucketService;
         IObjectService _objectService;
