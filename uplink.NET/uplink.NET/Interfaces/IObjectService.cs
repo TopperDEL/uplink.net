@@ -10,15 +10,34 @@ namespace uplink.NET.Interfaces
     public interface IObjectService
     {
         /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path. Immediately starts the upload.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="bytesToUpload">The binary-data to upload</param>
+        /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload);
+        /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path.
         /// </summary>
         /// <param name="bucket">The Bucket to upload to</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
         /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
         /// <param name="bytesToUpload">The binary-data to upload</param>
-        /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
+        /// <param name="immediateStart">Starts the upload immediately or defer's it to you via the returned UploadOperation.</param>
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
-        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true);
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart);
+        /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path. Immediately starts the upload.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="bytesToUpload">The binary-data to upload</param>
+        /// <param name="customMetadata">Adds custom metadata.</param>
+        /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata);
         /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path.
         /// </summary>
@@ -27,9 +46,18 @@ namespace uplink.NET.Interfaces
         /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
         /// <param name="bytesToUpload">The binary-data to upload</param>
         /// <param name="customMetadata">Adds custom metadata.</param>
-        /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
+        /// <param name="immediateStart">Starts the upload immediately or defer's it to you via the returned UploadOperation.</param>
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
-        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true);
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart);
+        /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path. Immediately starts the upload.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="stream">The binary-stream to upload</param>
+        /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream);
         /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path.
         /// </summary>
@@ -37,9 +65,19 @@ namespace uplink.NET.Interfaces
         /// <param name="targetPath">The path/name of the object within the bucket</param>
         /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
         /// <param name="stream">The binary-stream to upload</param>
-        /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
+        /// <param name="immediateStart">Starts the upload immediately or defer's it to you via the returned UploadOperation.</param>
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
-        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart = true);
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart);
+        /// <summary>
+        /// Uploads an object to the given bucket and the given Target-Path. Immediately starts the upload.
+        /// </summary>
+        /// <param name="bucket">The Bucket to upload to</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
+        /// <param name="stream">The binary-stream to upload</param>
+        /// <param name="customMetadata">Adds custom metadata.</param>
+        /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata);
         /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path.
         /// </summary>
@@ -48,9 +86,9 @@ namespace uplink.NET.Interfaces
         /// <param name="uploadOptions">Uploadoptions to control the store-operation</param>
         /// <param name="stream">The binary-stream to upload</param>
         /// <param name="customMetadata">Adds custom metadata.</param>
-        /// <param name="immediateStart">Starts the upload immediately (default) or defer's it to you via the returned UploadOperation.</param>
+        /// <param name="immediateStart">Starts the upload immediately or defer's it to you via the returned UploadOperation.</param>
         /// <returns>An UploadOperation containing the info about the current state of the upload</returns>
-        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true);
+        Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart);
         /// <summary>
         /// Uploads an object to the given bucket and the given Target-Path via chunks. The chunks can be provided as they arrive.
         /// </summary>
@@ -75,14 +113,22 @@ namespace uplink.NET.Interfaces
         /// <returns>The object or raises an ObjectNotFoundException</returns>
         Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath);
         /// <summary>
+        /// Downloads an object from the given bucket and the given Target-Path. Immediately starts the download.
+        /// </summary>
+        /// <param name="bucket">The Bucket to download from</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="downloadOptions">The options for this download</param>
+        /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
+        Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions);
+        /// <summary>
         /// Downloads an object from the given bucket and the given Target-Path.
         /// </summary>
         /// <param name="bucket">The Bucket to download from</param>
         /// <param name="targetPath">The path/name of the object within the bucket</param>
         /// <param name="downloadOptions">The options for this download</param>
-        /// <param name="immediateStart">Starts the download immediately (default) or defer's it to you via the returned DownloadOperation.</param>
+        /// <param name="immediateStart">Starts the download immediately or defer's it to you via the returned DownloadOperation.</param>
         /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
-        Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart = true);
+        Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart);
         /// <summary>
         /// Deletes the mentioned object
         /// </summary>
