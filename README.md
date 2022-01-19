@@ -23,7 +23,7 @@ Also install the applicable platform-specific library:
 * [uplink.NET.Mac](https://www.nuget.org/packages/uplink.NET.Mac)
 * [uplink.NET.iOS](https://www.nuget.org/packages/uplink.NET.iOS)
 
-See the [wiki](https://github.com/TopperDEL/uplink.net/wiki) for details how to use the library.
+[See the wiki](https://github.com/TopperDEL/uplink.net/wiki) for details how to use the library.
 
 You may also try the included sample-app for UWP and Android. There you should find additional details on how to use the library.
 
