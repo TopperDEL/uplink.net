@@ -63,7 +63,7 @@ namespace uplink.NET.Services
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata)
         {
-            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, customMetadata, true);
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, customMetadata, true).ConfigureAwait(false);
         }
 
         public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart)
