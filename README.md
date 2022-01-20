@@ -26,8 +26,9 @@ Also install the applicable platform-specific library:
 You may also try the included sample-app for UWP and Android. There you should find additional details on how to use the library.
 
 ## Build (Windows and Android)
+Let's build the Windows- and Android-binaries.
 
-### Prerequesits
+### Prerequisits
 
 Building everything by yourself is possible on Windows. You'll need the following tools:
 
@@ -68,8 +69,9 @@ Build the solution.
 Feel good.
 
 ## Build (Linux) with WSL
+Let's build the Linux-binaries.
 
-### Prerequesits
+### Prerequisits
 
 Building the linux .so-file on Windows is possible with Windows Subsystem for Linux (WSL). Currently you need four files from the build-process above for Windows and Android. They are available in my fork of the uplink-c-repo.
 
@@ -101,6 +103,8 @@ Then install git:
 ```bash
 sudo apt-get install git
 ```
+
+### Building-steps
 
 Clone and build the forked uplink-c-repo:
 ```bash
