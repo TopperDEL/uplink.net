@@ -80,8 +80,17 @@ namespace uplink.NET.Models
         /// An access contains info about the satellite-address, the passphrase and the API-Key.
         /// </summary>
         /// <param name="accessGrant">The serialized access grant</param>
+        public Access(string accessGrant):this(accessGrant, null)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new access from a serialized string.
+        /// An access contains info about the satellite-address, the passphrase and the API-Key.
+        /// </summary>
+        /// <param name="accessGrant">The serialized access grant</param>
         /// <param name="config">The configuration (optional)</param>
-        public Access(string accessGrant, Config config = null)
+        public Access(string accessGrant, Config config)
         {
             Init();
 

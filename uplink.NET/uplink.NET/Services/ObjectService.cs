@@ -21,17 +21,32 @@ namespace uplink.NET.Services
             _access = access;
         }
 
-        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart = true)
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload)
+        {
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, null, true).ConfigureAwait(false);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, bool immediateStart)
         {
             return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, null, immediateStart).ConfigureAwait(false);
         }
 
-        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart = true)
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream)
+        {
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, null, true).ConfigureAwait(false);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, bool immediateStart)
         {
             return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, null, immediateStart).ConfigureAwait(false);
         }
 
-        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart = true)
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata)
+        {
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, stream, customMetadata, true).ConfigureAwait(false);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, Stream stream, CustomMetadata customMetadata, bool immediateStart)
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
@@ -46,7 +61,12 @@ namespace uplink.NET.Services
             }
         }
 
-        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart = true)
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata)
+        {
+            return await UploadObjectAsync(bucket, targetPath, uploadOptions, bytesToUpload, customMetadata, true).ConfigureAwait(false);
+        }
+
+        public async Task<UploadOperation> UploadObjectAsync(Bucket bucket, string targetPath, UploadOptions uploadOptions, byte[] bytesToUpload, CustomMetadata customMetadata, bool immediateStart)
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
@@ -73,7 +93,12 @@ namespace uplink.NET.Services
             }
         }
 
-        public async Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart = true)
+        public async Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions)
+        {
+            return await DownloadObjectAsync(bucket, targetPath, downloadOptions, true).ConfigureAwait(false);
+        }
+
+        public async Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart)
         {
             using (var downloadOptionsSWIG = downloadOptions.ToSWIG())
             {
