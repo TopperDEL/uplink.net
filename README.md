@@ -7,8 +7,6 @@
 
 This library enables you to connect to the [Storj](https://storj.io) network to upload and retrieve files to the distributed and secure cloud-storage. It is based on [uplink-c](https://github.com/storj/uplink-c), the C-bindings provided from Storj-labs to connect to the Storj network.
 
-The library is quite new and may contain bugs or missing documentation. Use at your own risk!
-
 If you want to help out, check the open issues, create some or open a PR.
 
 ## Use
@@ -28,8 +26,9 @@ Also install the applicable platform-specific library:
 You may also try the included sample-app for UWP and Android. There you should find additional details on how to use the library.
 
 ## Build (Windows and Android)
+Let's build the Windows- and Android-binaries.
 
-## Prerequesits
+### Prerequisits
 
 Building everything by yourself is possible on Windows. You'll need the following tools:
 
@@ -40,21 +39,21 @@ Building everything by yourself is possible on Windows. You'll need the followin
 * Visual Studio 2017 or higher to compile the uplink.NET-library
 * Android NDK (to build the Android-Release) => install Xamarin with your Visual Studio, start VS, go to Extensions => Android => SDA Manager, Choose Tools and install NDK. Check that your environment variables include "$ANDROID_HOME" and that the path contains no spaces. If it got installed in "C:\Program files (x86)" (default) change the path in the variable to "C:\PROGRA~2\...". Otherwise you'll get an "exec: could not find file"-error during build.
 
-## Noob-Disclaimer
+### Noob-Disclaimer
 
 The process described here is the way I was successfull so far. It might not be the simplest way or you might be successfull using different compilers, versions, systems and whatever. I'm open to any adjustments, enhancements or proposials. Just let me know!
 
-## Building-steps
+### Building-steps
 
 First you need to pull the latest version of this repository. Open a command prompt, choose a suitable working directory and enter:
-```
+```bash
 git clone https://github.com/topperdel/uplink.net.git
 ```
 
 If you want you can adjust the uplinkc-Version to use (the github-tag) by setting the STORJ_VERSION-Parameter within build.bat to the one to use.
 
 Then do
-```
+```bash
 cd \uplink.net
 build
 ```
@@ -70,14 +69,15 @@ Build the solution.
 Feel good.
 
 ## Build (Linux) with WSL
+Let's build the Linux-binaries.
 
-## Prerequesits
+### Prerequisits
 
 Building the linux .so-file on Windows is possible with Windows Subsystem for Linux (WSL). Currently you need four files from the build-process above for Windows and Android. They are available in my fork of the uplink-c-repo.
 
 First of all make sure that git and go are installed on WSL. Starting with a fresh Debian, this would basically be the list of commands (according to [these instructions](https://sal.as/post/install-golan-on-wsl/)):
 
-```
+```bash
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install wget
@@ -88,35 +88,37 @@ sudo nano ~/.bashrc
 ```
 
 Scroll down and add these to your .bashrc profile:
-```
+```bash
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ```
 
 Save and close the file with "Ctrl + o" and "Ctrl + x". Then update the current session:
-```
+```bash
 source ~/.bashrc
 ```
 
 Then install git:
-```
+```bash
 sudo apt-get install git
 ```
 
+### Building-steps
+
 Clone and build the forked uplink-c-repo:
-```
+```bash
 git clone --branch v1.0.2 https://github.com/topperdel/uplink-c.git
 cd uplink-c
 ```
 
 Now build the linux .so-file like this:
-```
+```bash
 sh build-linux.sh
 ```
 
 The following files are included in the fork of uplink-c. If you needed to change those files you need to update them before calling build-linux.sh. Just for your convenience calling explorer on the current WSL-folder is as easy as this:
-```
+```bash
 explorer.exe .
 ```
 
@@ -135,7 +137,7 @@ For this task you need a Mac (oh Apple, you drive me nuts). The procedure is bas
 * install git
 * clone the forked uplink-c-repo
 * run the build-command:
-```
+```bash
 sh build-macos-ios.sh
 ```
 
