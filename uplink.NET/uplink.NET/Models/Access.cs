@@ -294,7 +294,7 @@ namespace uplink.NET.Models
         /// <returns></returns>
         public string CreateShareURL(string bucketName, string key, bool raw, bool is_public)
         {
-            using (EdgeConfig edgeConfig = new EdgeConfig { auth_service_address = "auth.eu1.storjshare.io:7777" })
+            using (EdgeConfig edgeConfig = new EdgeConfig { auth_service_address = "auth.us1.storjshare.io:7777" })
             using (EdgeRegisterAccessOptions edgeRegisterAccessOptions = new EdgeRegisterAccessOptions { is_public = is_public })
             using (EdgeShareURLOptions edgeShareURLOptions = new EdgeShareURLOptions { raw = raw })
             {
