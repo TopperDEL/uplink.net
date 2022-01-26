@@ -69,6 +69,9 @@ steps:
     echo "Build succeeded"
     echo $(pwd)
     find /home/vsts -type f | grep -i pdb$
+    echo '-------------'
+    find . -type f | grep -i pdb$
+    echo '-------------'
     ls -al
     echo "*** Hole pdb"
     #cd ..
