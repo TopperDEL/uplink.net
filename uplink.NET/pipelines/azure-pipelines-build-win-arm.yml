@@ -74,7 +74,7 @@ steps:
     echo '-------------'
     ls -al
     echo "*** Hole pdb"
-    #cd ..
+    cd ..
     find /home/vsts -type f | grep -i pdb$ | xargs -i cp {} uplink-c
   displayName: 'Test-Generate Win-ARM'
 
