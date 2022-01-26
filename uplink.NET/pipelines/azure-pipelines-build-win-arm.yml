@@ -49,12 +49,12 @@ steps:
     echo "Kann ersetzt werden durch 'zig cc'"
     echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
     sudo chmod +x zcc
-    echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
-    sudo chmod +x zxx
+    #echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
+    #sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
     export CC="zcc"
-    export CXX="zxx"
+    export CXX="false"
     export AR="zar"
     export GOOS="windows"
     export GOARCH="arm64"
@@ -69,8 +69,8 @@ steps:
     echo "Build succeeded"
     ls -al
     echo "*** Hole pdb"
-    cd ..
-    find /home/vsts/ -type f | grep -i pdb$ | xargs -i cp {} uplink-c
+    #cd ..
+    find . -type f | grep -i pdb$ | xargs -i cp {} uplink-c
   displayName: 'Test-Generate Win-ARM'
 
 - task: PublishPipelineArtifact@1
