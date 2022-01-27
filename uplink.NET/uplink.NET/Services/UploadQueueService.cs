@@ -194,10 +194,17 @@ namespace uplink.NET.Services
                                         //Now upload batches of 5 MiB (5242880 bytes)
                                         var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(5242880).ToArray();
                                         var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload).ConfigureAwait(false);
-
-                                        //Refresh the uploaded bytes counter and define the next part number
-                                        toUpload.BytesCompleted += (int)upload.BytesWritten;
-                                        toUpload.CurrentPartNumber++;
+                                        if (!string.IsNullOrEmpty(upload.Error))
+                                        {
+                                            toUpload.Failed = true;
+                                            toUpload.FailedMessage = upload.Error;
+                                        }
+                                        else
+                                        {
+                                            //Refresh the uploaded bytes counter and define the next part number
+                                            toUpload.BytesCompleted += (int)upload.BytesWritten;
+                                            toUpload.CurrentPartNumber++;
+                                        }
 
                                         //Save the current state
                                         await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
