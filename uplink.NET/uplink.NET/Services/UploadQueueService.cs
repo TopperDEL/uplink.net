@@ -229,6 +229,7 @@ namespace uplink.NET.Services
                         {
                             toUpload.Failed = true;
                             toUpload.FailedMessage = ex.Message;
+                            toUpload.UploadId = String.Empty; //Otherwise the upload-queue might get stuck if the upload cannot be succeeded, as on the next run it would hit the same error again
 
                             //Save the current state
                             await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
