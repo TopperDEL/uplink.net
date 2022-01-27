@@ -212,6 +212,16 @@ namespace uplink.NET.Services
                                         UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                     }
                                 }
+                                else
+                                {
+                                    toUpload.Failed = true;
+                                    toUpload.FailedMessage = "No data to upload found";
+
+                                    //Save the current state
+                                    await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
+
+                                    UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
+                                }
                             }
 
                             //If all bytes are uploaded, commit the upload.
