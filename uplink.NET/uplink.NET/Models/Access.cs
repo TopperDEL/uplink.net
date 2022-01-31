@@ -294,7 +294,7 @@ namespace uplink.NET.Models
         /// <returns></returns>
         public string CreateShareURL(string bucketName, string key, bool raw, bool is_public)
         {
-            using (EdgeConfig edgeConfig = new EdgeConfig { auth_service_address = "auth.eu1.storjshare.io:7777" })
+            using (EdgeConfig edgeConfig = new EdgeConfig { auth_service_address = "auth.storjshare.io:7777" })
             using (EdgeRegisterAccessOptions edgeRegisterAccessOptions = new EdgeRegisterAccessOptions { is_public = is_public })
             using (EdgeShareURLOptions edgeShareURLOptions = new EdgeShareURLOptions { raw = raw })
             {
@@ -308,7 +308,7 @@ namespace uplink.NET.Models
                         if (shareUrl.error != null && !string.IsNullOrEmpty(shareUrl.error.message))
                             throw new ArgumentException(shareUrl.error.message);
 
-                        return shareUrl.string_;
+                        return shareUrl.string_.Replace("gateway.eu1","link").Replace("gateway.us1", "link").Replace("gateway.ap1", "link");
                     }
                 }
             }
