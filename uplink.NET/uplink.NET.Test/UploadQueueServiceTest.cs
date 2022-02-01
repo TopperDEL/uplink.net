@@ -116,6 +116,59 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task UploadObjectFromStreamWithMetadata_Uploads_512KiB()
+        {
+            await Upload_X_BytesFromStreamWithMetadata(524288);
+        }
+
+        private async Task Upload_X_BytesFromStreamWithMetadata(long bytes)
+        {
+            string bucketname = "uploadqueuetestwithmetadata";
+
+            await ((UploadQueueService)_uploadQueueService).ClearAllPendingUploadsAsync();
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(bytes);
+            byte[] bytesToUpload2 = GetRandomBytes(bytes * 2);
+            var mstream1 = new MemoryStream(bytesToUpload1);
+            var mstream2 = new MemoryStream(bytesToUpload2);
+            var customMetadata1 = new CustomMetadata();
+            customMetadata1.Entries.Add(new CustomMetadataEntry { Key = "META1KEY", Value = "meta1value" });
+            var customMetadata2 = new CustomMetadata();
+            customMetadata2.Entries.Add(new CustomMetadataEntry { Key = "META2KEY", Value = "meta2value" });
+
+            await _uploadQueueService.AddObjectToUploadQueueAsync(bucketname, "myqueuefile1.txt", _access.Serialize(), mstream1, "file1", customMetadata1);
+            await _uploadQueueService.AddObjectToUploadQueueAsync(bucketname, "myqueuefile2.txt", _access.Serialize(), mstream2, "file2", customMetadata2);
+
+            _uploadQueueService.ProcessQueueInBackground();
+            while (_uploadQueueService.UploadInProgress)
+                await Task.Delay(100);
+
+            _uploadQueueService.StopQueueInBackground();
+
+            var download1 = await _objectService.DownloadObjectAsync(bucket, "myqueuefile1.txt", new DownloadOptions(), false);
+            await download1.StartDownloadAsync();
+
+            Assert.IsTrue(download1.Completed);
+            Assert.AreEqual(bytesToUpload1.Count(), download1.BytesReceived);
+
+            var object1 = await _objectService.GetObjectAsync(bucket, "myqueuefile1.txt");
+            Assert.AreEqual("META1KEY", object1.CustomMetadata.Entries[0].Key);
+            Assert.AreEqual("meta1value", object1.CustomMetadata.Entries[0].Value);
+
+            var download2 = await _objectService.DownloadObjectAsync(bucket, "myqueuefile2.txt", new DownloadOptions(), false);
+            await download2.StartDownloadAsync();
+
+            Assert.IsTrue(download2.Completed);
+            Assert.AreEqual(bytesToUpload2.Count(), download2.BytesReceived);
+
+            var object2 = await _objectService.GetObjectAsync(bucket, "myqueuefile2.txt");
+            Assert.AreEqual("META2KEY", object2.CustomMetadata.Entries[0].Key);
+            Assert.AreEqual("meta2value", object2.CustomMetadata.Entries[0].Value);
+        }
+
+        [TestMethod]
         public async Task UploadProvidesCorrectCount()
         {
             string bucketname = "uploadqueuetest";
@@ -304,6 +357,7 @@ namespace uplink.NET.Test
         public async Task CleanupAsync()
         {
             await DeleteBucketAsync("uploadqueuetest");
+            await DeleteBucketAsync("uploadqueuetestwithmetadata");
         }
 
         private async Task DeleteBucketAsync(string bucketName)

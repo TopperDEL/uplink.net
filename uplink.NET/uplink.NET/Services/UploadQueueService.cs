@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using System.Linq;
+using System.Text.Json;
 
 namespace uplink.NET.Services
 {
@@ -63,10 +64,20 @@ namespace uplink.NET.Services
 
         public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier)
         {
-            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier).ConfigureAwait(false);
+            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier, null).ConfigureAwait(false);
         }
 
         public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier)
+        {
+            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, stream, identifier, null).ConfigureAwait(false);
+        }
+
+        public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier, CustomMetadata customMetadata)
+        {
+            await AddObjectToUploadQueueAsync(bucketName, key, accessGrant, new MemoryStream(objectData), identifier, null).ConfigureAwait(false);
+        }
+
+        public async Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier, CustomMetadata customMetadata)
         {
             await InitAsync().ConfigureAwait(false);
 
@@ -77,6 +88,10 @@ namespace uplink.NET.Services
             entry.Key = key;
             entry.TotalBytes = (int)stream.Length;
             entry.BytesCompleted = 0;
+            if (customMetadata != null)
+            {
+                entry.CustomMetadataJson = JsonSerializer.Serialize(customMetadata);
+            }
 
             await _connection.InsertAsync(entry).ConfigureAwait(false);
 
@@ -227,7 +242,12 @@ namespace uplink.NET.Services
                             //If all bytes are uploaded, commit the upload.
                             if (!token.IsCancellationRequested && toUpload.BytesCompleted == toUpload.TotalBytes)
                             {
-                                var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, new CommitUploadOptions()).ConfigureAwait(false);
+                                var commitOptions = new CommitUploadOptions();
+                                if(!string.IsNullOrEmpty(toUpload.CustomMetadataJson))
+                                {
+                                    commitOptions.CustomMetadata = JsonSerializer.Deserialize<CustomMetadata>(toUpload.CustomMetadataJson);
+                                }
+                                var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, commitOptions).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(commitResult.Error))
                                 {
                                     await RemoveEntry(toUpload).ConfigureAwait(false);
@@ -281,7 +301,7 @@ namespace uplink.NET.Services
 
         public void Dispose()
         {
-            if(_source!= null)
+            if (_source != null)
             {
                 _source.Dispose();
                 _source = null;

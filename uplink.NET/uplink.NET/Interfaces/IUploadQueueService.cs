@@ -19,6 +19,8 @@ namespace uplink.NET.Interfaces
         bool UploadInProgress { get; }
         Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier);
         Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier);
+        Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, byte[] objectData, string identifier, CustomMetadata customMetadata);
+        Task AddObjectToUploadQueueAsync(string bucketName, string key, string accessGrant, Stream stream, string identifier, CustomMetadata customMetadata);
         Task<List<UploadQueueEntry>> GetAwaitingUploadsAsync();
         Task CancelUploadAsync(string key);
         Task RetryAsync(string key);
