@@ -92,15 +92,18 @@ namespace uplink.NET.Services
             {
                 entry.CustomMetadataJson = JsonSerializer.Serialize(customMetadata);
             }
-
-            await _connection.InsertAsync(entry).ConfigureAwait(false);
-
+            
             var entryData = new UploadQueueEntryData();
-            entryData.UploadQueueEntryId = entry.Id;
+           
             entryData.Bytes = new byte[stream.Length];
             stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
-            await _connection.InsertAsync(entryData).ConfigureAwait(false);
+            await _connection.RunInTransactionAsync((SQLiteConnection transaction) =>
+            {
+                transaction.Insert(entry);
+                entryData.UploadQueueEntryId = entry.Id;
+                transaction.Insert(entryData);
+            });
 
             ProcessQueueInBackground();
 
@@ -136,12 +139,21 @@ namespace uplink.NET.Services
                     //Ignore errors - we restart that upload anyways
                 }
 
-                entry.BytesCompleted = 0;
-                entry.Failed = false;
-                entry.FailedMessage = string.Empty;
-                entry.CurrentPartNumber = 0;
-                entry.UploadId = string.Empty;
-                await _connection.UpdateAsync(entry).ConfigureAwait(false);
+                var entryData = await _connection.GetAsync<UploadQueueEntryData>(e => e.UploadQueueEntryId == entry.Id);
+
+                if (entryData != null)
+                {
+                    entry.BytesCompleted = 0;
+                    entry.Failed = false;
+                    entry.FailedMessage = string.Empty;
+                    entry.CurrentPartNumber = 0;
+                    entry.UploadId = string.Empty;
+                    await _connection.RunInTransactionAsync((SQLiteConnection transaction) =>
+                    {
+                        transaction.Update(entry);
+                        transaction.Update(entryData);
+                    });
+                }
 
                 UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, entry);
             }
@@ -293,9 +305,12 @@ namespace uplink.NET.Services
 
         private async Task RemoveEntry(UploadQueueEntry entry)
         {
-            await _connection.Table<UploadQueueEntry>().DeleteAsync(e => e.Id == entry.Id).ConfigureAwait(false);
-            await _connection.Table<UploadQueueEntryData>().DeleteAsync(e => e.UploadQueueEntryId == entry.Id).ConfigureAwait(false);
-
+            await _connection.RunInTransactionAsync((SQLiteConnection transaction) =>
+            {
+                transaction.Table<UploadQueueEntry>().Delete(e => e.Id == entry.Id);
+                transaction.Table<UploadQueueEntryData>().Delete(e => e.UploadQueueEntryId == entry.Id);
+            });
+            
             UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryRemoved, entry);
         }
 
