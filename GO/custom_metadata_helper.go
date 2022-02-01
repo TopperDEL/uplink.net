@@ -5,6 +5,8 @@ import "C"
 import (
 	"reflect"
 	"unsafe"
+	
+	"storj.io/uplink"
 )
 
 var customMetadata = map[string]string{}
