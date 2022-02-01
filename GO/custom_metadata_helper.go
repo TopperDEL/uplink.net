@@ -55,3 +55,44 @@ func get_next_custommetadata() C.UplinkCustomMetadataEntry {
 	
 	return meta
 }
+
+//export uplink_commit_upload2
+// uplink_commit_upload2 commits a multipart upload to bucket and key started with uplink_begin_upload.
+func uplink_commit_upload2(project *C.UplinkProject, bucket_name, object_key, upload_id *C.uplink_const_char) C.UplinkCommitUploadResult { //nolint:golint
+	if project == nil {
+		return C.UplinkCommitUploadResult{
+			error: mallocError(ErrNull.New("project")),
+		}
+	}
+	if bucket_name == nil {
+		return C.UplinkCommitUploadResult{
+			error: mallocError(ErrNull.New("bucket_name")),
+		}
+	}
+	if object_key == nil {
+		return C.UplinkCommitUploadResult{
+			error: mallocError(ErrNull.New("object_key")),
+		}
+	}
+	if upload_id == nil {
+		return C.UplinkCommitUploadResult{
+			error: mallocError(ErrNull.New("upload_id")),
+		}
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return C.UplinkCommitUploadResult{
+			error: mallocError(ErrInvalidHandle.New("project")),
+		}
+	}
+
+	opts := &uplink.CommitUploadOptions{}
+	opts.CustomMetadata = customMetadata
+
+	object, err := proj.CommitUpload(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key), C.GoString(upload_id), opts)
+	return C.UplinkCommitUploadResult{
+		error:  mallocError(err),
+		object: mallocObject(object),
+	}
+}
