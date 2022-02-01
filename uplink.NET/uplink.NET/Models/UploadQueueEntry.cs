@@ -19,5 +19,6 @@ namespace uplink.NET.Models
         public uint CurrentPartNumber { get; set; }
         public bool Failed { get; set; }
         public string FailedMessage { get; set; }
+        public string CustomMetadataJson { get; set; }
     }
 }
