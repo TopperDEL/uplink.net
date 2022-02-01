@@ -149,6 +149,11 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static UplinkCommitUploadResult uplink_commit_upload2(UplinkProject project, string bucket_name, string object_key, string upload_id) {
+    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload2(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id), true);
+    return ret;
+  }
+
   public static UplinkDownloadResult uplink_download_object(UplinkProject project, string bucket_name, string object_key, UplinkDownloadOptions options) {
     UplinkDownloadResult ret = new UplinkDownloadResult(storj_uplinkPINVOKE.uplink_download_object(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkDownloadOptions.getCPtr(options)), true);
     return ret;
