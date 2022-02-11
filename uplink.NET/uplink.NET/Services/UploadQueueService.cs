@@ -92,9 +92,9 @@ namespace uplink.NET.Services
             {
                 entry.CustomMetadataJson = JsonSerializer.Serialize(customMetadata);
             }
-            
+
             var entryData = new UploadQueueEntryData();
-           
+
             entryData.Bytes = new byte[stream.Length];
             stream.Read(entryData.Bytes, 0, (int)stream.Length);
 
@@ -199,39 +199,86 @@ namespace uplink.NET.Services
                         try
                         {
                             var access = new Access(toUpload.AccessGrant);
-                            var multipartUploadService = new MultipartUploadService(access);
 
-                            //If the upload has not UploadId, begin it
-                            if (!token.IsCancellationRequested && string.IsNullOrEmpty(toUpload.UploadId))
+                            if (toUpload.TotalBytes <= 5242880)
                             {
-                                var uploadInfo = await multipartUploadService.BeginUploadAsync(toUpload.BucketName, toUpload.Key, new UploadOptions()).ConfigureAwait(false);
-                                toUpload.UploadId = uploadInfo.UploadId;
-
-                                //Save the UploadId
-                                await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
-                            }
-
-                            if (!token.IsCancellationRequested)
-                            {
+                                //Upload the file with a single upload-operation
+                                var bucketService = new BucketService(access);
+                                var bucket = await bucketService.GetBucketAsync(toUpload.BucketName).ConfigureAwait(false);
+                                var objectService = new ObjectService(access);
                                 var toUploadData = await _connection.Table<UploadQueueEntryData>().Where(d => d.UploadQueueEntryId == toUpload.Id).FirstOrDefaultAsync().ConfigureAwait(false);
                                 if (toUploadData != null)
                                 {
-                                    while (!token.IsCancellationRequested && toUpload.BytesCompleted != toUpload.TotalBytes)
+                                    UploadOperation upload;
+                                    if (!string.IsNullOrEmpty(toUpload.CustomMetadataJson))
                                     {
-                                        //Now upload batches of 5 MiB (5242880 bytes)
-                                        var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(5242880).ToArray();
-                                        var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(upload.Error))
+                                        var customMetadata = JsonSerializer.Deserialize<CustomMetadata>(toUpload.CustomMetadataJson);
+                                        upload = await objectService.UploadObjectAsync(bucket, toUpload.Key, new UploadOptions(), toUploadData.Bytes, customMetadata, false);
+                                    }
+                                    else
+                                    {
+                                        upload = await objectService.UploadObjectAsync(bucket, toUpload.Key, new UploadOptions(), toUploadData.Bytes, false);
+                                    }
+                                    await upload.StartUploadAsync().ConfigureAwait(false);
+                                    if(upload.Failed)
+                                    {
+                                        toUpload.Failed = true;
+                                        toUpload.FailedMessage = upload.ErrorMessage;
+                                    }
+                                    else
+                                    {
+                                        await RemoveEntry(toUpload).ConfigureAwait(false);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //Use Multipart-Upload
+
+                                var multipartUploadService = new MultipartUploadService(access);
+
+                                //If the upload has not UploadId, begin it
+                                if (!token.IsCancellationRequested && string.IsNullOrEmpty(toUpload.UploadId))
+                                {
+                                    var uploadInfo = await multipartUploadService.BeginUploadAsync(toUpload.BucketName, toUpload.Key, new UploadOptions()).ConfigureAwait(false);
+                                    toUpload.UploadId = uploadInfo.UploadId;
+
+                                    //Save the UploadId
+                                    await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
+                                }
+
+                                if (!token.IsCancellationRequested)
+                                {
+                                    var toUploadData = await _connection.Table<UploadQueueEntryData>().Where(d => d.UploadQueueEntryId == toUpload.Id).FirstOrDefaultAsync().ConfigureAwait(false);
+                                    if (toUploadData != null)
+                                    {
+                                        while (!token.IsCancellationRequested && toUpload.BytesCompleted != toUpload.TotalBytes)
                                         {
-                                            toUpload.Failed = true;
-                                            toUpload.FailedMessage = upload.Error;
+                                            //Now upload batches of 5 MiB (5242880 bytes)
+                                            var bytesToUpload = toUploadData.Bytes.Skip(toUpload.BytesCompleted).Take(5242880).ToArray();
+                                            var upload = await multipartUploadService.UploadPartAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, toUpload.CurrentPartNumber, bytesToUpload).ConfigureAwait(false);
+                                            if (!string.IsNullOrEmpty(upload.Error))
+                                            {
+                                                toUpload.Failed = true;
+                                                toUpload.FailedMessage = upload.Error;
+                                            }
+                                            else
+                                            {
+                                                //Refresh the uploaded bytes counter and define the next part number
+                                                toUpload.BytesCompleted += (int)upload.BytesWritten;
+                                                toUpload.CurrentPartNumber++;
+                                            }
+
+                                            //Save the current state
+                                            await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
+
+                                            UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                         }
-                                        else
-                                        {
-                                            //Refresh the uploaded bytes counter and define the next part number
-                                            toUpload.BytesCompleted += (int)upload.BytesWritten;
-                                            toUpload.CurrentPartNumber++;
-                                        }
+                                    }
+                                    else
+                                    {
+                                        toUpload.Failed = true;
+                                        toUpload.FailedMessage = "No data to upload found";
 
                                         //Save the current state
                                         await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
@@ -239,38 +286,28 @@ namespace uplink.NET.Services
                                         UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
                                     }
                                 }
-                                else
-                                {
-                                    toUpload.Failed = true;
-                                    toUpload.FailedMessage = "No data to upload found";
 
-                                    //Save the current state
-                                    await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
-
-                                    UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryUpdated, toUpload);
-                                }
-                            }
-
-                            //If all bytes are uploaded, commit the upload.
-                            if (!token.IsCancellationRequested && toUpload.BytesCompleted == toUpload.TotalBytes)
-                            {
-                                var commitOptions = new CommitUploadOptions();
-                                if(!string.IsNullOrEmpty(toUpload.CustomMetadataJson))
+                                //If all bytes are uploaded, commit the upload.
+                                if (!token.IsCancellationRequested && toUpload.BytesCompleted == toUpload.TotalBytes)
                                 {
-                                    commitOptions.CustomMetadata = JsonSerializer.Deserialize<CustomMetadata>(toUpload.CustomMetadataJson);
-                                }
-                                var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, commitOptions).ConfigureAwait(false);
-                                if (string.IsNullOrEmpty(commitResult.Error))
-                                {
-                                    await RemoveEntry(toUpload).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    toUpload.Failed = true;
-                                    toUpload.FailedMessage = commitResult.Error;
+                                    var commitOptions = new CommitUploadOptions();
+                                    if (!string.IsNullOrEmpty(toUpload.CustomMetadataJson))
+                                    {
+                                        commitOptions.CustomMetadata = JsonSerializer.Deserialize<CustomMetadata>(toUpload.CustomMetadataJson);
+                                    }
+                                    var commitResult = await multipartUploadService.CommitUploadAsync(toUpload.BucketName, toUpload.Key, toUpload.UploadId, commitOptions).ConfigureAwait(false);
+                                    if (string.IsNullOrEmpty(commitResult.Error))
+                                    {
+                                        await RemoveEntry(toUpload).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        toUpload.Failed = true;
+                                        toUpload.FailedMessage = commitResult.Error;
 
-                                    //Save the current state
-                                    await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
+                                        //Save the current state
+                                        await _connection.UpdateAsync(toUpload).ConfigureAwait(false);
+                                    }
                                 }
                             }
                         }
@@ -310,7 +347,7 @@ namespace uplink.NET.Services
                 transaction.Table<UploadQueueEntry>().Delete(e => e.Id == entry.Id);
                 transaction.Table<UploadQueueEntryData>().Delete(e => e.UploadQueueEntryId == entry.Id);
             });
-            
+
             UploadQueueChangedEvent?.Invoke(QueueChangeType.EntryRemoved, entry);
         }
 
