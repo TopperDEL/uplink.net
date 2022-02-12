@@ -28,11 +28,7 @@ stages:
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
 
-      - task: Bash@3
-        displayName: Remove UAP-TargetFrameworks (uap10.0.18362)
-        inputs:
-        targetType: 'inline'
-        script: |
+      - script: |
           # Remove UAP-TargetFrameworks
           grep -e '12.0' -rl . | xargs sed -i '' 's/12.0/15.2/g'
 
