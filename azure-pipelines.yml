@@ -30,7 +30,7 @@ stages:
 
       - script: |
           # Remove UAP-TargetFrameworks
-          grep -e '12.0' -rl . | xargs LC_CTYPE=C sed -i '' 's/12.0/15.2/g'
+          grep -e '12.0' -rl . | xargs bbe -i '' 's/12.0/15.2/g'
 
       - script: |
           ls
