@@ -29,6 +29,10 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
+          # Remove UAP-TargetFrameworks
+          grep -e '12.0' -rl . | xargs bbe -i '' 's/12.0/15.2/g'
+
+      - script: |
           ls
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
@@ -40,7 +44,7 @@ stages:
           CGO_ENABLED=1 \
           GOARCH=arm64 \
           CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
-          CGO_LDFLAGS="-arch arm64 -platform_version ios 12.0.0 12.0 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
+          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
           go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
         displayName: 'Prepare and build target iOs arm64'
 
