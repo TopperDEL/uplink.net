@@ -39,8 +39,8 @@ stages:
           CXX=c++ \
           CGO_ENABLED=1 \
           GOARCH=arm64 \
-          CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
-          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot -platform_version ios 12.0.0 12.0 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
+          CGO_CFLAGS="-arch arm64 -fpic -isysroot -platform_version ios 12.0.0 12.0 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
+          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=12.0" \
           go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
         displayName: 'Prepare and build target iOs arm64'
 
