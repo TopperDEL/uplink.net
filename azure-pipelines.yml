@@ -29,10 +29,6 @@ stages:
         displayName: 'Get build-artifacts'
 
       - script: |
-          # Remove UAP-TargetFrameworks
-          grep -e '12.0' -rl . | xargs bbe -i '' 's/12.0/15.2/g'
-
-      - script: |
           ls
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
