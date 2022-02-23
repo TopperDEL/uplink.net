@@ -78,7 +78,7 @@ MAP_SPECIAL(_Bool, bool, _Bool)
 %typemap(out) char *, char[ANY], char[] %{ $result = $1; %}
 %typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal($csinput).swigCPtr"
 %typemap(csout, excode=SWIGEXCODE) char *, char[ANY], char[] {
-    string ret = SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
+    string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
     return ret;
   }
 %typemap(csvarin, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
@@ -87,7 +87,7 @@ MAP_SPECIAL(_Bool, bool, _Bool)
     } %}
 %typemap(csvarout, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
     get {
-      string ret = SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
       return ret;
     } %}
 
