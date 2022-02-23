@@ -53,14 +53,21 @@ MAP_SPECIAL(_Bool, bool, _Bool)
       global::System.GC.SuppressFinalize(this);
     }
 	
-	public static System.IntPtr NativeUtf8FromString(string managedString)
+		public static System.IntPtr NativeUtf8FromString(string managedString)
         {
-            int len = System.Text.Encoding.UTF8.GetByteCount(managedString);
-            byte[] buffer = new byte[len + 1];
-            System.Text.Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
-            System.IntPtr nativeUtf8 = System.Runtime.InteropServices.Marshal.AllocHGlobal(buffer.Length);
-            System.Runtime.InteropServices.Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
-            return nativeUtf8;
+			if (!string.IsNullOrEmpty(managedString))
+            {
+				int len = System.Text.Encoding.UTF8.GetByteCount(managedString);
+				byte[] buffer = new byte[len + 1];
+				System.Text.Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
+				System.IntPtr nativeUtf8 = System.Runtime.InteropServices.Marshal.AllocHGlobal(buffer.Length);
+				System.Runtime.InteropServices.Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
+				return nativeUtf8;
+			}
+			else
+            {
+				return IntPtr.Zero;
+            }
         }
 
 	public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
