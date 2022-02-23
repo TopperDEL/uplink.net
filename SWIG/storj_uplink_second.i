@@ -41,28 +41,19 @@ MAP_SPECIAL(uint32_t, uint, uint32_t)
 MAP_SPECIAL(uint64_t, ulong, uint64_t)
 MAP_SPECIAL(_Bool, bool, _Bool)
 
-%{
-	/* Includes the header in the wrapper code */
-	#include "uplink_definitions.h"
-	#include "storj_uplink.h"
-%}
-		 
-/* Parse the header file to generate wrappers */
-%include "storj_uplink.h"
-%include "uplink_definitions.h"
-extern char* get_storj_version();
-
-%inline %{
-
-char* get_storj_version(){
-	return "STORJVERSION";
-}
-%}
-
+// Alternative char * typemaps.
 %pragma(csharp) imclasscode=%{
-  public static class StringMarshalHelper : IDisposable {
+  public class SWIGStringMarshal : global::System.IDisposable {
+    public readonly global::System.Runtime.InteropServices.HandleRef swigCPtr;
+    public SWIGStringMarshal(string str) {
+      swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, NativeUtf8FromString(str));
+    }
+    public virtual void Dispose() {
+      global::System.Runtime.InteropServices.Marshal.FreeHGlobal(swigCPtr.Handle);
+      global::System.GC.SuppressFinalize(this);
+    }
 	
-	 public static System.IntPtr NativeUtf8FromString(string managedString)
+	public static System.IntPtr NativeUtf8FromString(string managedString)
         {
             int len = System.Text.Encoding.UTF8.GetByteCount(managedString);
             byte[] buffer = new byte[len + 1];
@@ -83,24 +74,11 @@ char* get_storj_version(){
   }
 %}
 
-%pragma(csharp) imclasscode=%{
-  public class SWIGStringMarshal : global::System.IDisposable {
-    public readonly global::System.Runtime.InteropServices.HandleRef swigCPtr;
-    public SWIGStringMarshal(string str) {
-      swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, global::System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi(str));
-    }
-    public virtual void Dispose() {
-      global::System.Runtime.InteropServices.Marshal.FreeHGlobal(swigCPtr.Handle);
-      global::System.GC.SuppressFinalize(this);
-    }
-  }
-%}
-
 %typemap(imtype, out="global::System.IntPtr") char *, char[ANY], char[]   "global::System.Runtime.InteropServices.HandleRef"
 %typemap(out) char *, char[ANY], char[] %{ $result = $1; %}
-%typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal.NativeUtf8FromString($csinput)"
+%typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal($csinput).swigCPtr"
 %typemap(csout, excode=SWIGEXCODE) char *, char[ANY], char[] {
-    string ret = $imclassname.StringMarshalHelper.StringFromNativeUtf8($imcall);$excode
+    string ret = SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
     return ret;
   }
 %typemap(csvarin, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
@@ -109,6 +87,24 @@ char* get_storj_version(){
     } %}
 %typemap(csvarout, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
     get {
-      string ret = $imclassname.StringMarshalHelper.StringFromNativeUtf8($imcall);$excode
+      string ret = SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
       return ret;
     } %}
+
+%{
+	/* Includes the header in the wrapper code */
+	#include "uplink_definitions.h"
+	#include "storj_uplink.h"
+%}
+		 
+/* Parse the header file to generate wrappers */
+%include "storj_uplink.h"
+%include "uplink_definitions.h"
+extern char* get_storj_version();
+
+%inline %{
+
+char* get_storj_version(){
+	return "STORJVERSION";
+}
+%}
