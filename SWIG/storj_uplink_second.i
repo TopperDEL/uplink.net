@@ -76,6 +76,7 @@ MAP_SPECIAL(_Bool, bool, _Bool)
             while (System.Runtime.InteropServices.Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
             byte[] buffer = new byte[len];
             System.Runtime.InteropServices.Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
+			System.Runtime.InteropServices.Marshal.FreeHGlobal(nativeUtf8);
             return System.Text.Encoding.UTF8.GetString(buffer);
         }
   }
