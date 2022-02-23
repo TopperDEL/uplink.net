@@ -46,30 +46,30 @@ internal class EdgeCredentials : global::System.IDisposable {
 
   public string access_key_id {
     set {
-      storj_uplinkPINVOKE.EdgeCredentials_access_key_id_set(swigCPtr, value);
+      storj_uplinkPINVOKE.EdgeCredentials_access_key_id_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.EdgeCredentials_access_key_id_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.EdgeCredentials_access_key_id_get(swigCPtr));
       return ret;
     } 
   }
 
   public string secret_key {
     set {
-      storj_uplinkPINVOKE.EdgeCredentials_secret_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.EdgeCredentials_secret_key_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.EdgeCredentials_secret_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.EdgeCredentials_secret_key_get(swigCPtr));
       return ret;
     } 
   }
 
   public string endpoint {
     set {
-      storj_uplinkPINVOKE.EdgeCredentials_endpoint_set(swigCPtr, value);
+      storj_uplinkPINVOKE.EdgeCredentials_endpoint_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.EdgeCredentials_endpoint_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.EdgeCredentials_endpoint_get(swigCPtr));
       return ret;
     } 
   }

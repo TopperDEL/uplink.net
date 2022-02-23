@@ -46,10 +46,10 @@ internal class _GoString_ : global::System.IDisposable {
 
   public string p {
     set {
-      storj_uplinkPINVOKE._GoString__p_set(swigCPtr, value);
+      storj_uplinkPINVOKE._GoString__p_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE._GoString__p_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE._GoString__p_get(swigCPtr));
       return ret;
     } 
   }
