@@ -82,3 +82,33 @@ char* get_storj_version(){
         }
   }
 %}
+
+%pragma(csharp) imclasscode=%{
+  public class SWIGStringMarshal : global::System.IDisposable {
+    public readonly global::System.Runtime.InteropServices.HandleRef swigCPtr;
+    public SWIGStringMarshal(string str) {
+      swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, global::System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi(str));
+    }
+    public virtual void Dispose() {
+      global::System.Runtime.InteropServices.Marshal.FreeHGlobal(swigCPtr.Handle);
+      global::System.GC.SuppressFinalize(this);
+    }
+  }
+%}
+
+%typemap(imtype, out="global::System.IntPtr") char *, char[ANY], char[]   "global::System.Runtime.InteropServices.HandleRef"
+%typemap(out) char *, char[ANY], char[] %{ $result = $1; %}
+%typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal.NativeUtf8FromString($csinput)"
+%typemap(csout, excode=SWIGEXCODE) char *, char[ANY], char[] {
+    string ret = $imclassname.StringMarshalHelper.StringFromNativeUtf8($imcall);$excode
+    return ret;
+  }
+%typemap(csvarin, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
+    set {
+      $imcall;$excode
+    } %}
+%typemap(csvarout, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
+    get {
+      string ret = $imclassname.StringMarshalHelper.StringFromNativeUtf8($imcall);$excode
+      return ret;
+    } %}
