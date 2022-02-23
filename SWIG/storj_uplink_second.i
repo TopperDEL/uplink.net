@@ -1,4 +1,7 @@
 %module storj_uplink
+%pragma(csharp) moduleclassmodifiers="internal class"
+%typemap(csclassmodifiers) SWIGTYPE "internal class"
+%include "csharp.swg"
 %pragma(csharp) imclasscode=%{
   public class StringMarshalHelper : IDisposable {
     public readonly HandleRef swigCPtr;
@@ -35,9 +38,36 @@ public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
     }
   }
 %}
-%pragma(csharp) moduleclassmodifiers="internal class"
-%typemap(csclassmodifiers) SWIGTYPE "internal class"
-%include "csharp.swg"
+
+%pragma(csharp) imclasscode=%{
+  public class SWIGStringMarshal : global::System.IDisposable {
+    public readonly global::System.Runtime.InteropServices.HandleRef swigCPtr;
+    public SWIGStringMarshal(string str) {
+      swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, global::System.Runtime.InteropServices.Marshal.StringToHGlobalAnsi(str));
+    }
+    public virtual void Dispose() {
+      global::System.Runtime.InteropServices.Marshal.FreeHGlobal(swigCPtr.Handle);
+      global::System.GC.SuppressFinalize(this);
+    }
+  }
+%}
+
+%typemap(imtype, out="global::System.IntPtr") char *, char[ANY], char[]   "global::System.Runtime.InteropServices.HandleRef"
+%typemap(out) char *, char[ANY], char[] %{ $result = $1; %}
+%typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal($csinput).swigCPtr"
+%typemap(csout, excode=SWIGEXCODE) char *, char[ANY], char[] {
+    string ret = global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi($imcall);$excode
+    return ret;
+  }
+%typemap(csvarin, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
+    set {
+      $imcall;$excode
+    } %}
+%typemap(csvarout, excode=SWIGEXCODE2) char *, char[ANY], char[] %{
+    get {
+      string ret = global::System.Runtime.InteropServices.Marshal.PtrToStringAnsi($imcall);$excode
+      return ret;
+    } %}
 
 /*Mapping for primitive types*/
 %define MAP_SPECIAL(CTYPE, CSTYPE, TYPECHECKPRECEDENCE)
