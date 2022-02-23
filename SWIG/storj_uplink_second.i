@@ -138,16 +138,11 @@ MAP_SPECIAL(_Bool, bool, _Bool)
 %include "storj_uplink.h"
 %include "uplink_definitions.h"
 extern char* get_storj_version();
-extern char* get_storj_version2();
 
 %inline %{
 
 char* get_storj_version(){
 	return "STORJVERSION";
-}
-
-char* get_storj_version(){
-	return "Meine version STORJVERSION";
 }
 %}
 
