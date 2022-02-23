@@ -46,10 +46,10 @@ internal class UplinkObject : global::System.IDisposable {
 
   public string key {
     set {
-      storj_uplinkPINVOKE.UplinkObject_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkObject_key_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkObject_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkObject_key_get(swigCPtr));
       return ret;
     } 
   }

@@ -46,10 +46,10 @@ internal class UplinkConfig : global::System.IDisposable {
 
   public string user_agent {
     set {
-      storj_uplinkPINVOKE.UplinkConfig_user_agent_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkConfig_user_agent_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkConfig_user_agent_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkConfig_user_agent_get(swigCPtr));
       return ret;
     } 
   }
@@ -66,10 +66,10 @@ internal class UplinkConfig : global::System.IDisposable {
 
   public string temp_directory {
     set {
-      storj_uplinkPINVOKE.UplinkConfig_temp_directory_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkConfig_temp_directory_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkConfig_temp_directory_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkConfig_temp_directory_get(swigCPtr));
       return ret;
     } 
   }

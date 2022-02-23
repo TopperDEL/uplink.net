@@ -46,10 +46,10 @@ internal class UplinkCustomMetadataEntry : global::System.IDisposable {
 
   public string key {
     set {
-      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkCustomMetadataEntry_key_get(swigCPtr));
       return ret;
     } 
   }
@@ -66,10 +66,10 @@ internal class UplinkCustomMetadataEntry : global::System.IDisposable {
 
   public string value {
     set {
-      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkCustomMetadataEntry_value_get(swigCPtr));
       return ret;
     } 
   }
