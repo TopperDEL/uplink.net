@@ -46,20 +46,20 @@ internal class UplinkUploadInfo : global::System.IDisposable {
 
   public string upload_id {
     set {
-      storj_uplinkPINVOKE.UplinkUploadInfo_upload_id_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkUploadInfo_upload_id_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkUploadInfo_upload_id_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkUploadInfo_upload_id_get(swigCPtr));
       return ret;
     } 
   }
 
   public string key {
     set {
-      storj_uplinkPINVOKE.UplinkUploadInfo_key_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkUploadInfo_key_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkUploadInfo_key_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkUploadInfo_key_get(swigCPtr));
       return ret;
     } 
   }

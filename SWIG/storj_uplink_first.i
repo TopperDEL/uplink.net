@@ -7,4 +7,3 @@
 		 
 /* Parse the header file to generate wrappers */
 %include "uplink_definitions.h"
-
