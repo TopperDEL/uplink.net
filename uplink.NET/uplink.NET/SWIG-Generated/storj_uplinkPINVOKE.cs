@@ -202,39 +202,39 @@ class storj_uplinkPINVOKE {
       global::System.Runtime.InteropServices.Marshal.FreeHGlobal(swigCPtr.Handle);
       global::System.GC.SuppressFinalize(this);
     }
-
-            public static System.IntPtr NativeUtf8FromString(string managedString)
+	
+		public static System.IntPtr NativeUtf8FromString(string managedString)
+        {
+			if (!string.IsNullOrEmpty(managedString))
             {
-                if (!string.IsNullOrEmpty(managedString))
-                {
-                    int len = System.Text.Encoding.UTF8.GetByteCount(managedString);
-                    byte[] buffer = new byte[len + 1];
-                    System.Text.Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
-                    System.IntPtr nativeUtf8 = System.Runtime.InteropServices.Marshal.AllocHGlobal(buffer.Length);
-                    System.Runtime.InteropServices.Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
-                    return nativeUtf8;
-                }
-                else
-                {
-                    return IntPtr.Zero;
-                }
-            }
-
-            public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
+				int len = System.Text.Encoding.UTF8.GetByteCount(managedString);
+				byte[] buffer = new byte[len + 1];
+				System.Text.Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
+				System.IntPtr nativeUtf8 = System.Runtime.InteropServices.Marshal.AllocHGlobal(buffer.Length);
+				System.Runtime.InteropServices.Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
+				return nativeUtf8;
+			}
+			else
             {
-                int len = 0;
-                while (System.Runtime.InteropServices.Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
-                byte[] buffer = new byte[len];
-                System.Runtime.InteropServices.Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
-                System.Runtime.InteropServices.Marshal.FreeHGlobal(nativeUtf8);
-                return System.Text.Encoding.UTF8.GetString(buffer);
+				return IntPtr.Zero;
             }
+        }
 
-            ~SWIGStringMarshal()
+	public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
+        {
+            int len = 0;
+            while (System.Runtime.InteropServices.Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
+            byte[] buffer = new byte[len];
+            System.Runtime.InteropServices.Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
+			System.Runtime.InteropServices.Marshal.FreeHGlobal(nativeUtf8);
+            return System.Text.Encoding.UTF8.GetString(buffer);
+        }
+		
+		~SWIGStringMarshal()
             {
                 Dispose();
             }
-        }
+  }
 
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG__GoString__p_set___")]
