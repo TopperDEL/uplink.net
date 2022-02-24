@@ -46,20 +46,20 @@ internal class UplinkListObjectsOptions : global::System.IDisposable {
 
   public string prefix {
     set {
-      storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkListObjectsOptions_prefix_get(swigCPtr));
       return ret;
     } 
   }
 
   public string cursor {
     set {
-      storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkListObjectsOptions_cursor_get(swigCPtr));
       return ret;
     } 
   }

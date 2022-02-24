@@ -46,20 +46,20 @@ internal class UplinkSharePrefix : global::System.IDisposable {
 
   public string bucket {
     set {
-      storj_uplinkPINVOKE.UplinkSharePrefix_bucket_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkSharePrefix_bucket_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkSharePrefix_bucket_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkSharePrefix_bucket_get(swigCPtr));
       return ret;
     } 
   }
 
   public string prefix {
     set {
-      storj_uplinkPINVOKE.UplinkSharePrefix_prefix_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkSharePrefix_prefix_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkSharePrefix_prefix_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkSharePrefix_prefix_get(swigCPtr));
       return ret;
     } 
   }
