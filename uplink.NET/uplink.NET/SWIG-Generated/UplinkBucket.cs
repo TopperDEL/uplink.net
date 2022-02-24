@@ -46,10 +46,10 @@ internal class UplinkBucket : global::System.IDisposable {
 
   public string name {
     set {
-      storj_uplinkPINVOKE.UplinkBucket_name_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkBucket_name_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkBucket_name_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkBucket_name_get(swigCPtr));
       return ret;
     } 
   }

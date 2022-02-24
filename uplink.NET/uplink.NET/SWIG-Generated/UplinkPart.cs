@@ -76,10 +76,10 @@ internal class UplinkPart : global::System.IDisposable {
 
   public string etag {
     set {
-      storj_uplinkPINVOKE.UplinkPart_etag_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkPart_etag_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkPart_etag_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkPart_etag_get(swigCPtr));
       return ret;
     } 
   }
