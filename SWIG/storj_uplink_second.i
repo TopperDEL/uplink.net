@@ -79,6 +79,11 @@ MAP_SPECIAL(_Bool, bool, _Bool)
 			System.Runtime.InteropServices.Marshal.FreeHGlobal(nativeUtf8);
             return System.Text.Encoding.UTF8.GetString(buffer);
         }
+		
+		~SWIGStringMarshal()
+            {
+                Dispose();
+            }
   }
 %}
 
