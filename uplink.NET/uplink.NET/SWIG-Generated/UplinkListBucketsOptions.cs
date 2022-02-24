@@ -46,10 +46,10 @@ internal class UplinkListBucketsOptions : global::System.IDisposable {
 
   public string cursor {
     set {
-      storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_set(swigCPtr, value);
+      storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.UplinkListBucketsOptions_cursor_get(swigCPtr));
       return ret;
     } 
   }
