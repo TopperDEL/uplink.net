@@ -46,20 +46,20 @@ internal class EdgeConfig : global::System.IDisposable {
 
   public string auth_service_address {
     set {
-      storj_uplinkPINVOKE.EdgeConfig_auth_service_address_set(swigCPtr, value);
+      storj_uplinkPINVOKE.EdgeConfig_auth_service_address_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.EdgeConfig_auth_service_address_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.EdgeConfig_auth_service_address_get(swigCPtr));
       return ret;
     } 
   }
 
   public string certificate_pem {
     set {
-      storj_uplinkPINVOKE.EdgeConfig_certificate_pem_set(swigCPtr, value);
+      storj_uplinkPINVOKE.EdgeConfig_certificate_pem_set(swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
     } 
     get {
-      string ret = storj_uplinkPINVOKE.EdgeConfig_certificate_pem_get(swigCPtr);
+      string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.EdgeConfig_certificate_pem_get(swigCPtr));
       return ret;
     } 
   }

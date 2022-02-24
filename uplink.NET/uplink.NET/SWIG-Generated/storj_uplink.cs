@@ -12,12 +12,12 @@ namespace uplink.SWIG {
 
 internal class storj_uplink {
   public static UplinkAccessResult uplink_parse_access(string accessString) {
-    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_parse_access(accessString), true);
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_parse_access(new storj_uplinkPINVOKE.SWIGStringMarshal(accessString).swigCPtr), true);
     return ret;
   }
 
   public static UplinkAccessResult uplink_request_access_with_passphrase(string satellite_address, string api_key, string passphrase) {
-    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_request_access_with_passphrase(satellite_address, api_key, passphrase), true);
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_request_access_with_passphrase(new storj_uplinkPINVOKE.SWIGStringMarshal(satellite_address).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(api_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(passphrase).swigCPtr), true);
     return ret;
   }
 
@@ -38,7 +38,7 @@ internal class storj_uplink {
   }
 
   public static UplinkError uplink_access_override_encryption_key(UplinkAccess access, string bucket, string prefix, UplinkEncryptionKey encryptionKey) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_access_override_encryption_key(UplinkAccess.getCPtr(access), bucket, prefix, UplinkEncryptionKey.getCPtr(encryptionKey));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_access_override_encryption_key(UplinkAccess.getCPtr(access), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(prefix).swigCPtr, UplinkEncryptionKey.getCPtr(encryptionKey));
     UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
@@ -54,27 +54,27 @@ internal class storj_uplink {
   }
 
   public static UplinkBucketResult uplink_stat_bucket(UplinkProject project, string bucket_name) {
-    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_stat_bucket(UplinkProject.getCPtr(project), bucket_name), true);
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_stat_bucket(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr), true);
     return ret;
   }
 
   public static UplinkBucketResult uplink_create_bucket(UplinkProject project, string bucket_name) {
-    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_create_bucket(UplinkProject.getCPtr(project), bucket_name), true);
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_create_bucket(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr), true);
     return ret;
   }
 
   public static UplinkBucketResult uplink_ensure_bucket(UplinkProject project, string bucket_name) {
-    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_ensure_bucket(UplinkProject.getCPtr(project), bucket_name), true);
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_ensure_bucket(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr), true);
     return ret;
   }
 
   public static UplinkBucketResult uplink_delete_bucket(UplinkProject project, string bucket_name) {
-    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket(UplinkProject.getCPtr(project), bucket_name), true);
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr), true);
     return ret;
   }
 
   public static UplinkBucketResult uplink_delete_bucket_with_objects(UplinkProject project, string bucket_name) {
-    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket_with_objects(UplinkProject.getCPtr(project), bucket_name), true);
+    UplinkBucketResult ret = new UplinkBucketResult(storj_uplinkPINVOKE.uplink_delete_bucket_with_objects(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr), true);
     return ret;
   }
 
@@ -115,7 +115,7 @@ internal class storj_uplink {
   }
 
   public static UplinkAccessResult uplink_config_request_access_with_passphrase(UplinkConfig config, string satellite_address, string api_key, string passphrase) {
-    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_config_request_access_with_passphrase(UplinkConfig.getCPtr(config), satellite_address, api_key, passphrase), true);
+    UplinkAccessResult ret = new UplinkAccessResult(storj_uplinkPINVOKE.uplink_config_request_access_with_passphrase(UplinkConfig.getCPtr(config), new storj_uplinkPINVOKE.SWIGStringMarshal(satellite_address).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(api_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(passphrase).swigCPtr), true);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
@@ -131,7 +131,7 @@ internal class storj_uplink {
   }
 
   public static void append_custommetadata(string key, string value) {
-    storj_uplinkPINVOKE.append_custommetadata(key, value);
+    storj_uplinkPINVOKE.append_custommetadata(new storj_uplinkPINVOKE.SWIGStringMarshal(key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(value).swigCPtr);
   }
 
   public static UplinkError upload_set_custom_metadata2(UplinkUpload upload) {
@@ -150,12 +150,12 @@ internal class storj_uplink {
   }
 
   public static UplinkCommitUploadResult uplink_commit_upload2(UplinkProject project, string bucket_name, string object_key, string upload_id) {
-    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload2(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id), true);
+    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload2(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(upload_id).swigCPtr), true);
     return ret;
   }
 
   public static UplinkDownloadResult uplink_download_object(UplinkProject project, string bucket_name, string object_key, UplinkDownloadOptions options) {
-    UplinkDownloadResult ret = new UplinkDownloadResult(storj_uplinkPINVOKE.uplink_download_object(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkDownloadOptions.getCPtr(options)), true);
+    UplinkDownloadResult ret = new UplinkDownloadResult(storj_uplinkPINVOKE.uplink_download_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkDownloadOptions.getCPtr(options)), true);
     return ret;
   }
 
@@ -201,12 +201,12 @@ internal class storj_uplink {
   }
 
   public static UplinkStringResult edge_join_share_url(string baseURL, string accessKeyID, string bucket, string key, EdgeShareURLOptions options) {
-    UplinkStringResult ret = new UplinkStringResult(storj_uplinkPINVOKE.edge_join_share_url(baseURL, accessKeyID, bucket, key, EdgeShareURLOptions.getCPtr(options)), true);
+    UplinkStringResult ret = new UplinkStringResult(storj_uplinkPINVOKE.edge_join_share_url(new storj_uplinkPINVOKE.SWIGStringMarshal(baseURL).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(accessKeyID).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(bucket).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(key).swigCPtr, EdgeShareURLOptions.getCPtr(options)), true);
     return ret;
   }
 
   public static UplinkEncryptionKeyResult uplink_derive_encryption_key(string passphrase, SWIGTYPE_p_void salt, uint length) {
-    UplinkEncryptionKeyResult ret = new UplinkEncryptionKeyResult(storj_uplinkPINVOKE.uplink_derive_encryption_key(passphrase, SWIGTYPE_p_void.getCPtr(salt), length), true);
+    UplinkEncryptionKeyResult ret = new UplinkEncryptionKeyResult(storj_uplinkPINVOKE.uplink_derive_encryption_key(new storj_uplinkPINVOKE.SWIGStringMarshal(passphrase).swigCPtr, SWIGTYPE_p_void.getCPtr(salt), length), true);
     return ret;
   }
 
@@ -225,13 +225,13 @@ internal class storj_uplink {
   }
 
   public static UplinkError uplink_move_object(UplinkProject project, string old_bucket_name, string old_object_key, string new_bucket_name, string new_object_key, UplinkMoveObjectOptions options) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_move_object(UplinkProject.getCPtr(project), old_bucket_name, old_object_key, new_bucket_name, new_object_key, UplinkMoveObjectOptions.getCPtr(options));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_move_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(old_bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(old_object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(new_bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(new_object_key).swigCPtr, UplinkMoveObjectOptions.getCPtr(options));
     UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
   public static UplinkUploadInfoResult uplink_begin_upload(UplinkProject project, string bucket_name, string object_key, UplinkUploadOptions options) {
-    UplinkUploadInfoResult ret = new UplinkUploadInfoResult(storj_uplinkPINVOKE.uplink_begin_upload(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkUploadOptions.getCPtr(options)), true);
+    UplinkUploadInfoResult ret = new UplinkUploadInfoResult(storj_uplinkPINVOKE.uplink_begin_upload(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkUploadOptions.getCPtr(options)), true);
     return ret;
   }
 
@@ -245,7 +245,7 @@ internal class storj_uplink {
   }
 
   public static UplinkCommitUploadResult uplink_commit_upload(UplinkProject project, string bucket_name, string object_key, string upload_id, UplinkCommitUploadOptions options) {
-    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, UplinkCommitUploadOptions.getCPtr(options)), true);
+    UplinkCommitUploadResult ret = new UplinkCommitUploadResult(storj_uplinkPINVOKE.uplink_commit_upload(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(upload_id).swigCPtr, UplinkCommitUploadOptions.getCPtr(options)), true);
     return ret;
   }
 
@@ -255,13 +255,13 @@ internal class storj_uplink {
   }
 
   public static UplinkError uplink_abort_upload(UplinkProject project, string bucket_name, string object_key, string upload_id) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_abort_upload(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id);
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_abort_upload(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(upload_id).swigCPtr);
     UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
 
   public static UplinkPartUploadResult uplink_upload_part(UplinkProject project, string bucket_name, string object_key, string upload_id, uint part_number) {
-    UplinkPartUploadResult ret = new UplinkPartUploadResult(storj_uplinkPINVOKE.uplink_upload_part(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, part_number), true);
+    UplinkPartUploadResult ret = new UplinkPartUploadResult(storj_uplinkPINVOKE.uplink_upload_part(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(upload_id).swigCPtr, part_number), true);
     return ret;
   }
 
@@ -283,7 +283,7 @@ internal class storj_uplink {
   }
 
   public static UplinkError uplink_part_upload_set_etag(UplinkPartUpload upload, string etag) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_upload_set_etag(UplinkPartUpload.getCPtr(upload), etag);
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_part_upload_set_etag(UplinkPartUpload.getCPtr(upload), new storj_uplinkPINVOKE.SWIGStringMarshal(etag).swigCPtr);
     UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     return ret;
   }
@@ -308,7 +308,7 @@ internal class storj_uplink {
   }
 
   public static UplinkUploadIterator uplink_list_uploads(UplinkProject project, string bucket_name, UplinkListUploadsOptions options) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_uploads(UplinkProject.getCPtr(project), bucket_name, UplinkListUploadsOptions.getCPtr(options));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_uploads(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, UplinkListUploadsOptions.getCPtr(options));
     UplinkUploadIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkUploadIterator(cPtr, false);
     return ret;
   }
@@ -335,7 +335,7 @@ internal class storj_uplink {
   }
 
   public static UplinkPartIterator uplink_list_upload_parts(UplinkProject project, string bucket_name, string object_key, string upload_id, UplinkListUploadPartsOptions options) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_upload_parts(UplinkProject.getCPtr(project), bucket_name, object_key, upload_id, UplinkListUploadPartsOptions.getCPtr(options));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_upload_parts(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(upload_id).swigCPtr, UplinkListUploadPartsOptions.getCPtr(options));
     UplinkPartIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkPartIterator(cPtr, false);
     return ret;
   }
@@ -362,12 +362,12 @@ internal class storj_uplink {
   }
 
   public static UplinkObjectResult uplink_stat_object(UplinkProject project, string bucket_name, string object_key) {
-    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_stat_object(UplinkProject.getCPtr(project), bucket_name, object_key), true);
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_stat_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr), true);
     return ret;
   }
 
   public static UplinkObjectResult uplink_delete_object(UplinkProject project, string bucket_name, string object_key) {
-    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_delete_object(UplinkProject.getCPtr(project), bucket_name, object_key), true);
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_delete_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr), true);
     return ret;
   }
 
@@ -381,14 +381,14 @@ internal class storj_uplink {
   }
 
   public static UplinkError uplink_update_object_metadata(UplinkProject project, string bucket_name, string object_key, UplinkCustomMetadata new_metadata, UplinkUploadObjectMetadataOptions options) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_update_object_metadata(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkCustomMetadata.getCPtr(new_metadata), UplinkUploadObjectMetadataOptions.getCPtr(options));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_update_object_metadata(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkCustomMetadata.getCPtr(new_metadata), UplinkUploadObjectMetadataOptions.getCPtr(options));
     UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 
   public static UplinkObjectIterator uplink_list_objects(UplinkProject project, string bucket_name, UplinkListObjectsOptions options) {
-    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_objects(UplinkProject.getCPtr(project), bucket_name, UplinkListObjectsOptions.getCPtr(options));
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_list_objects(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, UplinkListObjectsOptions.getCPtr(options));
     UplinkObjectIterator ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkObjectIterator(cPtr, false);
     return ret;
   }
@@ -425,6 +425,12 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static UplinkError uplink_revoke_access(UplinkProject project, UplinkAccess access) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_revoke_access(UplinkProject.getCPtr(project), UplinkAccess.getCPtr(access));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
   public static void uplink_free_project_result(UplinkProjectResult result) {
     storj_uplinkPINVOKE.uplink_free_project_result(UplinkProjectResult.getCPtr(result));
     if (storj_uplinkPINVOKE.SWIGPendingException.Pending) throw storj_uplinkPINVOKE.SWIGPendingException.Retrieve();
@@ -435,7 +441,7 @@ internal class storj_uplink {
   }
 
   public static void append_shareprefix(string bucket, string prefix) {
-    storj_uplinkPINVOKE.append_shareprefix(bucket, prefix);
+    storj_uplinkPINVOKE.append_shareprefix(new storj_uplinkPINVOKE.SWIGStringMarshal(bucket).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(prefix).swigCPtr);
   }
 
   public static UplinkAccessResult access_share2(UplinkAccess access, UplinkPermission permission) {
@@ -445,7 +451,7 @@ internal class storj_uplink {
   }
 
   public static UplinkUploadResult uplink_upload_object(UplinkProject project, string bucket_name, string object_key, UplinkUploadOptions options) {
-    UplinkUploadResult ret = new UplinkUploadResult(storj_uplinkPINVOKE.uplink_upload_object(UplinkProject.getCPtr(project), bucket_name, object_key, UplinkUploadOptions.getCPtr(options)), true);
+    UplinkUploadResult ret = new UplinkUploadResult(storj_uplinkPINVOKE.uplink_upload_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkUploadOptions.getCPtr(options)), true);
     return ret;
   }
 
@@ -489,7 +495,7 @@ internal class storj_uplink {
   }
 
   public static string get_storj_version() {
-    string ret = storj_uplinkPINVOKE.get_storj_version();
+    string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.get_storj_version());
     return ret;
   }
 
@@ -498,6 +504,8 @@ internal class storj_uplink {
   public static readonly int UPLINK_ERROR_INVALID_HANDLE = storj_uplinkPINVOKE.UPLINK_ERROR_INVALID_HANDLE_get();
   public static readonly int UPLINK_ERROR_TOO_MANY_REQUESTS = storj_uplinkPINVOKE.UPLINK_ERROR_TOO_MANY_REQUESTS_get();
   public static readonly int UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED_get();
+  public static readonly int UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED_get();
+  public static readonly int UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED_get();
   public static readonly int UPLINK_ERROR_BUCKET_NAME_INVALID = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NAME_INVALID_get();
   public static readonly int UPLINK_ERROR_BUCKET_ALREADY_EXISTS = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_ALREADY_EXISTS_get();
   public static readonly int UPLINK_ERROR_BUCKET_NOT_EMPTY = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NOT_EMPTY_get();
