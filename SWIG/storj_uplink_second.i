@@ -88,7 +88,7 @@ MAP_SPECIAL(_Bool, bool, _Bool)
 %}
 
 %typemap(imtype, out="global::System.IntPtr") char *, char[ANY], char[]   "global::System.Runtime.InteropServices.HandleRef"
-%typemap(out) char *, char[ANY], char[] %{ $result = $1; %}
+
 %typemap(csin) char *, char[ANY], char[] "new $imclassname.SWIGStringMarshal($csinput).swigCPtr"
 %typemap(csout, excode=SWIGEXCODE) char *, char[ANY], char[] {
     string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8($imcall);$excode
