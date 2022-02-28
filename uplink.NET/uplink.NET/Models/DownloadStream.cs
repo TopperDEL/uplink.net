@@ -22,7 +22,7 @@ namespace uplink.NET.Models
 
         public override long Position { get; set; }
 
-        public DownloadStream(Bucket bucket, int totalBytes, string objectName) 
+        public DownloadStream(Bucket bucket, int totalBytes, string objectName)
         {
             _length = totalBytes;
             _bucket = bucket;
@@ -33,28 +33,20 @@ namespace uplink.NET.Models
         {
         }
 
-        public override int Read(byte[] buffer, int offset, int count)
+        public unsafe override int Read(byte[] buffer, int offset, int count)
         {
-            int received = 0;
-
             using (var opts = new SWIG.UplinkDownloadOptions { length = count, offset = Position })
             {
                 using (var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, opts))
                 {
-
-                    if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
-                        throw new EndOfStreamException(downloadResult.error.message);
-
-                    using (var download = new DownloadOperation(downloadResult, count, _objectName))
+                    fixed (byte* arrayPtr = buffer)
                     {
-                        download.StartDownloadAsync().Wait();
-
-                        Buffer.BlockCopy(download.DownloadedBytes, 0, buffer, offset, (int)download.BytesReceived);
-
-                        received = (int)download.BytesReceived;
+                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)count))
+                        {
+                            Position += (int)readResult.bytes_read;
+                            return (int)readResult.bytes_read;
+                        }
                     }
-
-                    return received;
                 }
             }
         }
