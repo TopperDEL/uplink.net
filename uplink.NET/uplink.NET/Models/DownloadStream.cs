@@ -11,6 +11,8 @@ namespace uplink.NET.Models
     {
         private readonly Bucket _bucket;
         private readonly string _objectName;
+        private SWIG.UplinkDownloadOptions _options;
+        private SWIG.UplinkDownloadResult _result;
         public override bool CanRead => true;
 
         public override bool CanSeek => true;
@@ -27,6 +29,8 @@ namespace uplink.NET.Models
             _length = totalBytes;
             _bucket = bucket;
             _objectName = objectName;
+            _options = new SWIG.UplinkDownloadOptions { length = totalBytes, offset = Position };
+            _result = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, _options);
         }
 
         public override void Flush()
@@ -35,24 +39,35 @@ namespace uplink.NET.Models
 
         public unsafe override int Read(byte[] buffer, int offset, int count)
         {
-            using (var opts = new SWIG.UplinkDownloadOptions { length = count, offset = Position })
+            int readBytes = 0;
+            int remaining = count;
+
+            byte[] tmpBuffer = new byte[count];
+            fixed (byte* arrayPtr = tmpBuffer)
             {
-                using (var downloadResult = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, opts))
+                while (readBytes < count)
                 {
-                    fixed (byte* arrayPtr = buffer)
+                    using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_result.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
                     {
-                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(downloadResult.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)count))
+                        Array.Copy(tmpBuffer, 0, buffer, readBytes, (int)readResult.bytes_read);
+                        remaining -= (int)readResult.bytes_read;
+                        Position += (int)readResult.bytes_read;
+                        readBytes += (int)readResult.bytes_read;
+                        if (readResult.error != null && readResult.error.code == -1)
                         {
-                            Position += (int)readResult.bytes_read;
-                            return (int)readResult.bytes_read;
+                            return readBytes;
                         }
                     }
                 }
+                return readBytes;
             }
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
+            _options.Dispose();
+            _result.Dispose();
+
             switch (origin)
             {
                 case SeekOrigin.End:
@@ -67,6 +82,10 @@ namespace uplink.NET.Models
                 default:
                     throw new NotSupportedException();
             }
+
+            _options = new SWIG.UplinkDownloadOptions { length = _length, offset = Position };
+            _result = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, _options);
+
             return Position;
         }
 
@@ -78,6 +97,20 @@ namespace uplink.NET.Models
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_options != null)
+            {
+                _options.Dispose();
+                _options = null;
+            }
+            if (_result != null)
+            {
+                _result.Dispose();
+                _result = null;
+            }
         }
     }
 }
