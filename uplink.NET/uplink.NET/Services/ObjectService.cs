@@ -179,13 +179,34 @@ namespace uplink.NET.Services
 
         public async Task MoveObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey)
         {
-            using(var options = new SWIG.UplinkMoveObjectOptions())
+            using (var options = new SWIG.UplinkMoveObjectOptions())
             using (SWIG.UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_move_object(_access._project, oldBucket.Name, oldKey, newBucket.Name, newKey, options)))
             {
-                if(error != null && !string.IsNullOrEmpty(error.message))
+                if (error != null && !string.IsNullOrEmpty(error.message))
                 {
                     throw new ObjectNotFoundException(error.message);
                 }
+            }
+        }
+
+        public async Task UpdateObjectMetadataAsync(Bucket bucket, string targetPath, CustomMetadata metadata)
+        {
+            await UploadOperation.customMetadataSemaphore.WaitAsync();
+            try
+            {
+                metadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
+                using (var options = new SWIG.UplinkUploadObjectMetadataOptions())
+                using (SWIG.UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_update_object_metadata2(_access._project, bucket.Name, targetPath, options)).ConfigureAwait(false))
+                {
+                    if (error != null && !string.IsNullOrEmpty(error.message))
+                    {
+                        throw new CouldNotUpdateObjectMetadataException(error.message);
+                    }
+                }
+            }
+            finally
+            {
+                UploadOperation.customMetadataSemaphore.Release();
             }
         }
     }
