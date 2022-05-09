@@ -13,7 +13,7 @@ pool:
 
 steps:
 - script: |
-    git clone -b better-string-handling --depth 1 https://github.com/TopperDEL/uplink.net.git
+    git clone --depth 1 https://github.com/TopperDEL/uplink.net.git
   displayName: 'Clone uplink.NET'
 
 - script: |

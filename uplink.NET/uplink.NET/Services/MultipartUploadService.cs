@@ -99,31 +99,29 @@ namespace uplink.NET.Services
             CommitUploadResult result = new CommitUploadResult();
             await Task.Run(() =>
             {
-                if (UploadOperation.customMetadataMutex.WaitOne(1000))
+                UploadOperation.customMetadataSemaphore.Wait();
+                try
                 {
-                    try
+                    if (commitUploadOptions.CustomMetadata != null)
                     {
-                        if (commitUploadOptions.CustomMetadata != null)
-                        {
-                            commitUploadOptions.CustomMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                        }
+                        commitUploadOptions.CustomMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
+                    }
 
-                        using (var commitUploadResult = SWIG.storj_uplink.uplink_commit_upload2(_access._project, bucketName, objectKey, uploadId))
+                    using (var commitUploadResult = SWIG.storj_uplink.uplink_commit_upload2(_access._project, bucketName, objectKey, uploadId))
+                    {
+                        if (commitUploadResult.error != null && !string.IsNullOrEmpty(commitUploadResult.error.message))
                         {
-                            if (commitUploadResult.error != null && !string.IsNullOrEmpty(commitUploadResult.error.message))
-                            {
-                                result.Error = commitUploadResult.error.message;
-                            }
-                            else
-                            {
-                                result.Object = Models.Object.FromSWIG(commitUploadResult.object_);
-                            }
+                            result.Error = commitUploadResult.error.message;
+                        }
+                        else
+                        {
+                            result.Object = Models.Object.FromSWIG(commitUploadResult.object_);
                         }
                     }
-                    finally
-                    {
-                        UploadOperation.customMetadataMutex.ReleaseMutex();
-                    }
+                }
+                finally
+                {
+                    UploadOperation.customMetadataSemaphore.Release();
                 }
             }).ConfigureAwait(false);
             return result;

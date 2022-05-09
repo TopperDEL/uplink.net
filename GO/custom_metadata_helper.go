@@ -98,3 +98,28 @@ func uplink_commit_upload2(project *C.UplinkProject, bucket_name, object_key, up
 		object: mallocObject(object),
 	}
 }
+
+//export uplink_update_object_metadata2
+// uplink_update_object_metadata replaces the custom metadata for the object at the specific key with customMetadata.
+// Any existing custom metadata will be deleted.
+func uplink_update_object_metadata2(project *C.UplinkProject, bucket_name, object_key *C.uplink_const_char, options *C.UplinkUploadObjectMetadataOptions) *C.UplinkError { //nolint:golint
+	if project == nil {
+		return mallocError(ErrNull.New("project"))
+	}
+
+	if bucket_name == nil {
+		return mallocError(ErrNull.New("bucket_name"))
+	}
+
+	if object_key == nil {
+		return mallocError(ErrNull.New("object_key"))
+	}
+
+	proj, ok := universe.Get(project._handle).(*Project)
+	if !ok {
+		return mallocError(ErrInvalidHandle.New("project"))
+	}
+
+	err := proj.UpdateObjectMetadata(proj.scope.ctx, C.GoString(bucket_name), C.GoString(object_key), customMetadata, nil)
+	return mallocError(err)
+}

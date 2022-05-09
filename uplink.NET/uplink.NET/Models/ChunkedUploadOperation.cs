@@ -49,24 +49,22 @@ namespace uplink.NET.Models
         {
             if (_customMetadata != null)
             {
-                if (UploadOperation.customMetadataMutex.WaitOne(1000))
+                UploadOperation.customMetadataSemaphore.Wait();
+                try
                 {
-                    try
+                    _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
+                    using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
                     {
-                        _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                        using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
+                        if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                         {
-                            if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
-                            {
-                                _errorMessage = customMetadataError.message;
-                                return false;
-                            }
+                            _errorMessage = customMetadataError.message;
+                            return false;
                         }
                     }
-                    finally
-                    {
-                        UploadOperation.customMetadataMutex.ReleaseMutex();
-                    }
+                }
+                finally
+                {
+                    UploadOperation.customMetadataSemaphore.Release();
                 }
             }
 

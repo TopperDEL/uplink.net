@@ -22,7 +22,7 @@ namespace uplink.NET.Models
     public delegate void UploadOperationEnded(UploadOperation uploadOperation);
     public unsafe class UploadOperation : IDisposable
     {
-        internal static readonly Mutex customMetadataMutex = new Mutex();
+        internal static readonly SemaphoreSlim customMetadataSemaphore = new SemaphoreSlim(1);
         private readonly Stream _byteStreamToUpload;
         private SWIG.UplinkUpload _upload;
         private Task _uploadTask;
@@ -212,26 +212,24 @@ namespace uplink.NET.Models
 
                     if (_customMetadata != null)
                     {
-                        if (customMetadataMutex.WaitOne(1000))
+                        customMetadataSemaphore.Wait();
+                        try
                         {
-                            try
+                            _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
+                            using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
                             {
-                                _customMetadata.ToSWIG(); //Appends the customMetadata in the go-layer to a global field
-                                using (SWIG.UplinkError customMetadataError = SWIG.storj_uplink.upload_set_custom_metadata2(_upload))
+                                if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                                 {
-                                    if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
-                                    {
-                                        _errorMessage = customMetadataError.message;
-                                        Failed = true;
-                                        UploadOperationEnded?.Invoke(this);
-                                        return;
-                                    }
+                                    _errorMessage = customMetadataError.message;
+                                    Failed = true;
+                                    UploadOperationEnded?.Invoke(this);
+                                    return;
                                 }
                             }
-                            finally
-                            {
-                                customMetadataMutex.ReleaseMutex();
-                            }
+                        }
+                        finally
+                        {
+                            customMetadataSemaphore.Release();
                         }
                     }
 
