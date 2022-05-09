@@ -66,14 +66,14 @@ namespace uplink.NET.Models
                 using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                 {
                     if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                        throw new ArgumentException(projectResult.error.message);
+                        throw new AccessException(projectResult.error.message);
 
                     _project = projectResult.project;
                 }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(ex.Message);
+                throw new AccessException(ex.Message);
             }
         }
 
@@ -101,7 +101,7 @@ namespace uplink.NET.Models
                 using (var accessResult = SWIG.storj_uplink.uplink_parse_access(accessGrant))
                 {
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                        throw new ArgumentException(accessResult.error.message);
+                        throw new AccessException(accessResult.error.message);
 
                     _access = accessResult.access;
 
@@ -109,7 +109,7 @@ namespace uplink.NET.Models
                     using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                     {
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                            throw new ArgumentException(projectResult.error.message);
+                            throw new AccessException(projectResult.error.message);
 
                         _project = projectResult.project;
                     }
@@ -117,7 +117,7 @@ namespace uplink.NET.Models
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(ex.Message);
+                throw new AccessException(ex.Message);
             }
         }
 
@@ -136,7 +136,7 @@ namespace uplink.NET.Models
                 using (var accessResult = SWIG.storj_uplink.uplink_request_access_with_passphrase(satelliteAddress, apiKey, secret))
                 {
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                        throw new ArgumentException(accessResult.error.message);
+                        throw new AccessException(accessResult.error.message);
 
                     _access = accessResult.access;
 
@@ -144,7 +144,7 @@ namespace uplink.NET.Models
                     using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
                     {
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                            throw new ArgumentException(projectResult.error.message);
+                            throw new AccessException(projectResult.error.message);
 
                         _project = projectResult.project;
                     }
@@ -152,7 +152,7 @@ namespace uplink.NET.Models
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(ex.Message);
+                throw new AccessException(ex.Message);
             }
         }
 
@@ -173,14 +173,14 @@ namespace uplink.NET.Models
                 using (var accessResult = SWIG.storj_uplink.uplink_config_request_access_with_passphrase(uplinkConfigSWIG, satelliteAddress, apiKey, secret))
                 {
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                        throw new ArgumentException(accessResult.error.message);
+                        throw new AccessException(accessResult.error.message);
 
                     _access = accessResult.access;
 
                     using (var projectResult = SWIG.storj_uplink.uplink_open_project(_access))
                     {
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
-                            throw new ArgumentException(projectResult.error.message);
+                            throw new AccessException(projectResult.error.message);
 
                         _project = projectResult.project;
                     }
@@ -188,7 +188,7 @@ namespace uplink.NET.Models
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(ex.Message);
+                throw new AccessException(ex.Message);
             }
         }
 
@@ -229,7 +229,7 @@ namespace uplink.NET.Models
             using (SWIG.UplinkStringResult serializedAccessResult = SWIG.storj_uplink.uplink_access_serialize(_access))
             {
                 if (serializedAccessResult.error != null && !string.IsNullOrEmpty(serializedAccessResult.error.message))
-                    throw new ArgumentException(serializedAccessResult.error.message);
+                    throw new AccessSerializeException(serializedAccessResult.error.message);
 
                 string serializedAccess = serializedAccessResult.string_;
 
@@ -257,7 +257,7 @@ namespace uplink.NET.Models
                 using (SWIG.UplinkAccessResult accessResult = SWIG.storj_uplink.access_share2(_access, permissionSWIG))
                 {
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
-                        throw new ArgumentException(accessResult.error.message);
+                        throw new AccessShareException(accessResult.error.message);
 
                     return new Access(accessResult.access);
                 }
@@ -280,7 +280,7 @@ namespace uplink.NET.Models
             using (var error = SWIG.storj_uplink.uplink_access_override_encryption_key(_access, bucketName, prefix, encryptionKey._encryptionKeyResulRef.encryption_key))
             {
                 if (error != null && !string.IsNullOrEmpty(error.message))
-                    throw new ArgumentException(error.message);
+                    throw new AccessException(error.message);
 
                 return true;
             }
@@ -303,12 +303,12 @@ namespace uplink.NET.Models
                 using (var registeredAccess = SWIG.storj_uplink.edge_register_access(edgeConfig, _access, edgeRegisterAccessOptions))
                 {
                     if (registeredAccess.error != null && !string.IsNullOrEmpty(registeredAccess.error.message))
-                        throw new ArgumentException(registeredAccess.error.message);
+                        throw new AccessShareException(registeredAccess.error.message);
 
                     using (var shareUrl = SWIG.storj_uplink.edge_join_share_url(registeredAccess.credentials.endpoint, registeredAccess.credentials.access_key_id, bucketName, key, edgeShareURLOptions))
                     {
                         if (shareUrl.error != null && !string.IsNullOrEmpty(shareUrl.error.message))
-                            throw new ArgumentException(shareUrl.error.message);
+                            throw new AccessShareException(shareUrl.error.message);
 
                         return shareUrl.string_.Replace("gateway.eu1", "link").Replace("gateway.us1", "link").Replace("gateway.ap1", "link");
                     }
