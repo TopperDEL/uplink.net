@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
 using uplink.NET.Services;
@@ -52,7 +53,7 @@ namespace uplink.NET.Test
             }
             catch (Exception ex)
             {
-                Assert.IsInstanceOfType(ex, typeof(ArgumentException));
+                Assert.IsInstanceOfType(ex, typeof(AccessException));
                 return;
             }
             Assert.IsTrue(false, "Invalid API-Key not checked");

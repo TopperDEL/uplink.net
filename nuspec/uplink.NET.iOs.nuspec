@@ -16,11 +16,18 @@
     <copyright>Copyright YEAR</copyright>
     <tags>storj tardigrade uplink cloud storage ios xamarin</tags>
     <language>en-US</language>
+	<dependencies>
+      <group targetFramework="Xamarin.iOS1.0" />
+      <group targetFramework="net6.0-ios13.6" />
+    </dependencies>
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
     <file target="lib\xamarinios10\lib.txt" src="xamarinios\lib.txt"/>
-    <file target="build\xamarinios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
+	<file target="build\xamarinios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
     <file target="build\xamarinios\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
+	<file target="lib/net6.0-ios/lib.txt" src="xamarinios\lib.txt"/>
+	<file target="build\net6.0-ios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
+    <file target="build\net6.0-ios\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
   </files>
 </package>

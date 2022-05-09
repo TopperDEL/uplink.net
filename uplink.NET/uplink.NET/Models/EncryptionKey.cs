@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using uplink.NET.Exceptions;
 
 namespace uplink.NET.Models
 {
@@ -23,7 +24,7 @@ namespace uplink.NET.Models
             }
 
             if (_encryptionKeyResulRef.error != null && !string.IsNullOrEmpty(_encryptionKeyResulRef.error.message))
-                throw new ArgumentException(_encryptionKeyResulRef.error.message);
+                throw new EncryptionException(_encryptionKeyResulRef.error.message);
         }
 
         public void Dispose()
