@@ -72,6 +72,58 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task RevokeAccess_MakesAccesUnusable()
+        {
+            string serializedAccess;
+            string bucketname = "revoke-access-makes-access-unusable";
+            byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
+
+            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            {
+                await _bucketService.CreateBucketAsync(bucketname);
+
+                Permission permission = new Permission();
+                permission.AllowUpload = true;
+                List<SharePrefix> sharePrefixes = new List<SharePrefix>();
+                sharePrefixes.Add(new SharePrefix() { Bucket = bucketname, Prefix = "test/" });
+                var restricted = scope.Share(permission, sharePrefixes);
+                serializedAccess = restricted.Serialize();
+
+                await Task.Delay(SATELLITE_WAIT_DURATION); //Wait a bit so that some things can happen on the satellite
+
+                Access restrictedEnv;
+                try
+                {
+                    restrictedEnv = new Access(serializedAccess);
+                }
+                catch
+                {
+                    Assert.Fail("Failed to create restricted scope from serialized scope");
+                    return;
+                }
+
+                var restrictedObjectService = new ObjectService(restrictedEnv);
+                var restrictedBucketService = new BucketService(restrictedEnv);
+                var restrictedBucket = await restrictedBucketService.GetBucketAsync(bucketname);
+                var uploadOperationRestricted = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
+                await uploadOperationRestricted.StartUploadAsync();
+
+                Assert.IsTrue(uploadOperationRestricted.Completed);
+                Assert.AreEqual(bytesToUpload.Length, uploadOperationRestricted.BytesSent);
+
+                //Revoke access
+                await scope.RevokeAsync();
+
+                //Try uploading again
+                var uploadOperationRestricted2 = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
+                await uploadOperationRestricted2.StartUploadAsync();
+
+                Assert.IsFalse(uploadOperationRestricted2.Completed);
+                Assert.IsTrue(uploadOperationRestricted2.Failed);
+            }
+        }
+
+        [TestMethod]
         public async Task AccessShare_Creates_UsableSharedAccessForUpload()
         {
             string serializedAccess;
@@ -254,6 +306,7 @@ namespace uplink.NET.Test
         [TestCleanup]
         public async Task CleanupAsync()
         {
+            await DeleteBucketAsync("revoke-access-makes-access-unusable");
             await DeleteBucketAsync("accessshare-creates-usablesharedaccessforupload");
             await DeleteBucketAsync("accessshare-creates-usablesharedaccessforuploaddeep");
             await DeleteBucketAsync("accessshare-creates-usablesharedaccessfordownload");

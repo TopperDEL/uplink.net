@@ -154,6 +154,12 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static UplinkError uplink_update_object_metadata2(UplinkProject project, string bucket_name, string object_key, UplinkUploadObjectMetadataOptions options) {
+    global::System.IntPtr cPtr = storj_uplinkPINVOKE.uplink_update_object_metadata2(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkUploadObjectMetadataOptions.getCPtr(options));
+    UplinkError ret = (cPtr == global::System.IntPtr.Zero) ? null : new UplinkError(cPtr, false);
+    return ret;
+  }
+
   public static UplinkDownloadResult uplink_download_object(UplinkProject project, string bucket_name, string object_key, UplinkDownloadOptions options) {
     UplinkDownloadResult ret = new UplinkDownloadResult(storj_uplinkPINVOKE.uplink_download_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(object_key).swigCPtr, UplinkDownloadOptions.getCPtr(options)), true);
     return ret;

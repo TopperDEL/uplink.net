@@ -144,5 +144,13 @@ namespace uplink.NET.Interfaces
         /// <param name="newKey">The new key (to-key)</param>
         /// <returns>Nothing on success or raises an ObjectMoveException</returns>
         Task MoveObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey);
+        /// <summary>
+        /// Updates the CustomMetadata of an object by replacing it with the one given.
+        /// </summary>
+        /// <param name="bucket">The Bucket</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <param name="metadata">The new Metadata</param>
+        /// <returns>Nothing on success or raises an CouldNotUpdateObjectMetadataException</returns>
+        Task UpdateObjectMetadataAsync(Bucket bucket, string targetPath, CustomMetadata metadata);
     }
 }
