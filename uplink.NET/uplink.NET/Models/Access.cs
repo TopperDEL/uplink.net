@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using uplink.NET.Exceptions;
 using uplink.SWIG;
 
 namespace uplink.NET.Models
@@ -80,7 +82,7 @@ namespace uplink.NET.Models
         /// An access contains info about the satellite-address, the passphrase and the API-Key.
         /// </summary>
         /// <param name="accessGrant">The serialized access grant</param>
-        public Access(string accessGrant):this(accessGrant, null)
+        public Access(string accessGrant) : this(accessGrant, null)
         {
         }
 
@@ -308,8 +310,19 @@ namespace uplink.NET.Models
                         if (shareUrl.error != null && !string.IsNullOrEmpty(shareUrl.error.message))
                             throw new ArgumentException(shareUrl.error.message);
 
-                        return shareUrl.string_.Replace("gateway.eu1","link").Replace("gateway.us1", "link").Replace("gateway.ap1", "link");
+                        return shareUrl.string_.Replace("gateway.eu1", "link").Replace("gateway.us1", "link").Replace("gateway.ap1", "link");
                     }
+                }
+            }
+        }
+
+        public async Task RevokeAsync()
+        {
+            using (UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_revoke_access(_project, _access)).ConfigureAwait(false))
+            {
+                if (error != null && !string.IsNullOrEmpty(error.message))
+                {
+                    throw new AccessRevokeException(error.message);
                 }
             }
         }
