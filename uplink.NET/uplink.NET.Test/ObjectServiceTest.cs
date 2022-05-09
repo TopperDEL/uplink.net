@@ -367,6 +367,38 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task UpdateCustomMetaData_Works()
+        {
+            string bucketname = "update-custom-metadata-works";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            CustomMetadata customMetadata = new CustomMetadata();
+            customMetadata.Entries.Add(new CustomMetadataEntry() { Key = "my-key 1a", Value = "my-value 1a" });
+            customMetadata.Entries.Add(new CustomMetadataEntry() { Key = "my-key 2a", Value = "my-value 2a" });
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, customMetadata, false);
+            await uploadOperation.StartUploadAsync();
+
+            CustomMetadata customMetadataUpdated = new CustomMetadata();
+            customMetadataUpdated.Entries.Add(new CustomMetadataEntry() { Key = "my-key 1b", Value = "my-value 1b" });
+            customMetadataUpdated.Entries.Add(new CustomMetadataEntry() { Key = "my-key 2b", Value = "my-value 2b" });
+            await _objectService.UpdateObjectMetadataAsync(bucket, "myfile1.txt", customMetadataUpdated);
+
+            var stat = await _objectService.GetObjectAsync(bucket, "myfile1.txt");
+            var objectList = await _objectService.ListObjectsAsync(bucket, new ListObjectsOptions());
+
+            Assert.AreEqual(1, objectList.Items.Count);
+            Assert.AreEqual(2, stat.CustomMetadata.Entries.Count);
+            Assert.AreEqual("my-key 1b", stat.CustomMetadata.Entries[0].Key);
+            Assert.AreEqual("my-value 1b", stat.CustomMetadata.Entries[0].Value);
+            Assert.AreEqual("my-key 2b", stat.CustomMetadata.Entries[1].Key);
+            Assert.AreEqual("my-value 2b", stat.CustomMetadata.Entries[1].Value);
+        }
+
+        [TestMethod]
         public async Task MoveObject_MovesObject_InSameBucket()
         {
             string bucketname = "moveobject-moves-object-samebucket";
@@ -467,6 +499,7 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("deleteobject-fails-onnotexistingobject");
             await DeleteBucketAsync("deleteobject-deletes-object");
             await DeleteBucketAsync("set-custom-metadata-works");
+            await DeleteBucketAsync("update-custom-metadata-works");
             await DeleteBucketAsync("moveobject-moves-object-samebucket");
             await DeleteBucketAsync("moveobject-moves-object-diffbucket1");
             await DeleteBucketAsync("moveobject-moves-object-diffbucket2");
