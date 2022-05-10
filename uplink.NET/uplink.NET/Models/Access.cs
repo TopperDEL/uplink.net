@@ -316,9 +316,9 @@ namespace uplink.NET.Models
             }
         }
 
-        public async Task RevokeAsync()
+        public async Task RevokeAsync(Access childAccess)
         {
-            using (UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_revoke_access(_project, _access)).ConfigureAwait(false))
+            using (UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_revoke_access(_project, childAccess._access)).ConfigureAwait(false))
             {
                 if (error != null && !string.IsNullOrEmpty(error.message))
                 {
