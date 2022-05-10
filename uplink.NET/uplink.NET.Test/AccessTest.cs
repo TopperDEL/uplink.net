@@ -113,7 +113,7 @@ namespace uplink.NET.Test
                 Assert.AreEqual(bytesToUpload.Length, uploadOperationRestricted.BytesSent);
 
                 //Revoke access
-                await scope.RevokeAsync();
+                await scope.RevokeAsync(restrictedEnv);
 
                 //Try uploading again
                 var uploadOperationRestricted2 = await restrictedObjectService.UploadObjectAsync(restrictedBucket, "test/subfolder/test-file-upload", new UploadOptions(), bytesToUpload, false);
