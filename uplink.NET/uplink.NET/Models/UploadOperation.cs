@@ -7,6 +7,7 @@ using System.Threading;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Net.NetworkInformation;
+using System.Buffers;
 
 namespace uplink.NET.Models
 {
@@ -152,6 +153,7 @@ namespace uplink.NET.Models
 
         private void DoUpload()
         {
+            var shared = ArrayPool<byte>.Shared;
             try
             {
                 if (_byteStreamToUpload != null)
@@ -160,53 +162,59 @@ namespace uplink.NET.Models
                     int bytesToUploadCount = 0;
                     do
                     {
-                        byte[] bytesToUpload = new byte[262144];
+                        byte[] bytesToUpload = shared.Rent(262144);
 
-                        bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
-                        if (bytesToUploadCount > 0)
+                        try
                         {
-                            byte[] targetArray = bytesToUpload.Take(bytesToUploadCount).ToArray();
-                            fixed (byte* arrayPtr = targetArray)
+                            bytesToUploadCount = _byteStreamToUpload.Read(bytesToUpload, 0, 262144);
+                            if (bytesToUploadCount > 0)
                             {
-                                using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount))
+                                fixed (byte* arrayPtr = bytesToUpload)
                                 {
-                                    if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                                    using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_upload_write(_upload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToUploadCount))
                                     {
-                                        _errorMessage = sentResult.error.message;
-                                        Failed = true;
+                                        if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                                        {
+                                            _errorMessage = sentResult.error.message;
+                                            Failed = true;
+                                            Running = false;
+                                            UploadOperationEnded?.Invoke(this);
+                                            return;
+                                        }
+                                        else
+                                            BytesSent += sentResult.bytes_written;
+                                    }
+                                    if (_cancelled)
+                                    {
+                                        using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                                        {
+                                            if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                            {
+                                                Failed = true;
+                                                _errorMessage = abortError.message;
+                                            }
+                                            else
+                                                Cancelled = true;
+                                        }
+
                                         Running = false;
                                         UploadOperationEnded?.Invoke(this);
                                         return;
                                     }
-                                    else
-                                        BytesSent += sentResult.bytes_written;
-                                }
-                                if (_cancelled)
-                                {
-                                    using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                                    UploadOperationProgressChanged?.Invoke(this);
+                                    if (!string.IsNullOrEmpty(_errorMessage))
                                     {
-                                        if (abortError != null && !string.IsNullOrEmpty(abortError.message))
-                                        {
-                                            Failed = true;
-                                            _errorMessage = abortError.message;
-                                        }
-                                        else
-                                            Cancelled = true;
+                                        Failed = true;
+                                        UploadOperationEnded?.Invoke(this);
+                                        return;
                                     }
+                                }
 
-                                    Running = false;
-                                    UploadOperationEnded?.Invoke(this);
-                                    return;
-                                }
-                                UploadOperationProgressChanged?.Invoke(this);
-                                if (!string.IsNullOrEmpty(_errorMessage))
-                                {
-                                    Failed = true;
-                                    UploadOperationEnded?.Invoke(this);
-                                    return;
-                                }
                             }
-
+                        }
+                        finally
+                        {
+                            shared.Return(bytesToUpload);
                         }
                     } while (bytesToUploadCount > 0);
 
