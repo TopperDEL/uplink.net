@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -127,6 +128,8 @@ namespace uplink.NET.Models
 
         private void DoDownload()
         {
+            var shared = ArrayPool<byte>.Shared;
+
             Running = true;
             while (BytesReceived < TotalBytes)
             {
@@ -134,50 +137,64 @@ namespace uplink.NET.Models
                 if (TotalBytes - BytesReceived > tenth)
                 {
                     //Fetch next bytes in batch
-                    byte[] part = new byte[tenth];
-                    fixed (byte* arrayPtr = part)
+                    byte[] part = shared.Rent(tenth);
+                    try
                     {
-                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth))
+                        fixed (byte* arrayPtr = part)
                         {
-                            if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                            using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth))
                             {
-                                _errorMessage = readResult.error.message;
-                                Failed = true;
-                                Running = false;
-                                DownloadOperationEnded?.Invoke(this);
-                                return;
-                            }
-                            if (readResult.bytes_read != 0)
-                            {
-                                Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
-                                BytesReceived += readResult.bytes_read;
+                                if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                                {
+                                    _errorMessage = readResult.error.message;
+                                    Failed = true;
+                                    Running = false;
+                                    DownloadOperationEnded?.Invoke(this);
+                                    return;
+                                }
+                                if (readResult.bytes_read != 0)
+                                {
+                                    Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
+                                    BytesReceived += readResult.bytes_read;
+                                }
                             }
                         }
+                    }
+                    finally
+                    {
+                        shared.Return(part);
                     }
                 }
                 else
                 {
                     //Fetch only the remaining bytes
                     var remaining = TotalBytes - BytesReceived;
-                    byte[] part = new byte[remaining];
-                    fixed (byte* arrayPtr = part)
+                    byte[] part = shared.Rent((int)remaining);
+                    try
                     {
-                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
+                        fixed (byte* arrayPtr = part)
                         {
-                            if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                            using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
                             {
-                                _errorMessage = readResult.error.message;
-                                Failed = true;
-                                Running = false;
-                                DownloadOperationEnded?.Invoke(this);
-                                return;
-                            }
-                            if (readResult.bytes_read != 0)
-                            {
-                                Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
-                                BytesReceived += readResult.bytes_read;
+                                if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
+                                {
+                                    _errorMessage = readResult.error.message;
+                                    Failed = true;
+                                    Running = false;
+                                    DownloadOperationEnded?.Invoke(this);
+                                    return;
+                                }
+                                if (readResult.bytes_read != 0)
+                                {
+                                    Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
+                                    BytesReceived += readResult.bytes_read;
+                                }
                             }
                         }
+                    }
+                    finally
+                    {
+                        shared.Return(part);
                     }
                 }
 
