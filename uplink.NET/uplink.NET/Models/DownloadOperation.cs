@@ -129,17 +129,18 @@ namespace uplink.NET.Models
         private void DoDownload()
         {
             var shared = ArrayPool<byte>.Shared;
+            var tenth = _bytesToDownload.Length / 10;
+            byte[] part = shared.Rent(tenth);
 
-            Running = true;
-            while (BytesReceived < TotalBytes)
+            try
             {
-                var tenth = _bytesToDownload.Length / 10;
-                if (TotalBytes - BytesReceived > tenth)
+                Running = true;
+                while (BytesReceived < TotalBytes)
                 {
-                    //Fetch next bytes in batch
-                    byte[] part = shared.Rent(tenth);
-                    try
+                    if (TotalBytes - BytesReceived > tenth)
                     {
+                        //Fetch next bytes in batch
+
                         fixed (byte* arrayPtr = part)
                         {
                             using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth))
@@ -159,19 +160,13 @@ namespace uplink.NET.Models
                                 }
                             }
                         }
+
                     }
-                    finally
+                    else
                     {
-                        shared.Return(part);
-                    }
-                }
-                else
-                {
-                    //Fetch only the remaining bytes
-                    var remaining = TotalBytes - BytesReceived;
-                    byte[] part = shared.Rent((int)remaining);
-                    try
-                    {
+                        //Fetch only the remaining bytes
+                        var remaining = TotalBytes - BytesReceived;
+
                         fixed (byte* arrayPtr = part)
                         {
                             using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
@@ -192,54 +187,55 @@ namespace uplink.NET.Models
                             }
                         }
                     }
-                    finally
-                    {
-                        shared.Return(part);
-                    }
-                }
 
-                if (_cancelled)
-                {
-                    using (SWIG.UplinkError cancelError = SWIG.storj_uplink.uplink_close_download(_download))
+                    if (_cancelled)
                     {
-                        if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
+                        using (SWIG.UplinkError cancelError = SWIG.storj_uplink.uplink_close_download(_download))
                         {
-                            _errorMessage = cancelError.message;
-                            Failed = true;
+                            if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
+                            {
+                                _errorMessage = cancelError.message;
+                                Failed = true;
+                            }
+                            else
+                                Cancelled = true;
                         }
-                        else
-                            Cancelled = true;
+
+                        Running = false;
+                        DownloadOperationEnded?.Invoke(this);
+                        return;
+                    }
+                    DownloadOperationProgressChanged?.Invoke(this);
+                    if (!string.IsNullOrEmpty(_errorMessage))
+                    {
+                        Failed = true;
+                        Running = false;
+                        DownloadOperationEnded?.Invoke(this);
+                        return;
                     }
 
-                    Running = false;
-                    DownloadOperationEnded?.Invoke(this);
-                    return;
                 }
-                DownloadOperationProgressChanged?.Invoke(this);
-                if (!string.IsNullOrEmpty(_errorMessage))
-                {
-                    Failed = true;
-                    Running = false;
-                    DownloadOperationEnded?.Invoke(this);
-                    return;
-                }
-            }
 
-            using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_download(_download))
+                using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_download(_download))
+                {
+                    if (closeError != null && !string.IsNullOrEmpty(closeError.message))
+                    {
+                        _errorMessage = closeError.message;
+                        Failed = true;
+                        Running = false;
+                        DownloadOperationEnded?.Invoke(this);
+                        return;
+                    }
+                }
+
+                Completed = true;
+                Running = false;
+                DownloadOperationEnded?.Invoke(this);
+            }
+            finally
             {
-                if (closeError != null && !string.IsNullOrEmpty(closeError.message))
-                {
-                    _errorMessage = closeError.message;
-                    Failed = true;
-                    Running = false;
-                    DownloadOperationEnded?.Invoke(this);
-                    return;
-                }
+                shared.Return(part);
             }
-
-            Completed = true;
-            Running = false;
-            DownloadOperationEnded?.Invoke(this);
         }
 
         public void Dispose()
