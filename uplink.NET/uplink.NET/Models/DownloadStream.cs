@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -41,25 +42,33 @@ namespace uplink.NET.Models
         {
             int readBytes = 0;
             int remaining = count;
+            var shared = ArrayPool<byte>.Shared;
 
-            byte[] tmpBuffer = new byte[count];
-            fixed (byte* arrayPtr = tmpBuffer)
+            byte[] tmpBuffer = shared.Rent(count);
+            try
             {
-                while (readBytes < count)
+                fixed (byte* arrayPtr = tmpBuffer)
                 {
-                    using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_result.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
+                    while (readBytes < count)
                     {
-                        Array.Copy(tmpBuffer, 0, buffer, readBytes, (int)readResult.bytes_read);
-                        remaining -= (int)readResult.bytes_read;
-                        Position += (int)readResult.bytes_read;
-                        readBytes += (int)readResult.bytes_read;
-                        if (readResult.error != null && readResult.error.code == -1)
+                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_result.download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
                         {
-                            return readBytes;
+                            Array.Copy(tmpBuffer, 0, buffer, readBytes, (int)readResult.bytes_read);
+                            remaining -= (int)readResult.bytes_read;
+                            Position += (int)readResult.bytes_read;
+                            readBytes += (int)readResult.bytes_read;
+                            if (readResult.error != null && readResult.error.code == -1)
+                            {
+                                return readBytes;
+                            }
                         }
                     }
+                    return readBytes;
                 }
-                return readBytes;
+            }
+            finally
+            {
+                shared.Return(tmpBuffer);
             }
         }
 

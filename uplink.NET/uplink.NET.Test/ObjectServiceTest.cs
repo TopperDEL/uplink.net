@@ -153,6 +153,30 @@ namespace uplink.NET.Test
             await Download_X_Bytes(1024 * 512, "downloadtest-large");
         }
 
+        /// <summary>
+        /// This test is supposed to be run manually (with debugger attached) in order to test the up- and download
+        /// of very large files - in this case 1 GB!
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task Manual_TestVeryLargeFile_1GB()
+        {
+            if (!System.Diagnostics.Debugger.IsAttached) return;
+            await Download_X_Bytes(1073741824, "downloadtest-very-large");
+        }
+
+        /// <summary>
+        /// This test is supposed to be run manually (with debugger attached) in order to test the up- and download
+        /// of very large files - in this case 256 MB!
+        /// </summary>
+        /// <returns></returns>
+        [TestMethod]
+        public async Task Manual_TestVeryLargeFile_256MB()
+        {
+            if (!System.Diagnostics.Debugger.IsAttached) return;
+            await Download_X_Bytes(1073741824 / 4, "downloadtest-very-large");
+        }
+
         private async Task Download_X_Bytes(long bytes, string bucketname)
         {
             var result = await _bucketService.CreateBucketAsync(bucketname);
@@ -491,6 +515,7 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("downloadtest-2048");
             await DeleteBucketAsync("downloadtest-2500");
             await DeleteBucketAsync("downloadtest-large");
+            await DeleteBucketAsync("downloadtest-very-large");
             await DeleteBucketAsync("downloadstreamtest1");
             await DeleteBucketAsync("downloadstreamtest2");
             await DeleteBucketAsync("listobject-lists-existingobjects");

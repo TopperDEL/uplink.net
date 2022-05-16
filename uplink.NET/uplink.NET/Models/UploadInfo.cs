@@ -26,11 +26,6 @@ namespace uplink.NET.Models
         /// </summary>
         public SystemMetadata SystemMetadata { get; set; }
 
-        /// <summary>
-        /// The custom metadata
-        /// </summary>
-        public CustomMetadata CustomMetadata { get; set; }
-
         internal static UploadInfo FromSWIG(SWIG.UplinkUploadInfo original)
         {
             UploadInfo ret = new UploadInfo();
@@ -38,7 +33,6 @@ namespace uplink.NET.Models
             ret.Key = original.key;
             ret.IsPrefix = original.is_prefix;
             ret.SystemMetadata = SystemMetadata.FromSWIG(original.system);
-            //ret.CustomMetadata = CustomMetadata.FromSWIG(original.custom); //ToDo: support custom metadata here
             
             return ret;
         }
