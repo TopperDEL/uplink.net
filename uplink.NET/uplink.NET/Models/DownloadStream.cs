@@ -74,9 +74,11 @@ namespace uplink.NET.Models
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            _options.Dispose();
-            _result.Dispose();
-
+            bool initNewDownload = false;
+            if(offset != Position)
+            {
+                initNewDownload = true;
+            }
             switch (origin)
             {
                 case SeekOrigin.End:
@@ -92,8 +94,13 @@ namespace uplink.NET.Models
                     throw new NotSupportedException();
             }
 
-            _options = new SWIG.UplinkDownloadOptions { length = _length, offset = Position };
-            _result = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, _options);
+            if (initNewDownload)
+            {
+                _options.Dispose();
+                _result.Dispose();
+                _options = new SWIG.UplinkDownloadOptions { length = _length, offset = Position };
+                _result = SWIG.storj_uplink.uplink_download_object(_bucket._projectRef, _bucket.Name, _objectName, _options);
+            }
 
             return Position;
         }
