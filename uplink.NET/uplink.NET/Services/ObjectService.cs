@@ -189,6 +189,18 @@ namespace uplink.NET.Services
             }
         }
 
+        public async Task CopyObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey)
+        {
+            using (var options = new SWIG.UplinkCopyObjectOptions())
+            using (SWIG.UplinkObjectResult result = await Task.Run(() => SWIG.storj_uplink.uplink_copy_object(_access._project, oldBucket.Name, oldKey, newBucket.Name, newKey, options)))
+            {
+                if (result.error != null && !string.IsNullOrEmpty(result.error.message))
+                {
+                    throw new ObjectNotFoundException(result.error.message);
+                }
+            }
+        }
+
         public async Task UpdateObjectMetadataAsync(Bucket bucket, string targetPath, CustomMetadata metadata)
         {
             await UploadOperation.customMetadataSemaphore.WaitAsync();
