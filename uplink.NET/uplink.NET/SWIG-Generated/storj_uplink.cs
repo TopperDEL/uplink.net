@@ -126,6 +126,11 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static UplinkObjectResult uplink_copy_object(UplinkProject project, string old_bucket_name, string old_object_key, string new_bucket_name, string new_object_key, UplinkCopyObjectOptions options) {
+    UplinkObjectResult ret = new UplinkObjectResult(storj_uplinkPINVOKE.uplink_copy_object(UplinkProject.getCPtr(project), new storj_uplinkPINVOKE.SWIGStringMarshal(old_bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(old_object_key).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(new_bucket_name).swigCPtr, new storj_uplinkPINVOKE.SWIGStringMarshal(new_object_key).swigCPtr, UplinkCopyObjectOptions.getCPtr(options)), true);
+    return ret;
+  }
+
   public static void prepare_custommetadata() {
     storj_uplinkPINVOKE.prepare_custommetadata();
   }
