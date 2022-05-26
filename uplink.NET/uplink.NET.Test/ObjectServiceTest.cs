@@ -498,6 +498,82 @@ namespace uplink.NET.Test
             }
         }
 
+        [TestMethod]
+        public async Task CopyObject_MovesObject_InSameBucket()
+        {
+            string bucketname = "copyobject-copies-object-samebucket";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var storjObject = await _objectService.GetObjectAsync(bucket, "myfile.txt");
+
+            Assert.AreEqual("myfile.txt", storjObject.Key);
+            Assert.AreEqual(2048, storjObject.SystemMetadata.ContentLength);
+
+            await _objectService.CopyObjectAsync(bucket, "myfile.txt", bucket, "mycopiedfile.txt");
+
+            var storjCopiedObject = await _objectService.GetObjectAsync(bucket, "mycopiedfile.txt");
+
+            Assert.AreEqual("mycopiedfile.txt", storjCopiedObject.Key);
+            Assert.AreEqual(2048, storjCopiedObject.SystemMetadata.ContentLength);
+
+            try
+            {
+                var stillExistingObject = await _objectService.GetObjectAsync(bucket, "myfile.txt");
+                Assert.AreEqual("myfile.txt", stillExistingObject.Key);
+            }
+            catch
+            {
+                Assert.IsTrue(false, "Should not reach this line");
+            }
+        }
+
+        [TestMethod]
+        public async Task CopyObject_CopiesObject_InDifferentBucket()
+        {
+            string bucketname1 = "copyobject-copies-object-diffbucket1";
+
+            await _bucketService.CreateBucketAsync(bucketname1);
+            var bucket1 = await _bucketService.GetBucketAsync(bucketname1);
+
+            string bucketname2 = "copyobject-copies-object-diffbucket2";
+
+            await _bucketService.CreateBucketAsync(bucketname2);
+            var bucket2 = await _bucketService.GetBucketAsync(bucketname2);
+
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket1, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var storjObject = await _objectService.GetObjectAsync(bucket1, "myfile.txt");
+
+            Assert.AreEqual("myfile.txt", storjObject.Key);
+            Assert.AreEqual(2048, storjObject.SystemMetadata.ContentLength);
+
+            await _objectService.CopyObjectAsync(bucket1, "myfile.txt", bucket2, "mycopiesfile.txt");
+
+            var storjMovedObject = await _objectService.GetObjectAsync(bucket2, "mycopiedfile.txt");
+
+            Assert.AreEqual("mycopiedfile.txt", storjMovedObject.Key);
+            Assert.AreEqual(2048, storjMovedObject.SystemMetadata.ContentLength);
+
+            try
+            {
+                var stillExistingObject = await _objectService.GetObjectAsync(bucket1, "myfile.txt");
+                Assert.AreEqual("myfile.txt", stillExistingObject.Key);
+            }
+            catch
+            {
+                Assert.IsTrue(false, "Should not reach this line");
+            }
+        }
+
         public static byte[] GetRandomBytes(long length)
         {
             byte[] bytes = new byte[length];
@@ -528,6 +604,9 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("moveobject-moves-object-samebucket");
             await DeleteBucketAsync("moveobject-moves-object-diffbucket1");
             await DeleteBucketAsync("moveobject-moves-object-diffbucket2");
+            await DeleteBucketAsync("copyobject-copies-object-samebucket");
+            await DeleteBucketAsync("copyobject-copies-object-diffbucket1");
+            await DeleteBucketAsync("copyobject-copies-object-diffbucket2");            
         }
 
         private async Task DeleteBucketAsync(string bucketName)
