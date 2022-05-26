@@ -499,7 +499,7 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
-        public async Task CopyObject_MovesObject_InSameBucket()
+        public async Task CopyObject_CopiesObject_InSameBucket()
         {
             string bucketname = "copyobject-copies-object-samebucket";
 
