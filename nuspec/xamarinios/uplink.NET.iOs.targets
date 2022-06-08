@@ -3,6 +3,7 @@
         <NativeReference Include="$(MSBuildThisFileDirectory)storj_uplink.framework">
           <Kind>Framework</Kind>
 		  <FrameworkFilename>storj_uplink</FrameworkFilename>
+		  <NugetPackageId>uplink.NET.iOs</NugetPackageId>
         </NativeReference>
     </ItemGroup>
 </Project>
