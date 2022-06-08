@@ -4,6 +4,7 @@
           <Kind>Framework</Kind>
 		  <FrameworkFilename>storj_uplink</FrameworkFilename>
 		  <NugetPackageId>uplink.NET.iOs</NugetPackageId>
+		  <NugetPackageVersion>2.9.2681</NugetPackageVersion>
         </NativeReference>
     </ItemGroup>
 </Project>
