@@ -2,6 +2,7 @@
     <ItemGroup>
         <NativeReference Include="$(MSBuildThisFileDirectory)storj_uplink.framework">
           <Kind>Framework</Kind>
+		  <FrameworkFilename>storj_uplink</FrameworkFilename>
         </NativeReference>
     </ItemGroup>
 </Project>
