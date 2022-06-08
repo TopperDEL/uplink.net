@@ -5,6 +5,8 @@
 		  <FrameworkFilename>storj_uplink</FrameworkFilename>
 		  <NugetPackageId>uplink.NET.iOs</NugetPackageId>
 		  <NugetPackageVersion>2.9.2681</NugetPackageVersion>
+		  <AssetType>runtime</AssetType>
+		  <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
         </NativeReference>
     </ItemGroup>
 </Project>
