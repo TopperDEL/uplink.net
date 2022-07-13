@@ -60,6 +60,7 @@ steps:
     targetType: 'inline'
     script: |
       mv uplink.NET/uplink.NET/bin/Release/netstandard2.0/uplink.NET.dll uplink.NET.dll
+      mv uplink.NET/uplink.NET/bin/Release/netstandard2.0/uplink.NET.pdb uplink.NET.pdb
   displayName: 'Place uplink-DLL at nuget-location'
 
 - task: NuGetCommand@2
