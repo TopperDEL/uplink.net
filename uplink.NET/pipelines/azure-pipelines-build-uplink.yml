@@ -68,6 +68,7 @@ steps:
     packagesToPack: 'uplink.NET.nuspec'
     packDestination: '$(System.DefaultWorkingDirectory)'
     versioningScheme: 'off'
+    includeSymbols: true
   displayName: 'Pack the Win-Nuget'
 
 - script: |
