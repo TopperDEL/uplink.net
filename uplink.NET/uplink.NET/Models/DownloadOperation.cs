@@ -130,6 +130,8 @@ namespace uplink.NET.Models
         {
             var shared = ArrayPool<byte>.Shared;
             var tenth = _bytesToDownload.Length / 10;
+            if (tenth == 0)
+                tenth = _bytesToDownload.Length;
             byte[] part = shared.Rent(tenth);
 
             try
