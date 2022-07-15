@@ -562,7 +562,7 @@ namespace uplink.NET.Test
             Assert.AreEqual("myfile.txt", storjObject.Key);
             Assert.AreEqual(2048, storjObject.SystemMetadata.ContentLength);
 
-            await _objectService.CopyObjectAsync(bucket1, "myfile.txt", bucket2, "mycopiesfile.txt");
+            await _objectService.CopyObjectAsync(bucket1, "myfile.txt", bucket2, "mycopiedfile.txt");
 
             var storjMovedObject = await _objectService.GetObjectAsync(bucket2, "mycopiedfile.txt");
 
