@@ -130,6 +130,12 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task DownloadObject_Downloads_4Bytes()
+        {
+            await Download_X_Bytes(4, "downloadtest-4");
+        }
+
+        [TestMethod]
         public async Task DownloadObject_Downloads_256Bytes()
         {
             await Download_X_Bytes(256, "downloadtest-256");
@@ -587,6 +593,7 @@ namespace uplink.NET.Test
         public async Task CleanupAsync()
         {
             await DeleteBucketAsync("uploadtest");
+            await DeleteBucketAsync("downloadtest-4");
             await DeleteBucketAsync("downloadtest-256");
             await DeleteBucketAsync("downloadtest-2048");
             await DeleteBucketAsync("downloadtest-2500");
