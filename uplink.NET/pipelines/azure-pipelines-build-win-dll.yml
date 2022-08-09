@@ -21,6 +21,10 @@ steps:
   displayName: 'Inject the Storj-Version'
 
 - script: |
+    sed -i 's/GOVERSION/$(GOLANG_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
+  displayName: 'Inject the Go-Version'
+  
+- script: |
     echo 'Cloning $(STORJ_VERSION)'
     git clone https://github.com/storj/uplink-c.git
     cd uplink-c
