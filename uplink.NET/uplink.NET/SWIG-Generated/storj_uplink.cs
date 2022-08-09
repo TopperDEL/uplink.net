@@ -510,6 +510,11 @@ internal class storj_uplink {
     return ret;
   }
 
+  public static string get_go_version() {
+    string ret = storj_uplinkPINVOKE.SWIGStringMarshal.StringFromNativeUtf8(storj_uplinkPINVOKE.get_go_version());
+    return ret;
+  }
+
   public static readonly int UPLINK_ERROR_INTERNAL = storj_uplinkPINVOKE.UPLINK_ERROR_INTERNAL_get();
   public static readonly int UPLINK_ERROR_CANCELED = storj_uplinkPINVOKE.UPLINK_ERROR_CANCELED_get();
   public static readonly int UPLINK_ERROR_INVALID_HANDLE = storj_uplinkPINVOKE.UPLINK_ERROR_INVALID_HANDLE_get();

@@ -1550,6 +1550,9 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_storj_version___")]
   public static extern global::System.IntPtr get_storj_version();
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_get_go_version___")]
+  public static extern global::System.IntPtr get_go_version();
 }
 
 }

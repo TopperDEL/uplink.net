@@ -32,6 +32,15 @@ namespace uplink.NET.Models
             return SWIG.storj_uplink.get_storj_version();
         }
 
+        /// <summary>
+        /// Return the current Go-version
+        /// </summary>
+        /// <returns>The current Go-version</returns>
+        public static string GetGoVersion()
+        {
+            return SWIG.storj_uplink.get_go_version();
+        }
+
         #region iOs-Init
         /// <summary>
         /// Init for iOs - this is needed to correctly find the uplink.Net-Binary
