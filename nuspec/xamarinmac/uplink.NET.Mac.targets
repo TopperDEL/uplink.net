@@ -12,4 +12,15 @@
       <Kind>Framework</Kind>
     </NativeReference>
   </ItemGroup>
+  
+  <Choose>
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) And ('$(Platform)' == 'x64' Or '$(Platform)' == 'X64')">
+      <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\mac\libstorj_uplink.framework">
+          <Link>$(_DNAGeneticNugetNativePath)mac\libstorj_uplink.framework</Link>
+          <Kind>Framework</Kind>
+        </None>
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>
