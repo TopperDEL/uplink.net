@@ -70,6 +70,17 @@ stages:
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-macos-arm64.dylib'
 
+      - script: |
+          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
+          ls -l
+          echo 'File-Info'
+          file libstorj_uplink.dylib
+          echo 'lipo info'
+          lipo -info libstorj_uplink.dylib 
+          echo 'OTOOL'
+          otool -L libstorj_uplink.dylib
+        displayName: 'Create fat-lib for x86_64 and ARM64'
+
 - stage: nuget_pack_mac
   pool:
     vmImage: 'ubuntu-20.04'
@@ -94,10 +105,6 @@ stages:
           artifactName: 'apple_macos_arm64'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts (MacOS-ARM64-dylib)'
-
-      - script: |
-          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
-        displayName: 'Create fat-lib for x86_64 and ARM64'
 
       - task: DownloadPipelineArtifact@2
         inputs:
