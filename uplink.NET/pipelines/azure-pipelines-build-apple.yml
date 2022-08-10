@@ -54,14 +54,8 @@ stages:
       - script: |
           export CGO_ENABLED=1
           export GOARCH=arm64
-        displayName: 'Prepare for Target MacOS ARM64'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-macos-arm64.dylib'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build MacOS ARM64'
+          go build -buildmode c-shared -o storj_uplink-macos-arm64.dylib
+        displayName: 'Prepare and build for Target MacOS ARM64'
 
       - task: PublishPipelineArtifact@1
         inputs:
