@@ -15,7 +15,7 @@
   
   <!--Net6-Mac-->
   <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) And ('$(Platform)' == 'x64' Or '$(Platform)' == 'X64')">
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX'))">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
           <Link>libstorj_uplink.dylib</Link>
