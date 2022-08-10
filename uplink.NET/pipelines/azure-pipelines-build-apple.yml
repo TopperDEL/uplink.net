@@ -35,14 +35,14 @@ stages:
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           export CGO_ENABLED=1
           export GOARCH=amd64
-        displayName: 'Prepare for Target MacOS'
+        displayName: 'Prepare for Target MacOS - x86_64'
 
       - task: Go@0
         inputs:
           command: 'build'
           arguments: '-buildmode c-shared -o storj_uplink-macos.dylib'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build MacOS'
+        displayName: 'Build MacOS - x86_64'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -50,6 +50,25 @@ stages:
           artifact: 'apple_macos'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-macos.dylib'
+
+      - script: |
+          export CGO_ENABLED=1
+          export GOARCH=arm64
+        displayName: 'Prepare for Target MacOS ARM64'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-buildmode c-shared -o storj_uplink-macos-arm64.dylib'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build MacOS ARM64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos-arm64.dylib'
+          artifact: 'apple_macos_arm64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-macos-arm64.dylib'
 
 - stage: nuget_pack_mac
   pool:
@@ -71,6 +90,17 @@ stages:
 
       - task: DownloadPipelineArtifact@2
         inputs:
+          buildType: 'current'
+          artifactName: 'apple_macos_arm64'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (MacOS-ARM64-dylib)'
+
+      - script: |
+          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
+        displayName: 'Create fat-lib for x86_64 and ARM64'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '31'
@@ -84,9 +114,9 @@ stages:
       - script: |
           ls -l
           mkdir osx-x64
-          cp storj_uplink-macos.dylib osx-x64/
-          mv storj_uplink-macos.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
-          mv osx-x64/storj_uplink-macos.dylib osx-x64/libstorj_uplink.dylib
+          cp libstorj_uplink.dylib osx-x64/
+          mv libstorj_uplink.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
+          mv osx-x64/libstorj_uplink.dylib osx-x64/libstorj_uplink.dylib
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
