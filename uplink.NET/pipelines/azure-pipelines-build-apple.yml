@@ -84,6 +84,7 @@ stages:
       - script: |
           ls -l
           mv storj_uplink-macos.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
+          mv storj_uplink-macos.dylib osx-x64/libstorj_uplink.dylib
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
