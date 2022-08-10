@@ -120,7 +120,6 @@ stages:
           mkdir osx-x64
           cp libstorj_uplink.dylib osx-x64/
           mv libstorj_uplink.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
-          mv osx-x64/libstorj_uplink.dylib osx-x64/libstorj_uplink.dylib
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetCommand@2
