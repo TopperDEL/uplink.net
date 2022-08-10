@@ -71,6 +71,7 @@ stages:
         displayName: 'Publish storj_uplink-macos-arm64.dylib'
 
       - script: |
+          cd uplink-c
           lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
           ls -l
           echo 'File-Info'
@@ -80,6 +81,13 @@ stages:
           echo 'OTOOL'
           otool -L libstorj_uplink.dylib
         displayName: 'Create fat-lib for x86_64 and ARM64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink.dylib'
+          artifact: 'apple_macos_fat'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink.dylib'
 
 - stage: nuget_pack_mac
   pool:
@@ -95,16 +103,9 @@ stages:
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'current'
-          artifactName: 'apple_macos'
+          artifactName: 'apple_macos_fat'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (MacOS-dylib)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'apple_macos_arm64'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (MacOS-ARM64-dylib)'
+        displayName: 'Get build-artifacts (MacOS-fat-dylib)'
 
       - task: DownloadPipelineArtifact@2
         inputs:
