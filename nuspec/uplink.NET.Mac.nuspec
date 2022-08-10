@@ -24,6 +24,6 @@
     <file target="build\xamarinmac\uplink.NET.Mac.targets" src="xamarinmac\uplink.NET.Mac.targets" />
 	<file target="build\net6.0\uplink.NET.Mac.targets" src="xamarinmac\uplink.NET.Mac.targets" />
     <file target="build\xamarinmac\libstorj_uplink.framework" src="xamarinmac\libstorj_uplink.framework\**" />
-	<file target="build\net6.0\libstorj_uplink.dylib" src="xamarinmac\libstorj_uplink.framework\storj_uplink" />
+	<file target="runtimes\osx-x64\native\libstorj_uplink.dylib" src="xamarinmac\libstorj_uplink.framework\storj_uplink" />
   </files>
 </package>
