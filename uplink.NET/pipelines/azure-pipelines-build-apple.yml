@@ -83,6 +83,7 @@ stages:
 
       - script: |
           ls -l
+          mkdir osx-x64
           cp storj_uplink-macos.dylib osx-x64/
           mv storj_uplink-macos.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
           mv osx-x64/storj_uplink-macos.dylib osx-x64/libstorj_uplink.dylib
