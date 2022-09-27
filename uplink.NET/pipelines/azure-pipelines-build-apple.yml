@@ -210,6 +210,7 @@ stages:
 
       - script: |
           cd uplink-c
+          mkdir simx64
           env \
           GOOS='darwin' \
           CC=cc \
@@ -218,11 +219,11 @@ stages:
           GOARCH=amd64 \
           CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
           CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-          go build -ldflags -w -v -tags ios -o "storj_uplink-simx64.dylib" -buildmode=c-shared
+          go build -ldflags -w -v -tags ios -o "simx64/storj_uplink.dylib" -buildmode=c-shared
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "storj_uplink.dylib" "uplink-c/storj_uplink-simx64.dylib" "uplink-c/storj_uplink.dylib"
+          lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
           #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
           ls -l
           echo 'File-Info'
