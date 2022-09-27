@@ -29,5 +29,6 @@
 	<file target="lib/net6.0-ios/lib.txt" src="xamarinios\lib.txt"/>
 	<file target="build\net6.0-ios\uplink.NET.iOS.targets" src="xamarinios\uplink.NET.iOS.targets" />
     <file target="build\net6.0-ios\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
+    <file target="runtimes\ios\native\storj_uplink.framework" src="xamarinios\storj_uplink.framework\**" />
   </files>
 </package>
