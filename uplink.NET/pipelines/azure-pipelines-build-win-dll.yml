@@ -196,6 +196,7 @@ steps:
 - script: |
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/xamarinios/uplink.NET.iOs.targets
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
