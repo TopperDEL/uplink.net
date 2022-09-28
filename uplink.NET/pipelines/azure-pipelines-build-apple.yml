@@ -100,15 +100,11 @@ stages:
     - job: nuget_pack_ios
       steps:
 
-      - script: |
-          ls -l
-        displayName: 'List content'
-
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'current'
           artifactName: 'apple_ios'
-          targetPath: '$(System.DefaultWorkingDirectory)'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
         displayName: 'Get build-artifacts (iOs-xcframework)'
 
       - task: DownloadPipelineArtifact@2
@@ -122,6 +118,10 @@ stages:
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+        displayName: 'List content'
 
       - script: |
           ls -l
