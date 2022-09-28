@@ -223,8 +223,12 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
+          find .
           mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
           mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
+          echo 'Move completed'
+          find .
+          echo 'Running xcodebuild'
           xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink -framework nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink -output storj_uplink.xcframework
           #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
           #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
