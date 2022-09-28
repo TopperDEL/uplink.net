@@ -1,6 +1,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <ItemGroup>
-        <NativeReference Include="$(MSBuildThisFileDirectory)storj_uplink.framework">
+        <NativeReference Include="$(MSBuildThisFileDirectory)storj_uplink.xcframework">
           <Kind>Framework</Kind>
 		  <FrameworkFilename>storj_uplink</FrameworkFilename>
 		  <NugetPackageId>uplink.NET.iOs</NugetPackageId>

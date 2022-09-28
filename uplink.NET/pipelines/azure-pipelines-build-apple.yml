@@ -223,23 +223,26 @@ stages:
         displayName: 'Prepare and build target iOs simx64'
 
       - script: |
-          lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
+          mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
+          mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
+          xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink -framework nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink -output storj_uplink.xcframework
+          #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
           #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
           ls -l
-          echo 'File-Info'
-          file storj_uplink.dylib
-          echo 'lipo info'
-          lipo -info storj_uplink.dylib 
-          echo 'OTOOL'
-          otool -L storj_uplink.dylib
+          #echo 'File-Info'
+          #file storj_uplink.dylib
+          #echo 'lipo info'
+          #lipo -info storj_uplink.dylib 
+          #echo 'OTOOL'
+          #otool -L storj_uplink.dylib
         displayName: 'Create fat library containing all iOs-architectures'
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
           artifact: 'apple_ios'
           publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink.dylib'
+        displayName: 'Publish storj_uplink.xcframework'
 
 - stage: nuget_pack_ios
   pool:
@@ -257,7 +260,7 @@ stages:
           buildType: 'current'
           artifactName: 'apple_ios'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (iOs-dylib)'
+        displayName: 'Get build-artifacts (iOs-xcframework)'
 
       - task: DownloadPipelineArtifact@2
         inputs:
@@ -273,8 +276,11 @@ stages:
 
       - script: |
           ls -l
-          mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
-        displayName: 'Copy binaries to nuget-location'
+          #mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
+          mv storj_uplink.xcframework xamarinios
+          mv xamarinios/arm64 arm64
+          mv xamarinios/simulator simulator
+        displayName: 'Copy binaries to nuget-location and cleanup location'
 
       - task: NuGetCommand@2
         inputs:
