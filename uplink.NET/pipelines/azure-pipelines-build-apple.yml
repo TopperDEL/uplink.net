@@ -4,6 +4,170 @@
 # https://aka.ms/yaml
 
 stages:
+- stage: iOs
+  pool:
+    vmImage: 'macos-latest'
+  jobs:
+    - job: iOs
+      steps:
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          ls
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cd uplink-c
+          ls
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=arm64 \
+          CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
+          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
+          go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
+        displayName: 'Prepare and build target iOs arm64'
+
+      - script: |
+          echo 'Running xcrun...'
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib" --verbose
+          echo 'Removing archive...'
+          rm "uplink-c/storj_uplink-arm64.a"
+          echo 'Running install_name_tool'
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
+        displayName: 'Generate Framework for arm64'
+
+      - script: |
+          cd uplink-c
+          mkdir simx64
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=amd64 \
+          CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          go build -ldflags -w -v -tags ios -o "simx64/storj_uplink.dylib" -buildmode=c-shared
+        displayName: 'Prepare and build target iOs simx64'
+
+      - script: |
+          find .
+          mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
+          mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
+          echo 'Move completed'
+          find .
+          echo 'Running xcodebuild'
+          xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework -framework nuspec/xamarinios/arm64/storj_uplink.framework -output storj_uplink.xcframework
+          #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
+          #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
+          ls -l
+          #echo 'File-Info'
+          #file storj_uplink.dylib
+          #echo 'lipo info'
+          #lipo -info storj_uplink.dylib 
+          #echo 'OTOOL'
+          #otool -L storj_uplink.dylib
+        displayName: 'Create xcframework including both frameworks'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
+          artifact: 'apple_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink.xcframework'
+
+- stage: nuget_pack_ios
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: nuget_pack_ios
+      steps:
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_ios'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (iOs-xcframework)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+          #mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
+          mv storj_uplink.xcframework xamarinios
+          mv xamarinios/arm64 arm64
+          mv xamarinios/simulator simulator
+        displayName: 'Copy binaries to nuget-location and cleanup location'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.iOs.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the iOs-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish iOs-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
+        displayName: 'Publish to Dev-Feed'
+        
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NugetOrg'
+        displayName: 'Publish to Nuget.org'
+        
 - stage: MacOS
   pool:
     vmImage: 'macos-latest'
@@ -151,170 +315,6 @@ stages:
           publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
         displayName: 'Publish to Dev-Feed'
 
-      - task: NuGetCommand@2
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'NugetOrg'
-        displayName: 'Publish to Nuget.org'
-
-- stage: iOs
-  pool:
-    vmImage: 'macos-latest'
-  jobs:
-    - job: iOs
-      steps:
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          ls
-          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          cd uplink-c
-          ls
-          env \
-          GOOS='darwin' \
-          CC=cc \
-          CXX=c++ \
-          CGO_ENABLED=1 \
-          GOARCH=arm64 \
-          CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
-          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
-          go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
-        displayName: 'Prepare and build target iOs arm64'
-
-      - script: |
-          echo 'Running xcrun...'
-          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib" --verbose
-          echo 'Removing archive...'
-          rm "uplink-c/storj_uplink-arm64.a"
-          echo 'Running install_name_tool'
-          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
-        displayName: 'Generate Framework for arm64'
-
-      - script: |
-          cd uplink-c
-          mkdir simx64
-          env \
-          GOOS='darwin' \
-          CC=cc \
-          CXX=c++ \
-          CGO_ENABLED=1 \
-          GOARCH=amd64 \
-          CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-          CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-          go build -ldflags -w -v -tags ios -o "simx64/storj_uplink.dylib" -buildmode=c-shared
-        displayName: 'Prepare and build target iOs simx64'
-
-      - script: |
-          find .
-          mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
-          mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
-          echo 'Move completed'
-          find .
-          echo 'Running xcodebuild'
-          xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink -framework nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink -output storj_uplink.xcframework
-          #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
-          #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
-          ls -l
-          #echo 'File-Info'
-          #file storj_uplink.dylib
-          #echo 'lipo info'
-          #lipo -info storj_uplink.dylib 
-          #echo 'OTOOL'
-          #otool -L storj_uplink.dylib
-        displayName: 'Create fat library containing all iOs-architectures'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
-          artifact: 'apple_ios'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink.xcframework'
-
-- stage: nuget_pack_ios
-  pool:
-    vmImage: 'ubuntu-20.04'
-  jobs:
-    - job: nuget_pack_ios
-      steps:
-
-      - script: |
-          ls -l
-        displayName: 'List content'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'apple_ios'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (iOs-xcframework)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'nuspec'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (nuspec)'
-
-      - script: |
-          ls -l
-          #mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
-          mv storj_uplink.xcframework xamarinios
-          mv xamarinios/arm64 arm64
-          mv xamarinios/simulator simulator
-        displayName: 'Copy binaries to nuget-location and cleanup location'
-
-      - task: NuGetCommand@2
-        inputs:
-          command: 'pack'
-          packagesToPack: 'uplink.NET.iOs.nuspec'
-          packDestination: '$(System.DefaultWorkingDirectory)'
-          versioningScheme: 'off'
-        displayName: 'Pack the iOs-Nuget'
-
-      - script: |
-          mkdir nuget
-          mv *.nupkg nuget
-          ls
-        displayName: 'Copy binaries to nuget-location'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: 'nuget'
-          artifact: 'nuget_ios'
-          publishLocation: 'pipeline'
-        displayName: 'Publish iOs-Nuget as Artifact'
-
-      - task: NuGetCommand@2
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'internal'
-          publishVstsFeed: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2/b62f932e-9093-4aad-843e-fde82bd3845f'
-        displayName: 'Publish to Dev-Feed'
-        
       - task: NuGetCommand@2
         inputs:
           command: 'push'
