@@ -28,6 +28,18 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public void StorjVersionIsCorrect()
+        {
+            Assert.AreEqual("v1.7.0", Access.GetStorjVersion());
+        }
+
+        [TestMethod]
+        public void GoVersionIsCorrect()
+        {
+            Assert.AreEqual("1.20", Access.GetGoVersion());
+        }
+
+        [TestMethod]
         public void CreateValidAccess_Creates_ValidAccess()
         {
             try
