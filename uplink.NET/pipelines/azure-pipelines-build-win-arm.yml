@@ -56,7 +56,7 @@ steps:
     export CC="arm-none-eabi-gcc"
     export CXX="arm-none-eabi-g++"
     export GOOS="windows"
-    export GOARCH="arm"
+    export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
     go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
