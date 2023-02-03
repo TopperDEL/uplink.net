@@ -46,12 +46,6 @@ steps:
   displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
-    go get golang.org/dl/go1.17beta1
-    go1.17beta1 version
-  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
-  
-
-- script: |
     sudo apt-get update
     sudo apt-get install gcc-arm-none-eabi
     cd /usr/bin
@@ -62,8 +56,8 @@ steps:
     export CC="arm-none-eabi-gcc"
     export CXX="arm-none-eabi-g++"
     export GOOS="windows"
-    export GOARCH="arm"
+    export GOARCH="arm64"
     export GOARM=7
     export CGO_ENABLED="1"
-    go1.17beta1 build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
+    go build -ldflags="-s -w" -o storj_uplink.dll -buildmode c-shared
   displayName: 'Test-Generate Win-ARM'
