@@ -46,12 +46,6 @@ steps:
   displayName: 'Install Go $(GOLANG_VERSION)'
 
 - script: |
-    go get golang.org/dl/go1.17beta1
-    go1.17beta1 version
-  displayName: 'Run SWIG to generate a c-file necessary for the DLL'
-  
-
-- script: |
     sudo apt-get update
     sudo apt-get install gcc-arm-none-eabi
     cd /usr/bin
