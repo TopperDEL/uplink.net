@@ -11,16 +11,23 @@ pool:
 
 steps:
 - script: |
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' storj_uplink_second.i
+    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
+    sed -i 's/GOVERSION/$(GOLANG_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
+  displayName: 'Inject the Go-Version'
+
+- script: |
     git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
+    cd uplink-c
+    git checkout $(STORJ_VERSION) 
+    cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
 - script: |
-    cp *.i uplink-c
-    cp *.go uplink-c
+    cp uplink.net/SWIG/*.i uplink-c
+    cp uplink.net/GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
 
 - script: |
