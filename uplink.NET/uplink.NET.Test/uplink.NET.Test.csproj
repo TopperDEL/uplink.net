@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
-    <PackageReference Include="uplink.NET.Win" Version="2.9.3168" />
+    <PackageReference Include="uplink.NET.Win" Version="2.10.3175" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uplink.NET\uplink.NET.csproj" />
