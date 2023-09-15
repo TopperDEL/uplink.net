@@ -283,6 +283,10 @@ stages:
           ls -l
         displayName: 'Copy binaries to nuget-location'
 
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
       - task: NuGetCommand@2
         inputs:
           command: 'pack'

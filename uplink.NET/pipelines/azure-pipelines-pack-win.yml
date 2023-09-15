@@ -51,6 +51,10 @@ stages:
           mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
         displayName: 'remove me'
 
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
       - task: NuGetCommand@2
         inputs:
           command: 'pack'
