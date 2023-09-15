@@ -1107,6 +1107,9 @@ class storj_uplinkPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED_get___")]
   public static extern int UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED_get();
 
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UPLINK_ERROR_PERMISSION_DENIED_get___")]
+  public static extern int UPLINK_ERROR_PERMISSION_DENIED_get();
+
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_UPLINK_ERROR_BUCKET_NAME_INVALID_get___")]
   public static extern int UPLINK_ERROR_BUCKET_NAME_INVALID_get();
 
@@ -1457,6 +1460,12 @@ class storj_uplinkPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EdgeConfig_certificate_pem_get___")]
   public static extern global::System.IntPtr EdgeConfig_certificate_pem_get(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EdgeConfig_insecure_unencrypted_connection_set___")]
+  public static extern void EdgeConfig_insecure_unencrypted_connection_set(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_EdgeConfig_insecure_unencrypted_connection_get___")]
+  public static extern bool EdgeConfig_insecure_unencrypted_connection_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="CSharp_uplinkfSWIG_new_EdgeConfig___")]
   public static extern global::System.IntPtr new_EdgeConfig();

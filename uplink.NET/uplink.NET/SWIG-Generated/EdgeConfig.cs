@@ -64,6 +64,16 @@ internal class EdgeConfig : global::System.IDisposable {
     } 
   }
 
+  public bool insecure_unencrypted_connection {
+    set {
+      storj_uplinkPINVOKE.EdgeConfig_insecure_unencrypted_connection_set(swigCPtr, value);
+    } 
+    get {
+      bool ret = storj_uplinkPINVOKE.EdgeConfig_insecure_unencrypted_connection_get(swigCPtr);
+      return ret;
+    } 
+  }
+
   public EdgeConfig() : this(storj_uplinkPINVOKE.new_EdgeConfig(), true) {
   }
 
