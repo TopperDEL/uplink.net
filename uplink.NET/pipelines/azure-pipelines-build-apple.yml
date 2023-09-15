@@ -46,7 +46,7 @@ stages:
 
       - script: |
           echo 'Running xcrun...'
-          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -o "uplink-c/storj_uplink.dylib" --verbose
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
           echo 'Removing archive...'
           rm "uplink-c/storj_uplink-arm64.a"
           echo 'Running install_name_tool'
