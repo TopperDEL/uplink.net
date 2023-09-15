@@ -131,6 +131,10 @@ stages:
           mv xamarinios/simulator simulator
         displayName: 'Copy binaries to nuget-location and cleanup location'
 
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
       - task: NuGetCommand@2
         inputs:
           command: 'pack'
@@ -285,6 +289,10 @@ stages:
           cp libstorj_uplink.dylib osx-x64/
           mv libstorj_uplink.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
         displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
 
       - task: NuGetCommand@2
         inputs:

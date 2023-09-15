@@ -63,6 +63,10 @@ steps:
       mv uplink.NET/uplink.NET/bin/Release/net6.0/uplink.NET.pdb uplink.NET.pdb
   displayName: 'Place uplink-DLL at nuget-location'
 
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: '5.8.0'
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'

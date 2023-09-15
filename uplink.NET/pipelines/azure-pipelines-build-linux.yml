@@ -84,6 +84,10 @@ stages:
           mv storj_uplink-amd64.so linux-x64/storj_uplink.so
         displayName: 'Copy binaries to nuget-location'
 
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
       - task: NuGetCommand@2
         inputs:
           command: 'pack'
