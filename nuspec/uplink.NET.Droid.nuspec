@@ -7,7 +7,7 @@
     <authors>Tim Parth</authors>
     <owners>Tim Parth</owners>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
-    <icon>Storj-symbol.png</icon>
+    <iconUrl>Storj-symbol.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Xamarin Android native libraries for uplink.NET</description>
     <releaseNotes>

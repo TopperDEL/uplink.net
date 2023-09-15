@@ -9,7 +9,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/TopperDEL/uplink.net</projectUrl>
-    <icon>Storj-symbol.png</icon>
+    <iconUrl>Storj-symbol.png</iconUrl>
     <description>This library provides access to the secure and decentralised Storj-network.
 It is - like Storj itself - open source and developed on github.
 
