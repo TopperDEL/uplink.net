@@ -522,6 +522,7 @@ internal class storj_uplink {
   public static readonly int UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_BANDWIDTH_LIMIT_EXCEEDED_get();
   public static readonly int UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_STORAGE_LIMIT_EXCEEDED_get();
   public static readonly int UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED = storj_uplinkPINVOKE.UPLINK_ERROR_SEGMENTS_LIMIT_EXCEEDED_get();
+  public static readonly int UPLINK_ERROR_PERMISSION_DENIED = storj_uplinkPINVOKE.UPLINK_ERROR_PERMISSION_DENIED_get();
   public static readonly int UPLINK_ERROR_BUCKET_NAME_INVALID = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NAME_INVALID_get();
   public static readonly int UPLINK_ERROR_BUCKET_ALREADY_EXISTS = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_ALREADY_EXISTS_get();
   public static readonly int UPLINK_ERROR_BUCKET_NOT_EMPTY = storj_uplinkPINVOKE.UPLINK_ERROR_BUCKET_NOT_EMPTY_get();
