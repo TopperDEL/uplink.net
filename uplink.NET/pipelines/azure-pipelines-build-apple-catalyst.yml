@@ -35,7 +35,7 @@ stages:
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           export CGO_ENABLED=1
           export GOARCH=amd64
-          export CGO_CFLAGS="-target x86_64-apple-ios-macabi -arch arm64 -arch x86_64 -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=13.0 -fembed-bitcode"
+          export CGO_CFLAGS="-target x86_64-apple-ios14.8-macabi -arch arm64 -arch x86_64 -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.8 -fembed-bitcode"
         displayName: 'Prepare for Target MacCatalyst'
 
       - task: Go@0
