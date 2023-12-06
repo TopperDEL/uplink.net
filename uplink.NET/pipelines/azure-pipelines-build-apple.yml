@@ -77,7 +77,7 @@ stages:
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-maccatalyst.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst.dylib'
           artifact: 'apple_maccatalyst'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-maccatalyst.dylib'
