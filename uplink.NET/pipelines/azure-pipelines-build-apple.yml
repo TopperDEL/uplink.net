@@ -42,7 +42,7 @@ stages:
           GOARCH=arm64 \
           CGO_CFLAGS="-target x86_64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
           go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
-          xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -macosx_version_min=14.0 -fembed-bitcode -dynamiclib -o libstorj_uplink.dylib storj_uplink-arm64.a
+          xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -mmacosx-version-min=10.14 -fembed-bitcode -dynamiclib -o libstorj_uplink.dylib storj_uplink-arm64.a
         displayName: 'Prepare and build target iOs arm64'
 
       - script: |
