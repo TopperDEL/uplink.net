@@ -44,7 +44,9 @@ stages:
           go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst.a" -buildmode=c-archive
           #xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -target x86_64-apple-ios14.0-macabi -fembed-bitcode -dynamiclib -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a
           #from iOs: xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
-          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a --verbse
+          #xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a --verbose
+          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a -framework Corefoundation -framework Security -target x86_64-apple-ios13.0-macabi --verbose
+
 
           #lipo -create storj_uplink-maccatalyst.a -output libstorj_uplink-maccatalyst.dylib
           echo 'Listing...'
