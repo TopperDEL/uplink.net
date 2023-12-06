@@ -44,7 +44,7 @@ stages:
           go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
           xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -target x86_64-apple-ios14.0-macabi -fembed-bitcode -dynamiclib -o libstorj_uplink-maccatalyst.dylib storj_uplink-arm64.a
           
-           echo 'Listing...'
+          echo 'Listing...'
           ls
         displayName: 'Prepare and build target iOs arm64'
 
@@ -53,7 +53,7 @@ stages:
           #xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -miphoneos-version-min=14.0 -fembed-bitcode -dynamiclib -o libstorj_uplink.dylib storj_uplink-arm64.a
           #xcrun -sdk macosx clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
           echo 'Removing archive...'
-          rm "uplink-c/storj_uplink-arm64.a"
+          #rm "uplink-c/storj_uplink-arm64.a"
           echo 'Running install_name_tool'
           ls
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/libstorj_uplink-maccatalyst.dylib"
@@ -74,6 +74,13 @@ stages:
           # arguments: '-buildmode c-shared -o storj_uplink-maccatalyst.dylib'
           # workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
         # displayName: 'Build MacCatalyst - x86_64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm64.a'
+          artifact: 'apple_maccatalyst_a'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-arm64.a'
 
       - task: PublishPipelineArtifact@1
         inputs:
