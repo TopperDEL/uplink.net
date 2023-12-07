@@ -45,6 +45,13 @@ stages:
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-x86_64.dylib
         displayName: 'Prepare and build target Mac Catalyst x86_64'
         
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib'
+          artifact: 'apple_maccatalyst_dylib_x86_64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-maccatalyst-x86_64.dylib'
+        
       - script: |
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
@@ -60,6 +67,13 @@ stages:
           rm storj_uplink-maccatalyst-arm64.a
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-arm64.dylib
         displayName: 'Prepare and build target Mac Catalyst arm64'
+        
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst-arm64.dylib'
+          artifact: 'apple_maccatalyst_dylib_arm64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-maccatalyst-arm64.dylib'
 
       - script: |
           mkdir nuspec/xamarinmac/x86_64
