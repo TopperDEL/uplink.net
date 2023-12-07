@@ -30,10 +30,8 @@ stages:
         displayName: 'Get build-artifacts'
         
       - script: |
-          ls
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
-          ls
           env \
           GOOS='darwin' \
           CC=cc \
@@ -41,58 +39,51 @@ stages:
           CGO_ENABLED=1 \
           GOARCH=amd64 \
           CGO_CFLAGS="-target x86_64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
-          go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst.a" -buildmode=c-archive
-          #xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -target x86_64-apple-ios14.0-macabi -fembed-bitcode -dynamiclib -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a
-          #from iOs: xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
-          #xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a --verbose
-          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst.dylib storj_uplink-maccatalyst.a -framework Corefoundation -framework Security -target x86_64-apple-ios13.0-macabi --verbose
-
-
-          #lipo -create storj_uplink-maccatalyst.a -output libstorj_uplink-maccatalyst.dylib
-          echo 'Listing...'
-          ls
-        displayName: 'Prepare and build target iOs maccatalyst'
+          go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst-x86_64.a" -buildmode=c-archive
+          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-x86_64.dylib storj_uplink-maccatalyst-x86_64.a -framework Corefoundation -framework Security -target x86_64-apple-ios14.0-macabi
+          rm storj_uplink-maccatalyst-x86_64.a
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-x86_64.dylib
+        displayName: 'Prepare and build target Mac Catalyst x86_64'
+        
+      - script: |
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cd uplink-c
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=arm64 \
+          CGO_CFLAGS="-target arm64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
+          go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst-arm64.a" -buildmode=c-archive
+          xcrun -sdk macosx clang -arch arm64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-arm64.dylib storj_uplink-maccatalyst-arm64.a -framework Corefoundation -framework Security -target arm64-apple-ios14.0-macabi
+          rm storj_uplink-maccatalyst-arm64.a
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-arm64.dylib
+        displayName: 'Prepare and build target Mac Catalyst arm64'
 
       - script: |
-          echo 'Running xcrun...'
-          #xcrun clang -arch x86_64 -isysroot "$(xcrun --sdk macosx --show-sdk-path)" -miphoneos-version-min=14.0 -fembed-bitcode -dynamiclib -o libstorj_uplink.dylib storj_uplink-maccatalyst.a
-          #xcrun -sdk macosx clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-maccatalyst.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
-          echo 'Removing archive...'
-          #rm "uplink-c/storj_uplink-maccatalyst.a"
-          echo 'Running install_name_tool'
-          ls
-          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/libstorj_uplink-maccatalyst.dylib"
-        displayName: 'Generate Framework for Catalyst'
-
-      # - script: |
-          # ls
-          # ls uplink-c
-          # mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          # export CGO_ENABLED=1
-          # export GOARCH=amd64
-          # export CGO_CFLAGS="-target x86_64-apple-ios-macabi -arch arm64 -arch x86_64 -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=13.0 -fembed-bitcode"
-        # displayName: 'Prepare for Target MacCatalyst'
-
-      # - task: Go@0
-        # inputs:
-          # command: 'build'
-          # arguments: '-buildmode c-shared -o storj_uplink-maccatalyst.dylib'
-          # workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        # displayName: 'Build MacCatalyst - x86_64'
+          find .
+          mv uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib nuspec/xamarinmac/catalyst-x86_64/storj_uplink.framework/storj_uplink
+          mv uplink-c/libstorj_uplink-maccatalyst-arm64.dylib nuspec/xamarinmac/catalyst-arm64/storj_uplink.framework/storj_uplink
+          echo 'Move completed'
+          find .
+          echo 'Running xcodebuild'
+          xcodebuild -create-xcframework -framework nuspec/xamarinmac/catalys-x86_64/storj_uplink.framework -framework nuspec/xamarinmac/catalyst-arm64/storj_uplink.framework -output storj_uplink.xcframework
+          ls -l
+          #echo 'File-Info'
+          #file storj_uplink.dylib
+          #echo 'lipo info'
+          #lipo -info storj_uplink.dylib 
+          #echo 'OTOOL'
+          #otool -L storj_uplink.dylib
+        displayName: 'Create xcframework including both frameworks'
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-maccatalyst.a'
-          artifact: 'apple_maccatalyst_a'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-maccatalyst.a'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
           artifact: 'apple_maccatalyst'
           publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-maccatalyst.dylib'
+        displayName: 'Publish storj_uplink.xcframework'
 
 - stage: iOs
   pool:
