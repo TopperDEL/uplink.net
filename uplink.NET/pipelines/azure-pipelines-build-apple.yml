@@ -38,10 +38,9 @@ stages:
           CXX=c++ \
           CGO_ENABLED=1 \
           GOARCH=amd64 \
-          CGO_CFLAGS="-target x86_64-apple-ios-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -fembed-bitcode" \
-          CGO_LDFLAGS="-target x86_64-apple-ios-macabi" \
+          CGO_CFLAGS="-target x86_64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
           go build -ldflags -w -v -o "storj_uplink-maccatalyst-x86_64.a" -buildmode=c-archive
-          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-x86_64.dylib storj_uplink-maccatalyst-x86_64.a -framework Corefoundation -framework Security -target x86_64-apple-macabi
+          xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-x86_64.dylib storj_uplink-maccatalyst-x86_64.a -framework Corefoundation -framework Security -target x86_64-apple-ios14.0-macabi
           rm storj_uplink-maccatalyst-x86_64.a
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-x86_64.dylib
         displayName: 'Prepare and build target Mac Catalyst x86_64'
