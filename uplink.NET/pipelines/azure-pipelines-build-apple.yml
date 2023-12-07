@@ -28,6 +28,22 @@ stages:
             !Csharp-files
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts'
+
+      - script: |
+          cd uplink-c
+          export CGO_ENABLED=1
+          export GOARCH=arm64
+          export CGO_CFLAGS="-target arm64-apple-ios-macabi"
+          go build -buildmode c-shared -o storj_uplink-maccatalyst-arm64.dylib
+          cd ..
+        displayName: 'Prepare and build for Target MacCatalyst ARM64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-maccatalyst-arm64.dylib'
+          artifact: 'apple_macos_arm64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-maccatalyst-arm64.dylib'
         
       - script: |
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
@@ -39,7 +55,7 @@ stages:
           CGO_ENABLED=1 \
           GOARCH=amd64 \
           CGO_CFLAGS="-target x86_64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
-          go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst-x86_64.a" -buildmode=c-archive
+          go build -ldflags -w -v -o "storj_uplink-maccatalyst-x86_64.a" -buildmode=c-archive
           xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-x86_64.dylib storj_uplink-maccatalyst-x86_64.a -framework Corefoundation -framework Security -target x86_64-apple-ios14.0-macabi
           rm storj_uplink-maccatalyst-x86_64.a
           install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-x86_64.dylib
