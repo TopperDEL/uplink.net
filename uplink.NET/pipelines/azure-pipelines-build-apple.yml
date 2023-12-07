@@ -62,9 +62,15 @@ stages:
         displayName: 'Prepare and build target Mac Catalyst arm64'
 
       - script: |
+          mkdir nuspec/xamarinmac/x86_64
+          mkdir nuspec/xamarinmac/x86_64/storj_uplink.framework
+          mkdir nuspec/xamarinmac/arm64
+          mkdir nuspec/xamarinmac/arm64/storj_uplink.framework
+          cp nuspec/xamarinmac/libstorj_uplink.framework/Info.plist nuspec/xamarinmac/x86_64/storj_uplink.framework
+          cp nuspec/xamarinmac/libstorj_uplink.framework/Info.plist nuspec/xamarinmac/arm64/storj_uplink.framework
           find .
-          mv uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib nuspec/xamarinmac/catalyst-x86_64/storj_uplink.framework/storj_uplink
-          mv uplink-c/libstorj_uplink-maccatalyst-arm64.dylib nuspec/xamarinmac/catalyst-arm64/storj_uplink.framework/storj_uplink
+          mv uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib nuspec/xamarinmac/x86_64/storj_uplink.framework/storj_uplink
+          mv uplink-c/libstorj_uplink-maccatalyst-arm64.dylib nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
           echo 'Move completed'
           find .
           echo 'Running xcodebuild'
