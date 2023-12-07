@@ -74,7 +74,7 @@ stages:
           echo 'Move completed'
           find .
           echo 'Running xcodebuild'
-          xcodebuild -create-xcframework -framework nuspec/xamarinmac/catalys-x86_64/storj_uplink.framework -framework nuspec/xamarinmac/catalyst-arm64/storj_uplink.framework -output storj_uplink.xcframework
+          xcodebuild -create-xcframework -framework nuspec/xamarinmac/x86_64/storj_uplink.framework -framework nuspec/xamarinmac/arm64/storj_uplink.framework -output storj_uplink.xcframework
           ls -l
           #echo 'File-Info'
           #file storj_uplink.dylib
