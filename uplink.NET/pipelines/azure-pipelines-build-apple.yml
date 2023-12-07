@@ -34,6 +34,7 @@ stages:
           export CGO_ENABLED=1
           export GOARCH=arm64
           export CGO_CFLAGS="-target arm64-apple-ios-macabi"
+          export CGO_LDFLAGS="-target arm64-apple-ios-macabi"
           go build -buildmode c-shared -o storj_uplink-maccatalyst-arm64.dylib
           cd ..
         displayName: 'Prepare and build for Target MacCatalyst ARM64'
