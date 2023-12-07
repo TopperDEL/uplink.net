@@ -76,9 +76,8 @@ stages:
           echo 'Running lipo'
           xcrun lipo -create -output storj_uplink.framework nuspec/xamarinmac/x86_64/storj_uplink.framework/storj_uplink nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
           
-          echo 'Running xcodebuild'
-          mkdir -p build-xcframework
-          xcodebuild -create-xcframework -framework storj_uplink.framework -output storj_uplink.xcframework
+          #echo 'Running xcodebuild'
+          #xcodebuild -create-xcframework -framework storj_uplink.framework -output storj_uplink.xcframework
           
           #xcodebuild -create-xcframework -framework nuspec/xamarinmac/x86_64/storj_uplink.framework -framework nuspec/xamarinmac/arm64/storj_uplink.framework -output storj_uplink.xcframework
           ls -l
@@ -92,7 +91,7 @@ stages:
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.framework'
           artifact: 'apple_maccatalyst'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink.xcframework'
