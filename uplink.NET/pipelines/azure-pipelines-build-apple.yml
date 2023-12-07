@@ -73,8 +73,13 @@ stages:
           mv uplink-c/libstorj_uplink-maccatalyst-arm64.dylib nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
           echo 'Move completed'
           find .
-          echo 'Running xcodebuild'
-          xcodebuild -create-xcframework -framework nuspec/xamarinmac/x86_64/storj_uplink.framework -framework nuspec/xamarinmac/arm64/storj_uplink.framework -output storj_uplink.xcframework
+          echo 'Running lipo'
+          xcrun lipo -create -output storj_uplink.framework nuspec/xamarinmac/x86_64/storj_uplink.framework/storj_uplink nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
+          
+          mkdir -p build-xcframework
+          xcodebuild -create-xcframework -framework storj_uplink.framework -output storj_uplink.xcframework
+          
+          #xcodebuild -create-xcframework -framework nuspec/xamarinmac/x86_64/storj_uplink.framework -framework nuspec/xamarinmac/arm64/storj_uplink.framework -output storj_uplink.xcframework
           ls -l
           #echo 'File-Info'
           #file storj_uplink.dylib
