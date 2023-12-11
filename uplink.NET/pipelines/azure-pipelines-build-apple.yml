@@ -337,19 +337,20 @@ stages:
         inputs:
           buildType: 'current'
           artifactName: 'apple_maccatalyst_dylib_arm64'
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-catalyst-arm64.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Get build-artifacts (iOs-xcframework)'
         
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'current'
           artifactName: 'apple_maccatalyst_dylib_x86_64'
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-catalyst-x86_64.dylib'
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Get build-artifacts (Catalyst-Dylibs)'
 
       - script: |
           cd uplink-c
           lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib" "storj_uplink-catalyst-arm64.dylib" "storj_uplink-catalyst-x86_64.dylib"
+          lipo -create -output "libstorj_uplink-catalyst.dylib" "storj_uplink-catalyst-arm64.dylib" "storj_uplink-catalyst-x86_64.dylib"
           ls -l
           echo 'File-Info'
           file libstorj_uplink.dylib
@@ -365,6 +366,13 @@ stages:
           artifact: 'apple_macos_fat'
           publishLocation: 'pipeline'
         displayName: 'Publish libstorj_uplink.dylib'
+        
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-catalyst.dylib'
+          artifact: 'apple_maccatalyst_fat'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink-catalyst.dylib'
 
 - stage: nuget_pack_mac
   pool:
