@@ -29,7 +29,7 @@
   <Choose>
     <When Condition="$([MSBuild]::IsOsPlatform('OSX')) and ($(RuntimeIdentifier)' == 'maccatalyst-arm64' or $(RuntimeIdentifier)' == 'maccatalyst-x64')">
       <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\catalyst\libstorj_uplink.dylib">
+        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink-catalyst.dylib">
           <Link>libstorj_uplink.dylib</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
