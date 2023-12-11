@@ -260,6 +260,8 @@ stages:
           
           cp libstorj_uplink-catalyst.dylib osx-x64/catalyst
           mv libstorj_uplink-catalyst.dylib xamarinmac/catalyst/libstorj_uplink.framework/storj_uplink
+          
+          find .
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetToolInstaller@1
