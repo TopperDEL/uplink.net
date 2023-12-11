@@ -6,18 +6,30 @@
   </PropertyGroup>
 
   <!--MacOS-->
-  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'net8.0-maccatalyst'" Or '$(TargetFrameworkIdentifier)' ==  'maccatalyst'">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac'>
     <NativeReference Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\mac\libstorj_uplink.framework">
       <Link>$(_DNAGeneticNugetNativePath)mac\libstorj_uplink.framework</Link>
       <Kind>Framework</Kind>
     </NativeReference>
   </ItemGroup>
   
-  <!--Net6-Mac-->
+  <!--Net6+-Mac-->
   <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) and !($(RuntimeIdentifier)' == 'maccatalyst-arm64' or $(RuntimeIdentifier)' == 'maccatalyst-x64')">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
+          <Link>libstorj_uplink.dylib</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+  </Choose>
+  
+  <!--Net6+-MacCatalyst-->
+  <Choose>
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) and ($(RuntimeIdentifier)' == 'maccatalyst-arm64' or $(RuntimeIdentifier)' == 'maccatalyst-x64')">
+      <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\catalyst\libstorj_uplink.dylib">
           <Link>libstorj_uplink.dylib</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
