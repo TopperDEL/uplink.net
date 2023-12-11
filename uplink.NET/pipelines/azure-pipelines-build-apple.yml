@@ -332,10 +332,24 @@ stages:
           artifact: 'apple_macos_arm64'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-macos-arm64.dylib'
+        
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_maccatalyst_dylib_arm64'
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-catalyst-arm64.dylib'
+        displayName: 'Get build-artifacts (iOs-xcframework)'
+        
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_maccatalyst_dylib_x86_64'
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-catalyst-x86_64.dylib'
+        displayName: 'Get build-artifacts (Catalyst-Dylibs)'
 
       - script: |
           cd uplink-c
-          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
+          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib" "storj_uplink-catalyst-arm64.dylib" "storj_uplink-catalyst-x86_64.dylib"
           ls -l
           echo 'File-Info'
           file libstorj_uplink.dylib
@@ -343,7 +357,7 @@ stages:
           lipo -info libstorj_uplink.dylib 
           echo 'OTOOL'
           otool -L libstorj_uplink.dylib
-        displayName: 'Create fat-lib for x86_64 and ARM64'
+        displayName: 'Create fat-lib for x86_64 and ARM64 (macOS and MacCatalyst)'
 
       - task: PublishPipelineArtifact@1
         inputs:
