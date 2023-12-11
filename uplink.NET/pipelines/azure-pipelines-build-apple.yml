@@ -191,7 +191,7 @@ stages:
       - script: |
           cd uplink-c
           lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
-          lipo -create -output "libstorj_uplink-catalyst.dylib" "storj_uplink-maccatalyst-arm64.dylib" "storj_uplink-maccatalyst-x86_64.dylib"
+          lipo -create -output "libstorj_uplink-catalyst.dylib" "libstorj_uplink-maccatalyst-arm64.dylib" "libstorj_uplink-maccatalyst-x86_64.dylib"
           ls -l
           echo 'File-Info'
           file libstorj_uplink.dylib
