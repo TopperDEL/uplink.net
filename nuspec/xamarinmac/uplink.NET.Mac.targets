@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <!--MacOS-->
-  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'net8.0-maccatalyst'">
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.Mac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'xamarinmac' Or '$(TargetFrameworkIdentifier)' ==  'net8.0-maccatalyst'" Or '$(TargetFrameworkIdentifier)' ==  'maccatalyst'">
     <NativeReference Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\libs\mac\libstorj_uplink.framework">
       <Link>$(_DNAGeneticNugetNativePath)mac\libstorj_uplink.framework</Link>
       <Kind>Framework</Kind>
