@@ -56,7 +56,7 @@ stages:
           mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cd uplink-c
           env \
-          GOOS='darwin' \
+          GOOS='ios' \
           CC=cc \
           CXX=c++ \
           CGO_ENABLED=1 \
