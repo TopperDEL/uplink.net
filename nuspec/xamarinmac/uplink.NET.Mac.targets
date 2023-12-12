@@ -15,7 +15,7 @@
   
   <!--Net6+-Mac-->
   <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) and !($(RuntimeIdentifier)' == 'maccatalyst-arm64' or $(RuntimeIdentifier)' == 'maccatalyst-x64')">
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX') and !('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(RuntimeIdentifier)' == 'maccatalyst-x64'))">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
           <Link>libstorj_uplink.dylib</Link>
@@ -27,7 +27,7 @@
   
   <!--Net6+-MacCatalyst-->
   <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX')) and ($(RuntimeIdentifier)' == 'maccatalyst-arm64' or $(RuntimeIdentifier)' == 'maccatalyst-x64')">
+    <When Condition="$([MSBuild]::IsOsPlatform('OSX') and (($(RuntimeIdentifier)' == 'maccatalyst-arm64') or ($(RuntimeIdentifier)' == 'maccatalyst-x64')))">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink-catalyst.dylib">
           <Link>libstorj_uplink.dylib</Link>
