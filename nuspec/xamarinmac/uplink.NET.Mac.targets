@@ -13,21 +13,9 @@
     </NativeReference>
   </ItemGroup>
   
-  <!--Net6+-Mac-->
+  <!--Net6+-Mac and MacCatalyst-->
   <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX') and !('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(RuntimeIdentifier)' == 'maccatalyst-x64'))">
-      <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
-          <Link>libstorj_uplink.dylib</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-      </ItemGroup>
-    </When>
-  </Choose>
-  
-  <!--Net6+-MacCatalyst-->
-  <Choose>
-    <When Condition="$([MSBuild]::IsOsPlatform('OSX') and (($(RuntimeIdentifier)' == 'maccatalyst-arm64') or ($(RuntimeIdentifier)' == 'maccatalyst-x64')))">
+    <When Condition="'$(RuntimeIdentifier)' Contains 'catalyst'">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink-catalyst.dylib">
           <Link>libstorj_uplink.dylib</Link>
@@ -35,5 +23,13 @@
         </None>
       </ItemGroup>
     </When>
+	<Otherwise>
+	<ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
+          <Link>libstorj_uplink.dylib</Link>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </Otherwise>
   </Choose>
 </Project>
