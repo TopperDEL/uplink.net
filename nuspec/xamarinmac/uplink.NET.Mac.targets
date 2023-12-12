@@ -18,7 +18,7 @@
     <When Condition="$(RuntimeIdentifier.Contains('catalyst'))">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\catalyst\libstorj_uplink.dylib">
-          <Link>libstorj_uplink.dylib</Link>
+          <Link>libstorj_uplink-CATTY.dylib</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
       </ItemGroup>
