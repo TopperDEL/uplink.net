@@ -26,7 +26,7 @@
 	<Otherwise>
 	<ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
-          <Link>libstorj_uplink.dylib</Link>
+          <Link>libstorj_uplink-MACCY.dylib</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
       </ItemGroup>
