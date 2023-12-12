@@ -15,7 +15,7 @@
   
   <!--Net6+-Mac and MacCatalyst-->
   <Choose>
-    <When Condition="'$(RuntimeIdentifier)' Contains 'catalyst'">
+    <When Condition="$(RuntimeIdentifier.Contains('catalyst'))">
       <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink-catalyst.dylib">
           <Link>libstorj_uplink.dylib</Link>
