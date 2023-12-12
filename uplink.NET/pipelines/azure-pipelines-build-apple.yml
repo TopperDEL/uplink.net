@@ -261,7 +261,8 @@ stages:
           cd osx-x64
           mkdir catalyst
           cd ..
-          cp libstorj_uplink-catalyst.dylib osx-x64/catalyst
+          cp libstorj_uplink-catalyst.dylib osx-x64/catalyst/
+          mv osx-x64/catalyst/libstorj_uplink-catalyst.dylib osx-x64/catalyst/libstorj_uplink.dylib
           mv libstorj_uplink-catalyst.dylib xamarinmac/catalyst/libstorj_uplink.framework/storj_uplink
           
           find .
