@@ -12,24 +12,4 @@
       <Kind>Framework</Kind>
     </NativeReference>
   </ItemGroup>
-  
-  <!--Net6+-Mac and MacCatalyst-->
-  <Choose>
-    <When Condition="$(RuntimeIdentifier.Contains('catalyst'))">
-      <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\catalyst\libstorj_uplink.dylib">
-          <Link>libstorj_uplink.dylib</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-      </ItemGroup>
-    </When>
-	<Otherwise>
-	<ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\osx-x64\native\libstorj_uplink.dylib">
-          <Link>libstorj_uplink.dylib</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
 </Project>
