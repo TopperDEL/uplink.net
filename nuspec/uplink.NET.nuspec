@@ -22,7 +22,6 @@ Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the addi
       <group targetFramework=".NETStandard2.0">
         <dependency id="sqlite-net-pcl" version="1.7.335"/>
       </group>
-	  <group targetFramework="net6.0" />
     </dependencies>
   </metadata>
   <files>

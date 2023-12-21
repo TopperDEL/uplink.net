@@ -2,10 +2,10 @@
   <PropertyGroup>
     <Description>
     </Description>
-    <AssemblyVersion>2.7.0.0</AssemblyVersion>
+    <AssemblyVersion>2.12.0.0</AssemblyVersion>
     <Authors>
     </Authors>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -13,8 +13,8 @@
     <DebugType>portable</DebugType>
     <AssemblyName>uplink.NET</AssemblyName>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.7.0.0</FileVersion>
-    <Version>2.7.0</Version>
+    <FileVersion>2.12.0.0</FileVersion>
+    <Version>2.12.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>
@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SWIG-Generated\" />
