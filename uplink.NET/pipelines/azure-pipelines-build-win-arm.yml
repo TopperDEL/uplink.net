@@ -47,7 +47,7 @@ steps:
     cd uplink-c
     export PATH=$PATH:$(pwd)
     echo "Kann ersetzt werden durch 'zig cc'"
-    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
+    echo $'#!/bin/sh \n zig cc -target aarch64-windows-gnu -Werror -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zcc
     sudo chmod +x zcc
     #echo $'#!/bin/sh \n zig c++ -target aarch64-windows-gnu -mtune=cortex-a75 -mcpu=cortex_a75 -fno-sanitize-trap=undefined -fno-sanitize=undefined -v $@' >> zxx
     #sudo chmod +x zxx
