@@ -53,7 +53,8 @@ steps:
     #sudo chmod +x zxx
     echo $'#!/bin/sh \n zig ar -v $@' >> zar
     sudo chmod +x zar
-    export CC="zcc"
+    export CC="zig cc"
+    #export CC="zcc"
     export CXX="false"
     export AR="zar"
     export GOOS="windows"
