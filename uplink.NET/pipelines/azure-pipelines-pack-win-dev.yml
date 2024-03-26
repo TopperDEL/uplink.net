@@ -81,6 +81,20 @@ steps:
 
 - script: |
     cd uplink-c
+    export CC="aarch64-w64-mingw32-gcc"  # Updated to ARM64 GCC
+    export CXX="aarch64-w64-mingw32-g++"  # Updated to ARM64 G++
+    export GOOS="windows"
+    export GOARCH="arm64"  # Updated to ARM64
+    export CGO_ENABLED="1"
+    export CGO_CFLAGS="-g -Wl,--kill-at"
+    export CGO_CXXFLAGS="-g -Wl,--kill-at"
+    export CGO_FFLAGS="-g -Wl,--kill-at"
+    export CGO_LDFLAGS="-g -Wl,--kill-at"
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-arm64.dll -buildmode c-shared
+  displayName: 'Generating the final-ARM64-DLL for Windows'
+
+- script: |
+    cd uplink-c
     export CC="i686-w64-mingw32-gcc"
     export CXX="i686-w64-mingw32-g++"
     export GOOS="windows"
@@ -121,6 +135,13 @@ steps:
     publishLocation: 'pipeline'
   displayName: 'Publish storj_uplink_second_wrap.c'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-arm64.dll'
+    artifact: 'win-arm64-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-arm64-dll'
+  
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink-x86.dll'
