@@ -52,9 +52,8 @@ steps:
   displayName: 'Install cross-compiler for Windows and Linux ARM64'
 
 - script: |
-    sudo apt-get update
-    sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
-  displayName: 'Install arm64 toolchain'
+    snap install zig --classic --beta
+  displayName: 'Install zig'
 
 - script: |
     cd uplink-c
@@ -86,17 +85,22 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="aarch64-linux-gnu-gcc"  # Updated to ARM64 GCC
-    export CXX="aarch64-linux-gnu-g++"  # Updated to ARM64 G++
+    export ZIG_CC="zig cc"  # Set Zig as C compiler
+    export ZIG_CXX="zig c++"  # Set Zig as C++ compiler
+    # For Zig, specify the target using -target and other relevant flags directly in the CC and CXX commands
+    export CC="${ZIG_CC} -target aarch64-windows-gnu"  # Updated to use Zig for ARM64 Windows
+    export CXX="${ZIG_CXX} -target aarch64-windows-gnu"  # Updated to use Zig for ARM64 Windows
     export GOOS="windows"
-    export GOARCH="arm64"  # Updated to ARM64
+    export GOARCH="arm64"  # Confirming target architecture for Go
     export CGO_ENABLED="1"
-    export CGO_CFLAGS="-g -Wl,--kill-at"
-    export CGO_CXXFLAGS="-g -Wl,--kill-at"
-    export CGO_FFLAGS="-g -Wl,--kill-at"
-    export CGO_LDFLAGS="-g -Wl,--kill-at"
+    # Include any necessary flags. Note: Zig's linker will handle most cross-compilation concerns.
+    export CGO_CFLAGS="-g"
+    export CGO_CXXFLAGS="-g"
+    export CGO_FFLAGS="-g"
+    export CGO_LDFLAGS="-g"
+    # Build command remains the same, leveraging environment variables for cross-compilation
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-arm64.dll -buildmode c-shared
-  displayName: 'Generating the final-ARM64-DLL for Windows'
+  displayName: 'Generating the final-ARM64-DLL for Windows with Zig toolchain'
 
 - script: |
     cd uplink-c
