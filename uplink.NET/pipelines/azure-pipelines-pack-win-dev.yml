@@ -53,9 +53,8 @@ steps:
 
 - script: |
     sudo apt-get update
-    sudo apt-get install -y gcc-mingw-w64
-    sudo apt-get install -y g++-mingw-w64
-  displayName: 'Install Mingw-w64 toolchain'
+    sudo apt install gcc make gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+  displayName: 'Install arm64 toolchain'
 
 - script: |
     cd uplink-c
@@ -87,8 +86,8 @@ steps:
 
 - script: |
     cd uplink-c
-    export CC="aarch64-w64-mingw32-gcc"  # Updated to ARM64 GCC
-    export CXX="aarch64-w64-mingw32-g++"  # Updated to ARM64 G++
+    export CC="aarch64-linux-gnu-gcc"  # Updated to ARM64 GCC
+    export CXX="aarch64-linux-gnu-g++"  # Updated to ARM64 G++
     export GOOS="windows"
     export GOARCH="arm64"  # Updated to ARM64
     export CGO_ENABLED="1"
