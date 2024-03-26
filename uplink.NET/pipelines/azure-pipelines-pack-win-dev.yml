@@ -52,7 +52,7 @@ steps:
   displayName: 'Install cross-compiler for Windows and Linux ARM64'
 
 - script: |
-    snap install zig --classic --beta
+    sudo snap install zig --classic --beta
   displayName: 'Install zig'
 
 - script: |
