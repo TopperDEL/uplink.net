@@ -48,8 +48,12 @@ steps:
 
 - script: |
     sudo apt-get update
-    sudo apt-get install gcc-mingw-w64
-  displayName: 'Install cross compiler for Windows'
+    sudo apt-get install -y gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+  displayName: 'Install cross-compiler for Windows and Linux ARM64'
+
+- script: |
+    sudo snap install zig --classic --beta
+  displayName: 'Install zig'
 
 - script: |
     cd uplink-c
@@ -78,6 +82,25 @@ steps:
     cat -n uplink-c/storj_uplink.h
     swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
   displayName: 'Running SWIG again with the second i-file. It includes more typemaps.'
+
+- script: |
+    cd uplink-c
+    export ZIG_CC="zig cc"  # Set Zig as C compiler
+    export ZIG_CXX="zig c++"  # Set Zig as C++ compiler
+    # For Zig, specify the target using -target and other relevant flags directly in the CC and CXX commands
+    export CC="${ZIG_CC} -target aarch64-windows-gnu"  # Updated to use Zig for ARM64 Windows
+    export CXX="${ZIG_CXX} -target aarch64-windows-gnu"  # Updated to use Zig for ARM64 Windows
+    export GOOS="windows"
+    export GOARCH="arm64"  # Confirming target architecture for Go
+    export CGO_ENABLED="1"
+    # Include any necessary flags. Note: Zig's linker will handle most cross-compilation concerns.
+    export CGO_CFLAGS="-g"
+    export CGO_CXXFLAGS="-g"
+    export CGO_FFLAGS="-g"
+    export CGO_LDFLAGS="-g"
+    # Build command remains the same, leveraging environment variables for cross-compilation
+    go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-arm64.dll -buildmode c-shared
+  displayName: 'Generating the final-ARM64-DLL for Windows with Zig toolchain'
 
 - script: |
     cd uplink-c
@@ -121,6 +144,13 @@ steps:
     publishLocation: 'pipeline'
   displayName: 'Publish storj_uplink_second_wrap.c'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'uplink-c/storj_uplink-arm64.dll'
+    artifact: 'win-arm64-dll'
+    publishLocation: 'pipeline'
+  displayName: 'Publish win-arm64-dll'
+  
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink-x86.dll'
@@ -196,6 +226,7 @@ steps:
 - script: |
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
+    sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/xamarinios/uplink.NET.iOs.targets
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Linux.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Mac.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
