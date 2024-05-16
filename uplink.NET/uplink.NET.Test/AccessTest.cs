@@ -30,13 +30,13 @@ namespace uplink.NET.Test
         [TestMethod]
         public void StorjVersionIsCorrect()
         {
-            Assert.AreEqual("v1.8.0", Access.GetStorjVersion());
+            Assert.AreEqual("v1.9.0", Access.GetStorjVersion());
         }
 
         [TestMethod]
         public void GoVersionIsCorrect()
         {
-            Assert.AreEqual("1.21.1", Access.GetGoVersion());
+            Assert.AreEqual("1.22.3", Access.GetGoVersion());
         }
 
         [TestMethod]
