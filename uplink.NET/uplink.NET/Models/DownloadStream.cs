@@ -25,7 +25,7 @@ namespace uplink.NET.Models
 
         public override long Position { get; set; }
 
-        public DownloadStream(Bucket bucket, int totalBytes, string objectName)
+        public DownloadStream(Bucket bucket, long totalBytes, string objectName)
         {
             _length = totalBytes;
             _bucket = bucket;
