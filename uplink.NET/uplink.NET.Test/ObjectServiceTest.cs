@@ -267,6 +267,32 @@ namespace uplink.NET.Test
         }
 
         [TestMethod]
+        public async Task DownloadStream_Provides_First50Bytes_ViaObjectService()
+        {
+            string bucketname = "downloadstreamtest1";
+
+            var result = await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = new byte[250];
+            for (int i = 0; i < 250; i++)
+            {
+                bytesToUpload[i] = Convert.ToByte(i);
+            }
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "myfile.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation.StartUploadAsync();
+
+            var stream = await _objectService.DownloadObjectAsStreamAsync(bucket, "myfile.txt");
+            byte[] bytesReceived = new byte[50];
+            await stream.ReadAsync(bytesReceived, 0, 50);
+
+            for (int i = 0; i < 50; i++)
+            {
+                Assert.AreEqual(i, Convert.ToInt32(bytesReceived[i]));
+            }
+        }
+
+        [TestMethod]
         public async Task ListObjects_Lists_ExistingObject()
         {
             string bucketname = "listobject-lists-existingobjects";

@@ -130,6 +130,13 @@ namespace uplink.NET.Interfaces
         /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
         Task<DownloadOperation> DownloadObjectAsync(Bucket bucket, string targetPath, DownloadOptions downloadOptions, bool immediateStart);
         /// <summary>
+        /// Downloads an object from the given bucket and the given Target-Path as a stream.
+        /// </summary>
+        /// <param name="bucket">The Bucket to download from</param>
+        /// <param name="targetPath">The path/name of the object within the bucket</param>
+        /// <returns>A DownloadOperation containing the info about the current state of the download or throws ObjectNotFoundException</returns>
+        Task<DownloadStream> DownloadObjectAsStreamAsync(Bucket bucket, string targetPath);
+        /// <summary>
         /// Deletes the mentioned object
         /// </summary>
         /// <param name="bucket">The Bucket where the object resides in</param>
