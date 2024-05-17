@@ -123,6 +123,13 @@ namespace uplink.NET.Services
             }
         }
 
+        public async Task<DownloadStream> DownloadObjectAsStreamAsync(Bucket bucket, string targetPath)
+        {
+            var objectToDownload = await GetObjectAsync(bucket, targetPath);
+            return new DownloadStream(bucket, (int)objectToDownload.SystemMetadata.ContentLength, targetPath);
+        }
+        
+
         public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
             var listObjectsOptionsSWIG = listObjectsOptions.ToSWIG();
