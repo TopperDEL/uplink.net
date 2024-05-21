@@ -29,6 +29,8 @@ steps:
     git clone https://github.com/storj/uplink-c.git
     cd uplink-c
     git checkout $(STORJ_VERSION) 
+    git fetch origin download-read-all
+    git merge origin/download-read-all
     cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
 
