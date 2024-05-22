@@ -17,7 +17,7 @@ steps:
   displayName: 'Clone uplink.NET'
 
 - script: |
-    sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
+    sed -i 's/STORJVERSION/$(STORJ_VERSION) - special/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
 
 - script: |
