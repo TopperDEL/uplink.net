@@ -19,7 +19,7 @@
   </metadata>
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
-    <file target="runtimes\osx-x64\native\libstorj_uplink.dylib" src="osx-x64\libstorj_uplink.dylib" />
-    <file target="runtimes\osx-arm64\native\libstorj_uplink.dylib" src="osx-x64\libstorj_uplink.dylib" />
+    <file target="runtimes/osx-x64/native/libstorj_uplink.dylib" src="osx-x64/libstorj_uplink.dylib" />
+    <file target="runtimes/osx-arm64/native/libstorj_uplink.dylib" src="osx-x64/libstorj_uplink.dylib" />
   </files>
 </package>
