@@ -16,13 +16,12 @@ It is - like Storj itself - open source and developed on github.
 Works with .Net/UWP/Linux/Xamarin.Android/Xamarin.iOS/MacOS. Please add the additional platform-libraries if necessary.</description>
     <releaseNotes>Refactored upload code path for faster and more resilient uploads - based on uplink-c v1.8.1 and Go 1.21.4</releaseNotes>
     <copyright>Copyright YEAR - Tim Parth, Storj Labs Inc.</copyright>
-	<repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
+    <repository type="git" url="https://github.com/TopperDEL/uplink.net.git" />
     <tags>storj tardigrade storage decentralised secure bucket file xamarin android ios linux mac windows uwp</tags>
-	<dependencies>
+    <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="sqlite-net-pcl" version="1.7.335"/>
       </group>
-	  <group targetFramework="net6.0" />
     </dependencies>
   </metadata>
   <files>
