@@ -147,7 +147,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '28'
-          specificBuildWithTriggering: false
+          specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'linux_amd64'
           itemPattern: '**'
@@ -159,7 +159,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '28'
-          specificBuildWithTriggering: false
+          specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'linux_arm'
           itemPattern: '**'
@@ -171,7 +171,7 @@ stages:
           buildType: 'specific'
           project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
           definition: '28'
-          specificBuildWithTriggering: false
+          specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
           artifactName: 'linux_arm64'
           itemPattern: '**'
