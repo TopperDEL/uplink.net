@@ -20,5 +20,7 @@
   <files>
     <file target="Storj-symbol.png" src="Storj-symbol.png"/>
 	<file target="runtimes/linux-x64/native/storj_uplink.so" src="linux-x64/storj_uplink.so" />
+	<file target="runtimes/linux-arm/native/storj_uplink.so" src="linux-arm/storj_uplink.so" />
+	<file target="runtimes/linux-arm64/native/storj_uplink.so" src="linux-arm64/storj_uplink.so" />
   </files>
 </package>
