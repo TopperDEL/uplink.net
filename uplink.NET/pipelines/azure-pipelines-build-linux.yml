@@ -9,9 +9,7 @@ stages:
     vmImage: 'ubuntu-20.04'
   jobs:
     - job: amd64
-
       steps:
-
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -50,6 +48,94 @@ stages:
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-amd64.so'
 
+- stage: arm
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: arm
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+          export CGO_ENABLED=1
+          export GOARCH=arm
+        displayName: 'Prepare for Target arm'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-buildmode c-shared -o storj_uplink-arm.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build arm'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm.so'
+          artifact: 'linux_arm'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-arm.so'
+
+- stage: arm64
+  pool:
+    vmImage: 'ubuntu-20.04'
+  jobs:
+    - job: arm64
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+          export CGO_ENABLED=1
+          export GOARCH=arm64
+        displayName: 'Prepare for Target arm64'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-buildmode c-shared -o storj_uplink-arm64.so'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build arm64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm64.so'
+          artifact: 'linux_arm64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-arm64.so'
+
 - stage: nuget_pack
   pool:
     vmImage: 'ubuntu-20.04'
@@ -67,6 +153,31 @@ stages:
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
         displayName: 'Get build-artifacts (linux-amd64)'
+        
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '28'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'linux_arm'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (linux-arm)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '28'
+          specificBuildWithTriggering: false
+          buildVersionToDownload: 'latest'
+          artifactName: 'linux_arm64'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (linux-arm64)'
+        
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -82,6 +193,10 @@ stages:
       - script: |
           mkdir linux-x64
           mv storj_uplink-amd64.so linux-x64/storj_uplink.so
+          mkdir linux-arm
+          mv storj_uplink-arm.so linux-arm/storj_uplink.so
+          mkdir linux-arm64
+          mv storj_uplink-arm64.so linux-arm64/storj_uplink.so
         displayName: 'Copy binaries to nuget-location'
 
       - task: NuGetToolInstaller@1
