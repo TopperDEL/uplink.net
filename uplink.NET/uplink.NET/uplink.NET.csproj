@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>
     </Description>
-    <AssemblyVersion>2.7.0.0</AssemblyVersion>
+    <AssemblyVersion>2.13.0.0</AssemblyVersion>
     <Authors>
     </Authors>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,8 +13,8 @@
     <DebugType>portable</DebugType>
     <AssemblyName>uplink.NET</AssemblyName>
     <RootNamespace>uplink.NET</RootNamespace>
-    <FileVersion>2.7.0.0</FileVersion>
-    <Version>2.7.0</Version>
+    <FileVersion>2.13.0.0</FileVersion>
+    <Version>2.13.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>
