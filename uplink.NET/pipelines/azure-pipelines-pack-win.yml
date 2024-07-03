@@ -39,16 +39,29 @@ stages:
           definition: '31'
           specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
+          artifactName: 'win-arm64-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (arm64-dll)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
           artifactName: 'nuspec'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
           mkdir win-x86-dll
           mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
           mkdir win-x64-dll
           mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
+          mkdir win-arm64-dll
+          mv storj_uplink-arm64.dll win-arm64-dll/storj_uplink-arm64.dll
         displayName: 'remove me'
 
       - task: NuGetToolInstaller@1
