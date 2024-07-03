@@ -53,7 +53,7 @@ stages:
           artifactName: 'nuspec'
           itemPattern: '**'
           targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
+        displayName: 'Get build-artifacts (nuspec)'
 
       - script: |
           mkdir win-x86-dll
