@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>uplink.NET</id>
-    <version>2.12.BUILDNR-pre</version>
+    <version>2.13.BUILDNR</version>
     <title>uplink.NET</title>
     <authors>Tim Parth, Storj Labs Inc.</authors>
     <owners>Tim Parth</owners>
