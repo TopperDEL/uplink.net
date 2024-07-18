@@ -52,15 +52,15 @@ steps:
   inputs:
     command: 'build'
     projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
-    arguments: '--configuration Release -p:Version=2.6.0.$(Build.BuildId)'
+    arguments: '--configuration Release -p:Version=2.13.0.$(Build.BuildId)'
   displayName: 'Build uplink.NET-library'
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
-      mv uplink.NET/uplink.NET/bin/Release/net6.0/uplink.NET.dll uplink.NET.dll
-      mv uplink.NET/uplink.NET/bin/Release/net6.0/uplink.NET.pdb uplink.NET.pdb
+      mv uplink.NET/uplink.NET/bin/Release/net8.0/uplink.NET.dll uplink.NET.dll
+      mv uplink.NET/uplink.NET/bin/Release/net8.0/uplink.NET.pdb uplink.NET.pdb
   displayName: 'Place uplink-DLL at nuget-location'
 
 - task: NuGetToolInstaller@1
