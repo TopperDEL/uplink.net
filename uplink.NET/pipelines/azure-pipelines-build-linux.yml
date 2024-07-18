@@ -41,6 +41,7 @@ stages:
         displayName: 'Build amd64'
         env:
           GOARCH: 'amd64'
+          CGO_ENABLED: '1'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -86,6 +87,7 @@ stages:
         displayName: 'Build arm'
         env:
           GOARCH: 'arm'
+          CGO_ENABLED: '1'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -131,6 +133,7 @@ stages:
         displayName: 'Build arm64'
         env:
           GOARCH: 'arm64'
+          CGO_ENABLED: '1'
 
       - task: PublishPipelineArtifact@1
         inputs:
