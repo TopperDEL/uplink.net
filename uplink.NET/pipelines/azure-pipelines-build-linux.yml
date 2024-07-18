@@ -31,7 +31,6 @@ stages:
           cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
-          export GOARCH=amd64
         displayName: 'Prepare for Target amd64'
 
       - task: Go@0
@@ -40,6 +39,8 @@ stages:
           arguments: '-buildmode c-shared -o storj_uplink-amd64.so'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Build amd64'
+        env:
+          GOARCH: 'amd64'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -75,7 +76,6 @@ stages:
           cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
-          export GOARCH=arm
         displayName: 'Prepare for Target arm'
 
       - task: Go@0
@@ -84,6 +84,8 @@ stages:
           arguments: '-buildmode c-shared -o storj_uplink-arm.so'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Build arm'
+        env:
+          GOARCH: 'arm'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -119,7 +121,6 @@ stages:
           cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
-          export GOARCH=arm64
         displayName: 'Prepare for Target arm64'
 
       - task: Go@0
@@ -128,6 +129,8 @@ stages:
           arguments: '-buildmode c-shared -o storj_uplink-arm64.so'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
         displayName: 'Build arm64'
+        env:
+          GOARCH: 'arm64'
 
       - task: PublishPipelineArtifact@1
         inputs:
