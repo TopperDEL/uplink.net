@@ -127,7 +127,7 @@ stages:
           cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
           export CGO_ENABLED=1
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnueabi
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
         displayName: 'Prepare for Target arm64'
 
       - task: Go@0
