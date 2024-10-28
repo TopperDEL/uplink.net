@@ -158,6 +158,13 @@ namespace uplink.NET.Services
             }
         }
 
+        public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions, string cursor, int maxEntries)
+        {
+            listObjectsOptions.Cursor = cursor;
+            listObjectsOptions.MaxEntries = maxEntries;
+            return await ListObjectsAsync(bucket, listObjectsOptions).ConfigureAwait(false);
+        }
+
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
             using (var objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_object(_access._project, bucket.Name, targetPath)).ConfigureAwait(false))

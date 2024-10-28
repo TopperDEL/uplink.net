@@ -606,6 +606,36 @@ namespace uplink.NET.Test
             }
         }
 
+        [TestMethod]
+        public async Task ListObjects_WithCursorAndMaxEntries()
+        {
+            string bucketname = "listobject-with-cursor-maxentries";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload = GetRandomBytes(2048);
+
+            var uploadOperation1 = await _objectService.UploadObjectAsync(bucket, "myfile1.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation1.StartUploadAsync();
+            var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "myfile2.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation2.StartUploadAsync();
+            var uploadOperation3 = await _objectService.UploadObjectAsync(bucket, "myfile3.txt", new UploadOptions(), bytesToUpload, false);
+            await uploadOperation3.StartUploadAsync();
+
+            var listOptions = new ListObjectsOptions { MaxEntries = 2 };
+            var objectList = await _objectService.ListObjectsAsync(bucket, listOptions);
+
+            Assert.AreEqual(2, objectList.Items.Count);
+            Assert.AreEqual("myfile1.txt", objectList.Items[0].Key);
+            Assert.AreEqual("myfile2.txt", objectList.Items[1].Key);
+
+            listOptions.Cursor = objectList.Items[1].Key;
+            var objectList2 = await _objectService.ListObjectsAsync(bucket, listOptions);
+
+            Assert.AreEqual(1, objectList2.Items.Count);
+            Assert.AreEqual("myfile3.txt", objectList2.Items[0].Key);
+        }
+
         public static byte[] GetRandomBytes(long length)
         {
             byte[] bytes = new byte[length];
@@ -640,6 +670,7 @@ namespace uplink.NET.Test
             await DeleteBucketAsync("copyobject-copies-object-samebucket");
             await DeleteBucketAsync("copyobject-copies-object-diffbucket1");
             await DeleteBucketAsync("copyobject-copies-object-diffbucket2");            
+            await DeleteBucketAsync("listobject-with-cursor-maxentries");
         }
 
         private async Task DeleteBucketAsync(string bucketName)
