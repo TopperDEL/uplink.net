@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,26 +23,33 @@ namespace uplink.NET.Services
 
         public async Task<UploadInfo> BeginUploadAsync(string bucketName, string objectKey, UploadOptions uploadOptions)
         {
+            Console.WriteLine("BeginUploadAsync: Starting upload for bucket: {0}, objectKey: {1}", bucketName, objectKey);
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
             using (SWIG.UplinkUploadInfoResult uploadinfoResult = await Task.Run(() => SWIG.storj_uplink.uplink_begin_upload(_access._project, bucketName, objectKey, uploadOptionsSWIG)).ConfigureAwait(false))
             {
                 if (uploadinfoResult.error != null && !string.IsNullOrEmpty(uploadinfoResult.error.message))
+                {
+                    Console.WriteLine("BeginUploadAsync: Error starting upload: {0}", uploadinfoResult.error.message);
                     throw new MultipartUploadFailedException(objectKey, uploadinfoResult.error.message);
+                }
 
+                Console.WriteLine("BeginUploadAsync: Successfully started upload for bucket: {0}, objectKey: {1}", bucketName, objectKey);
                 return UploadInfo.FromSWIG(uploadinfoResult.info);
             }
         }
 
         public async Task<PartUploadResult> UploadPartAsync(string bucketName, string objectKey, string uploadId, uint partNumber, byte[] partBytes)
         {
+            Console.WriteLine("UploadPartAsync: Uploading part {0} for bucket: {1}, objectKey: {2}, uploadId: {3}", partNumber, bucketName, objectKey, uploadId);
             using (var partUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_part(_access._project, bucketName, objectKey, uploadId, partNumber)).ConfigureAwait(false))
             {
                 PartUploadResult result = new PartUploadResult(partUploadResult.part_upload);
 
                 if (partUploadResult.error != null && !string.IsNullOrEmpty(partUploadResult.error.message))
                 {
+                    Console.WriteLine("UploadPartAsync: Error uploading part: {0}", partUploadResult.error.message);
                     result.Error = partUploadResult.error.message;
                 }
                 else
@@ -50,9 +57,11 @@ namespace uplink.NET.Services
                     try
                     {
                         result.BytesWritten = await Task.Run(() => DoUnsafeUpload(partUploadResult.part_upload, objectKey, partBytes)).ConfigureAwait(false);
+                        Console.WriteLine("UploadPartAsync: Successfully uploaded part {0} for bucket: {1}, objectKey: {2}, uploadId: {3}", partNumber, bucketName, objectKey, uploadId);
                     }
                     catch (Exception ex)
                     {
+                        Console.WriteLine("UploadPartAsync: Exception during upload: {0}", ex.Message);
                         result.Error = ex.Message;
                     }
                 }
@@ -67,13 +76,20 @@ namespace uplink.NET.Services
                 using (SWIG.UplinkWriteResult sentResult = SWIG.storj_uplink.uplink_part_upload_write(partUpload, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)partBytes.Length))
                 {
                     if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
+                    {
+                        Console.WriteLine("DoUnsafeUpload: Error writing part: {0}", sentResult.error.message);
                         throw new MultipartUploadFailedException(objectKey, sentResult.error.message);
+                    }
 
                     using (var commitResult = SWIG.storj_uplink.uplink_part_upload_commit(partUpload))
                     {
                         if (commitResult != null && !string.IsNullOrEmpty(commitResult.message))
+                        {
+                            Console.WriteLine("DoUnsafeUpload: Error committing part: {0}", commitResult.message);
                             throw new MultipartUploadFailedException(objectKey, commitResult.message);
+                        }
 
+                        Console.WriteLine("DoUnsafeUpload: Successfully wrote and committed part for objectKey: {0}", objectKey);
                         return sentResult.bytes_written;
                     }
                 }
@@ -82,20 +98,31 @@ namespace uplink.NET.Services
 
         public async Task UploadPartSetETagAsync(PartUpload partUpload, string eTag)
         {
+            Console.WriteLine("UploadPartSetETagAsync: Setting ETag for part upload");
             var result = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_set_etag(partUpload._partUpload, eTag)).ConfigureAwait(false);
             if (result != null && !string.IsNullOrEmpty(result.message))
+            {
+                Console.WriteLine("UploadPartSetETagAsync: Error setting ETag: {0}", result.message);
                 throw new SetETagFailedException(result.message);
+            }
+            Console.WriteLine("UploadPartSetETagAsync: Successfully set ETag for part upload");
         }
 
         public async Task AbortUploadAsync(string bucketName, string objectKey, string uploadId)
         {
+            Console.WriteLine("AbortUploadAsync: Aborting upload for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
             var result = await Task.Run(() => SWIG.storj_uplink.uplink_abort_upload(_access._project, bucketName, objectKey, uploadId)).ConfigureAwait(false);
             if (result != null && !string.IsNullOrEmpty(result.message))
+            {
+                Console.WriteLine("AbortUploadAsync: Error aborting upload: {0}", result.message);
                 throw new SetETagFailedException(result.message);
+            }
+            Console.WriteLine("AbortUploadAsync: Successfully aborted upload for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
         }
 
         public async Task<CommitUploadResult> CommitUploadAsync(string bucketName, string objectKey, string uploadId, CommitUploadOptions commitUploadOptions)
         {
+            Console.WriteLine("CommitUploadAsync: Committing upload for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
             CommitUploadResult result = new CommitUploadResult();
             await Task.Run(() =>
             {
@@ -111,11 +138,13 @@ namespace uplink.NET.Services
                     {
                         if (commitUploadResult.error != null && !string.IsNullOrEmpty(commitUploadResult.error.message))
                         {
+                            Console.WriteLine("CommitUploadAsync: Error committing upload: {0}", commitUploadResult.error.message);
                             result.Error = commitUploadResult.error.message;
                         }
                         else
                         {
                             result.Object = Models.Object.FromSWIG(commitUploadResult.object_);
+                            Console.WriteLine("CommitUploadAsync: Successfully committed upload for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
                         }
                     }
                 }
@@ -129,16 +158,19 @@ namespace uplink.NET.Services
 
         public async Task<PartResult> GetPartUploadInfoAsync(PartUpload partUpload)
         {
+            Console.WriteLine("GetPartUploadInfoAsync: Retrieving part upload info");
             using (var uplinkPartResult = await Task.Run(() => SWIG.storj_uplink.uplink_part_upload_info(partUpload._partUpload)).ConfigureAwait(false))
             {
                 var partResult = new PartResult();
                 if (uplinkPartResult.error != null && !string.IsNullOrEmpty(uplinkPartResult.error.message))
                 {
+                    Console.WriteLine("GetPartUploadInfoAsync: Error retrieving part upload info: {0}", uplinkPartResult.error.message);
                     partResult.Error = uplinkPartResult.error.message;
                 }
                 else
                 {
                     partResult.Part = Part.FromSWIG(uplinkPartResult.part);
+                    Console.WriteLine("GetPartUploadInfoAsync: Successfully retrieved part upload info");
                 }
 
                 return partResult;
@@ -147,6 +179,7 @@ namespace uplink.NET.Services
 
         public async Task<UploadPartsList> ListUploadPartsAsync(string bucketName, string objectKey, string uploadId, ListUploadPartsOptions listUploadPartOptions)
         {
+            Console.WriteLine("ListUploadPartsAsync: Listing upload parts for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
             var listUploadPartsOptionsSWIG = listUploadPartOptions.ToSWIG();
             _listUploadPartsOptions.Add(listUploadPartsOptionsSWIG);
 
@@ -156,6 +189,7 @@ namespace uplink.NET.Services
                 {
                     if (error != null && !string.IsNullOrEmpty(error.message))
                     {
+                        Console.WriteLine("ListUploadPartsAsync: Error listing upload parts: {0}", error.message);
                         throw new UploadPartsListException(error.message);
                     }
                 }
@@ -169,12 +203,14 @@ namespace uplink.NET.Services
                         uploadPartList.Items.Add(uplink.NET.Models.Part.FromSWIG(partUploadResult));
                     }
                 }
+                Console.WriteLine("ListUploadPartsAsync: Successfully listed upload parts for bucket: {0}, objectKey: {1}, uploadId: {2}", bucketName, objectKey, uploadId);
                 return uploadPartList;
             }
         }
 
         public async Task<UploadsList> ListUploadsAsync(string bucketName, ListUploadOptions listUploadOptions)
         {
+            Console.WriteLine("ListUploadsAsync: Listing uploads for bucket: {0}", bucketName);
             var listUploadsOptionsSWIG = listUploadOptions.ToSWIG();
             _listUploadsOptions.Add(listUploadsOptionsSWIG);
 
@@ -184,6 +220,7 @@ namespace uplink.NET.Services
                 {
                     if (error != null && !string.IsNullOrEmpty(error.message))
                     {
+                        Console.WriteLine("ListUploadsAsync: Error listing uploads: {0}", error.message);
                         throw new UploadsListException(error.message);
                     }
                 }
@@ -197,6 +234,7 @@ namespace uplink.NET.Services
                         uploadsList.Items.Add(uplink.NET.Models.UploadInfo.FromSWIG(uploadInfo));
                     }
                 }
+                Console.WriteLine("ListUploadsAsync: Successfully listed uploads for bucket: {0}", bucketName);
                 return uploadsList;
             }
         }

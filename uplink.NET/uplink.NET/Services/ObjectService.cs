@@ -53,6 +53,7 @@ namespace uplink.NET.Services
 
             using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
+                Console.WriteLine("UploadObjectAsync: Uploading object to bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
                 UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
                 if (immediateStart)
                     upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
@@ -73,6 +74,7 @@ namespace uplink.NET.Services
 
             using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
+                Console.WriteLine("UploadObjectAsync: Uploading object to bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
                 UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
                 if (immediateStart)
                     upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
@@ -87,6 +89,7 @@ namespace uplink.NET.Services
             _uploadOptions.Add(uploadOptionsSWIG);
             using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
             {
+                Console.WriteLine("UploadObjectChunkedAsync: Uploading object to bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
                 ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
 
                 return upload;
@@ -104,7 +107,7 @@ namespace uplink.NET.Services
             {
                 using (SWIG.UplinkDownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG)).ConfigureAwait(false))
                 {
-
+                    Console.WriteLine("DownloadObjectAsync: Downloading object from bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
                     if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                         throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
 
@@ -125,6 +128,7 @@ namespace uplink.NET.Services
 
         public async Task<DownloadStream> DownloadObjectAsStreamAsync(Bucket bucket, string targetPath)
         {
+            Console.WriteLine("DownloadObjectAsStreamAsync: Downloading object as stream from bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
             var objectToDownload = await GetObjectAsync(bucket, targetPath);
             return new DownloadStream(bucket, (int)objectToDownload.SystemMetadata.ContentLength, targetPath);
         }
@@ -132,6 +136,7 @@ namespace uplink.NET.Services
 
         public async Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions)
         {
+            Console.WriteLine("ListObjectsAsync: Listing objects in bucket: {0}", bucket.Name);
             var listObjectsOptionsSWIG = listObjectsOptions.ToSWIG();
             _listOptions.Add(listObjectsOptionsSWIG);
 
@@ -160,6 +165,7 @@ namespace uplink.NET.Services
 
         public async Task<uplink.NET.Models.Object> GetObjectAsync(Bucket bucket, string targetPath)
         {
+            Console.WriteLine("GetObjectAsync: Retrieving object from bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
             using (var objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_object(_access._project, bucket.Name, targetPath)).ConfigureAwait(false))
             {
                 if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
@@ -171,6 +177,7 @@ namespace uplink.NET.Services
 
         public async Task DeleteObjectAsync(Bucket bucket, string targetPath)
         {
+            Console.WriteLine("DeleteObjectAsync: Deleting object from bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
             using (SWIG.UplinkObjectResult objectResult = await Task.Run(() => SWIG.storj_uplink.uplink_delete_object(_access._project, bucket.Name, targetPath)).ConfigureAwait(false))
             {
                 if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
@@ -186,6 +193,7 @@ namespace uplink.NET.Services
 
         public async Task MoveObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey)
         {
+            Console.WriteLine("MoveObjectAsync: Moving object from bucket: {0}, oldKey: {1} to bucket: {2}, newKey: {3}", oldBucket.Name, oldKey, newBucket.Name, newKey);
             using (var options = new SWIG.UplinkMoveObjectOptions())
             using (SWIG.UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_move_object(_access._project, oldBucket.Name, oldKey, newBucket.Name, newKey, options)))
             {
@@ -198,6 +206,7 @@ namespace uplink.NET.Services
 
         public async Task CopyObjectAsync(Bucket oldBucket, string oldKey, Bucket newBucket, string newKey)
         {
+            Console.WriteLine("CopyObjectAsync: Copying object from bucket: {0}, oldKey: {1} to bucket: {2}, newKey: {3}", oldBucket.Name, oldKey, newBucket.Name, newKey);
             using (var options = new SWIG.UplinkCopyObjectOptions())
             using (SWIG.UplinkObjectResult result = await Task.Run(() => SWIG.storj_uplink.uplink_copy_object(_access._project, oldBucket.Name, oldKey, newBucket.Name, newKey, options)))
             {
@@ -210,6 +219,7 @@ namespace uplink.NET.Services
 
         public async Task UpdateObjectMetadataAsync(Bucket bucket, string targetPath, CustomMetadata metadata)
         {
+            Console.WriteLine("UpdateObjectMetadataAsync: Updating metadata for object in bucket: {0}, targetPath: {1}", bucket.Name, targetPath);
             await UploadOperation.customMetadataSemaphore.WaitAsync();
             try
             {

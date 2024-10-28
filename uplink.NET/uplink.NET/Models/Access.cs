@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -256,6 +256,7 @@ namespace uplink.NET.Models
         /// <returns>The restricted access</returns>
         public Access Share(Permission permission, List<SharePrefix> prefixes)
         {
+            Console.WriteLine("Share: Preparing to share access with permissions and prefixes");
             SWIG.storj_uplink.prepare_shareprefixes((uint)prefixes.Count);
 
             foreach (var prefix in prefixes)
@@ -268,6 +269,7 @@ namespace uplink.NET.Models
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                         throw new AccessShareException(accessResult.error.message);
 
+                    Console.WriteLine("Share: Successfully shared access");
                     return new Access(accessResult.access);
                 }
             }
@@ -286,11 +288,13 @@ namespace uplink.NET.Models
         /// <returns>true, if overwriting worked - raises exception on error</returns>
         public bool OverrideEncryptionAccess(string bucketName, string prefix, EncryptionKey encryptionKey)
         {
+            Console.WriteLine("OverrideEncryptionAccess: Overriding encryption key for bucket: {0}, prefix: {1}", bucketName, prefix);
             using (var error = SWIG.storj_uplink.uplink_access_override_encryption_key(_access, bucketName, prefix, encryptionKey._encryptionKeyResulRef.encryption_key))
             {
                 if (error != null && !string.IsNullOrEmpty(error.message))
                     throw new AccessException(error.message);
 
+                Console.WriteLine("OverrideEncryptionAccess: Successfully overridden encryption key");
                 return true;
             }
         }
@@ -327,12 +331,14 @@ namespace uplink.NET.Models
 
         public async Task RevokeAsync(Access childAccess)
         {
+            Console.WriteLine("RevokeAsync: Revoking access");
             using (UplinkError error = await Task.Run(() => SWIG.storj_uplink.uplink_revoke_access(_project, childAccess._access)).ConfigureAwait(false))
             {
                 if (error != null && !string.IsNullOrEmpty(error.message))
                 {
                     throw new AccessRevokeException(error.message);
                 }
+                Console.WriteLine("RevokeAsync: Successfully revoked access");
             }
         }
 

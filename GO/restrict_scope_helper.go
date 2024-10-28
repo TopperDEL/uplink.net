@@ -5,7 +5,7 @@ import "C"
 
 import  (
 	"time"
-
+	"log"
 	"storj.io/uplink"
 )
 
@@ -14,6 +14,7 @@ var shareprefixes []uplink.SharePrefix;
 //export prepare_shareprefixes
 // prepare_shareprefixes creates a temporary SharePrefixes-Array to be filled by append_shareprefix and used by access_share2
 func prepare_shareprefixes(shareprefixesLen C.size_t) {
+	log.Printf("prepare_shareprefixes: Initializing shareprefixes array with length %d\n", shareprefixesLen)
 	ishareprefixesLen := int(shareprefixesLen)
 	
 	shareprefixes = make([]uplink.SharePrefix, 0, ishareprefixesLen)
@@ -22,6 +23,7 @@ func prepare_shareprefixes(shareprefixesLen C.size_t) {
 //export append_shareprefix
 // append_shareprefix appends one SharePrefix by providing the contents directly
 func append_shareprefix(bucket *C.char, prefix *C.char){
+	log.Printf("append_shareprefix: Adding bucket=%s, prefix=%s\n", C.GoString(bucket), C.GoString(prefix))
 	shareprefix := uplink.SharePrefix{
 				Bucket:     C.GoString(bucket),
 				Prefix: C.GoString(prefix),
@@ -33,6 +35,7 @@ func append_shareprefix(bucket *C.char, prefix *C.char){
 //export access_share2
 // access_share2 restricts a given scope with the provided caveat and the temporary encryption shareprefixes
 func access_share2(access *C.UplinkAccess, permission C.UplinkPermission) C.UplinkAccessResult { //nolint:golint
+	log.Println("access_share2: Restricting access with provided permission and shareprefixes")
 	if access == nil {
 		return C.UplinkAccessResult{
 			error: mallocError(ErrNull.New("access")),

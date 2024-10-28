@@ -5,7 +5,7 @@ import "C"
 import (
 	"reflect"
 	"unsafe"
-	
+	"log"
 	"storj.io/uplink"
 )
 
@@ -14,18 +14,21 @@ var customMetadata = map[string]string{}
 //export prepare_custommetadata
 // prepare_custommetadata creates a temporary SharePrefixes-Array to be filled by append_custommetadata and used by upload_set_custom_metadata2
 func prepare_custommetadata() {
+	log.Println("prepare_custommetadata: Initializing custom metadata map")
 	customMetadata = make(map[string]string)
 }
 
 //export append_custommetadata
 // append_custommetadata appends one CustomMetadata by providing the contents directly
 func append_custommetadata(key *C.char, value *C.char){
+	log.Printf("append_custommetadata: Adding key=%s, value=%s\n", C.GoString(key), C.GoString(value))
 	customMetadata[C.GoString(key)] = C.GoString(value)
 }
 
 //export upload_set_custom_metadata2
 // upload_set_custom_metadata2 sets the customMetadata on an upload
 func upload_set_custom_metadata2(upload *C.UplinkUpload) *C.UplinkError {
+	log.Println("upload_set_custom_metadata2: Setting custom metadata on upload")
 	up, ok := universe.Get(upload._handle).(*Upload)
 	if !ok {
 		return mallocError(ErrInvalidHandle.New("upload"))
