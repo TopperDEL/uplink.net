@@ -217,7 +217,7 @@ stages:
 
 - stage: nuget_pack_mac
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: nuget_pack_mac
       steps:
@@ -393,7 +393,7 @@ stages:
 
 - stage: nuget_pack_ios
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: nuget_pack_ios
       steps:
