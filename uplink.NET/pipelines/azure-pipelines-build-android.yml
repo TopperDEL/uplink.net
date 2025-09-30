@@ -6,7 +6,7 @@
 stages:
 - stage: armeabi_v7a
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: armeabi_v7a
 
@@ -59,7 +59,7 @@ stages:
 
 - stage: arm64_v8a
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: arm64_v8a
       steps:
@@ -111,7 +111,7 @@ stages:
 
 - stage: i368
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: i386
       steps:
@@ -163,7 +163,7 @@ stages:
 
 - stage: amd64
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: amd64
       steps:
@@ -215,7 +215,7 @@ stages:
 
 - stage: nuget_pack
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: nuget_pack
       steps:
