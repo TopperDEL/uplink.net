@@ -222,7 +222,7 @@ class storj_uplinkPINVOKE {
 
         public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
         {
-            if (nativeUtf8 == global::System.IntPtr.Zero)
+            if (nativeUtf8 == System.IntPtr.Zero)
             {
                 return null;
             }
