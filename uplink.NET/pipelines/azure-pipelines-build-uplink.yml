@@ -10,6 +10,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate to feeds (NuGet)'
+
 - task: DownloadPipelineArtifact@2
   inputs:
     buildType: 'specific'
@@ -67,7 +70,9 @@ steps:
   inputs:
     versionSpec: '5.8.0'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
   inputs:
     command: 'pack'
     packagesToPack: 'uplink.NET.nuspec'
@@ -88,7 +93,9 @@ steps:
     publishLocation: 'pipeline'
   displayName: 'Publish Uplink.NET-Nuget as Artifact'
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
   inputs:
     command: 'push'
     packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'

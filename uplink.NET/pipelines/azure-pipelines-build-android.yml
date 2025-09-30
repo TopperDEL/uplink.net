@@ -11,6 +11,9 @@ stages:
     - job: armeabi_v7a
 
       steps:
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate to feeds (NuGet)'
+
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'specific'
@@ -287,7 +290,9 @@ stages:
         inputs:
           versionSpec: '5.8.0'
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
         inputs:
           command: 'pack'
           packagesToPack: 'uplink.NET.Droid.nuspec'
@@ -308,7 +313,9 @@ stages:
           publishLocation: 'pipeline'
         displayName: 'Publish Android-Nuget as Artifact'
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
         inputs:
           command: 'push'
           packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
