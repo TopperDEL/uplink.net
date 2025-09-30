@@ -6,7 +6,7 @@
 stages:
 - stage: nuget_pack
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-latest'
   jobs:
     - job: nuget_pack
       steps:
