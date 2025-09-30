@@ -70,13 +70,17 @@ MAP_SPECIAL(_Bool, bool, _Bool)
             }
         }
 
-	public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
+        public static string StringFromNativeUtf8(System.IntPtr nativeUtf8)
         {
+            if (nativeUtf8 == System.IntPtr.Zero)
+            {
+                return null;
+            }
+
             int len = 0;
             while (System.Runtime.InteropServices.Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
             byte[] buffer = new byte[len];
             System.Runtime.InteropServices.Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
-			System.Runtime.InteropServices.Marshal.FreeHGlobal(nativeUtf8);
             return System.Text.Encoding.UTF8.GetString(buffer);
         }
 		
