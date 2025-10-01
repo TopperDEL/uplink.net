@@ -8,233 +8,210 @@ stages:
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-    - job: amd64
-      steps:
-- task: NuGetAuthenticate@1
-  displayName: 'Authenticate to feeds (NuGet)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
-          export CGO_ENABLED=1
-        displayName: 'Prepare for Target amd64'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-amd64.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build amd64'
-        env:
-          GOARCH: 'amd64'
-          CGO_ENABLED: '1'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-amd64.so'
-          artifact: 'linux_amd64'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-amd64.so'
+  - job: amd64
+    steps:
+    - task: NuGetAuthenticate@1
+      displayName: 'Authenticate to feeds (NuGet)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        itemPattern: |
+          **
+          !*.cs
+          !*.dll
+          !win-x86-dll
+          !win-x64-dll
+          !Csharp-files
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts'
+    - script: |
+        cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        export CGO_ENABLED=1
+      displayName: 'Prepare for Target amd64'
+    - task: Go@0
+      inputs:
+        command: 'build'
+        arguments: '-buildmode c-shared -o storj_uplink-amd64.so'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+      displayName: 'Build amd64'
+      env:
+        GOARCH: 'amd64'
+        CGO_ENABLED: '1'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-amd64.so'
+        artifact: 'linux_amd64'
+        publishLocation: 'pipeline'
+      displayName: 'Publish storj_uplink-amd64.so'
 
 - stage: arm
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-    - job: arm
-      steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
-          export CGO_ENABLED=1
-          sudo apt-get update
-          sudo apt-get install gcc-arm-linux-gnueabi
-        displayName: 'Prepare for Target arm'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-arm.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build arm'
-        env:
-          GOARCH: 'arm'
-          CGO_ENABLED: '1'
-          CC: 'arm-linux-gnueabi-gcc'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm.so'
-          artifact: 'linux_arm'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-arm.so'
+  - job: arm
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        itemPattern: |
+          **
+          !*.cs
+          !*.dll
+          !win-x86-dll
+          !win-x64-dll
+          !Csharp-files
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts'
+    - script: |
+        cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        export CGO_ENABLED=1
+        sudo apt-get update
+        sudo apt-get install gcc-arm-linux-gnueabi
+      displayName: 'Prepare for Target arm'
+    - task: Go@0
+      inputs:
+        command: 'build'
+        arguments: '-buildmode c-shared -o storj_uplink-arm.so'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+      displayName: 'Build arm'
+      env:
+        GOARCH: 'arm'
+        CGO_ENABLED: '1'
+        CC: 'arm-linux-gnueabi-gcc'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm.so'
+        artifact: 'linux_arm'
+        publishLocation: 'pipeline'
+      displayName: 'Publish storj_uplink-arm.so'
 
 - stage: arm64
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-    - job: arm64
-      steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          itemPattern: |
-            **
-            !*.cs
-            !*.dll
-            !win-x86-dll
-            !win-x64-dll
-            !Csharp-files
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts'
-
-      - script: |
-          cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-          cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
-          export CGO_ENABLED=1
-          sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-        displayName: 'Prepare for Target arm64'
-
-      - task: Go@0
-        inputs:
-          command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-arm64.so'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build arm64'
-        env:
-          GOARCH: 'arm64'
-          CGO_ENABLED: '1'
-          CC: 'aarch64-linux-gnu-gcc'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm64.so'
-          artifact: 'linux_arm64'
-          publishLocation: 'pipeline'
-        displayName: 'Publish storj_uplink-arm64.so'
+  - job: arm64
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        itemPattern: |
+          **
+          !*.cs
+          !*.dll
+          !win-x86-dll
+          !win-x64-dll
+          !Csharp-files
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts'
+    - script: |
+        cp storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+        cp storj_uplink/storj_uplink.h uplink-c/storj_uplink.h
+        export CGO_ENABLED=1
+        sudo apt-get update
+        sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+      displayName: 'Prepare for Target arm64'
+    - task: Go@0
+      inputs:
+        command: 'build'
+        arguments: '-buildmode c-shared -o storj_uplink-arm64.so'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+      displayName: 'Build arm64'
+      env:
+        GOARCH: 'arm64'
+        CGO_ENABLED: '1'
+        CC: 'aarch64-linux-gnu-gcc'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-arm64.so'
+        artifact: 'linux_arm64'
+        publishLocation: 'pipeline'
+      displayName: 'Publish storj_uplink-arm64.so'
 
 - stage: nuget_pack
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-    - job: nuget_pack
-      steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'linux_amd64'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (linux-amd64)'
-        
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'linux_arm'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (linux-arm)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          artifactName: 'linux_arm64'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (linux-arm64)'
-        
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'nuspec'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (nuspec)'
-
-      - script: |
-          mkdir linux-x64
-          mv storj_uplink-amd64.so linux-x64/storj_uplink.so
-          mkdir linux-arm
-          mv storj_uplink-arm.so linux-arm/storj_uplink.so
-          mkdir linux-arm64
-          mv storj_uplink-arm64.so linux-arm64/storj_uplink.so
-        displayName: 'Copy binaries to nuget-location'
-
-      - task: NuGetToolInstaller@1
-        inputs:
-          versionSpec: '5.8.0'
-
-      - task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
-        inputs:
-          command: 'pack'
-          packagesToPack: 'uplink.NET.Linux.nuspec'
-          packDestination: '$(System.DefaultWorkingDirectory)'
-          versioningScheme: 'off'
-        displayName: 'Pack the Linux-Nuget'
-
-      - script: |
-          mkdir nuget
-          mv *.nupkg nuget
-          ls
-        displayName: 'Copy binaries to nuget-location'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: 'nuget'
-          artifact: 'nuget_linux'
-          publishLocation: 'pipeline'
-        displayName: 'Publish Linux-Nuget as Artifact'
-
-      - task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'NugetOrg'
-        displayName: 'Publish to Nuget.org'
+  - job: nuget_pack
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'linux_amd64'
+        itemPattern: '**'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (linux-amd64)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'linux_arm'
+        itemPattern: '**'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (linux-arm)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'linux_arm64'
+        itemPattern: '**'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (linux-arm64)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'nuspec'
+        itemPattern: '**'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (nuspec)'
+    - script: |
+        mkdir linux-x64
+        mv storj_uplink-amd64.so linux-x64/storj_uplink.so
+        mkdir linux-arm
+        mv storj_uplink-arm.so linux-arm/storj_uplink.so
+        mkdir linux-arm64
+        mv storj_uplink-arm64.so linux-arm64/storj_uplink.so
+      displayName: 'Copy binaries to nuget-location'
+    - task: NuGetToolInstaller@1
+      inputs:
+        versionSpec: '5.8.0'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'uplink.NET.Linux.nuspec'
+        packDestination: '$(System.DefaultWorkingDirectory)'
+        versioningScheme: 'off'
+      displayName: 'Pack the Linux-Nuget'
+    - script: |
+        mkdir nuget
+        mv *.nupkg nuget
+        ls
+      displayName: 'Copy binaries to nuget-location'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: 'nuget'
+        artifact: 'nuget_linux'
+        publishLocation: 'pipeline'
+      displayName: 'Publish Linux-Nuget as Artifact'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'NugetOrg'
+      displayName: 'Publish to Nuget.org'
