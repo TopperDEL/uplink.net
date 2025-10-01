@@ -8,98 +8,84 @@ stages:
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
-    - job: nuget_pack
-      steps:
-- task: NuGetAuthenticate@1
-  displayName: 'Authenticate to feeds (NuGet)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'win-x86-dll'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (x86-dll)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'win-x64-dll'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (x64-dll)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'win-arm64-dll'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (arm64-dll)'
-
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'specific'
-          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-          definition: '31'
-          specificBuildWithTriggering: true
-          buildVersionToDownload: 'latest'
-          artifactName: 'nuspec'
-          itemPattern: '**'
-          targetPath: '$(System.DefaultWorkingDirectory)'
-        displayName: 'Get build-artifacts (nuspec)'
-
-      - script: |
-          mkdir win-x86-dll
-          mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
-          mkdir win-x64-dll
-          mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
-          mkdir win-arm64-dll
-          mv storj_uplink-arm64.dll win-arm64-dll/storj_uplink-arm64.dll
-        displayName: 'remove me'
-
-      - task: NuGetToolInstaller@1
-        inputs:
-          versionSpec: '5.8.0'
-
-      - task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
-        inputs:
-          command: 'pack'
-          packagesToPack: 'uplink.NET.Win.nuspec'
-          packDestination: '$(System.DefaultWorkingDirectory)'
-          versioningScheme: 'off'
-        displayName: 'Pack the Win-Nuget'
-
-      - script: |
-          mkdir nuget
-          mv *.nupkg nuget
-          ls
-        displayName: 'Copy binaries to nuget-location'
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: 'nuget'
-          artifact: 'nuget_win'
-          publishLocation: 'pipeline'
-        displayName: 'Publish Windows-Nuget as Artifact'
-
-      - task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'  # migrated from NuGetCommand@2 (defaulted)
-        inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'NugetOrg'
-        displayName: 'Publish to Nuget.org'
+  - job: nuget_pack
+    steps:
+    - task: NuGetAuthenticate@1
+      displayName: 'Authenticate to feeds (NuGet)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'win-x86-dll'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (x86-dll)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'win-x64-dll'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (x64-dll)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'win-arm64-dll'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (arm64-dll)'
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'specific'
+        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+        definition: '31'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        artifactName: 'nuspec'
+        itemPattern: '**'
+        targetPath: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Get build-artifacts (nuspec)'
+    - script: |
+        mkdir win-x86-dll
+        mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
+        mkdir win-x64-dll
+        mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
+        mkdir win-arm64-dll
+        mv storj_uplink-arm64.dll win-arm64-dll/storj_uplink-arm64.dll
+      displayName: 'remove me'
+    - task: NuGetToolInstaller@1
+      inputs:
+        versionSpec: '5.8.0'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'uplink.NET.Win.nuspec'
+        packDestination: '$(System.DefaultWorkingDirectory)'
+        versioningScheme: 'off'
+      displayName: 'Pack the Win-Nuget'
+    - script: |
+        mkdir nuget
+        mv *.nupkg nuget
+        ls
+      displayName: 'Copy binaries to nuget-location'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: 'nuget'
+        artifact: 'nuget_win'
+        publishLocation: 'pipeline'
+      displayName: 'Publish Windows-Nuget as Artifact'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'push'
+        packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+        nuGetFeedType: 'external'
+        publishFeedCredentials: 'NugetOrg'
+      displayName: 'Publish to Nuget.org'

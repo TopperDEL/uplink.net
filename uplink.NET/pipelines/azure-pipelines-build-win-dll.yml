@@ -15,46 +15,37 @@ steps:
 - script: |
     git clone --depth 1 https://github.com/TopperDEL/uplink.net.git
   displayName: 'Clone uplink.NET'
-
 - script: |
     sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
-
 - script: |
     sed -i 's/GOVERSION/$(GOLANG_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Go-Version'
-
 - script: |
     echo 'Cloning $(STORJ_VERSION)'
     git clone https://github.com/storj/uplink-c.git
     cd uplink-c
-    git checkout $(STORJ_VERSION) 
+    git checkout $(STORJ_VERSION)
     cd ..
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
-
 - script: |
     cp uplink.net/SWIG/*.i uplink-c
     cp uplink.net/GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
-
 - script: |
     swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
-
 - task: GoTool@0
   inputs:
     version: '$(GOLANG_VERSION)'
   displayName: 'Install Go $(GOLANG_VERSION)'
-
 - script: |
     sudo apt-get update
     sudo apt-get install -y gcc-mingw-w64-x86-64 gcc-mingw-w64-i686 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
   displayName: 'Install cross-compiler for Windows and Linux ARM64'
-
 - script: |
     sudo snap install zig --classic --beta
   displayName: 'Install zig'
-
 - script: |
     cd uplink-c
     export CC="x86_64-w64-mingw32-gcc"
@@ -64,25 +55,21 @@ steps:
     export CGO_ENABLED="1"
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink.dll -buildmode c-shared
   displayName: 'Generating Windows-x64-DLL for the first time - we need an additional h-file'
-
 - script: |
     cd uplink-c
     rm *.cs
     rm *.c
     rm *.dll
   displayName: 'Cleanup - remove some created files'
-
 - script: |
     sed -i '/GoComplex/d' uplink-c/storj_uplink.h
     sed -i '/pointer_matching_GoInt/d' uplink-c/storj_uplink.h
   displayName: 'Remove some types that lead to errors with SWIG'
-
 - script: |
     sed -i 's/__declspec(dllexport)//' uplink-c/storj_uplink.h
     cat -n uplink-c/storj_uplink.h
     swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_second.i
   displayName: 'Running SWIG again with the second i-file. It includes more typemaps.'
-
 - script: |
     cd uplink-c
     export ZIG_CC="zig cc"  # Set Zig as C compiler
@@ -101,7 +88,6 @@ steps:
     # Build command remains the same, leveraging environment variables for cross-compilation
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-arm64.dll -buildmode c-shared
   displayName: 'Generating the final-ARM64-DLL for Windows with Zig toolchain'
-
 - script: |
     cd uplink-c
     export CC="i686-w64-mingw32-gcc"
@@ -115,7 +101,6 @@ steps:
     export CGO_LDFLAGS="-g -Wl,--kill-at"
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase'" -o storj_uplink-x86.dll -buildmode c-shared
   displayName: 'Generating the final-x86-DLL for Windows'
-
 - script: |
     cd uplink-c
     export CC="x86_64-w64-mingw32-gcc"
@@ -129,47 +114,40 @@ steps:
     export CGO_LDFLAGS="-g -O2"
     go build -ldflags="-s -w '-extldflags=-Wl,--dynamicbase,--high-entropy-va'" -o storj_uplink-x64.dll -buildmode c-shared
   displayName: 'Generating the final-x64-DLL for Windows'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink.h'
     artifact: 'storj_uplink'
     publishLocation: 'pipeline'
   displayName: 'Publish storj_uplink.h'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink_second_wrap.c'
     artifact: 'storj_uplink_second_wrap'
     publishLocation: 'pipeline'
   displayName: 'Publish storj_uplink_second_wrap.c'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink-arm64.dll'
     artifact: 'win-arm64-dll'
     publishLocation: 'pipeline'
   displayName: 'Publish win-arm64-dll'
-  
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink-x86.dll'
     artifact: 'win-x86-dll'
     publishLocation: 'pipeline'
   displayName: 'Publish win-x86-dll'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/storj_uplink-x64.dll'
     artifact: 'win-x64-dll'
     publishLocation: 'pipeline'
   displayName: 'Publish win-x64-dll'
-
 - script: |
     sed -i 's/storj_uplinkPINVOKE.free_string(ref tmpp0)/storj_uplinkPINVOKE.free_string(tmpp0)/' uplink-c/storj_uplink.cs
     sed -i 's/public static extern void free_string(ref global::System.IntPtr jarg1)/public static extern void free_string(global::System.IntPtr jarg1)/' uplink-c/storj_uplinkPINVOKE.cs
   displayName: 'Replacing ref-modifier from free_string-method'
-
 - script: |
     sed -i 's/namespace uplink.SWIG/using System; namespace uplink.SWIG/' uplink-c/storj_uplinkPINVOKE.cs
     sed -i 's/protected class SWIGExceptionHelper {/public class MonoPInvokeCallbackAttribute:Attribute{public MonoPInvokeCallbackAttribute(Type t){}} public class MonoNativeFunctionWrapperAttribute:Attribute {public MonoNativeFunctionWrapperAttribute() {}} protected class SWIGExceptionHelper {/' uplink-c/storj_uplinkPINVOKE.cs
@@ -194,35 +172,30 @@ steps:
     sed -i 's/public delegate string SWIGStringDelegate(string message)/[System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] [MonoNativeFunctionWrapper] public delegate string SWIGStringDelegate(string message)/' uplink-c/storj_uplinkPINVOKE.cs
     sed -i 's/static string CreateString(string cString)/[MonoPInvokeCallback(typeof(SWIGStringDelegate))] static string CreateString(string cString)/' uplink-c/storj_uplinkPINVOKE.cs
   displayName: 'Adding AOT-Attributes for iOs-Build'
-
 - script: |
     cd uplink-c
     mkdir csfiles
     cp *.cs csfiles
     ls csfiles
   displayName: 'Extract generated cs-files'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c/csfiles'
     artifact: 'Csharp-files'
     publishLocation: 'pipeline'
   displayName: 'Publish all C#-files'
-
 - script: |
     cd uplink-c
     rm *.cs
     rm *.dll
     rm *.c
   displayName: 'Cleanup uplink-c'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink-c'
     artifact: 'uplink-c'
     publishLocation: 'pipeline'
   displayName: 'Publish uplink-c'
-  
 - script: |
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.iOs.nuspec
@@ -232,7 +205,6 @@ steps:
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.nuspec
     sed -i 's/BUILDNR/$(Build.BuildId)/' uplink.net/nuspec/uplink.NET.Win.nuspec
   displayName: 'Replacing Build-Number in nuspecs'
-
 - script: |
     echo Current year is: $(Build.BuildNumber)
     sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Droid.nuspec
@@ -242,7 +214,6 @@ steps:
     sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.nuspec
     sed -i 's/YEAR/$(Build.BuildNumber)/' uplink.net/nuspec/uplink.NET.Win.nuspec
   displayName: 'Replacing current year in nuspecs'
-
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'uplink.net/nuspec'
