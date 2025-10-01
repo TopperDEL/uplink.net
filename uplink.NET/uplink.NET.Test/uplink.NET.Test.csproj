@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
-    <PackageReference Include="uplink.NET.Win" Version="2.12.3363" />
+    <PackageReference Include="uplink.NET.Win" Version="2.13.3591" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uplink.NET\uplink.NET.csproj" />
