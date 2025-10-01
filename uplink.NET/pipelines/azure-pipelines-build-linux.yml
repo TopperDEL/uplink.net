@@ -187,16 +187,14 @@ stages:
         mkdir linux-arm64
         mv storj_uplink-arm64.so linux-arm64/storj_uplink.so
       displayName: 'Copy binaries to nuget-location'
-    - task: NuGetToolInstaller@1
-      inputs:
-        versionSpec: '5.8.0'
+    - task: NuGetAuthenticate@1
+      displayName: 'Authenticate to feeds (NuGet)'
     - task: DotNetCoreCLI@2
-      inputs:
-        command: 'pack'
-        packagesToPack: 'uplink.NET.Linux.nuspec'
-        packDestination: '$(System.DefaultWorkingDirectory)'
-        versioningScheme: 'off'
       displayName: 'Pack the Linux-Nuget'
+      inputs:
+        command: 'custom'
+        custom: 'nuget'
+        arguments: 'pack $(System.DefaultWorkingDirectory)/nuspec/uplink.NET.Linux.nuspec -o $(System.DefaultWorkingDirectory)'
     - script: |
         mkdir nuget
         mv *.nupkg nuget
