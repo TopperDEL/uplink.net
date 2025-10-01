@@ -7,41 +7,50 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-20.04'
+  vmImage: 'ubuntu-22.04'
 
 steps:
 - script: |
     git clone --depth 1 https://github.com/TopperDEL/uplink.net.git
   displayName: 'Clone uplink.NET'
+
 - script: |
     sed -i 's/STORJVERSION/$(STORJ_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Storj-Version'
+
 - script: |
     sed -i 's/GOVERSION/$(GOLANG_VERSION)/' uplink.net/SWIG/storj_uplink_second.i
   displayName: 'Inject the Go-Version'
+
 - script: |
     git clone --branch $(STORJ_VERSION) https://github.com/storj/uplink-c.git
     cd uplink-c
-    git checkout $(STORJ_VERSION)
+    git checkout $(STORJ_VERSION) 
     cd ..
     ls
   displayName: 'Clone uplink-c $(STORJ_VERSION)'
+
 - script: |
     cp uplink.net/SWIG/*.i uplink-c
     cp uplink.net/GO/*.go uplink-c
   displayName: 'Copy specific files to uplink-c'
+
 - script: |
     swig -csharp -namespace uplink.SWIG uplink-c/storj_uplink_first.i
   displayName: 'Run SWIG to generate a c-file necessary for the DLL'
+
+
 - task: GoTool@0
   inputs:
     version: '$(GOLANG_VERSION)'
   displayName: 'Install Go $(GOLANG_VERSION)'
+
 - script: |
     sudo apt-get update
     sudo apt-get install gcc-arm-none-eabi
     cd /usr/bin
   displayName: 'Install cross compiler for Windows'
+
 - script: |
     cd uplink-c
     export CC="arm-none-eabi-gcc"

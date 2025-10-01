@@ -1,80 +1,98 @@
-# azure-pipelines-pack-win.yml
-
-trigger:
-- main
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
 stages:
 - stage: nuget_pack
-  displayName: 'Pack & Publish Windows NuGet'
+  pool:
+    vmImage: 'ubuntu-22.04'
   jobs:
-  - job: pack
-    displayName: 'Pack Windows NuGet'
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      # Adjust these if your paths differ
-      ProjectPattern: '**/uplink.NET.csproj'                  # <— point to your actual .csproj (glob OK)
-      NuspecPath: '$(System.DefaultWorkingDirectory)/uplink.NET.nuspec'
-      WinBinArtifactName: 'win_binaries'                      # <— name of your produced Windows artifact
-      WinBinDownloadPath: '$(Pipeline.Workspace)/win'         # download location for that artifact
-      NuGetOutDir: '$(Build.ArtifactStagingDirectory)/nuget'  # where .nupkg/.snupkg will be written
+    - job: nuget_pack
+      steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'win-x86-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (x86-dll)'
 
-    steps:
-    - checkout: self
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'win-x64-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (x64-dll)'
 
-    # Pin SDK to avoid accidental upgrades (choose the LTS your repo expects)
-    - task: UseDotNet@2
-      displayName: 'Use .NET SDK 6.x (LTS)'
-      inputs:
-        packageType: 'sdk'
-        version: '6.0.x'
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'win-arm64-dll'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (arm64-dll)'
 
-    - task: NuGetAuthenticate@1
-      displayName: 'Authenticate to feeds (NuGet)'
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
 
-    # Pull in the Windows binaries built elsewhere (previous stage/pipeline)
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download Windows binaries'
-      inputs:
-        buildType: 'current'
-        artifact: '$(WinBinArtifactName)'
-        path: '$(WinBinDownloadPath)'
+      - script: |
+          mkdir win-x86-dll
+          mv storj_uplink-x86.dll win-x86-dll/storj_uplink-x86.dll
+          mkdir win-x64-dll
+          mv storj_uplink-x64.dll win-x64-dll/storj_uplink-x64.dll
+          mkdir win-arm64-dll
+          mv storj_uplink-arm64.dll win-arm64-dll/storj_uplink-arm64.dll
+        displayName: 'remove me'
 
-    # Stage the Windows binaries under ./nuget so the .nuspec can include them
-    - script: |
-        set -euxo pipefail
-        mkdir -p "$(NuGetOutDir)"
-        mkdir -p "$(System.DefaultWorkingDirectory)/nuget/runtimes/win-x64/native"
-        cp -R "$(WinBinDownloadPath)"/. "$(System.DefaultWorkingDirectory)/nuget/runtimes/win-x64/native/" || true
-        echo "Staged files:"
-        find "$(System.DefaultWorkingDirectory)/nuget" -type f | sed 's|^|  - |'
-      displayName: 'Stage Windows binaries for packing'
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
 
-    # IMPORTANT: pack via .csproj and *also* pass your .nuspec to include the staged files
-    - task: DotNetCoreCLI@2
-      displayName: 'Pack (.csproj + NuspecFile) — no build'
-      inputs:
-        command: 'pack'
-        packagesToPack: '$(ProjectPattern)'           # must be a project/solution
-        packDirectory: '$(NuGetOutDir)'
-        nobuild: true                                 # we only pack; binaries were produced elsewhere
-        includesymbols: true
-        buildProperties: |
-          NuspecFile=$(NuspecPath)
-          SymbolPackageFormat=snupkg
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Win.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the Win-Nuget'
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Windows NuGet as artifact'
-      inputs:
-        targetPath: '$(NuGetOutDir)'
-        artifact: 'nuget_win'
-        publishLocation: 'pipeline'
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
 
-    - task: DotNetCoreCLI@2
-      displayName: 'Push to nuget.org'
-      inputs:
-        command: 'push'
-        packagesToPush: '$(NuGetOutDir)/*.nupkg;!$(NuGetOutDir)/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'NugetOrg'            # service connection in Azure DevOps
-        # arguments: '--skip-duplicate'               # uncomment if you want idempotent pushes
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_win'
+          publishLocation: 'pipeline'
+        displayName: 'Publish Windows-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NugetOrg'
+        displayName: 'Publish to Nuget.org'

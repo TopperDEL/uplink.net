@@ -4,353 +4,313 @@
 # https://aka.ms/yaml
 
 stages:
-- stage: MacCatalyst
-  pool:
-    vmImage: 'macos-latest'
-  jobs:
-  - job: MacCatalyst
-    steps:
-    - task: NuGetAuthenticate@1
-      displayName: 'Authenticate to feeds (NuGet)'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-        definition: '31'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        itemPattern: |
-          **
-          !*.cs
-          !*.dll
-          !win-x86-dll
-          !win-x64-dll
-          !Csharp-files
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts'
-    - script: |
-        mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-        cd uplink-c
-        env \
-        GOOS='darwin' \
-        CC=cc \
-        CXX=c++ \
-        CGO_ENABLED=1 \
-        GOARCH=amd64 \
-        CGO_CFLAGS="-target x86_64-apple-ios14.0-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -miphoneos-version-min=14.0 -fembed-bitcode" \
-        go build -ldflags -w -v -o "storj_uplink-maccatalyst-x86_64.a" -buildmode=c-archive
-        xcrun -sdk macosx clang -arch x86_64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-x86_64.dylib storj_uplink-maccatalyst-x86_64.a -framework Corefoundation -framework Security -target x86_64-apple-ios14.0-macabi
-        rm storj_uplink-maccatalyst-x86_64.a
-        install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-x86_64.dylib
-      displayName: 'Prepare and build target Mac Catalyst x86_64'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib'
-        artifact: 'apple_maccatalyst_dylib_x86_64'
-        publishLocation: 'pipeline'
-      displayName: 'Publish libstorj_uplink-maccatalyst-x86_64.dylib'
-    - script: |
-        mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-        cd uplink-c
-        env \
-        GOOS='ios' \
-        CC=cc \
-        CXX=c++ \
-        CGO_ENABLED=1 \
-        GOARCH=arm64 \
-        CGO_CFLAGS="-target arm64-apple-ios-macabi -isysroot `xcrun --sdk macosx --show-sdk-path` -fembed-bitcode" \
-        go build -ldflags -w -v -tags ios -o "storj_uplink-maccatalyst-arm64.a" -buildmode=c-archive
-        xcrun -sdk macosx clang -arch arm64 -fpic -shared -Wl,-all_load -o libstorj_uplink-maccatalyst-arm64.dylib storj_uplink-maccatalyst-arm64.a -framework Corefoundation -framework Security -target arm64-apple-ios-macabi
-        rm storj_uplink-maccatalyst-arm64.a
-        install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" libstorj_uplink-maccatalyst-arm64.dylib
-      displayName: 'Prepare and build target Mac Catalyst arm64'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-maccatalyst-arm64.dylib'
-        artifact: 'apple_maccatalyst_dylib_arm64'
-        publishLocation: 'pipeline'
-      displayName: 'Publish libstorj_uplink-maccatalyst-arm64.dylib'
-    - script: |
-        mkdir nuspec/xamarinmac/x86_64
-        mkdir nuspec/xamarinmac/x86_64/storj_uplink.framework
-        mkdir nuspec/xamarinmac/arm64
-        mkdir nuspec/xamarinmac/arm64/storj_uplink.framework
-        cp nuspec/xamarinmac/libstorj_uplink.framework/Info.plist nuspec/xamarinmac/x86_64/storj_uplink.framework
-        cp nuspec/xamarinmac/libstorj_uplink.framework/Info.plist nuspec/xamarinmac/arm64/storj_uplink.framework
-        find .
-        mv uplink-c/libstorj_uplink-maccatalyst-x86_64.dylib nuspec/xamarinmac/x86_64/storj_uplink.framework/storj_uplink
-        mv uplink-c/libstorj_uplink-maccatalyst-arm64.dylib nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
-        echo 'Move completed'
-        find .
-        echo 'Running lipo'
-        mkdir storj_uplink.framework
-        xcrun lipo -create -output storj_uplink.framework/storj_uplink nuspec/xamarinmac/x86_64/storj_uplink.framework/storj_uplink nuspec/xamarinmac/arm64/storj_uplink.framework/storj_uplink
-
-        echo 'Running xcodebuild'
-        xcodebuild -create-xcframework -framework storj_uplink.framework -output storj_uplink.xcframework
-
-        #xcodebuild -create-xcframework -framework nuspec/xamarinmac/x86_64/storj_uplink.framework -framework nuspec/xamarinmac/arm64/storj_uplink.framework -output storj_uplink.xcframework
-        ls -l
-        #echo 'File-Info'
-        #file storj_uplink.dylib
-        #echo 'lipo info'
-        #lipo -info storj_uplink.dylib
-        #echo 'OTOOL'
-        #otool -L storj_uplink.dylib
-      displayName: 'Create xcframework including both frameworks'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
-        artifact: 'apple_maccatalyst'
-        publishLocation: 'pipeline'
-      displayName: 'Publish storj_uplink.xcframework'
-
-- stage: MacOS
-  pool:
-    vmImage: 'macos-latest'
-  jobs:
-  - job: MacOS
-    steps:
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-        definition: '31'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        itemPattern: |
-          **
-          !*.cs
-          !*.dll
-          !win-x86-dll
-          !win-x64-dll
-          !Csharp-files
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts'
-    - script: |
-        ls
-        ls uplink-c
-        mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-        export CGO_ENABLED=1
-        export GOARCH=amd64
-      displayName: 'Prepare for Target MacOS - x86_64'
-    - task: Go@0
-      inputs:
-        command: 'build'
-        arguments: '-buildmode c-shared -o storj_uplink-macos.dylib'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-      displayName: 'Build MacOS - x86_64'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos.dylib'
-        artifact: 'apple_macos'
-        publishLocation: 'pipeline'
-      displayName: 'Publish storj_uplink-macos.dylib'
-    - script: |
-        cd uplink-c
-        export CGO_ENABLED=1
-        export GOARCH=arm64
-        go build -buildmode c-shared -o storj_uplink-macos-arm64.dylib
-        cd ..
-      displayName: 'Prepare and build for Target MacOS ARM64'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos-arm64.dylib'
-        artifact: 'apple_macos_arm64'
-        publishLocation: 'pipeline'
-      displayName: 'Publish storj_uplink-macos-arm64.dylib'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'apple_maccatalyst_dylib_arm64'
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c'
-      displayName: 'Get build-artifacts (iOs-xcframework)'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'apple_maccatalyst_dylib_x86_64'
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c'
-      displayName: 'Get build-artifacts (Catalyst-Dylibs)'
-    - script: |
-        cd uplink-c
-        lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
-        lipo -create -output "libstorj_uplink-catalyst.dylib" "libstorj_uplink-maccatalyst-arm64.dylib" "libstorj_uplink-maccatalyst-x86_64.dylib"
-        ls -l
-        echo 'File-Info'
-        file libstorj_uplink.dylib
-        echo 'lipo info'
-        lipo -info libstorj_uplink.dylib
-        echo 'OTOOL'
-        otool -L libstorj_uplink.dylib
-      displayName: 'Create fat-lib for x86_64 and ARM64 (macOS and MacCatalyst)'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink.dylib'
-        artifact: 'apple_macos_fat'
-        publishLocation: 'pipeline'
-      displayName: 'Publish libstorj_uplink.dylib'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink-catalyst.dylib'
-        artifact: 'apple_maccatalyst_fat'
-        publishLocation: 'pipeline'
-      displayName: 'Publish libstorj_uplink-catalyst.dylib'
-
-- stage: nuget_pack_mac
-  pool:
-    vmImage: 'ubuntu-latest'
-  jobs:
-  - job: nuget_pack_mac
-    steps:
-    - script: |
-        ls -l
-      displayName: 'List content'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'apple_macos_fat'
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts (MacOS-fat-dylib)'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'current'
-        artifactName: 'apple_maccatalyst_fat'
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts (MacOS-fat-dylib)'
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-        definition: '31'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        artifactName: 'nuspec'
-        itemPattern: '**'
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts (nuspec)'
-    - script: |
-        ls -l
-        mkdir osx-x64
-        cp libstorj_uplink.dylib osx-x64/
-        mv libstorj_uplink.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
-
-        cd osx-x64
-        mkdir catalyst
-        cd ..
-        cp libstorj_uplink-catalyst.dylib osx-x64/catalyst/
-        mv osx-x64/catalyst/libstorj_uplink-catalyst.dylib osx-x64/catalyst/libstorj_uplink.dylib
-        mv libstorj_uplink-catalyst.dylib xamarinmac/catalyst/libstorj_uplink.framework/storj_uplink
-
-        find .
-      displayName: 'Copy binaries to nuget-location'
-    - task: NuGetToolInstaller@1
-      inputs:
-        versionSpec: '5.8.0'
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'pack'
-        packagesToPack: 'uplink.NET.Mac.nuspec'
-        packDestination: '$(System.DefaultWorkingDirectory)'
-        versioningScheme: 'off'
-      displayName: 'Pack the MacOS-Nuget'
-    - script: |
-        mkdir nuget
-        mv *.nupkg nuget
-        ls
-      displayName: 'Copy binaries to nuget-location'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: 'nuget'
-        artifact: 'nuget_mac'
-        publishLocation: 'pipeline'
-      displayName: 'Publish MacOS-Nuget as Artifact'
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'push'
-        packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'NugetOrg'
-      displayName: 'Publish to Nuget.org'
-
 - stage: iOs
   pool:
     vmImage: 'macos-latest'
   jobs:
-  - job: iOs
-    steps:
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
-        definition: '31'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        itemPattern: |
-          **
-          !*.cs
-          !*.dll
-          !win-x86-dll
-          !win-x64-dll
-          !Csharp-files
-        targetPath: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Get build-artifacts'
-    - script: |
-        ls
-        mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
-        cd uplink-c
-        ls
-        env \
-        GOOS='darwin' \
-        CC=cc \
-        CXX=c++ \
-        CGO_ENABLED=1 \
-        GOARCH=arm64 \
-        CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
-        CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
-        go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
-      displayName: 'Prepare and build target iOs arm64'
-    - script: |
-        echo 'Running xcrun...'
-        xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
-        echo 'Removing archive...'
-        rm "uplink-c/storj_uplink-arm64.a"
-        echo 'Running install_name_tool'
-        install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
-      displayName: 'Generate Framework for arm64'
-    - script: |
-        cd uplink-c
-        mkdir simx64
-        env \
-        GOOS='darwin' \
-        CC=cc \
-        CXX=c++ \
-        CGO_ENABLED=1 \
-        GOARCH=amd64 \
-        CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-        CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
-        go build -ldflags -w -v -tags ios -o "simx64/storj_uplink.dylib" -buildmode=c-shared
-      displayName: 'Prepare and build target iOs simx64'
-    - script: |
-        find .
-        mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
-        mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
-        echo 'Move completed'
-        find .
-        echo 'Running xcodebuild'
-        xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework -framework nuspec/xamarinios/arm64/storj_uplink.framework -output storj_uplink.xcframework
-        #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
-        #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
-        ls -l
-        #echo 'File-Info'
-        #file storj_uplink.dylib
-        #echo 'lipo info'
-        #lipo -info storj_uplink.dylib
-        #echo 'OTOOL'
-        #otool -L storj_uplink.dylib
-      displayName: 'Create xcframework including both frameworks'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
-        artifact: 'apple_ios'
-        publishLocation: 'pipeline'
-      displayName: 'Publish storj_uplink.xcframework'
+    - job: iOs
+      steps:
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          ls
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          cd uplink-c
+          ls
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=arm64 \
+          CGO_CFLAGS="-arch arm64 -fpic -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
+          CGO_LDFLAGS="-arch arm64 -dynamic -fpic -shared -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk -miphoneos-version-min=14.4" \
+          go build -ldflags -w -v -tags ios -o "storj_uplink-arm64.a" -buildmode=c-archive
+        displayName: 'Prepare and build target iOs arm64'
+
+      - script: |
+          echo 'Running xcrun...'
+          xcrun -sdk iphoneos clang -arch arm64 -fpic -shared -Wl,-all_load "uplink-c/storj_uplink-arm64.a" -framework Corefoundation -framework Security -o "uplink-c/storj_uplink.dylib" --verbose
+          echo 'Removing archive...'
+          rm "uplink-c/storj_uplink-arm64.a"
+          echo 'Running install_name_tool'
+          install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "uplink-c/storj_uplink.dylib"
+        displayName: 'Generate Framework for arm64'
+
+      - script: |
+          cd uplink-c
+          mkdir simx64
+          env \
+          GOOS='darwin' \
+          CC=cc \
+          CXX=c++ \
+          CGO_ENABLED=1 \
+          GOARCH=amd64 \
+          CGO_CFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          CGO_LDFLAGS="-arch x86_64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" \
+          go build -ldflags -w -v -tags ios -o "simx64/storj_uplink.dylib" -buildmode=c-shared
+        displayName: 'Prepare and build target iOs simx64'
+
+      - script: |
+          find .
+          mv uplink-c/simx64/storj_uplink.dylib nuspec/xamarinios/simulator/storj_uplink.framework/storj_uplink
+          mv uplink-c/storj_uplink.dylib nuspec/xamarinios/arm64/storj_uplink.framework/storj_uplink
+          echo 'Move completed'
+          find .
+          echo 'Running xcodebuild'
+          xcodebuild -create-xcframework -framework nuspec/xamarinios/simulator/storj_uplink.framework -framework nuspec/xamarinios/arm64/storj_uplink.framework -output storj_uplink.xcframework
+          #lipo -create -output "storj_uplink.dylib" "uplink-c/simx64/storj_uplink.dylib" "uplink-c/storj_uplink.dylib"
+          #install_name_tool -id "@rpath/storj_uplink.framework/storj_uplink" "storj_uplink.dylib"
+          ls -l
+          #echo 'File-Info'
+          #file storj_uplink.dylib
+          #echo 'lipo info'
+          #lipo -info storj_uplink.dylib 
+          #echo 'OTOOL'
+          #otool -L storj_uplink.dylib
+        displayName: 'Create xcframework including both frameworks'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
+          artifact: 'apple_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink.xcframework'
+
+- stage: nuget_pack_ios
+  pool:
+    vmImage: 'ubuntu-22.04'
+  jobs:
+    - job: nuget_pack_ios
+      steps:
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_ios'
+          targetPath: '$(System.DefaultWorkingDirectory)/storj_uplink.xcframework'
+        displayName: 'Get build-artifacts (iOs-xcframework)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
+      - script: |
+          ls -l
+          #mv storj_uplink.dylib xamarinios/storj_uplink.framework/storj_uplink
+          mv storj_uplink.xcframework xamarinios
+          mv xamarinios/arm64 arm64
+          mv xamarinios/simulator simulator
+        displayName: 'Copy binaries to nuget-location and cleanup location'
+
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.iOs.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the iOs-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_ios'
+          publishLocation: 'pipeline'
+        displayName: 'Publish iOs-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NugetOrg'
+        displayName: 'Publish to Nuget.org'
+        
+- stage: MacOS
+  pool:
+    vmImage: 'macos-latest'
+  jobs:
+    - job: MacOS
+
+      steps:
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          itemPattern: |
+            **
+            !*.cs
+            !*.dll
+            !win-x86-dll
+            !win-x64-dll
+            !Csharp-files
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts'
+
+      - script: |
+          ls
+          ls uplink-c
+          mv storj_uplink_second_wrap/storj_uplink_second_wrap.c uplink-c/storj_uplink_second_wrap.c
+          export CGO_ENABLED=1
+          export GOARCH=amd64
+        displayName: 'Prepare for Target MacOS - x86_64'
+
+      - task: Go@0
+        inputs:
+          command: 'build'
+          arguments: '-buildmode c-shared -o storj_uplink-macos.dylib'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Build MacOS - x86_64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos.dylib'
+          artifact: 'apple_macos'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-macos.dylib'
+
+      - script: |
+          cd uplink-c
+          export CGO_ENABLED=1
+          export GOARCH=arm64
+          go build -buildmode c-shared -o storj_uplink-macos-arm64.dylib
+          cd ..
+        displayName: 'Prepare and build for Target MacOS ARM64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-macos-arm64.dylib'
+          artifact: 'apple_macos_arm64'
+          publishLocation: 'pipeline'
+        displayName: 'Publish storj_uplink-macos-arm64.dylib'
+
+      - script: |
+          cd uplink-c
+          lipo -create -output "libstorj_uplink.dylib" "storj_uplink-macos.dylib" "storj_uplink-macos-arm64.dylib"
+          ls -l
+          echo 'File-Info'
+          file libstorj_uplink.dylib
+          echo 'lipo info'
+          lipo -info libstorj_uplink.dylib 
+          echo 'OTOOL'
+          otool -L libstorj_uplink.dylib
+        displayName: 'Create fat-lib for x86_64 and ARM64'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/libstorj_uplink.dylib'
+          artifact: 'apple_macos_fat'
+          publishLocation: 'pipeline'
+        displayName: 'Publish libstorj_uplink.dylib'
+
+- stage: nuget_pack_mac
+  pool:
+    vmImage: 'ubuntu-22.04'
+  jobs:
+    - job: nuget_pack_mac
+      steps:
+
+      - script: |
+          ls -l
+        displayName: 'List content'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'apple_macos_fat'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (MacOS-fat-dylib)'
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'specific'
+          project: '9ac1e3a1-e687-4aa6-ab2b-0108d21425e2'
+          definition: '31'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          artifactName: 'nuspec'
+          itemPattern: '**'
+          targetPath: '$(System.DefaultWorkingDirectory)'
+        displayName: 'Get build-artifacts (nuspec)'
+
+      - script: |
+          ls -l
+          mkdir osx-x64
+          cp libstorj_uplink.dylib osx-x64/
+          mv libstorj_uplink.dylib xamarinmac/libstorj_uplink.framework/storj_uplink
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: NuGetToolInstaller@1
+        inputs:
+          versionSpec: '5.8.0'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'uplink.NET.Mac.nuspec'
+          packDestination: '$(System.DefaultWorkingDirectory)'
+          versioningScheme: 'off'
+        displayName: 'Pack the MacOS-Nuget'
+
+      - script: |
+          mkdir nuget
+          mv *.nupkg nuget
+          ls
+        displayName: 'Copy binaries to nuget-location'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: 'nuget'
+          artifact: 'nuget_mac'
+          publishLocation: 'pipeline'
+        displayName: 'Publish MacOS-Nuget as Artifact'
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'NugetOrg'
+        displayName: 'Publish to Nuget.org'

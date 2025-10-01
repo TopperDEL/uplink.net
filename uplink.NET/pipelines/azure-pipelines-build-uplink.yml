@@ -7,11 +7,9 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-22.04'
 
 steps:
-- task: NuGetAuthenticate@1
-  displayName: 'Authenticate to feeds (NuGet)'
 - task: DownloadPipelineArtifact@2
   inputs:
     buildType: 'specific'
@@ -21,6 +19,7 @@ steps:
     artifactName: 'nuspec'
     targetPath: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get build-artifacts (nuspec)'
+
 - task: DownloadPipelineArtifact@2
   inputs:
     buildType: 'specific'
@@ -30,6 +29,7 @@ steps:
     artifactName: 'Csharp-files'
     targetPath: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get build-artifacts (SWIG C#-files)'
+
 - task: Bash@3
   inputs:
     targetType: 'inline'
@@ -47,12 +47,14 @@ steps:
       echo 'SWIG-Gen after'
       ls uplink.NET/uplink.NET/SWIG-Generated
   displayName: 'Copy SWIG-files to solution'
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: 'uplink.NET/uplink.NET/uplink.NET.csproj'
     arguments: '--configuration Release -p:Version=2.13.0.$(Build.BuildId)'
   displayName: 'Build uplink.NET-library'
+
 - task: Bash@3
   inputs:
     targetType: 'inline'
@@ -60,10 +62,12 @@ steps:
       mv uplink.NET/uplink.NET/bin/Release/net8.0/uplink.NET.dll uplink.NET.dll
       mv uplink.NET/uplink.NET/bin/Release/net8.0/uplink.NET.pdb uplink.NET.pdb
   displayName: 'Place uplink-DLL at nuget-location'
+
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '5.8.0'
-- task: DotNetCoreCLI@2
+
+- task: NuGetCommand@2
   inputs:
     command: 'pack'
     packagesToPack: 'uplink.NET.nuspec'
@@ -71,6 +75,7 @@ steps:
     versioningScheme: 'off'
     includeSymbols: true
   displayName: 'Pack the Win-Nuget'
+
 - script: |
     mkdir nuget
     mv *.nupkg nuget
@@ -82,7 +87,8 @@ steps:
     artifact: 'nuget_uplink'
     publishLocation: 'pipeline'
   displayName: 'Publish Uplink.NET-Nuget as Artifact'
-- task: DotNetCoreCLI@2
+
+- task: NuGetCommand@2
   inputs:
     command: 'push'
     packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
