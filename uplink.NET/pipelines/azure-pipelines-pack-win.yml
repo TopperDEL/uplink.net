@@ -61,16 +61,12 @@ stages:
         mkdir win-arm64-dll
         mv storj_uplink-arm64.dll win-arm64-dll/storj_uplink-arm64.dll
       displayName: 'remove me'
-    - task: NuGetToolInstaller@1
-      inputs:
-        versionSpec: '5.8.0'
     - task: DotNetCoreCLI@2
-      inputs:
-        command: 'pack'
-        packagesToPack: 'uplink.NET.Win.nuspec'
-        packDestination: '$(System.DefaultWorkingDirectory)'
-        versioningScheme: 'off'
       displayName: 'Pack the Win-Nuget'
+      inputs:
+        command: 'custom'
+        custom: 'nuget'
+        arguments: 'pack $(System.DefaultWorkingDirectory)/nuspec/uplink.NET.Win.nuspec -o $(System.DefaultWorkingDirectory)'
     - script: |
         mkdir nuget
         mv *.nupkg nuget
