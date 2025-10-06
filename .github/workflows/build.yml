@@ -26,7 +26,7 @@ jobs:
             goarch: '386'
             shared_ext: dll
             static_ext: lib
-            zig_target: i386-windows-gnu
+            zig_target: x86-windows-gnu
           - os: windows
             arch: x64
             runner: windows-latest
@@ -50,7 +50,7 @@ jobs:
             goarch: '386'
             shared_ext: so
             static_ext: a
-            zig_target: i386-linux-gnu
+            zig_target: x86-linux-gnu
           - os: linux
             arch: x64
             runner: ubuntu-latest
@@ -114,7 +114,7 @@ jobs:
           go build -ldflags="-s -w" -buildmode=c-archive -o build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.${{ matrix.static_ext }} .
           cp uplink_definitions.h build/${{ matrix.os }}-${{ matrix.arch }}/
           cp uplink_compat.h build/${{ matrix.os }}-${{ matrix.arch }}/
-          if [[ -f "build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h" ]]; then
+          if compgen -G "build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h" > /dev/null; then
             mv build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink_generated.h
           fi
           ls -R build/${{ matrix.os }}-${{ matrix.arch }}
