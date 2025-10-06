@@ -114,7 +114,7 @@ jobs:
           go build -ldflags="-s -w" -buildmode=c-archive -o build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.${{ matrix.static_ext }} .
           cp uplink_definitions.h build/${{ matrix.os }}-${{ matrix.arch }}/
           cp uplink_compat.h build/${{ matrix.os }}-${{ matrix.arch }}/
-          if compgen -G "build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h" > /dev/null; then
+          if [[ -f "build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h" ]]; then
             mv build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink_generated.h
           fi
           ls -R build/${{ matrix.os }}-${{ matrix.arch }}
