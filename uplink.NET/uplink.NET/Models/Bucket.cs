@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -68,12 +69,16 @@ namespace uplink.NET.Models
             if(_bucketRef != null)
             {
                 SWIG.storj_uplink.uplink_free_bucket(_bucketRef);
+                // Clear ownership to prevent double-free when Dispose() is called
+                DisposalHelper.ClearOwnership(_bucketRef);
                 _bucketRef.Dispose();
                 _bucketRef = null;
             }
             if (_bucketResultRef != null)
             {
                 SWIG.storj_uplink.uplink_free_bucket_result(_bucketResultRef);
+                // Clear ownership to prevent double-free when Dispose() is called
+                DisposalHelper.ClearOwnership(_bucketResultRef);
                 _bucketResultRef.Dispose();
                 _bucketResultRef = null;
             }
