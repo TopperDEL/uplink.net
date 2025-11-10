@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Services
 {
@@ -71,6 +72,9 @@ namespace uplink.NET.Services
 
                     using (var commitResult = SWIG.storj_uplink.uplink_part_upload_commit(partUpload))
                     {
+                        // Clear ownership to prevent double-free when PartUpload is disposed
+                        DisposalHelper.ClearOwnership(partUpload);
+                        
                         if (commitResult != null && !string.IsNullOrEmpty(commitResult.message))
                             throw new MultipartUploadFailedException(objectKey, commitResult.message);
 

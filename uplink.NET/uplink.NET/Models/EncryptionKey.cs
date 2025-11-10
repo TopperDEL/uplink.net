@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using uplink.NET.Exceptions;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -32,6 +33,8 @@ namespace uplink.NET.Models
             if (_encryptionKeyResulRef != null)
             {
                 SWIG.storj_uplink.uplink_free_encryption_key_result(_encryptionKeyResulRef);
+                // Clear ownership to prevent double-free when Dispose() is called
+                DisposalHelper.ClearOwnership(_encryptionKeyResulRef);
                 _encryptionKeyResulRef.Dispose();
                 _encryptionKeyResulRef = null;
             }

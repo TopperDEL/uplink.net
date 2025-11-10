@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -70,6 +71,9 @@ namespace uplink.NET.Models
 
             using (SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_upload))
             {
+                // Clear ownership to prevent double-free when Dispose() is called
+                DisposalHelper.ClearOwnership(_upload);
+                
                 if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                 {
                     _errorMessage = commitError.message;
