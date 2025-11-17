@@ -115,7 +115,7 @@ namespace uplink.NET.Sample.Shared.ViewModels
             {
                 var bucket = await _bucketService.GetBucketAsync(BucketName);
                 var listOptions = new ListObjectsOptions();
-                var objects = await _objectService.ListObjectsAsync(bucket, listOptions);
+                var objects = await _objectService.ListObjectsAsync(bucket, listOptions, null, 1000);
                 foreach (var obj in objects.Items)
                 {
                     var entry = new BucketEntryViewModel(this, _bucketService, _objectService);

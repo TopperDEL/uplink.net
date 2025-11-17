@@ -106,6 +106,15 @@ namespace uplink.NET.Interfaces
         /// <returns>The list of found objects within the bucket and with the given ListOptions or throws an ObjectListException</returns>
         Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions);
         /// <summary>
+        /// Lists objects within a bucket with pagination support
+        /// </summary>
+        /// <param name="bucket">The Bucket to list entries from</param>
+        /// <param name="listOptions">Options for the listing</param>
+        /// <param name="cursor">The cursor value to start listing from</param>
+        /// <param name="maxEntries">The maximum number of entries to return</param>
+        /// <returns>The list of found objects within the bucket and with the given ListOptions or throws an ObjectListException</returns>
+        Task<ObjectList> ListObjectsAsync(Bucket bucket, ListObjectsOptions listObjectsOptions, string cursor, int maxEntries);
+        /// <summary>
         /// Gets the specific object
         /// </summary>
         /// <param name="bucket">The Bucket where the object resides in</param>

@@ -29,6 +29,10 @@ namespace uplink.NET.Models
         /// Custom includes CustomMetadata in the results.
         /// </summary>
         public bool Custom { get; set; }
+        /// <summary>
+        /// MaxEntries sets the maximum number of entries to return.
+        /// </summary>
+        public int MaxEntries { get; set; }
 
         internal SWIG.UplinkListObjectsOptions ToSWIG()
         {
@@ -38,6 +42,7 @@ namespace uplink.NET.Models
             ret.recursive = Recursive;
             ret.system = System;
             ret.custom = Custom;
+            ret.max_entries = MaxEntries;
 
             return ret;
         }
