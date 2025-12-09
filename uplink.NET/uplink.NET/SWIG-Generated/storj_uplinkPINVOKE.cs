@@ -35,6 +35,10 @@ class storj_uplinkPINVOKE {
 
     // GCHandles to prevent delegates from being garbage collected while native code holds references to them.
     // This is critical for .NET Core/5+ on Linux where the GC is more aggressive than Mono.
+    // Note: These handles are intentionally never freed because:
+    // 1. The delegates are needed for the entire lifetime of the application
+    // 2. The native library stores function pointers that must remain valid
+    // 3. Freeing them would cause the exact SEGFAULT we're preventing
     static System.Runtime.InteropServices.GCHandle[] delegateHandles;
 
     [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="SWIGRegisterExceptionCallbacks_storj_uplink")]
@@ -198,6 +202,7 @@ class storj_uplinkPINVOKE {
     
     // GCHandle to prevent delegate from being garbage collected while native code holds a reference.
     // This is critical for .NET Core/5+ on Linux where the GC is more aggressive than Mono.
+    // Note: This handle is intentionally never freed because the native library holds the function pointer.
     static System.Runtime.InteropServices.GCHandle stringDelegateHandle;
 
     [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="SWIGRegisterStringCallback_storj_uplink")]

@@ -27,18 +27,21 @@ namespace uplink.SWIG
         static extern System.IntPtr LoadLibraryEx(string lpFileName, System.IntPtr hReservedNull, LoadLibraryFlags dwFlags);
 
         // Linux library loading using libdl
+        // We use NativeLibrary on .NET Core/5+ as it handles cross-platform library loading better
         private const int RTLD_NOW = 0x002;
         private const int RTLD_GLOBAL = 0x100;
 
+        // Try libdl.so.2 first (most common), then libdl.so as fallback
+        // Note: On some Linux distributions (Alpine, musl-based), the library name may differ
         [System.Runtime.InteropServices.DllImport("libdl.so.2", EntryPoint = "dlopen")]
-        static extern System.IntPtr dlopen_linux(string filename, int flags);
+        private static extern System.IntPtr dlopen_linux2(string filename, int flags);
 
-        [System.Runtime.InteropServices.DllImport("libdl.so.2", EntryPoint = "dlerror")]
-        static extern System.IntPtr dlerror_linux();
+        [System.Runtime.InteropServices.DllImport("libdl.so", EntryPoint = "dlopen")]
+        private static extern System.IntPtr dlopen_linux(string filename, int flags);
 
         // macOS library loading using libdl (different path)
         [System.Runtime.InteropServices.DllImport("libdl.dylib", EntryPoint = "dlopen")]
-        static extern System.IntPtr dlopen_macos(string filename, int flags);
+        private static extern System.IntPtr dlopen_macos(string filename, int flags);
 
         static DLLInitializer()
         {
@@ -47,20 +50,12 @@ namespace uplink.SWIG
                 if (System.Environment.Is64BitProcess)
                 {
                     // Load 64-bit dll
-                    var handle = LoadLibraryEx(@"x64/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
-                    if (handle != System.IntPtr.Zero)
-                    {
-                        //Ignore it - there is a possible fallback
-                    }
+                    LoadLibraryEx(@"x64/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
                 }
                 else
                 {
                     // Load 32-bit dll
-                    var handle = LoadLibraryEx(@"x86/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
-                    if (handle != System.IntPtr.Zero)
-                    {
-                        //Ignore it - there is a possible fallback
-                    }
+                    LoadLibraryEx(@"x86/storj_uplink.dll", System.IntPtr.Zero, LoadLibraryFlags.None);
                 }
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -80,10 +75,25 @@ namespace uplink.SWIG
 
         private static void TryLoadLinuxLibrary(string path)
         {
+            // Try libdl.so.2 first (most common on glibc-based systems like Ubuntu, Debian, RHEL)
+            // Then fall back to libdl.so (for other distributions)
             try
             {
-                var handle = dlopen_linux(path, RTLD_NOW | RTLD_GLOBAL);
-                // Even if handle is null, don't throw - let the P/Invoke use default search paths
+                dlopen_linux2(path, RTLD_NOW | RTLD_GLOBAL);
+                return; // Success with libdl.so.2
+            }
+            catch (DllNotFoundException)
+            {
+                // libdl.so.2 not found, try libdl.so
+            }
+            catch
+            {
+                // Other error with libdl.so.2, try libdl.so
+            }
+
+            try
+            {
+                dlopen_linux(path, RTLD_NOW | RTLD_GLOBAL);
             }
             catch
             {
@@ -95,8 +105,7 @@ namespace uplink.SWIG
         {
             try
             {
-                var handle = dlopen_macos(path, RTLD_NOW | RTLD_GLOBAL);
-                // Even if handle is null, don't throw - let the P/Invoke use default search paths
+                dlopen_macos(path, RTLD_NOW | RTLD_GLOBAL);
             }
             catch
             {
