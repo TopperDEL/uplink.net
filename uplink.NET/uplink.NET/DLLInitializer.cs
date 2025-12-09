@@ -116,6 +116,10 @@ namespace uplink.SWIG
         public static void Init()
         {
             //Method is just to explicitly call the static constructor
+            
+            // Pin SWIG callback delegates to prevent GC collection on .NET Core/5+ Linux.
+            // This must be called after the native library is loaded but before any P/Invoke calls.
+            uplink.NET.SWIGHelpers.DelegateKeepAlive.Initialize();
         }
     }
 }
