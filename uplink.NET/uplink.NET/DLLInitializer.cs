@@ -26,6 +26,20 @@ namespace uplink.SWIG
         [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         static extern System.IntPtr LoadLibraryEx(string lpFileName, System.IntPtr hReservedNull, LoadLibraryFlags dwFlags);
 
+        // Linux library loading using libdl
+        private const int RTLD_NOW = 0x002;
+        private const int RTLD_GLOBAL = 0x100;
+
+        [System.Runtime.InteropServices.DllImport("libdl.so.2", EntryPoint = "dlopen")]
+        static extern System.IntPtr dlopen_linux(string filename, int flags);
+
+        [System.Runtime.InteropServices.DllImport("libdl.so.2", EntryPoint = "dlerror")]
+        static extern System.IntPtr dlerror_linux();
+
+        // macOS library loading using libdl (different path)
+        [System.Runtime.InteropServices.DllImport("libdl.dylib", EntryPoint = "dlopen")]
+        static extern System.IntPtr dlopen_macos(string filename, int flags);
+
         static DLLInitializer()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -48,6 +62,45 @@ namespace uplink.SWIG
                         //Ignore it - there is a possible fallback
                     }
                 }
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // On Linux, try to load the native library from the runtimes folder
+                // This helps .NET Core/5+ find the correct library on Linux
+                TryLoadLinuxLibrary("runtimes/linux-x64/native/libstorj_uplink.so");
+                TryLoadLinuxLibrary("libstorj_uplink.so");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // On macOS, the library might be in different locations
+                TryLoadMacOSLibrary("runtimes/osx-x64/native/libstorj_uplink.dylib");
+                TryLoadMacOSLibrary("libstorj_uplink.dylib");
+            }
+        }
+
+        private static void TryLoadLinuxLibrary(string path)
+        {
+            try
+            {
+                var handle = dlopen_linux(path, RTLD_NOW | RTLD_GLOBAL);
+                // Even if handle is null, don't throw - let the P/Invoke use default search paths
+            }
+            catch
+            {
+                // Silently ignore - the library might be found through default search paths
+            }
+        }
+
+        private static void TryLoadMacOSLibrary(string path)
+        {
+            try
+            {
+                var handle = dlopen_macos(path, RTLD_NOW | RTLD_GLOBAL);
+                // Even if handle is null, don't throw - let the P/Invoke use default search paths
+            }
+            catch
+            {
+                // Silently ignore - the library might be found through default search paths
             }
         }
 

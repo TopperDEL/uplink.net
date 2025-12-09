@@ -33,6 +33,10 @@ class storj_uplinkPINVOKE {
     static ExceptionArgumentDelegate argumentNullDelegate = new ExceptionArgumentDelegate(SetPendingArgumentNullException);
     static ExceptionArgumentDelegate argumentOutOfRangeDelegate = new ExceptionArgumentDelegate(SetPendingArgumentOutOfRangeException);
 
+    // GCHandles to prevent delegates from being garbage collected while native code holds references to them.
+    // This is critical for .NET Core/5+ on Linux where the GC is more aggressive than Mono.
+    static System.Runtime.InteropServices.GCHandle[] delegateHandles;
+
     [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="SWIGRegisterExceptionCallbacks_storj_uplink")]
     public static extern void SWIGRegisterExceptionCallbacks_storj_uplink(
                                 ExceptionDelegate applicationDelegate,
@@ -102,6 +106,27 @@ class storj_uplinkPINVOKE {
     }
 
     static SWIGExceptionHelper() {
+      // Allocate GCHandles to prevent delegates from being collected by the GC.
+      // When these delegates are passed to native code, the native code stores function pointers.
+      // If the GC collects the delegate, the function pointer becomes invalid and causes SEGFAULT.
+      // This is especially important on .NET Core/5+ on Linux where GC behavior differs from Mono.
+      delegateHandles = new System.Runtime.InteropServices.GCHandle[] {
+        System.Runtime.InteropServices.GCHandle.Alloc(applicationDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(arithmeticDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(divideByZeroDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(indexOutOfRangeDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(invalidCastDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(invalidOperationDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(ioDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(nullReferenceDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(outOfMemoryDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(overflowDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(systemDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(argumentDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(argumentNullDelegate),
+        System.Runtime.InteropServices.GCHandle.Alloc(argumentOutOfRangeDelegate)
+      };
+
       SWIGRegisterExceptionCallbacks_storj_uplink(
                                 applicationDelegate,
                                 arithmeticDelegate,
@@ -127,13 +152,15 @@ class storj_uplinkPINVOKE {
   public class SWIGPendingException {
     [global::System.ThreadStatic]
     private static global::System.Exception pendingException = null;
+    // Use Interlocked operations for thread-safe counter updates.
+    // The pendingException is thread-static, but the counter needs to track all threads.
+    // On .NET Core/5+ on Linux, race conditions here can cause unexpected behavior.
     private static int numExceptionsPending = 0;
-    private static global::System.Object exceptionsLock = null;
 
     public static bool Pending {
       get {
         bool pending = false;
-        if (numExceptionsPending > 0)
+        if (System.Threading.Interlocked.CompareExchange(ref numExceptionsPending, 0, 0) > 0)
           if (pendingException != null)
             pending = true;
         return pending;
@@ -144,27 +171,22 @@ class storj_uplinkPINVOKE {
       if (pendingException != null)
         throw new global::System.ApplicationException("FATAL: An earlier pending exception from unmanaged code was missed and thus not thrown (" + pendingException.ToString() + ")", e);
       pendingException = e;
-      lock(exceptionsLock) {
-        numExceptionsPending++;
-      }
+      System.Threading.Interlocked.Increment(ref numExceptionsPending);
     }
 
     public static global::System.Exception Retrieve() {
       global::System.Exception e = null;
-      if (numExceptionsPending > 0) {
+      if (System.Threading.Interlocked.CompareExchange(ref numExceptionsPending, 0, 0) > 0) {
         if (pendingException != null) {
           e = pendingException;
           pendingException = null;
-          lock(exceptionsLock) {
-            numExceptionsPending--;
-          }
+          System.Threading.Interlocked.Decrement(ref numExceptionsPending);
         }
       }
       return e;
     }
 
     static SWIGPendingException() {
-      exceptionsLock = new global::System.Object();
     }
   }
 
@@ -173,6 +195,10 @@ class storj_uplinkPINVOKE {
 
     [System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)] [MonoNativeFunctionWrapper] public delegate string SWIGStringDelegate(string message);
     static SWIGStringDelegate stringDelegate = new SWIGStringDelegate(CreateString);
+    
+    // GCHandle to prevent delegate from being garbage collected while native code holds a reference.
+    // This is critical for .NET Core/5+ on Linux where the GC is more aggressive than Mono.
+    static System.Runtime.InteropServices.GCHandle stringDelegateHandle;
 
     [global::System.Runtime.InteropServices.DllImport("storj_uplink", EntryPoint="SWIGRegisterStringCallback_storj_uplink")]
     public static extern void SWIGRegisterStringCallback_storj_uplink(SWIGStringDelegate stringDelegate);
@@ -182,6 +208,8 @@ class storj_uplinkPINVOKE {
     }
 
     static SWIGStringHelper() {
+      // Allocate GCHandle to prevent delegate from being collected by the GC.
+      stringDelegateHandle = System.Runtime.InteropServices.GCHandle.Alloc(stringDelegate);
       SWIGRegisterStringCallback_storj_uplink(stringDelegate);
     }
   }
