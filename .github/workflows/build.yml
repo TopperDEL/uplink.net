@@ -1,0 +1,127 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+            arch: x86
+            runner: windows-latest
+            goos: windows
+            goarch: '386'
+            shared_ext: dll
+            static_ext: lib
+            zig_target: x86-windows-gnu
+          - os: windows
+            arch: x64
+            runner: windows-latest
+            goos: windows
+            goarch: amd64
+            shared_ext: dll
+            static_ext: lib
+            zig_target: x86_64-windows-gnu
+          - os: windows
+            arch: arm64
+            runner: windows-latest
+            goos: windows
+            goarch: arm64
+            shared_ext: dll
+            static_ext: lib
+            zig_target: aarch64-windows-gnu
+          - os: linux
+            arch: x86
+            runner: ubuntu-latest
+            goos: linux
+            goarch: '386'
+            shared_ext: so
+            static_ext: a
+            zig_target: x86-linux-gnu
+          - os: linux
+            arch: x64
+            runner: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            shared_ext: so
+            static_ext: a
+            zig_target: x86_64-linux-gnu
+          - os: macos
+            arch: x64
+            runner: macos-13
+            goos: darwin
+            goarch: amd64
+            shared_ext: dylib
+            static_ext: a
+            zig_target: ''
+          - os: macos
+            arch: arm64
+            runner: macos-14
+            goos: darwin
+            goarch: arm64
+            shared_ext: dylib
+            static_ext: a
+            zig_target: ''
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          check-latest: true
+
+      - name: Install Zig
+        if: matrix.zig_target != ''
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          zig-version: 0.11.0
+
+      - name: Clone storj/uplink-c
+        run: git clone --depth 1 https://github.com/storj/uplink-c.git
+
+      - name: Build storj/uplink-c (${{ matrix.os }} ${{ matrix.arch }})
+        working-directory: uplink-c
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: '1'
+        run: |
+          set -euo pipefail
+          mkdir -p build/${{ matrix.os }}-${{ matrix.arch }}
+          if [[ -n "${{ matrix.zig_target }}" ]]; then
+            export CC="zig cc -target ${{ matrix.zig_target }}"
+            export CXX="zig c++ -target ${{ matrix.zig_target }}"
+          fi
+          go mod download
+          go env
+          go build -ldflags="-s -w" -buildmode=c-shared -o build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.${{ matrix.shared_ext }} .
+          go build -ldflags="-s -w" -buildmode=c-archive -o build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.${{ matrix.static_ext }} .
+          cp uplink_definitions.h build/${{ matrix.os }}-${{ matrix.arch }}/
+          cp uplink_compat.h build/${{ matrix.os }}-${{ matrix.arch }}/
+          if compgen -G "build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h" > /dev/null; then
+            mv build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink.h build/${{ matrix.os }}-${{ matrix.arch }}/storj_uplink_generated.h
+          fi
+          ls -R build/${{ matrix.os }}-${{ matrix.arch }}
+
+      - name: Upload artifacts (${{ matrix.os }} ${{ matrix.arch }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: storj-uplink-${{ matrix.os }}-${{ matrix.arch }}
+          path: uplink-c/build/${{ matrix.os }}-${{ matrix.arch }}
+          if-no-files-found: error
