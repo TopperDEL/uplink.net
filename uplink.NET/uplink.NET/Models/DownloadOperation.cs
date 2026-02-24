@@ -3,7 +3,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using uplink.NET.SWIGHelpers;
 using uplink.SWIG;
 
 namespace uplink.NET.Models
@@ -99,7 +98,8 @@ namespace uplink.NET.Models
 
         internal DownloadOperation(SWIG.UplinkDownloadResult downloadResult, long totalBytes, string objectName)
         {
-            _download = downloadResult.download;
+            _download = new SWIG.UplinkDownload();
+            _download._handle = downloadResult.download._handle;
             TotalBytes = totalBytes;
             _bytesToDownload = new byte[TotalBytes];
             ObjectName = objectName;
@@ -195,9 +195,6 @@ namespace uplink.NET.Models
                     {
                         using (SWIG.UplinkError cancelError = SWIG.storj_uplink.uplink_close_download(_download))
                         {
-                            // Clear ownership to prevent double-free when Dispose() is called
-                            DisposalHelper.ClearOwnership(_download);
-                            
                             if (cancelError != null && !string.IsNullOrEmpty(cancelError.message))
                             {
                                 _errorMessage = cancelError.message;
@@ -224,9 +221,6 @@ namespace uplink.NET.Models
 
                 using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_download(_download))
                 {
-                    // Clear ownership to prevent double-free when Dispose() is called
-                    DisposalHelper.ClearOwnership(_download);
-                    
                     if (closeError != null && !string.IsNullOrEmpty(closeError.message))
                     {
                         _errorMessage = closeError.message;

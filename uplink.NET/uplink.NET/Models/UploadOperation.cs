@@ -8,7 +8,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Net.NetworkInformation;
 using System.Buffers;
-using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -107,7 +106,8 @@ namespace uplink.NET.Models
         internal UploadOperation(Stream stream, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
             _byteStreamToUpload = stream;
-            _upload = uploadResult.upload;
+            _upload = new SWIG.UplinkUpload();
+            _upload._handle = uploadResult.upload._handle;
             ObjectName = objectName;
             _customMetadata = customMetadata;
 
@@ -189,9 +189,6 @@ namespace uplink.NET.Models
                                     {
                                         using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
                                         {
-                                            // Clear ownership to prevent double-free when Dispose() is called
-                                            DisposalHelper.ClearOwnership(_upload);
-                                            
                                             if (abortError != null && !string.IsNullOrEmpty(abortError.message))
                                             {
                                                 Failed = true;
@@ -247,9 +244,6 @@ namespace uplink.NET.Models
 
                     using (SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_upload))
                     {
-                        // Clear ownership to prevent double-free when Dispose() is called
-                        DisposalHelper.ClearOwnership(_upload);
-                        
                         if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                         {
                             _errorMessage = commitError.message;

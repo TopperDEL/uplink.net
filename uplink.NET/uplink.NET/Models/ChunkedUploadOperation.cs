@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -16,7 +15,8 @@ namespace uplink.NET.Models
 
         internal ChunkedUploadOperation(SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
         {
-            _upload = uploadResult.upload;
+            _upload = new SWIG.UplinkUpload();
+            _upload._handle = uploadResult.upload._handle;
             _objectName = objectName;
             _customMetadata = customMetadata;
         }
@@ -71,9 +71,6 @@ namespace uplink.NET.Models
 
             using (SWIG.UplinkError commitError = SWIG.storj_uplink.uplink_upload_commit(_upload))
             {
-                // Clear ownership to prevent double-free when Dispose() is called
-                DisposalHelper.ClearOwnership(_upload);
-                
                 if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                 {
                     _errorMessage = commitError.message;
