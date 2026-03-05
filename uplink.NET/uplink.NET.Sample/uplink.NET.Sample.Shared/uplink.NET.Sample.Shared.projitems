@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\PlanterControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelDownloadCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CancelUploadCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CreateBucketCommand.cs" />
@@ -35,6 +36,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converter\DateTimeToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\LoginData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\PlanterPage.xaml.cs">
+      <DependentUpon>PlanterPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml.cs">
       <DependentUpon>BucketContentPage.xaml</DependentUpon>
     </Compile>
@@ -61,6 +65,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Pages\PlanterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Pages\BucketContentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

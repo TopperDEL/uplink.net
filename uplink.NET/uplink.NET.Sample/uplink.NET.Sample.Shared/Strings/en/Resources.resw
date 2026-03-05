@@ -120,4 +120,34 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>uplink.NET.Sample</value>
   </data>
+  <data name="Planter_Title" xml:space="preserve">
+    <value>Planter</value>
+    <comment>Title for the Planter page showing bucket state visualization</comment>
+  </data>
+  <data name="Planter_Title.[using:Windows.UI.Xaml.Controls]TextBlock.Text" xml:space="preserve">
+    <value>Planter</value>
+  </data>
+  <data name="Planter_Back.[using:Windows.UI.Xaml.Controls]AppBarButton.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Planter_Root" xml:space="preserve">
+    <value>Bucket</value>
+    <comment>Label for the root node in the Planter diagram</comment>
+  </data>
+  <data name="Planter_Branch_Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment>Label for the yes-branch in the Planter diagram (e.g. object exists)</comment>
+  </data>
+  <data name="Planter_Branch_No" xml:space="preserve">
+    <value>No</value>
+    <comment>Label for the no-branch in the Planter diagram (e.g. object does not exist)</comment>
+  </data>
+  <data name="Planter_Branch_Filled" xml:space="preserve">
+    <value>Filled</value>
+    <comment>Label for the filled-branch in the Planter diagram (bucket has content)</comment>
+  </data>
+  <data name="Planter_Branch_Unfilled" xml:space="preserve">
+    <value>Unfilled</value>
+    <comment>Label for the unfilled-branch in the Planter diagram (bucket is empty)</comment>
+  </data>
 </root>
