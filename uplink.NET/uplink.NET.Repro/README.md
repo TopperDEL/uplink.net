@@ -1,6 +1,7 @@
 # uplink.NET Linux repro harness
 
 This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version.
+The underlying bug was reported against Linux on .NET 6+, while this harness itself targets `net8.0` so it can be built with the SDK setup already used in this repository.
 
 It intentionally:
 

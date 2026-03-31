@@ -23,7 +23,7 @@ if (settings.ShowHelp)
 
 if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 {
-    Console.WriteLine("Warning: this repro is intended for Linux/WSL/fly.io. Continuing anyway.");
+    Console.WriteLine("Warning: this repro is intended for Linux/WSL/Fly.io. Continuing anyway.");
 }
 
 Console.WriteLine($"Starting uplink.NET Linux repro on {RuntimeInformation.OSDescription} / {RuntimeInformation.FrameworkDescription}");
