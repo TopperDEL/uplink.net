@@ -1,6 +1,6 @@
 # uplink.NET Linux repro harness
 
-This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version.
+This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version by running a .NET 9 harness against it.
 The underlying bug was reported against Linux on .NET 6+, and the same lifetime issue is what this harness is trying to surface; the harness itself now targets `net9.0` so you can stress the older package with a newer Linux runtime as well.
 
 It intentionally:
@@ -19,7 +19,7 @@ Use either a serialized access grant:
 ```bash
 export UPLINK_ACCESS_GRANT='...'
 dotnet run \
-  --project /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
+  --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
   -p:UplinkNuGetVersion=2.14.3623 \
   -- \
   --rounds 10 \
@@ -34,7 +34,7 @@ export UPLINK_SATELLITE='europe-west-1.tardigrade.io:7777'
 export UPLINK_API_KEY='...'
 export UPLINK_SECRET='...'
 dotnet run \
-  --project /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
+  --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
   -p:UplinkNuGetVersion=2.14.3623 \
   -- \
   --rounds 10 \
@@ -47,7 +47,7 @@ If WSL still does not reproduce it, try much higher churn first, for example:
 
 ```bash
 dotnet run \
-  --project /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
+  --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
   -p:UplinkNuGetVersion=2.14.3623 \
   -- \
   --rounds 50 \
@@ -63,7 +63,7 @@ Point restore at the feed or folder that contains the prerelease packages and sw
 
 ```bash
 dotnet run \
-  --project /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
+  --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
   --source /absolute/path/to/your/nuget/feed \
   -p:UplinkNuGetVersion=<your-prerelease-version> \
   -- \
@@ -81,8 +81,8 @@ Expected result:
 
 Files for Fly.io are included next to the repro project:
 
-- `/home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/fly.toml`
-- `/home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/Dockerfile`
+- `<absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/fly.toml`
+- `<absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/Dockerfile`
 
 Before deploying, set your secrets:
 
