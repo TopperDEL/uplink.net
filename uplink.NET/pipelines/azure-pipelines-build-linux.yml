@@ -36,12 +36,21 @@ stages:
       - task: Go@0
         inputs:
           command: 'build'
-          arguments: '-buildmode c-shared -o storj_uplink-amd64.so'
+          arguments: '-buildmode c-shared -gcflags="all=-N -l" -o storj_uplink-amd64.so'
           workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
-        displayName: 'Build amd64'
+        displayName: 'Build amd64 with debug info'
         env:
           GOARCH: 'amd64'
           CGO_ENABLED: '1'
+          CGO_CFLAGS: '-g -O0'
+          CGO_CXXFLAGS: '-g -O0'
+          CGO_LDFLAGS: '-g'
+
+      - script: |
+          file storj_uplink-amd64.so
+          readelf -S storj_uplink-amd64.so | grep debug || true
+        workingDirectory: '$(System.DefaultWorkingDirectory)/uplink-c'
+        displayName: 'Verify debug info in amd64 .so'
 
       - task: PublishPipelineArtifact@1
         inputs:
@@ -49,6 +58,12 @@ stages:
           artifact: 'linux_amd64'
           publishLocation: 'pipeline'
         displayName: 'Publish storj_uplink-amd64.so'
+
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/uplink-c/storj_uplink-amd64.so'
+          artifact: 'linux_amd64'
+          publishLocation: 'pipeline'
 
 - stage: arm
   pool:
