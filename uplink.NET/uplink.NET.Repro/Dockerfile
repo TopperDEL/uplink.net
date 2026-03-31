@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG UPLINK_NUGET_VERSION=2.14.3623
+ARG UPLINK_NUGET_VERSION=2.14.3736
 WORKDIR /src
 
 COPY ./uplink.NET.Repro.csproj ./
@@ -22,6 +22,9 @@ RUN override="/src/docker-overrides/storj_uplink.so"; \
     fi
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gdb \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=build /app/publish ./
 

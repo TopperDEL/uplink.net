@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UplinkNuGetVersion Condition="'$(UplinkNuGetVersion)' == ''">2.14.3623</UplinkNuGetVersion>
+    <UplinkNuGetVersion Condition="'$(UplinkNuGetVersion)' == ''">2.14.3736</UplinkNuGetVersion>
   </PropertyGroup>
 
   <ItemGroup>

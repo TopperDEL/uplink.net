@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using uplink.NET.Models;
@@ -225,6 +226,8 @@ static async Task UploadPendingCrashArtifactsWithRetriesAsync(Settings settings,
         try
         {
             var pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
+            await AnalyzePendingCrashArtifactsWithGdbAsync(settings, phase, pendingFiles).ConfigureAwait(false);
+            pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
             var createdBundles = await CrashArtifactBundler.CreateCrashAnalysisBundlesAsync(settings, phase, pendingFiles).ConfigureAwait(false);
             if (createdBundles.Count > 0)
             {
@@ -263,6 +266,216 @@ static async Task UploadPendingCrashArtifactsWithRetriesAsync(Settings settings,
             await Task.Delay(delayBetweenAttemptsMs).ConfigureAwait(false);
         }
     }
+}
+
+static async Task AnalyzePendingCrashArtifactsWithGdbAsync(Settings settings, string phase, IReadOnlyCollection<string> pendingFiles)
+{
+    foreach (var filePath in pendingFiles.Where(IsGdbCandidateCrashArtifact).OrderBy(path => path, StringComparer.Ordinal))
+    {
+        await TryAnalyzeCrashArtifactWithGdbAsync(settings, phase, filePath).ConfigureAwait(false);
+    }
+}
+
+static bool IsGdbCandidateCrashArtifact(string path)
+{
+    var fileName = Path.GetFileName(path);
+    return fileName.StartsWith("coredump.", StringComparison.Ordinal)
+        || (fileName.StartsWith("core", StringComparison.Ordinal) && !fileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+        || fileName.EndsWith(".dmp", StringComparison.OrdinalIgnoreCase);
+}
+
+static async Task TryAnalyzeCrashArtifactWithGdbAsync(Settings settings, string phase, string dumpPath)
+{
+    var reportPath = Path.Combine(settings.CrashArtifactDirectory, $"{Path.GetFileName(dumpPath)}.gdb-report.txt");
+    if (File.Exists(reportPath))
+    {
+        return;
+    }
+
+    var gdbPath = FindExecutableOnPath("gdb");
+    if (string.IsNullOrWhiteSpace(gdbPath))
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Skipping gdb analysis for {dumpPath} because gdb is not installed.");
+        return;
+    }
+
+    var executablePath = ResolveDotnetHostPath();
+    if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Skipping gdb analysis for {dumpPath} because the dotnet host path could not be resolved.");
+        return;
+    }
+
+    try
+    {
+        await WaitForCrashArtifactToStabilizeAsync(dumpPath).ConfigureAwait(false);
+
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = gdbPath,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = settings.CrashArtifactDirectory
+        };
+        startInfo.ArgumentList.Add("-batch");
+        startInfo.ArgumentList.Add("-q");
+        startInfo.ArgumentList.Add("-nx");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("set pagination off");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("set confirm off");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("set print thread-events off");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("info sharedlibrary");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("thread apply all bt full");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("frame 0");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("info symbol $pc");
+        startInfo.ArgumentList.Add("-ex");
+        startInfo.ArgumentList.Add("info line *$pc");
+        startInfo.ArgumentList.Add(executablePath);
+        startInfo.ArgumentList.Add(dumpPath);
+
+        using var process = Process.Start(startInfo);
+        if (process == null)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] gdb analysis failed non-fatally for {dumpPath}: process could not be started.");
+            return;
+        }
+
+        var outputTask = process.StandardOutput.ReadToEndAsync();
+        var errorTask = process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync().ConfigureAwait(false);
+
+        var output = await outputTask.ConfigureAwait(false);
+        var error = await errorTask.ConfigureAwait(false);
+        var storjSummary = ExtractStorjBacktraceSummary(output, error);
+
+        var report = new StringBuilder()
+            .AppendLine("GDB crash analysis report")
+            .AppendLine($"GeneratedAtUtc: {DateTimeOffset.UtcNow:O}")
+            .AppendLine($"Phase: {phase}")
+            .AppendLine($"DumpPath: {dumpPath}")
+            .AppendLine($"ExecutablePath: {executablePath}")
+            .AppendLine($"GdbPath: {gdbPath}")
+            .AppendLine($"ExitCode: {process.ExitCode}")
+            .AppendLine()
+            .AppendLine("storj_uplink.so summary:")
+            .AppendLine(storjSummary)
+            .AppendLine()
+            .AppendLine("gdb stdout:")
+            .AppendLine(string.IsNullOrWhiteSpace(output) ? "<empty>" : output)
+            .AppendLine()
+            .AppendLine("gdb stderr:")
+            .AppendLine(string.IsNullOrWhiteSpace(error) ? "<empty>" : error)
+            .ToString();
+
+        await File.WriteAllTextAsync(reportPath, report).ConfigureAwait(false);
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] gdb analysis for {dumpPath}: {storjSummary.Replace(Environment.NewLine, " | ")}");
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Wrote gdb crash analysis report to {reportPath}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] gdb analysis failed non-fatally for {dumpPath}: {ex.Message}");
+    }
+}
+
+static async Task WaitForCrashArtifactToStabilizeAsync(string filePath)
+{
+    if (!File.Exists(filePath))
+    {
+        return;
+    }
+
+    (long Length, DateTime LastWriteTimeUtc)? previous = null;
+    for (var attempt = 0; attempt < 8; attempt++)
+    {
+        var fileInfo = new FileInfo(filePath);
+        if (!fileInfo.Exists)
+        {
+            return;
+        }
+
+        var current = (fileInfo.Length, fileInfo.LastWriteTimeUtc);
+        if (previous == current)
+        {
+            return;
+        }
+
+        previous = current;
+        await Task.Delay(500).ConfigureAwait(false);
+    }
+}
+
+static string ExtractStorjBacktraceSummary(string output, string error)
+{
+    var combined = string.Join(Environment.NewLine, new[] { output, error }.Where(text => !string.IsNullOrWhiteSpace(text)));
+    var storjLines = combined
+        .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Where(line => line.Contains("storj_uplink.so", StringComparison.OrdinalIgnoreCase))
+        .Distinct(StringComparer.Ordinal)
+        .Take(8)
+        .ToList();
+
+    return storjLines.Count > 0
+        ? string.Join(Environment.NewLine, storjLines)
+        : "No storj_uplink.so frame was identified by gdb.";
+}
+
+static string? FindExecutableOnPath(string executableName)
+{
+    var pathValue = Environment.GetEnvironmentVariable("PATH");
+    if (string.IsNullOrWhiteSpace(pathValue))
+    {
+        return null;
+    }
+
+    foreach (var directory in pathValue.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+    {
+        try
+        {
+            var candidate = Path.Combine(directory, executableName);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+        catch
+        {
+        }
+    }
+
+    return null;
+}
+
+static string? ResolveDotnetHostPath()
+{
+    try
+    {
+        const string procSelfExe = "/proc/self/exe";
+        if (File.Exists(procSelfExe))
+        {
+            var fileInfo = new FileInfo(procSelfExe);
+            if (!string.IsNullOrWhiteSpace(fileInfo.LinkTarget))
+            {
+                var resolvedPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(procSelfExe)!, fileInfo.LinkTarget));
+                if (File.Exists(resolvedPath))
+                {
+                    return resolvedPath;
+                }
+            }
+        }
+    }
+    catch
+    {
+    }
+
+    return Environment.ProcessPath;
 }
 
 static async Task<int> RunSupervisorAsync(Settings settings, IReadOnlyList<string> originalArgs)
@@ -1106,7 +1319,7 @@ internal sealed class Settings
     public string CrashArtifactBucketName { get; private init; } = "s-drive";
     public string CrashArtifactDirectory { get; private init; } = Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts");
     public string CrashArtifactPrefix { get; private init; } = "uplink-repro/crash-artifacts";
-    public int ParallelUploadObjects { get; private init; } = 1;
+    public int ParallelUploadObjects { get; private init; } = 8;
     public int Rounds { get; private init; } = 10;
     public int ChurnPerRound { get; private init; } = 100;
     public int StatusEvery { get; private init; } = 25;
@@ -1115,8 +1328,8 @@ internal sealed class Settings
     public int DisposeBatchSize { get; private init; } = 1;
     public int ObjectIoEveryRounds { get; private init; } = 1;
     public int MinFileSizeMb { get; private init; } = 1;
-    public int MaxFileSizeMb { get; private init; } = 100;
-    public int ParallelDownloadProcesses { get; private init; } = 2;
+    public int MaxFileSizeMb { get; private init; } = 4;
+    public int ParallelDownloadProcesses { get; private init; } = 8;
     public int ObjectIoWaitMs { get; private init; } = 2000;
     public int ObjectIoListingDelayMs { get; private init; } = 250;
     public bool ExerciseBucketListing { get; private init; }
@@ -1214,10 +1427,10 @@ internal sealed class Settings
             SerializeRepeats = ParsePositiveInt(values, "--serialize-repeats", "UPLINK_REPRO_SERIALIZE_REPEATS", 1),
             DisposeBatchSize = ParsePositiveInt(values, "--dispose-batch-size", "UPLINK_REPRO_DISPOSE_BATCH_SIZE", 1),
             ObjectIoEveryRounds = ParsePositiveInt(values, "--object-io-every-rounds", "UPLINK_REPRO_OBJECT_IO_EVERY_ROUNDS", 1),
-            ParallelUploadObjects = ParsePositiveInt(values, "--parallel-upload-objects", "UPLINK_REPRO_PARALLEL_UPLOAD_OBJECTS", 1),
+            ParallelUploadObjects = ParsePositiveInt(values, "--parallel-upload-objects", "UPLINK_REPRO_PARALLEL_UPLOAD_OBJECTS", 8),
             MinFileSizeMb = ParsePositiveInt(values, "--min-file-size-mb", "UPLINK_REPRO_MIN_FILE_SIZE_MB", 1),
-            MaxFileSizeMb = ParsePositiveInt(values, "--max-file-size-mb", "UPLINK_REPRO_MAX_FILE_SIZE_MB", 100),
-            ParallelDownloadProcesses = ParsePositiveInt(values, "--parallel-download-processes", "UPLINK_REPRO_PARALLEL_DOWNLOAD_PROCESSES", 2),
+            MaxFileSizeMb = ParsePositiveInt(values, "--max-file-size-mb", "UPLINK_REPRO_MAX_FILE_SIZE_MB", 4),
+            ParallelDownloadProcesses = ParsePositiveInt(values, "--parallel-download-processes", "UPLINK_REPRO_PARALLEL_DOWNLOAD_PROCESSES", 8),
             ObjectIoWaitMs = ParsePositiveInt(values, "--object-io-wait-ms", "UPLINK_REPRO_OBJECT_IO_WAIT_MS", 2000),
             ObjectIoListingDelayMs = ParsePositiveInt(values, "--object-io-listing-delay-ms", "UPLINK_REPRO_OBJECT_IO_LISTING_DELAY_MS", 250),
             ExerciseBucketListing = flags.Contains("list-buckets") || ParseBool("UPLINK_REPRO_LIST_BUCKETS"),
@@ -1285,10 +1498,10 @@ Options:
   --reparse-after-serialize           Reparse each serialized throwaway access and serialize it again before disposal.
   --object-io                         Generate random files, upload them in parallel, wait, then spawn parallel download workers while listings continue.
   --object-io-every-rounds <count>    Run the object I/O stress every N rounds. Default: 1.
-  --parallel-upload-objects <n>       Number of objects uploaded in parallel during each object-I/O round. Default: 1.
+  --parallel-upload-objects <n>       Number of objects uploaded in parallel during each object-I/O round. Default: 8.
   --min-file-size-mb <count>          Minimum random object size in MiB. Default: 1.
-  --max-file-size-mb <count>          Maximum random object size in MiB. Default: 100.
-  --parallel-download-processes <n>   Number of worker processes per uploaded object. Default: 2.
+  --max-file-size-mb <count>          Maximum random object size in MiB. Default: 4.
+  --parallel-download-processes <n>   Number of worker processes per uploaded object. Default: 8.
   --object-io-wait-ms <count>         Delay after upload before parallel downloads begin. Default: 2000.
   --object-io-listing-delay-ms <n>    Delay between listing/serialize passes during object I/O stress. Default: 250.
   --crash-artifact-bucket <name>      Bucket used for uploaded crash dumps, analysis bundles, and related files. Default: s-drive.

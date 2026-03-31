@@ -9,7 +9,7 @@ It intentionally:
 2. creates many throwaway `Access` instances and can dispose them in bursts
 3. repeatedly calls `Serialize()` on those instances to churn the same native result types
 4. can reparse those serialized grants and serialize them again to double the native lifetime pressure
-5. can generate multiple random 1-100 MiB files, upload them in parallel, wait, then start parallel download worker processes for each object while bucket/object listings continue
+5. can generate multiple random 1-4 MiB files, upload them in parallel, wait, then start parallel download worker processes for each object while bucket/object listings continue
 6. then uses the primary `Access` again
 
 With the broken package, that usually ends in a native `SIGSEGV` / exit code `139` on Linux. With a package that includes the PR #51 fix, the process should finish cleanly.
@@ -22,7 +22,7 @@ Use either a serialized access grant:
 export UPLINK_ACCESS_GRANT='...'
 dotnet run \
   --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
-  -p:UplinkNuGetVersion=2.14.3623 \
+  -p:UplinkNuGetVersion=2.14.3736 \
   -- \
   --rounds 10 \
   --churn 100 \
@@ -37,7 +37,7 @@ export UPLINK_API_KEY='...'
 export UPLINK_SECRET='...'
 dotnet run \
   --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
-  -p:UplinkNuGetVersion=2.14.3623 \
+  -p:UplinkNuGetVersion=2.14.3736 \
   -- \
   --rounds 10 \
   --churn 100
@@ -50,7 +50,7 @@ If WSL still does not reproduce it, try much higher churn first, for example:
 ```bash
 dotnet run \
   --project <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
-  -p:UplinkNuGetVersion=2.14.3623 \
+  -p:UplinkNuGetVersion=2.14.3736 \
   -- \
   --rounds 50 \
   --churn 500 \
@@ -60,11 +60,11 @@ dotnet run \
   --status-every 50 \
   --bucket-list-every 10 \
   --object-io \
-  --parallel-upload-objects 4 \
+  --parallel-upload-objects 8 \
   --object-io-every-rounds 1 \
   --min-file-size-mb 1 \
-  --max-file-size-mb 100 \
-  --parallel-download-processes 4 \
+  --max-file-size-mb 4 \
+  --parallel-download-processes 8 \
   --object-io-wait-ms 2000 \
   --list-buckets \
   --reparse-after-serialize
@@ -150,6 +150,8 @@ By default the repro now enables:
 - `DOTNET_CreateDumpDiagnostics=1`
 - `DOTNET_CreateDumpVerboseDiagnostics=1`
 - `DOTNET_CreateDumpLogToFile=/tmp/uplink-repro-crash-artifacts/createdump.%p.%e.%h.%t.log`
+
+The container image now also installs `gdb`. When a crash dump/core file is found, the surviving supervisor tries a best-effort non-interactive `gdb` run against it, logs any `storj_uplink.so` frames it can resolve, writes a sibling `*.gdb-report.txt` file into `/tmp/uplink-repro-crash-artifacts`, and uploads that report to Storj together with the other crash artifacts/bundles.
 
 On Linux the repro also raises `RLIMIT_CORE` on startup and starts supervised child/worker processes with `/tmp/uplink-repro-crash-artifacts` as their working directory. That gives regular kernel core files the best chance to land in the crash-artifact area too, subject to the host's `core_pattern` configuration.
 

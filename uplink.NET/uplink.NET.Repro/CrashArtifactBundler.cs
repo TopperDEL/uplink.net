@@ -161,6 +161,19 @@ internal static class CrashArtifactBundler
                 yield return fullPath;
             }
         }
+
+        var gdbReportFiles = Directory.Exists(settings.CrashArtifactDirectory)
+            ? Directory.EnumerateFiles(settings.CrashArtifactDirectory, "*.gdb-report.txt", SearchOption.TopDirectoryOnly)
+            : Array.Empty<string>();
+
+        foreach (var gdbReportFile in gdbReportFiles.OrderBy(path => path, StringComparer.Ordinal))
+        {
+            var fullPath = Path.GetFullPath(gdbReportFile);
+            if (seen.Add(fullPath))
+            {
+                yield return fullPath;
+            }
+        }
     }
 
     private static IEnumerable<string> EnumerateAppFiles()
