@@ -27,7 +27,7 @@ if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 }
 
 Console.WriteLine($"Starting uplink.NET Linux repro on {RuntimeInformation.OSDescription} / {RuntimeInformation.FrameworkDescription}");
-Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, ExerciseBucketListing={settings.ExerciseBucketListing}");
+Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, SerializeRepeats={settings.SerializeRepeats}, DisposeBatchSize={settings.DisposeBatchSize}, ReparseAfterSerialize={settings.ReparseAfterSerialize}, ExerciseBucketListing={settings.ExerciseBucketListing}");
 
 Access.SetTempDirectory(Path.GetTempPath());
 
@@ -39,25 +39,56 @@ for (var round = 1; round <= settings.Rounds; round++)
 
     using var primary = CreateAccess(settings);
     ApplyManagedMemoryPressure();
+    var pendingDisposals = new List<Access>(settings.DisposeBatchSize);
 
-    for (var churn = 1; churn <= settings.ChurnPerRound; churn++)
+    try
     {
-        using var throwaway = CreateAccess(settings);
-        _ = throwaway.Serialize();
-
-        if (settings.ExerciseBucketListing && churn % settings.BucketListEvery == 0)
+        for (var churn = 1; churn <= settings.ChurnPerRound; churn++)
         {
-            await TryListBucketsAsync(throwaway, "throwaway", round, churn);
-        }
+            Access? throwaway = null;
+            try
+            {
+                throwaway = CreateAccess(settings);
+                var serializedThrowaway = SerializeRepeatedly(throwaway, settings.SerializeRepeats);
 
-        if (churn % settings.StatusEvery == 0 || churn == settings.ChurnPerRound)
-        {
-            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: churned {churn}/{settings.ChurnPerRound} accesses");
+                if (settings.ReparseAfterSerialize)
+                {
+                    using var reparsed = new Access(serializedThrowaway);
+                    _ = SerializeRepeatedly(reparsed, settings.SerializeRepeats);
+                }
+
+                if (settings.ExerciseBucketListing && churn % settings.BucketListEvery == 0)
+                {
+                    await TryListBucketsAsync(throwaway, "throwaway", round, churn);
+                }
+
+                pendingDisposals.Add(throwaway);
+                throwaway = null;
+
+                if (pendingDisposals.Count >= settings.DisposeBatchSize)
+                {
+                    DisposeBatch(pendingDisposals);
+                    ApplyManagedMemoryPressure();
+                }
+
+                if (churn % settings.StatusEvery == 0 || churn == settings.ChurnPerRound)
+                {
+                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: churned {churn}/{settings.ChurnPerRound} accesses");
+                }
+            }
+            finally
+            {
+                throwaway?.Dispose();
+            }
         }
+    }
+    finally
+    {
+        DisposeBatch(pendingDisposals);
     }
 
     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: using primary access after churn");
-    var serialized = primary.Serialize();
+    var serialized = SerializeRepeatedly(primary, settings.SerializeRepeats);
     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: serialize() returned {serialized.Length} characters");
 
     if (settings.ExerciseBucketListing)
@@ -84,6 +115,17 @@ static Access CreateAccess(Settings settings)
     return new Access(settings.Satellite!, settings.ApiKey!, settings.Secret!);
 }
 
+static string SerializeRepeatedly(Access access, int count)
+{
+    string serialized = string.Empty;
+    for (var i = 0; i < count; i++)
+    {
+        serialized = access.Serialize();
+    }
+
+    return serialized;
+}
+
 static async Task TryListBucketsAsync(Access access, string label, int round, int churn)
 {
     try
@@ -105,12 +147,26 @@ static async Task TryListBucketsAsync(Access access, string label, int round, in
 
 static void ApplyManagedMemoryPressure()
 {
-    var buffers = new byte[32][];
+    var buffers = new byte[128][];
     for (var i = 0; i < buffers.Length; i++)
     {
-        buffers[i] = GC.AllocateUninitializedArray<byte>(64 * 1024);
+        buffers[i] = GC.AllocateUninitializedArray<byte>(256 * 1024);
         buffers[i][0] = (byte)i;
     }
+}
+
+static void DisposeBatch(List<Access> accesses)
+{
+    for (var i = accesses.Count - 1; i >= 0; i--)
+    {
+        accesses[i].Dispose();
+    }
+
+    accesses.Clear();
+
+    GC.Collect();
+    GC.WaitForPendingFinalizers();
+    GC.Collect();
 }
 
 internal sealed class Settings
@@ -123,7 +179,10 @@ internal sealed class Settings
     public int ChurnPerRound { get; private init; } = 100;
     public int StatusEvery { get; private init; } = 25;
     public int BucketListEvery { get; private init; } = 25;
+    public int SerializeRepeats { get; private init; } = 1;
+    public int DisposeBatchSize { get; private init; } = 1;
     public bool ExerciseBucketListing { get; private init; }
+    public bool ReparseAfterSerialize { get; private init; }
     public bool ShowHelp { get; private init; }
 
     public static Settings Parse(string[] args)
@@ -143,6 +202,9 @@ internal sealed class Settings
                 case "--list-buckets":
                     flags.Add("list-buckets");
                     break;
+                case "--reparse-after-serialize":
+                    flags.Add("reparse-after-serialize");
+                    break;
                 case "--access-grant":
                 case "--satellite":
                 case "--api-key":
@@ -151,6 +213,8 @@ internal sealed class Settings
                 case "--churn":
                 case "--status-every":
                 case "--bucket-list-every":
+                case "--serialize-repeats":
+                case "--dispose-batch-size":
                     if (i + 1 >= args.Length)
                     {
                         throw new ArgumentException($"Missing value for {arg}.");
@@ -174,7 +238,10 @@ internal sealed class Settings
             ChurnPerRound = ParsePositiveInt(values, "--churn", "UPLINK_REPRO_CHURN", 100),
             StatusEvery = ParsePositiveInt(values, "--status-every", "UPLINK_REPRO_STATUS_EVERY", 25),
             BucketListEvery = ParsePositiveInt(values, "--bucket-list-every", "UPLINK_REPRO_BUCKET_LIST_EVERY", 25),
-            ExerciseBucketListing = flags.Contains("list-buckets") || ParseBool("UPLINK_REPRO_LIST_BUCKETS")
+            SerializeRepeats = ParsePositiveInt(values, "--serialize-repeats", "UPLINK_REPRO_SERIALIZE_REPEATS", 1),
+            DisposeBatchSize = ParsePositiveInt(values, "--dispose-batch-size", "UPLINK_REPRO_DISPOSE_BATCH_SIZE", 1),
+            ExerciseBucketListing = flags.Contains("list-buckets") || ParseBool("UPLINK_REPRO_LIST_BUCKETS"),
+            ReparseAfterSerialize = flags.Contains("reparse-after-serialize") || ParseBool("UPLINK_REPRO_REPARSE_AFTER_SERIALIZE")
         };
 
         if (settings.ShowHelp)
@@ -210,7 +277,10 @@ Options:
   --churn <count>                Access objects created per round. Default: 100.
   --status-every <count>         Progress log interval. Default: 25.
   --bucket-list-every <count>    Run ListBucketsAsync every N churn iterations. Default: 25.
+  --serialize-repeats <count>    Serialize each access this many times before disposal. Default: 1.
+  --dispose-batch-size <count>   Dispose throwaway accesses in batches of this size. Default: 1.
   --list-buckets                 Also exercise project-backed bucket operations through BucketService.ListBucketsAsync.
+  --reparse-after-serialize      Reparse each serialized throwaway access and serialize it again before disposal.
   --help                         Show this message.
 
 Exit behavior:

@@ -6,9 +6,10 @@ The underlying bug was reported against Linux on .NET 6+, and the same lifetime 
 It intentionally:
 
 1. creates a primary `Access`
-2. creates and disposes many throwaway `Access` instances
+2. creates many throwaway `Access` instances and can dispose them in bursts
 3. repeatedly calls `Serialize()` on those instances to churn the same native result types
-4. then uses the primary `Access` again
+4. can reparse those serialized grants and serialize them again to double the native lifetime pressure
+5. then uses the primary `Access` again
 
 With the broken package, that usually ends in a native `SIGSEGV` / exit code `139` on Linux. With a package that includes the PR #51 fix, the process should finish cleanly.
 
@@ -52,9 +53,12 @@ dotnet run \
   -- \
   --rounds 50 \
   --churn 500 \
+  --serialize-repeats 4 \
+  --dispose-batch-size 32 \
   --status-every 50 \
-  --bucket-list-every 25 \
-  --list-buckets
+  --bucket-list-every 10 \
+  --list-buckets \
+  --reparse-after-serialize
 ```
 
 ## Testing a prerelease from PR #51
@@ -111,10 +115,13 @@ fly logs
 
 The included Fly config uses more aggressive defaults than the local examples:
 
-- `UPLINK_REPRO_ROUNDS=50`
-- `UPLINK_REPRO_CHURN=500`
-- `UPLINK_REPRO_STATUS_EVERY=50`
-- `UPLINK_REPRO_BUCKET_LIST_EVERY=25`
+- `UPLINK_REPRO_ROUNDS=200`
+- `UPLINK_REPRO_CHURN=2000`
+- `UPLINK_REPRO_STATUS_EVERY=100`
+- `UPLINK_REPRO_BUCKET_LIST_EVERY=10`
+- `UPLINK_REPRO_SERIALIZE_REPEATS=4`
+- `UPLINK_REPRO_DISPOSE_BATCH_SIZE=32`
 - `UPLINK_REPRO_LIST_BUCKETS=true`
+- `UPLINK_REPRO_REPARSE_AFTER_SERIALIZE=true`
 
 If you need to test a PR #51 prerelease on Fly.io, edit `UPLINK_NUGET_VERSION` under `[build.args]` in `fly.toml` and deploy again.
