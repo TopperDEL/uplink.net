@@ -11,6 +11,15 @@ RUN dotnet publish ./uplink.NET.Repro.csproj \
     -o /app/publish \
     --property:UplinkNuGetVersion=${UPLINK_NUGET_VERSION} \
     --no-restore
+RUN override="/src/docker-overrides/storj_uplink.so"; \
+    target="/app/publish/runtimes/linux-x64/native/storj_uplink.so"; \
+    if [ -f "$override" ]; then \
+        echo "Injecting local storj_uplink.so override from $override"; \
+        mkdir -p "$(dirname "$target")"; \
+        cp "$override" "$target"; \
+    else \
+        echo "No local storj_uplink.so override found at $override; using NuGet-provided native library."; \
+    fi
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app

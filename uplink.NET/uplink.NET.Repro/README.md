@@ -122,6 +122,14 @@ fly deploy
 fly logs
 ```
 
+If you need a debug-symbol-enabled native library instead of the one from the NuGet package, place your local build at:
+
+```bash
+<absolute-path-to-repo>/uplink.NET/uplink.NET.Repro/docker-overrides/storj_uplink.so
+```
+
+The Docker build copies that file into the published app after `dotnet publish`, replacing the NuGet-provided `/app/runtimes/linux-x64/native/storj_uplink.so` inside the image. If the override file is absent, the image keeps the default native library from the package.
+
 Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`. A lightweight supervisor process now runs each stress round in its own child process, so if that child segfaults the parent stays alive, retries crash-artifact scans for a few seconds, and uploads leftover dump/error files to Storj under `uplink-repro/crash-artifacts/...` in the `s-drive` bucket by default.
 
 When a crash dump or `createdump` log is discovered, the supervisor now also creates a crash-analysis bundle under `/tmp/uplink-repro-crash-artifacts/bundle-<timestamp>-<pid>/`. That bundle is intended to make offline analysis on another Linux/WSL machine possible and includes:

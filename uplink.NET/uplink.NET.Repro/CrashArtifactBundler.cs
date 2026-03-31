@@ -499,7 +499,7 @@ internal static class CrashArtifactBundler
         }
     }
 
-    private static async Task<string> ComputeFingerprintAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken)
+    private static Task<string> ComputeFingerprintAsync(IEnumerable<string> filePaths, CancellationToken cancellationToken)
     {
         var builder = new StringBuilder();
         foreach (var filePath in filePaths.OrderBy(path => path, StringComparer.Ordinal))
@@ -514,7 +514,7 @@ internal static class CrashArtifactBundler
                 .AppendLine();
         }
 
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString()))).ToLowerInvariant();
+        return Task.FromResult(Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString()))).ToLowerInvariant());
     }
 
     private static string? FindExistingBundleDirectory(Settings settings, string fingerprint)
