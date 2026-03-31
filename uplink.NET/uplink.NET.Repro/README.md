@@ -121,6 +121,25 @@ fly deploy
 fly logs
 ```
 
+Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`, and before each new round it scans that directory for leftover dump/error files from the previous crash, then uploads them to Storj under `uplink-repro/crash-artifacts/...` in the selected bucket.
+
+You can override those locations if needed:
+
+```bash
+cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
+fly secrets set UPLINK_REPRO_BUCKET='your-existing-bucket'
+fly secrets set UPLINK_REPRO_CRASH_ARTIFACT_PREFIX='uplink-repro/custom-crash-artifacts'
+```
+
+For local Linux/WSL runs, enable dump generation the same way before starting the repro:
+
+```bash
+export DOTNET_DbgEnableMiniDump=1
+export DOTNET_DbgMiniDumpName=/tmp/uplink-repro-crash-artifacts/coredump.%p.%e.%h.%t.dmp
+```
+
+The repro also writes `/tmp/uplink-repro-crash-artifacts/active-round.json` at the start of each round. If the process dies mid-round, that stale state file is uploaded on the next start together with any dump files so you can see which round/process crashed.
+
 If you want the upload/download stress to target a specific bucket, set it as a secret or env var before deploying:
 
 ```bash

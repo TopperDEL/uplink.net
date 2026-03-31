@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text.Json;
 using uplink.NET.Models;
 using uplink.NET.Services;
 
@@ -26,6 +27,7 @@ if (settings.ShowHelp)
 }
 
 Access.SetTempDirectory(Path.GetTempPath());
+Directory.CreateDirectory(settings.CrashArtifactDirectory);
 
 if (settings.WorkerDownloadMode)
 {
@@ -39,11 +41,20 @@ if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 
 Console.WriteLine($"Starting uplink.NET Linux repro on {RuntimeInformation.OSDescription} / {RuntimeInformation.FrameworkDescription}");
 Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, SerializeRepeats={settings.SerializeRepeats}, DisposeBatchSize={settings.DisposeBatchSize}, ReparseAfterSerialize={settings.ReparseAfterSerialize}, ExerciseBucketListing={settings.ExerciseBucketListing}, ExerciseObjectIo={settings.ExerciseObjectIo}, ObjectIoEveryRounds={settings.ObjectIoEveryRounds}, FileSizeRangeMb={settings.MinFileSizeMb}-{settings.MaxFileSizeMb}, ParallelDownloadProcesses={settings.ParallelDownloadProcesses}, Bucket={(string.IsNullOrWhiteSpace(settings.BucketName) ? "<first visible>" : settings.BucketName)}");
+Console.WriteLine($"CrashArtifactDirectory={settings.CrashArtifactDirectory}, CrashArtifactPrefix={settings.CrashArtifactPrefix}");
+
+if (!IsCrashDumpCollectionConfigured(settings))
+{
+    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash dump collection is not explicitly enabled in the environment. Set DOTNET_DbgEnableMiniDump=1 and DOTNET_DbgMiniDumpName={settings.CrashArtifactDirectory}/coredump.%p.%e.%h.%t.dmp to capture dumps automatically.");
+}
 
 var startedAtUtc = DateTimeOffset.UtcNow;
+await UploadPendingCrashArtifactsAsync(settings, "startup").ConfigureAwait(false);
 
 for (var round = 1; round <= settings.Rounds; round++)
 {
+    await UploadPendingCrashArtifactsAsync(settings, $"before-round-{round}").ConfigureAwait(false);
+    WriteRoundState(settings, round);
     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}/{settings.Rounds}: creating primary access");
 
     using var primary = CreateAccess(settings);
@@ -113,6 +124,7 @@ for (var round = 1; round <= settings.Rounds; round++)
     GC.Collect();
     GC.WaitForPendingFinalizers();
     GC.Collect();
+    TryClearRoundState(settings);
 }
 
 Console.WriteLine($"Completed without a native crash after {(DateTimeOffset.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
@@ -227,6 +239,182 @@ static async Task TryExerciseObjectIoAsync(Access access, Settings settings, int
     {
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: object I/O stress failed non-fatally: {ex.Message}");
     }
+}
+
+static async Task UploadPendingCrashArtifactsAsync(Settings settings, string phase)
+{
+    try
+    {
+        var pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
+        if (pendingFiles.Count == 0)
+        {
+            return;
+        }
+
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Found {pendingFiles.Count} pending crash artifact(s) during {phase}; attempting upload.");
+
+        using var access = CreateAccess(settings);
+        using var bucket = await TryResolveBucketAsync(access, settings, 0).ConfigureAwait(false);
+        if (bucket == null)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact upload skipped during {phase}: no visible bucket was available.");
+            return;
+        }
+
+        var objectService = new ObjectService(access);
+        foreach (var filePath in pendingFiles)
+        {
+            await TryUploadCrashArtifactAsync(objectService, bucket, settings, filePath, phase).ConfigureAwait(false);
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact scan/upload failed non-fatally during {phase}: {ex.Message}");
+    }
+}
+
+static IEnumerable<string> GetPendingCrashArtifactFiles(Settings settings)
+{
+    if (!Directory.Exists(settings.CrashArtifactDirectory))
+    {
+        yield break;
+    }
+
+    var uploadedDirectory = Path.GetFullPath(Path.Combine(settings.CrashArtifactDirectory, "uploaded"));
+    foreach (var filePath in Directory.EnumerateFiles(settings.CrashArtifactDirectory, "*", SearchOption.AllDirectories))
+    {
+        var fullPath = Path.GetFullPath(filePath);
+        if (fullPath.StartsWith(uploadedDirectory, StringComparison.Ordinal))
+        {
+            continue;
+        }
+
+        yield return fullPath;
+    }
+}
+
+static async Task TryUploadCrashArtifactAsync(ObjectService objectService, Bucket bucket, Settings settings, string filePath, string phase)
+{
+    var objectKey = BuildCrashArtifactObjectKey(settings, filePath);
+
+    try
+    {
+        await using var artifactStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 1024 * 1024, useAsync: true);
+        using var uploadOperation = await objectService.UploadObjectAsync(bucket, objectKey, new UploadOptions(), artifactStream, false).ConfigureAwait(false);
+        await RequireStarted(uploadOperation.StartUploadAsync(), "Crash artifact upload").ConfigureAwait(false);
+
+        if (!uploadOperation.Completed || uploadOperation.Failed)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact upload failed non-fatally during {phase} for {filePath}: {uploadOperation.ErrorMessage}");
+            return;
+        }
+
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Uploaded crash artifact {filePath} to {bucket.Name}/{objectKey}");
+        MoveCrashArtifactToUploadedDirectory(settings, filePath);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact upload failed non-fatally during {phase} for {filePath}: {ex.Message}");
+    }
+}
+
+static string BuildCrashArtifactObjectKey(Settings settings, string filePath)
+{
+    var fileName = Path.GetFileName(filePath);
+    var host = Environment.MachineName;
+    var timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
+    return $"{settings.CrashArtifactPrefix.TrimEnd('/')}/{host}/{timestamp}-{fileName}";
+}
+
+static void MoveCrashArtifactToUploadedDirectory(Settings settings, string filePath)
+{
+    try
+    {
+        var relativePath = Path.GetRelativePath(settings.CrashArtifactDirectory, filePath);
+        var destinationPath = Path.Combine(settings.CrashArtifactDirectory, "uploaded", relativePath);
+        var destinationDirectory = Path.GetDirectoryName(destinationPath);
+        if (!string.IsNullOrWhiteSpace(destinationDirectory))
+        {
+            Directory.CreateDirectory(destinationDirectory);
+        }
+
+        var candidatePath = destinationPath;
+        var suffix = 1;
+        while (File.Exists(candidatePath))
+        {
+            candidatePath = Path.Combine(
+                Path.GetDirectoryName(destinationPath) ?? settings.CrashArtifactDirectory,
+                $"{Path.GetFileNameWithoutExtension(destinationPath)}-{suffix}{Path.GetExtension(destinationPath)}");
+            suffix++;
+        }
+
+        File.Move(filePath, candidatePath);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact post-upload move failed non-fatally for {filePath}: {ex.Message}");
+    }
+}
+
+static void WriteRoundState(Settings settings, int round)
+{
+    try
+    {
+        var statePath = Path.Combine(settings.CrashArtifactDirectory, "active-round.json");
+        if (File.Exists(statePath))
+        {
+            var stalePath = Path.Combine(
+                settings.CrashArtifactDirectory,
+                $"stale-active-round-{DateTimeOffset.UtcNow:yyyyMMddHHmmssfff}.json");
+            File.Move(statePath, stalePath, overwrite: false);
+        }
+
+        var state = new CrashRoundState
+        {
+            Round = round,
+            StartedAtUtc = DateTimeOffset.UtcNow,
+            ProcessId = Environment.ProcessId,
+            MachineName = Environment.MachineName,
+            FrameworkDescription = RuntimeInformation.FrameworkDescription,
+            OsDescription = RuntimeInformation.OSDescription,
+            WorkingDirectory = Directory.GetCurrentDirectory(),
+            CommandLine = Environment.CommandLine
+        };
+
+        File.WriteAllText(statePath, JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true }));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Failed to write crash round state non-fatally: {ex.Message}");
+    }
+}
+
+static void TryClearRoundState(Settings settings)
+{
+    try
+    {
+        var statePath = Path.Combine(settings.CrashArtifactDirectory, "active-round.json");
+        if (File.Exists(statePath))
+        {
+            File.Delete(statePath);
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Failed to clear crash round state non-fatally: {ex.Message}");
+    }
+}
+
+static bool IsCrashDumpCollectionConfigured(Settings settings)
+{
+    var enabled = Environment.GetEnvironmentVariable("DOTNET_DbgEnableMiniDump")
+        ?? Environment.GetEnvironmentVariable("COMPlus_DbgEnableMiniDump");
+    var dumpName = Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName")
+        ?? Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpName");
+
+    return string.Equals(enabled, "1", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(enabled, "true", StringComparison.OrdinalIgnoreCase)
+        || !string.IsNullOrWhiteSpace(dumpName);
 }
 
 static async Task<int> RunDownloadWorkerAsync(Settings settings)
@@ -486,6 +674,8 @@ internal sealed class Settings
     public string? WorkerBucketName { get; private init; }
     public string? WorkerObjectKey { get; private init; }
     public string? WorkerLabel { get; private init; }
+    public string CrashArtifactDirectory { get; private init; } = Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts");
+    public string CrashArtifactPrefix { get; private init; } = "uplink-repro/crash-artifacts";
     public int Rounds { get; private init; } = 10;
     public int ChurnPerRound { get; private init; } = 100;
     public int StatusEvery { get; private init; } = 25;
@@ -550,6 +740,8 @@ internal sealed class Settings
                 case "--worker-bucket":
                 case "--worker-object-key":
                 case "--worker-label":
+                case "--crash-artifact-dir":
+                case "--crash-artifact-prefix":
                     if (i + 1 >= args.Length)
                     {
                         throw new ArgumentException($"Missing value for {arg}.");
@@ -573,6 +765,8 @@ internal sealed class Settings
             WorkerBucketName = FirstNonEmpty(values, "--worker-bucket", "UPLINK_REPRO_WORKER_BUCKET"),
             WorkerObjectKey = FirstNonEmpty(values, "--worker-object-key", "UPLINK_REPRO_WORKER_OBJECT_KEY"),
             WorkerLabel = FirstNonEmpty(values, "--worker-label", "UPLINK_REPRO_WORKER_LABEL"),
+            CrashArtifactDirectory = FirstNonEmpty(values, "--crash-artifact-dir", "UPLINK_REPRO_CRASH_ARTIFACT_DIR") ?? Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts"),
+            CrashArtifactPrefix = FirstNonEmpty(values, "--crash-artifact-prefix", "UPLINK_REPRO_CRASH_ARTIFACT_PREFIX") ?? "uplink-repro/crash-artifacts",
             Rounds = ParsePositiveInt(values, "--rounds", "UPLINK_REPRO_ROUNDS", 10),
             ChurnPerRound = ParsePositiveInt(values, "--churn", "UPLINK_REPRO_CHURN", 100),
             StatusEvery = ParsePositiveInt(values, "--status-every", "UPLINK_REPRO_STATUS_EVERY", 25),
@@ -649,6 +843,8 @@ Options:
   --parallel-download-processes <n>   Number of worker processes that download the uploaded object in parallel. Default: 2.
   --object-io-wait-ms <count>         Delay after upload before parallel downloads begin. Default: 2000.
   --object-io-listing-delay-ms <n>    Delay between listing/serialize passes during object I/O stress. Default: 250.
+  --crash-artifact-dir <path>         Directory scanned before each round for dump/error files to upload. Default: /tmp/uplink-repro-crash-artifacts.
+  --crash-artifact-prefix <prefix>    Storj object key prefix for uploaded crash artifacts. Default: uplink-repro/crash-artifacts.
   --help                              Show this message.
 
 Exit behavior:
@@ -705,4 +901,16 @@ Exit behavior:
             || value.Equals("true", StringComparison.OrdinalIgnoreCase)
             || value.Equals("yes", StringComparison.OrdinalIgnoreCase);
     }
+}
+
+internal sealed class CrashRoundState
+{
+    public int Round { get; init; }
+    public DateTimeOffset StartedAtUtc { get; init; }
+    public int ProcessId { get; init; }
+    public string MachineName { get; init; } = string.Empty;
+    public string FrameworkDescription { get; init; } = string.Empty;
+    public string OsDescription { get; init; } = string.Empty;
+    public string WorkingDirectory { get; init; } = string.Empty;
+    public string CommandLine { get; init; } = string.Empty;
 }
