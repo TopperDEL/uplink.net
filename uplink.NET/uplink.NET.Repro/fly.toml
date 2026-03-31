@@ -30,7 +30,12 @@ kill_timeout = "30s"
   UPLINK_REPRO_CRASH_ARTIFACT_DIR = "/tmp/uplink-repro-crash-artifacts"
   UPLINK_REPRO_CRASH_ARTIFACT_PREFIX = "uplink-repro/crash-artifacts"
   DOTNET_DbgEnableMiniDump = "1"
+  DOTNET_DbgMiniDumpType = "4"
   DOTNET_DbgMiniDumpName = "/tmp/uplink-repro-crash-artifacts/coredump.%p.%e.%h.%t.dmp"
+  DOTNET_EnableCrashReport = "1"
+  DOTNET_CreateDumpDiagnostics = "1"
+  DOTNET_CreateDumpVerboseDiagnostics = "1"
+  DOTNET_CreateDumpLogToFile = "/tmp/uplink-repro-crash-artifacts/createdump.%p.%e.%h.%t.log"
 
 [[vm]]
   cpu_kind = "shared"

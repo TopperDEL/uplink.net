@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using uplink.NET.Models;
 using uplink.NET.Services;
 
@@ -28,6 +29,9 @@ if (settings.ShowHelp)
 
 Access.SetTempDirectory(Path.GetTempPath());
 Directory.CreateDirectory(settings.CrashArtifactDirectory);
+EnsureCrashDiagnosticsEnvironment(settings);
+TryRaiseNativeCoreDumpLimit();
+LogCrashDiagnosticsConfiguration(settings);
 
 if (settings.WorkerDownloadMode)
 {
@@ -211,28 +215,47 @@ static async Task UploadStressObjectAsync(ObjectService objectService, Bucket bu
 
 static async Task UploadPendingCrashArtifactsAsync(Settings settings, string phase)
 {
-    try
+    await UploadPendingCrashArtifactsWithRetriesAsync(settings, phase, 1, 0).ConfigureAwait(false);
+}
+
+static async Task UploadPendingCrashArtifactsWithRetriesAsync(Settings settings, string phase, int attempts, int delayBetweenAttemptsMs)
+{
+    for (var attempt = 1; attempt <= attempts; attempt++)
     {
-        var pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
-        if (pendingFiles.Count == 0)
+        try
         {
-            return;
+            var pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
+            if (pendingFiles.Count == 0)
+            {
+                if (attempt < attempts && delayBetweenAttemptsMs > 0)
+                {
+                    await Task.Delay(delayBetweenAttemptsMs).ConfigureAwait(false);
+                }
+
+                continue;
+            }
+
+            var attemptSuffix = attempts > 1 ? $" (attempt {attempt}/{attempts})" : string.Empty;
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Found {pendingFiles.Count} pending crash artifact(s) during {phase}{attemptSuffix}; attempting upload.");
+
+            using var access = CreateAccess(settings);
+            using var bucket = await GetBucketAsync(access, settings.CrashArtifactBucketName).ConfigureAwait(false);
+
+            var objectService = new ObjectService(access);
+            foreach (var filePath in pendingFiles)
+            {
+                await TryUploadCrashArtifactAsync(objectService, bucket, settings, filePath, phase).ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact scan/upload failed non-fatally during {phase}: {ex.Message}");
         }
 
-        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Found {pendingFiles.Count} pending crash artifact(s) during {phase}; attempting upload.");
-
-        using var access = CreateAccess(settings);
-        using var bucket = await GetBucketAsync(access, settings.CrashArtifactBucketName).ConfigureAwait(false);
-
-        var objectService = new ObjectService(access);
-        foreach (var filePath in pendingFiles)
+        if (attempt < attempts && delayBetweenAttemptsMs > 0)
         {
-            await TryUploadCrashArtifactAsync(objectService, bucket, settings, filePath, phase).ConfigureAwait(false);
+            await Task.Delay(delayBetweenAttemptsMs).ConfigureAwait(false);
         }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact scan/upload failed non-fatally during {phase}: {ex.Message}");
     }
 }
 
@@ -249,7 +272,9 @@ static async Task<int> RunSupervisorAsync(Settings settings, IReadOnlyList<strin
         await child.WaitForExitAsync().ConfigureAwait(false);
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Supervisor: child PID={child.Id} for round {round}/{settings.Rounds} exited with code {child.ExitCode}");
 
-        await UploadPendingCrashArtifactsAsync(settings, $"after-round-{round}").ConfigureAwait(false);
+        var uploadAttempts = child.ExitCode == 0 ? 1 : 5;
+        var uploadDelayMs = child.ExitCode == 0 ? 0 : 1000;
+        await UploadPendingCrashArtifactsWithRetriesAsync(settings, $"after-round-{round}", uploadAttempts, uploadDelayMs).ConfigureAwait(false);
         if (child.ExitCode != 0)
         {
             Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Supervisor: stopping after round {round} because the child failed or crashed.");
@@ -346,21 +371,40 @@ static async Task ExecuteRoundAsync(Settings settings, int round, int totalRound
 
 static IEnumerable<string> GetPendingCrashArtifactFiles(Settings settings)
 {
-    if (!Directory.Exists(settings.CrashArtifactDirectory))
+    var seenPaths = new HashSet<string>(StringComparer.Ordinal);
+    foreach (var searchSpec in GetCrashArtifactSearchSpecs(settings))
     {
-        yield break;
-    }
-
-    var uploadedDirectory = Path.GetFullPath(Path.Combine(settings.CrashArtifactDirectory, "uploaded"));
-    foreach (var filePath in Directory.EnumerateFiles(settings.CrashArtifactDirectory, "*", SearchOption.AllDirectories))
-    {
-        var fullPath = Path.GetFullPath(filePath);
-        if (fullPath.StartsWith(uploadedDirectory, StringComparison.Ordinal))
+        if (!Directory.Exists(searchSpec.DirectoryPath))
         {
             continue;
         }
 
-        yield return fullPath;
+        IEnumerable<string> candidates;
+        try
+        {
+            candidates = Directory.EnumerateFiles(searchSpec.DirectoryPath, searchSpec.SearchPattern, searchSpec.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact scan skipped {searchSpec.DirectoryPath} ({searchSpec.SearchPattern}) non-fatally: {ex.Message}");
+            continue;
+        }
+
+        foreach (var filePath in candidates)
+        {
+            var fullPath = Path.GetFullPath(filePath);
+            if (!seenPaths.Add(fullPath))
+            {
+                continue;
+            }
+
+            if (IsUploadedCrashArtifact(settings, fullPath))
+            {
+                continue;
+            }
+
+            yield return fullPath;
+        }
     }
 }
 
@@ -401,7 +445,9 @@ static void MoveCrashArtifactToUploadedDirectory(Settings settings, string fileP
 {
     try
     {
-        var relativePath = Path.GetRelativePath(settings.CrashArtifactDirectory, filePath);
+        var relativePath = IsPathUnderDirectory(filePath, settings.CrashArtifactDirectory)
+            ? Path.GetRelativePath(settings.CrashArtifactDirectory, filePath)
+            : Path.Combine("external", Path.GetFileName(filePath));
         var destinationPath = Path.Combine(settings.CrashArtifactDirectory, "uploaded", relativePath);
         var destinationDirectory = Path.GetDirectoryName(destinationPath);
         if (!string.IsNullOrWhiteSpace(destinationDirectory))
@@ -449,7 +495,8 @@ static void WriteRoundState(Settings settings, int round)
             FrameworkDescription = RuntimeInformation.FrameworkDescription,
             OsDescription = RuntimeInformation.OSDescription,
             WorkingDirectory = Directory.GetCurrentDirectory(),
-            CommandLine = Environment.CommandLine
+            CommandLine = Environment.CommandLine,
+            CrashDiagnostics = CaptureCrashDiagnosticsSnapshot(settings)
         };
 
         File.WriteAllText(statePath, JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true }));
@@ -486,6 +533,246 @@ static bool IsCrashDumpCollectionConfigured(Settings settings)
     return string.Equals(enabled, "1", StringComparison.OrdinalIgnoreCase)
         || string.Equals(enabled, "true", StringComparison.OrdinalIgnoreCase)
         || !string.IsNullOrWhiteSpace(dumpName);
+}
+
+static void EnsureCrashDiagnosticsEnvironment(Settings settings)
+{
+    var dumpName = FirstNonEmptyEnvironment("DOTNET_DbgMiniDumpName", "COMPlus_DbgMiniDumpName")
+        ?? Path.Combine(settings.CrashArtifactDirectory, "coredump.%p.%e.%h.%t.dmp");
+    var dumpType = FirstNonEmptyEnvironment("DOTNET_DbgMiniDumpType", "COMPlus_DbgMiniDumpType") ?? "4";
+    var dumpLogPath = Environment.GetEnvironmentVariable("DOTNET_CreateDumpLogToFile")
+        ?? Path.Combine(settings.CrashArtifactDirectory, "createdump.%p.%e.%h.%t.log");
+
+    SetEnvironmentIfMissing("DOTNET_DbgEnableMiniDump", "1");
+    SetEnvironmentIfMissing("COMPlus_DbgEnableMiniDump", Environment.GetEnvironmentVariable("DOTNET_DbgEnableMiniDump") ?? "1");
+    SetEnvironmentIfMissing("DOTNET_DbgMiniDumpName", dumpName);
+    SetEnvironmentIfMissing("COMPlus_DbgMiniDumpName", Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName") ?? dumpName);
+    SetEnvironmentIfMissing("DOTNET_DbgMiniDumpType", dumpType);
+    SetEnvironmentIfMissing("COMPlus_DbgMiniDumpType", Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpType") ?? dumpType);
+    SetEnvironmentIfMissing("DOTNET_EnableCrashReport", "1");
+    SetEnvironmentIfMissing("DOTNET_CreateDumpDiagnostics", "1");
+    SetEnvironmentIfMissing("DOTNET_CreateDumpVerboseDiagnostics", "1");
+    SetEnvironmentIfMissing("DOTNET_CreateDumpLogToFile", dumpLogPath);
+}
+
+static void SetEnvironmentIfMissing(string environmentName, string value)
+{
+    if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(environmentName)))
+    {
+        return;
+    }
+
+    Environment.SetEnvironmentVariable(environmentName, value);
+}
+
+static string? FirstNonEmptyEnvironment(params string[] environmentNames)
+{
+    foreach (var environmentName in environmentNames)
+    {
+        var value = Environment.GetEnvironmentVariable(environmentName);
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+    }
+
+    return null;
+}
+
+static void ApplyCrashDiagnosticsEnvironment(ProcessStartInfo startInfo, Settings settings)
+{
+    startInfo.WorkingDirectory = settings.CrashArtifactDirectory;
+    CopyEnvironment(startInfo, "DOTNET_DbgEnableMiniDump", "1");
+    CopyEnvironment(startInfo, "COMPlus_DbgEnableMiniDump", Environment.GetEnvironmentVariable("COMPlus_DbgEnableMiniDump") ?? Environment.GetEnvironmentVariable("DOTNET_DbgEnableMiniDump") ?? "1");
+    CopyEnvironment(startInfo, "DOTNET_DbgMiniDumpName", Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName") ?? Path.Combine(settings.CrashArtifactDirectory, "coredump.%p.%e.%h.%t.dmp"));
+    CopyEnvironment(startInfo, "COMPlus_DbgMiniDumpName", Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpName") ?? Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName") ?? Path.Combine(settings.CrashArtifactDirectory, "coredump.%p.%e.%h.%t.dmp"));
+    CopyEnvironment(startInfo, "DOTNET_DbgMiniDumpType", Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpType") ?? "4");
+    CopyEnvironment(startInfo, "COMPlus_DbgMiniDumpType", Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpType") ?? Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpType") ?? "4");
+    CopyEnvironment(startInfo, "DOTNET_EnableCrashReport", Environment.GetEnvironmentVariable("DOTNET_EnableCrashReport") ?? "1");
+    CopyEnvironment(startInfo, "DOTNET_CreateDumpDiagnostics", Environment.GetEnvironmentVariable("DOTNET_CreateDumpDiagnostics") ?? "1");
+    CopyEnvironment(startInfo, "DOTNET_CreateDumpVerboseDiagnostics", Environment.GetEnvironmentVariable("DOTNET_CreateDumpVerboseDiagnostics") ?? "1");
+    CopyEnvironment(startInfo, "DOTNET_CreateDumpLogToFile", Environment.GetEnvironmentVariable("DOTNET_CreateDumpLogToFile") ?? Path.Combine(settings.CrashArtifactDirectory, "createdump.%p.%e.%h.%t.log"));
+}
+
+static void CopyEnvironment(ProcessStartInfo startInfo, string environmentName, string fallbackValue)
+{
+    startInfo.Environment[environmentName] = Environment.GetEnvironmentVariable(environmentName) ?? fallbackValue;
+}
+
+static void TryRaiseNativeCoreDumpLimit()
+{
+    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+        return;
+    }
+
+    try
+    {
+        if (NativeMethods.getrlimit(NativeMethods.RlimitCoreResource, out var limit) != 0)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Could not query RLIMIT_CORE non-fatally: errno={Marshal.GetLastWin32Error()}");
+            return;
+        }
+
+        if (limit.Current == limit.Maximum || limit.Maximum == 0)
+        {
+            return;
+        }
+
+        var updatedLimit = new RLimit(limit.Maximum, limit.Maximum);
+        if (NativeMethods.setrlimit(NativeMethods.RlimitCoreResource, ref updatedLimit) != 0)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Could not raise RLIMIT_CORE non-fatally: errno={Marshal.GetLastWin32Error()}, current={FormatRLimit(limit.Current)}, max={FormatRLimit(limit.Maximum)}");
+            return;
+        }
+
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Raised RLIMIT_CORE from {FormatRLimit(limit.Current)} to {FormatRLimit(updatedLimit.Current)}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Could not raise RLIMIT_CORE non-fatally: {ex.Message}");
+    }
+}
+
+static void LogCrashDiagnosticsConfiguration(Settings settings)
+{
+    var snapshot = CaptureCrashDiagnosticsSnapshot(settings);
+    Console.WriteLine(
+        $"[{DateTimeOffset.UtcNow:O}] Crash diagnostics configured: " +
+        $"DumpEnabled={snapshot.DotNetDbgEnableMiniDump ?? snapshot.ComPlusDbgEnableMiniDump ?? "<unset>"}, " +
+        $"DumpName={snapshot.DotNetDbgMiniDumpName ?? snapshot.ComPlusDbgMiniDumpName ?? "<unset>"}, " +
+        $"DumpType={snapshot.DotNetDbgMiniDumpType ?? snapshot.ComPlusDbgMiniDumpType ?? "<unset>"}, " +
+        $"CrashReport={snapshot.DotNetEnableCrashReport ?? "<unset>"}, " +
+        $"CreateDumpDiagnostics={snapshot.DotNetCreateDumpDiagnostics ?? "<unset>"}, " +
+        $"CreateDumpVerboseDiagnostics={snapshot.DotNetCreateDumpVerboseDiagnostics ?? "<unset>"}, " +
+        $"CreateDumpLog={snapshot.DotNetCreateDumpLogToFile ?? "<unset>"}, " +
+        $"CorePattern={snapshot.LinuxCorePattern ?? "<unavailable>"}, " +
+        $"CoreUsesPid={snapshot.LinuxCoreUsesPid ?? "<unavailable>"}, " +
+        $"CoreLimit={snapshot.CoreLimitCurrent ?? "<unavailable>"}/{snapshot.CoreLimitMaximum ?? "<unavailable>"}");
+}
+
+static CrashDiagnosticsSnapshot CaptureCrashDiagnosticsSnapshot(Settings settings)
+{
+    var processPath = Environment.ProcessPath;
+    var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+    string? coreLimitCurrent = null;
+    string? coreLimitMaximum = null;
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && NativeMethods.getrlimit(NativeMethods.RlimitCoreResource, out var limit) == 0)
+    {
+        coreLimitCurrent = FormatRLimit(limit.Current);
+        coreLimitMaximum = FormatRLimit(limit.Maximum);
+    }
+
+    return new CrashDiagnosticsSnapshot
+    {
+        DotNetDbgEnableMiniDump = Environment.GetEnvironmentVariable("DOTNET_DbgEnableMiniDump"),
+        ComPlusDbgEnableMiniDump = Environment.GetEnvironmentVariable("COMPlus_DbgEnableMiniDump"),
+        DotNetDbgMiniDumpName = Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName"),
+        ComPlusDbgMiniDumpName = Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpName"),
+        DotNetDbgMiniDumpType = Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpType"),
+        ComPlusDbgMiniDumpType = Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpType"),
+        DotNetEnableCrashReport = Environment.GetEnvironmentVariable("DOTNET_EnableCrashReport"),
+        DotNetCreateDumpDiagnostics = Environment.GetEnvironmentVariable("DOTNET_CreateDumpDiagnostics"),
+        DotNetCreateDumpVerboseDiagnostics = Environment.GetEnvironmentVariable("DOTNET_CreateDumpVerboseDiagnostics"),
+        DotNetCreateDumpLogToFile = Environment.GetEnvironmentVariable("DOTNET_CreateDumpLogToFile"),
+        ProcessPath = processPath ?? string.Empty,
+        EntryAssemblyPath = entryAssemblyPath ?? string.Empty,
+        CrashArtifactDirectory = settings.CrashArtifactDirectory,
+        LinuxCorePattern = TryReadTrimmedFile("/proc/sys/kernel/core_pattern"),
+        LinuxCoreUsesPid = TryReadTrimmedFile("/proc/sys/kernel/core_uses_pid"),
+        LinuxCoreDumpFilter = TryReadTrimmedFile("/proc/self/coredump_filter"),
+        CoreLimitCurrent = coreLimitCurrent,
+        CoreLimitMaximum = coreLimitMaximum
+    };
+}
+
+static string? TryReadTrimmedFile(string path)
+{
+    try
+    {
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        return File.ReadAllText(path).Trim();
+    }
+    catch
+    {
+        return null;
+    }
+}
+
+static IEnumerable<CrashArtifactSearchSpec> GetCrashArtifactSearchSpecs(Settings settings)
+{
+    yield return new CrashArtifactSearchSpec(settings.CrashArtifactDirectory, "*", true);
+
+    foreach (var configuredPath in GetConfiguredCrashArtifactPaths(settings))
+    {
+        var directoryPath = Path.GetDirectoryName(configuredPath);
+        var fileName = Path.GetFileName(configuredPath);
+        if (string.IsNullOrWhiteSpace(directoryPath) || string.IsNullOrWhiteSpace(fileName))
+        {
+            continue;
+        }
+
+        yield return new CrashArtifactSearchSpec(directoryPath, ConvertCrashPatternToSearchPattern(fileName), false);
+    }
+
+    var corePattern = TryReadTrimmedFile("/proc/sys/kernel/core_pattern");
+    if (!string.IsNullOrWhiteSpace(corePattern) && !corePattern.StartsWith('|') && Path.IsPathRooted(corePattern))
+    {
+        var coreDirectory = Path.GetDirectoryName(corePattern);
+        var coreFileName = Path.GetFileName(corePattern);
+        if (!string.IsNullOrWhiteSpace(coreDirectory) && !string.IsNullOrWhiteSpace(coreFileName))
+        {
+            yield return new CrashArtifactSearchSpec(coreDirectory, ConvertCrashPatternToSearchPattern(coreFileName), false);
+        }
+    }
+}
+
+static IEnumerable<string> GetConfiguredCrashArtifactPaths(Settings settings)
+{
+    var dumpName = Environment.GetEnvironmentVariable("DOTNET_DbgMiniDumpName")
+        ?? Environment.GetEnvironmentVariable("COMPlus_DbgMiniDumpName");
+    if (!string.IsNullOrWhiteSpace(dumpName) && Path.IsPathRooted(dumpName))
+    {
+        yield return dumpName;
+        yield return $"{dumpName}.crashreport.json";
+    }
+
+    var createDumpLog = Environment.GetEnvironmentVariable("DOTNET_CreateDumpLogToFile");
+    if (!string.IsNullOrWhiteSpace(createDumpLog) && Path.IsPathRooted(createDumpLog))
+    {
+        yield return createDumpLog;
+    }
+}
+
+static string ConvertCrashPatternToSearchPattern(string fileName)
+{
+    var pattern = Regex.Replace(fileName, "%.", "*");
+    return string.IsNullOrWhiteSpace(pattern) ? "*" : pattern;
+}
+
+static bool IsUploadedCrashArtifact(Settings settings, string fullPath)
+{
+    var uploadedDirectory = Path.GetFullPath(Path.Combine(settings.CrashArtifactDirectory, "uploaded"));
+    return fullPath.StartsWith(uploadedDirectory, StringComparison.Ordinal);
+}
+
+static bool IsPathUnderDirectory(string filePath, string directoryPath)
+{
+    var fullFilePath = Path.GetFullPath(filePath);
+    var fullDirectoryPath = Path.GetFullPath(directoryPath)
+        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        + Path.DirectorySeparatorChar;
+    return fullFilePath.StartsWith(fullDirectoryPath, StringComparison.Ordinal);
+}
+
+static string FormatRLimit(ulong value)
+{
+    return value == ulong.MaxValue ? "unlimited" : value.ToString();
 }
 
 static async Task<int> RunDownloadWorkerAsync(Settings settings)
@@ -546,7 +833,7 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
         var startInfo = new ProcessStartInfo
         {
             UseShellExecute = false,
-            WorkingDirectory = Directory.GetCurrentDirectory()
+            WorkingDirectory = settings.CrashArtifactDirectory
         };
 
         if (string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase)
@@ -570,6 +857,7 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
         startInfo.ArgumentList.Add("--object-io-listing-delay-ms");
         startInfo.ArgumentList.Add(settings.ObjectIoListingDelayMs.ToString());
         startInfo.Environment["UPLINK_ACCESS_GRANT"] = serializedAccess;
+        ApplyCrashDiagnosticsEnvironment(startInfo, settings);
 
         Process worker;
         try
@@ -590,7 +878,7 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
 
 static Process StartSupervisorChild(Settings settings, IReadOnlyList<string> originalArgs, int round)
 {
-    var startInfo = CreateCurrentProcessStartInfo();
+    var startInfo = CreateCurrentProcessStartInfo(settings);
     foreach (var arg in originalArgs)
     {
         if (string.Equals(arg, "--supervisor-child", StringComparison.OrdinalIgnoreCase))
@@ -617,14 +905,14 @@ static Process StartSupervisorChild(Settings settings, IReadOnlyList<string> ori
     }
 }
 
-static ProcessStartInfo CreateCurrentProcessStartInfo()
+static ProcessStartInfo CreateCurrentProcessStartInfo(Settings settings)
 {
     var processPath = Environment.ProcessPath ?? throw new InvalidOperationException("Could not determine the current process path. Run the repro via dotnet run or a published executable so child processes can be spawned.");
     var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
     var startInfo = new ProcessStartInfo
     {
         UseShellExecute = false,
-        WorkingDirectory = Directory.GetCurrentDirectory()
+        WorkingDirectory = settings.CrashArtifactDirectory
     };
 
     if (string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase)
@@ -638,6 +926,7 @@ static ProcessStartInfo CreateCurrentProcessStartInfo()
         startInfo.FileName = processPath;
     }
 
+    ApplyCrashDiagnosticsEnvironment(startInfo, settings);
     return startInfo;
 }
 
@@ -1081,6 +1370,7 @@ internal sealed class CrashRoundState
     public string OsDescription { get; init; } = string.Empty;
     public string WorkingDirectory { get; init; } = string.Empty;
     public string CommandLine { get; init; } = string.Empty;
+    public CrashDiagnosticsSnapshot CrashDiagnostics { get; init; } = new();
 }
 
 internal sealed class StressObjectPlan
@@ -1090,4 +1380,52 @@ internal sealed class StressObjectPlan
     public string ObjectKey { get; init; } = string.Empty;
     public string TempFilePath { get; init; } = string.Empty;
     public bool Uploaded { get; set; }
+}
+
+internal sealed class CrashDiagnosticsSnapshot
+{
+    public string? DotNetDbgEnableMiniDump { get; init; }
+    public string? ComPlusDbgEnableMiniDump { get; init; }
+    public string? DotNetDbgMiniDumpName { get; init; }
+    public string? ComPlusDbgMiniDumpName { get; init; }
+    public string? DotNetDbgMiniDumpType { get; init; }
+    public string? ComPlusDbgMiniDumpType { get; init; }
+    public string? DotNetEnableCrashReport { get; init; }
+    public string? DotNetCreateDumpDiagnostics { get; init; }
+    public string? DotNetCreateDumpVerboseDiagnostics { get; init; }
+    public string? DotNetCreateDumpLogToFile { get; init; }
+    public string ProcessPath { get; init; } = string.Empty;
+    public string EntryAssemblyPath { get; init; } = string.Empty;
+    public string CrashArtifactDirectory { get; init; } = string.Empty;
+    public string? LinuxCorePattern { get; init; }
+    public string? LinuxCoreUsesPid { get; init; }
+    public string? LinuxCoreDumpFilter { get; init; }
+    public string? CoreLimitCurrent { get; init; }
+    public string? CoreLimitMaximum { get; init; }
+}
+
+internal sealed record CrashArtifactSearchSpec(string DirectoryPath, string SearchPattern, bool Recursive);
+
+[StructLayout(LayoutKind.Sequential)]
+internal struct RLimit
+{
+    public RLimit(ulong current, ulong maximum)
+    {
+        Current = current;
+        Maximum = maximum;
+    }
+
+    public ulong Current;
+    public ulong Maximum;
+}
+
+internal static class NativeMethods
+{
+    internal const int RlimitCoreResource = 4;
+
+    [DllImport("libc", SetLastError = true)]
+    internal static extern int getrlimit(int resource, out RLimit rlim);
+
+    [DllImport("libc", SetLastError = true)]
+    internal static extern int setrlimit(int resource, ref RLimit rlim);
 }

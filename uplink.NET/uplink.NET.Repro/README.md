@@ -122,7 +122,19 @@ fly deploy
 fly logs
 ```
 
-Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`. A lightweight supervisor process now runs each stress round in its own child process, so if that child segfaults the parent stays alive, immediately scans the directory for leftover dump/error files, and uploads them to Storj under `uplink-repro/crash-artifacts/...` in the `s-drive` bucket by default.
+Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`. A lightweight supervisor process now runs each stress round in its own child process, so if that child segfaults the parent stays alive, retries crash-artifact scans for a few seconds, and uploads leftover dump/error files to Storj under `uplink-repro/crash-artifacts/...` in the `s-drive` bucket by default.
+
+By default the repro now enables:
+
+- `DOTNET_DbgEnableMiniDump=1`
+- `DOTNET_DbgMiniDumpType=4` for a full managed dump
+- `DOTNET_DbgMiniDumpName=/tmp/uplink-repro-crash-artifacts/coredump.%p.%e.%h.%t.dmp`
+- `DOTNET_EnableCrashReport=1` so the runtime also writes `*.crashreport.json`
+- `DOTNET_CreateDumpDiagnostics=1`
+- `DOTNET_CreateDumpVerboseDiagnostics=1`
+- `DOTNET_CreateDumpLogToFile=/tmp/uplink-repro-crash-artifacts/createdump.%p.%e.%h.%t.log`
+
+On Linux the repro also raises `RLIMIT_CORE` on startup and starts supervised child/worker processes with `/tmp/uplink-repro-crash-artifacts` as their working directory. That gives regular kernel core files the best chance to land in the crash-artifact area too, subject to the host's `core_pattern` configuration.
 
 You can override those locations if needed:
 
@@ -137,10 +149,15 @@ For local Linux/WSL runs, enable dump generation the same way before starting th
 
 ```bash
 export DOTNET_DbgEnableMiniDump=1
+export DOTNET_DbgMiniDumpType=4
 export DOTNET_DbgMiniDumpName=/tmp/uplink-repro-crash-artifacts/coredump.%p.%e.%h.%t.dmp
+export DOTNET_EnableCrashReport=1
+export DOTNET_CreateDumpDiagnostics=1
+export DOTNET_CreateDumpVerboseDiagnostics=1
+export DOTNET_CreateDumpLogToFile=/tmp/uplink-repro-crash-artifacts/createdump.%p.%e.%h.%t.log
 ```
 
-The repro also writes `/tmp/uplink-repro-crash-artifacts/active-round.json` at the start of each round. If the child dies mid-round, that stale state file is uploaded by the surviving supervisor together with any dump files so you can see which round/process crashed.
+The repro also writes `/tmp/uplink-repro-crash-artifacts/active-round.json` at the start of each round. If the child dies mid-round, that stale state file is uploaded by the surviving supervisor together with any dump files so you can see which round/process crashed and which dump/core settings were active at the time.
 
 If you want the upload/download stress to target a specific bucket, set it as a secret or env var before deploying:
 
