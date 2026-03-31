@@ -225,6 +225,12 @@ static async Task UploadPendingCrashArtifactsWithRetriesAsync(Settings settings,
         try
         {
             var pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
+            var createdBundles = await CrashArtifactBundler.CreateCrashAnalysisBundlesAsync(settings, phase, pendingFiles).ConfigureAwait(false);
+            if (createdBundles.Count > 0)
+            {
+                pendingFiles = GetPendingCrashArtifactFiles(settings).ToList();
+            }
+
             if (pendingFiles.Count == 0)
             {
                 if (attempt < attempts && delayBetweenAttemptsMs > 0)
@@ -435,10 +441,11 @@ static async Task TryUploadCrashArtifactAsync(ObjectService objectService, Bucke
 
 static string BuildCrashArtifactObjectKey(Settings settings, string filePath)
 {
-    var fileName = Path.GetFileName(filePath);
+    var relativePath = IsPathUnderDirectory(filePath, settings.CrashArtifactDirectory)
+        ? Path.GetRelativePath(settings.CrashArtifactDirectory, filePath).Replace(Path.DirectorySeparatorChar, '/')
+        : $"external/{Path.GetFileName(filePath)}";
     var host = Environment.MachineName;
-    var timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmssfff");
-    return $"{settings.CrashArtifactPrefix.TrimEnd('/')}/{host}/{timestamp}-{fileName}";
+    return $"{settings.CrashArtifactPrefix.TrimEnd('/')}/{host}/{relativePath}";
 }
 
 static void MoveCrashArtifactToUploadedDirectory(Settings settings, string filePath)
@@ -1284,9 +1291,9 @@ Options:
   --parallel-download-processes <n>   Number of worker processes per uploaded object. Default: 2.
   --object-io-wait-ms <count>         Delay after upload before parallel downloads begin. Default: 2000.
   --object-io-listing-delay-ms <n>    Delay between listing/serialize passes during object I/O stress. Default: 250.
-  --crash-artifact-bucket <name>      Bucket used for uploaded crash dumps/error files. Default: s-drive.
-  --crash-artifact-dir <path>         Directory scanned before each round for dump/error files to upload. Default: /tmp/uplink-repro-crash-artifacts.
-  --crash-artifact-prefix <prefix>    Storj object key prefix for uploaded crash artifacts. Default: uplink-repro/crash-artifacts.
+  --crash-artifact-bucket <name>      Bucket used for uploaded crash dumps, analysis bundles, and related files. Default: s-drive.
+  --crash-artifact-dir <path>         Directory scanned before each round for dump/error files and generated analysis bundles. Default: /tmp/uplink-repro-crash-artifacts.
+  --crash-artifact-prefix <prefix>    Storj object key prefix for uploaded crash artifacts and bundles. Default: uplink-repro/crash-artifacts.
   --help                              Show this message.
 
 Exit behavior:
