@@ -87,14 +87,14 @@ Files for Fly.io are included next to the repro project:
 Before deploying, set your secrets:
 
 ```bash
-cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
 fly secrets set UPLINK_ACCESS_GRANT='...'
 ```
 
 Or use satellite credentials instead:
 
 ```bash
-cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
 fly secrets set \
   UPLINK_SATELLITE='europe-west-1.tardigrade.io:7777' \
   UPLINK_API_KEY='...' \
@@ -104,7 +104,7 @@ fly secrets set \
 Then deploy:
 
 ```bash
-cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
 fly deploy
 fly logs
 ```
