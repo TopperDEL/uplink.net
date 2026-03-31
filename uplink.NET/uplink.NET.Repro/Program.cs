@@ -31,7 +31,7 @@ Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRo
 
 Access.SetTempDirectory(Path.GetTempPath());
 
-var startedAt = DateTimeOffset.UtcNow;
+var startedAtUtc = DateTimeOffset.UtcNow;
 
 for (var round = 1; round <= settings.Rounds; round++)
 {
@@ -70,7 +70,7 @@ for (var round = 1; round <= settings.Rounds; round++)
     GC.Collect();
 }
 
-Console.WriteLine($"Completed without a native crash after {(DateTimeOffset.UtcNow - startedAt).TotalSeconds:F1}s.");
+Console.WriteLine($"Completed without a native crash after {(DateTimeOffset.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
 Console.WriteLine("If the old package did not segfault yet, rerun with larger --rounds and/or --churn values.");
 return 0;
 
@@ -210,7 +210,7 @@ Options:
   --churn <count>                Access objects created per round. Default: 100.
   --status-every <count>         Progress log interval. Default: 25.
   --bucket-list-every <count>    Run ListBucketsAsync every N churn iterations. Default: 25.
-  --list-buckets                 Also exercise _project through BucketService.ListBucketsAsync.
+  --list-buckets                 Also exercise project-backed bucket operations through BucketService.ListBucketsAsync.
   --help                         Show this message.
 
 Exit behavior:
