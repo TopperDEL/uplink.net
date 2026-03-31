@@ -9,7 +9,8 @@ It intentionally:
 2. creates many throwaway `Access` instances and can dispose them in bursts
 3. repeatedly calls `Serialize()` on those instances to churn the same native result types
 4. can reparse those serialized grants and serialize them again to double the native lifetime pressure
-5. then uses the primary `Access` again
+5. can generate a random 1-100 MiB file, upload it, wait, then start two parallel download worker processes while bucket/object listings continue
+6. then uses the primary `Access` again
 
 With the broken package, that usually ends in a native `SIGSEGV` / exit code `139` on Linux. With a package that includes the PR #51 fix, the process should finish cleanly.
 
@@ -53,10 +54,17 @@ dotnet run \
   -- \
   --rounds 50 \
   --churn 500 \
+  --bucket my-existing-bucket \
   --serialize-repeats 4 \
   --dispose-batch-size 32 \
   --status-every 50 \
   --bucket-list-every 10 \
+  --object-io \
+  --object-io-every-rounds 1 \
+  --min-file-size-mb 1 \
+  --max-file-size-mb 100 \
+  --parallel-download-processes 2 \
+  --object-io-wait-ms 2000 \
   --list-buckets \
   --reparse-after-serialize
 ```
@@ -113,6 +121,15 @@ fly deploy
 fly logs
 ```
 
+If you want the upload/download stress to target a specific bucket, set it as a secret or env var before deploying:
+
+```bash
+cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
+fly secrets set UPLINK_REPRO_BUCKET='your-existing-bucket'
+```
+
+If `UPLINK_REPRO_BUCKET` is not set, the harness uses the first bucket visible to the supplied access grant.
+
 The included Fly config uses more aggressive defaults than the local examples:
 
 - `UPLINK_REPRO_ROUNDS=200`
@@ -123,5 +140,12 @@ The included Fly config uses more aggressive defaults than the local examples:
 - `UPLINK_REPRO_DISPOSE_BATCH_SIZE=32`
 - `UPLINK_REPRO_LIST_BUCKETS=true`
 - `UPLINK_REPRO_REPARSE_AFTER_SERIALIZE=true`
+- `UPLINK_REPRO_OBJECT_IO=true`
+- `UPLINK_REPRO_OBJECT_IO_EVERY_ROUNDS=10`
+- `UPLINK_REPRO_MIN_FILE_SIZE_MB=1`
+- `UPLINK_REPRO_MAX_FILE_SIZE_MB=100`
+- `UPLINK_REPRO_PARALLEL_DOWNLOAD_PROCESSES=2`
+- `UPLINK_REPRO_OBJECT_IO_WAIT_MS=2000`
+- `UPLINK_REPRO_OBJECT_IO_LISTING_DELAY_MS=250`
 
 If you need to test a PR #51 prerelease on Fly.io, edit `UPLINK_NUGET_VERSION` under `[build.args]` in `fly.toml` and deploy again.
