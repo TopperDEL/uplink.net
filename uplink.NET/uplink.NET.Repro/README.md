@@ -121,13 +121,14 @@ fly deploy
 fly logs
 ```
 
-Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`, and before each new round it scans that directory for leftover dump/error files from the previous crash, then uploads them to Storj under `uplink-repro/crash-artifacts/...` in the selected bucket.
+Crash dumps are now configured by default in the included Fly config. The repro writes them to `/tmp/uplink-repro-crash-artifacts`, and before each new round it scans that directory for leftover dump/error files from the previous crash, then uploads them to Storj under `uplink-repro/crash-artifacts/...` in the `s-drive` bucket by default.
 
 You can override those locations if needed:
 
 ```bash
 cd <absolute-path-to-repo>/uplink.NET/uplink.NET.Repro
 fly secrets set UPLINK_REPRO_BUCKET='your-existing-bucket'
+fly secrets set UPLINK_REPRO_CRASH_ARTIFACT_BUCKET='s-drive'
 fly secrets set UPLINK_REPRO_CRASH_ARTIFACT_PREFIX='uplink-repro/custom-crash-artifacts'
 ```
 

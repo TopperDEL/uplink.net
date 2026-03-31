@@ -41,7 +41,7 @@ if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 
 Console.WriteLine($"Starting uplink.NET Linux repro on {RuntimeInformation.OSDescription} / {RuntimeInformation.FrameworkDescription}");
 Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, SerializeRepeats={settings.SerializeRepeats}, DisposeBatchSize={settings.DisposeBatchSize}, ReparseAfterSerialize={settings.ReparseAfterSerialize}, ExerciseBucketListing={settings.ExerciseBucketListing}, ExerciseObjectIo={settings.ExerciseObjectIo}, ObjectIoEveryRounds={settings.ObjectIoEveryRounds}, FileSizeRangeMb={settings.MinFileSizeMb}-{settings.MaxFileSizeMb}, ParallelDownloadProcesses={settings.ParallelDownloadProcesses}, Bucket={(string.IsNullOrWhiteSpace(settings.BucketName) ? "<first visible>" : settings.BucketName)}");
-Console.WriteLine($"CrashArtifactDirectory={settings.CrashArtifactDirectory}, CrashArtifactPrefix={settings.CrashArtifactPrefix}");
+Console.WriteLine($"CrashArtifactDirectory={settings.CrashArtifactDirectory}, CrashArtifactBucket={settings.CrashArtifactBucketName}, CrashArtifactPrefix={settings.CrashArtifactPrefix}");
 
 if (!IsCrashDumpCollectionConfigured(settings))
 {
@@ -254,12 +254,7 @@ static async Task UploadPendingCrashArtifactsAsync(Settings settings, string pha
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Found {pendingFiles.Count} pending crash artifact(s) during {phase}; attempting upload.");
 
         using var access = CreateAccess(settings);
-        using var bucket = await TryResolveBucketAsync(access, settings, 0).ConfigureAwait(false);
-        if (bucket == null)
-        {
-            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact upload skipped during {phase}: no visible bucket was available.");
-            return;
-        }
+        using var bucket = await GetBucketAsync(access, settings.CrashArtifactBucketName).ConfigureAwait(false);
 
         var objectService = new ObjectService(access);
         foreach (var filePath in pendingFiles)
@@ -674,6 +669,7 @@ internal sealed class Settings
     public string? WorkerBucketName { get; private init; }
     public string? WorkerObjectKey { get; private init; }
     public string? WorkerLabel { get; private init; }
+    public string CrashArtifactBucketName { get; private init; } = "s-drive";
     public string CrashArtifactDirectory { get; private init; } = Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts");
     public string CrashArtifactPrefix { get; private init; } = "uplink-repro/crash-artifacts";
     public int Rounds { get; private init; } = 10;
@@ -740,6 +736,7 @@ internal sealed class Settings
                 case "--worker-bucket":
                 case "--worker-object-key":
                 case "--worker-label":
+                case "--crash-artifact-bucket":
                 case "--crash-artifact-dir":
                 case "--crash-artifact-prefix":
                     if (i + 1 >= args.Length)
@@ -765,6 +762,7 @@ internal sealed class Settings
             WorkerBucketName = FirstNonEmpty(values, "--worker-bucket", "UPLINK_REPRO_WORKER_BUCKET"),
             WorkerObjectKey = FirstNonEmpty(values, "--worker-object-key", "UPLINK_REPRO_WORKER_OBJECT_KEY"),
             WorkerLabel = FirstNonEmpty(values, "--worker-label", "UPLINK_REPRO_WORKER_LABEL"),
+            CrashArtifactBucketName = FirstNonEmpty(values, "--crash-artifact-bucket", "UPLINK_REPRO_CRASH_ARTIFACT_BUCKET") ?? "s-drive",
             CrashArtifactDirectory = FirstNonEmpty(values, "--crash-artifact-dir", "UPLINK_REPRO_CRASH_ARTIFACT_DIR") ?? Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts"),
             CrashArtifactPrefix = FirstNonEmpty(values, "--crash-artifact-prefix", "UPLINK_REPRO_CRASH_ARTIFACT_PREFIX") ?? "uplink-repro/crash-artifacts",
             Rounds = ParsePositiveInt(values, "--rounds", "UPLINK_REPRO_ROUNDS", 10),
@@ -843,6 +841,7 @@ Options:
   --parallel-download-processes <n>   Number of worker processes that download the uploaded object in parallel. Default: 2.
   --object-io-wait-ms <count>         Delay after upload before parallel downloads begin. Default: 2000.
   --object-io-listing-delay-ms <n>    Delay between listing/serialize passes during object I/O stress. Default: 250.
+  --crash-artifact-bucket <name>      Bucket used for uploaded crash dumps/error files. Default: s-drive.
   --crash-artifact-dir <path>         Directory scanned before each round for dump/error files to upload. Default: /tmp/uplink-repro-crash-artifacts.
   --crash-artifact-prefix <prefix>    Storj object key prefix for uploaded crash artifacts. Default: uplink-repro/crash-artifacts.
   --help                              Show this message.
