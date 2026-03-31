@@ -1,7 +1,7 @@
 # uplink.NET Linux repro harness
 
 This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version.
-The underlying bug was reported against Linux on .NET 6+, while this harness itself targets `net8.0` so it can be built with the SDK setup already used in this repository.
+The underlying bug was reported against Linux on .NET 6+, while this harness itself now targets `net9.0`.
 
 It intentionally:
 
@@ -43,6 +43,20 @@ dotnet run \
 
 If the crash does not show up quickly enough, raise `--rounds` and `--churn`.
 
+If WSL still does not reproduce it, try much higher churn first, for example:
+
+```bash
+dotnet run \
+  --project /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/uplink.NET.Repro.csproj \
+  -p:UplinkNuGetVersion=2.14.3623 \
+  -- \
+  --rounds 50 \
+  --churn 500 \
+  --status-every 50 \
+  --bucket-list-every 25 \
+  --list-buckets
+```
+
 ## Testing a prerelease from PR #51
 
 Point restore at the feed or folder that contains the prerelease packages and swap the version:
@@ -62,3 +76,45 @@ Expected result:
 
 - old/broken package: process terminates with `SIGSEGV` / exit code `139`
 - PR #51 prerelease: all rounds complete and the program prints the success message
+
+## Fly.io
+
+Files for Fly.io are included next to the repro project:
+
+- `/home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/fly.toml`
+- `/home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro/Dockerfile`
+
+Before deploying, set your secrets:
+
+```bash
+cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+fly secrets set UPLINK_ACCESS_GRANT='...'
+```
+
+Or use satellite credentials instead:
+
+```bash
+cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+fly secrets set \
+  UPLINK_SATELLITE='europe-west-1.tardigrade.io:7777' \
+  UPLINK_API_KEY='...' \
+  UPLINK_SECRET='...'
+```
+
+Then deploy:
+
+```bash
+cd /home/runner/work/uplink.net/uplink.net/uplink.NET/uplink.NET.Repro
+fly deploy
+fly logs
+```
+
+The included Fly config uses more aggressive defaults than the local examples:
+
+- `UPLINK_REPRO_ROUNDS=50`
+- `UPLINK_REPRO_CHURN=500`
+- `UPLINK_REPRO_STATUS_EVERY=50`
+- `UPLINK_REPRO_BUCKET_LIST_EVERY=25`
+- `UPLINK_REPRO_LIST_BUCKETS=true`
+
+If you need to test a PR #51 prerelease on Fly.io, edit `UplinkNuGetVersion` in `fly.toml` and deploy again.
