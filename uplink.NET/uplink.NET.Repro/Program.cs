@@ -38,7 +38,7 @@ for (var round = 1; round <= settings.Rounds; round++)
     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}/{settings.Rounds}: creating primary access");
 
     using var primary = CreateAccess(settings);
-    ForceManagedPressure();
+    ApplyManagedMemoryPressure();
 
     for (var churn = 1; churn <= settings.ChurnPerRound; churn++)
     {
@@ -103,7 +103,7 @@ static async Task TryListBucketsAsync(Access access, string label, int round, in
     }
 }
 
-static void ForceManagedPressure()
+static void ApplyManagedMemoryPressure()
 {
     var buffers = new byte[32][];
     for (var i = 0; i < buffers.Length; i++)
