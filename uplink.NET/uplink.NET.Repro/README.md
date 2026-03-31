@@ -1,7 +1,7 @@
 # uplink.NET Linux repro harness
 
 This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version.
-The underlying bug was reported against Linux on .NET 6+, while this harness itself now targets `net9.0`.
+The underlying bug was reported against Linux on .NET 6+, and the same lifetime issue is what this harness is trying to surface; the harness itself now targets `net9.0` so you can stress the older package with a newer Linux runtime as well.
 
 It intentionally:
 
@@ -117,4 +117,4 @@ The included Fly config uses more aggressive defaults than the local examples:
 - `UPLINK_REPRO_BUCKET_LIST_EVERY=25`
 - `UPLINK_REPRO_LIST_BUCKETS=true`
 
-If you need to test a PR #51 prerelease on Fly.io, edit `UplinkNuGetVersion` in `fly.toml` and deploy again.
+If you need to test a PR #51 prerelease on Fly.io, edit `UPLINK_NUGET_VERSION` under `[build.args]` in `fly.toml` and deploy again.
