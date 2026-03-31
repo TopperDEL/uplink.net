@@ -1,0 +1,8 @@
+bin/
+obj/
+.git/
+.vs/
+*.user
+*.suo
+*.swp
+*.tmp
