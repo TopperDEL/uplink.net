@@ -40,7 +40,7 @@ if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 }
 
 Console.WriteLine($"Starting uplink.NET Linux repro on {RuntimeInformation.OSDescription} / {RuntimeInformation.FrameworkDescription}");
-Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, SerializeRepeats={settings.SerializeRepeats}, DisposeBatchSize={settings.DisposeBatchSize}, ReparseAfterSerialize={settings.ReparseAfterSerialize}, ExerciseBucketListing={settings.ExerciseBucketListing}, ExerciseObjectIo={settings.ExerciseObjectIo}, ObjectIoEveryRounds={settings.ObjectIoEveryRounds}, FileSizeRangeMb={settings.MinFileSizeMb}-{settings.MaxFileSizeMb}, ParallelDownloadProcesses={settings.ParallelDownloadProcesses}, Bucket={(string.IsNullOrWhiteSpace(settings.BucketName) ? "<first visible>" : settings.BucketName)}");
+Console.WriteLine($"Rounds={settings.Rounds}, ChurnPerRound={settings.ChurnPerRound}, SerializeRepeats={settings.SerializeRepeats}, DisposeBatchSize={settings.DisposeBatchSize}, ReparseAfterSerialize={settings.ReparseAfterSerialize}, ExerciseBucketListing={settings.ExerciseBucketListing}, ExerciseObjectIo={settings.ExerciseObjectIo}, ObjectIoEveryRounds={settings.ObjectIoEveryRounds}, FileSizeRangeMb={settings.MinFileSizeMb}-{settings.MaxFileSizeMb}, ParallelUploadObjects={settings.ParallelUploadObjects}, ParallelDownloadProcesses={settings.ParallelDownloadProcesses}, Bucket={(string.IsNullOrWhiteSpace(settings.BucketName) ? "<first visible>" : settings.BucketName)}");
 Console.WriteLine($"CrashArtifactDirectory={settings.CrashArtifactDirectory}, CrashArtifactBucket={settings.CrashArtifactBucketName}, CrashArtifactPrefix={settings.CrashArtifactPrefix}");
 
 if (!IsCrashDumpCollectionConfigured(settings))
@@ -163,26 +163,16 @@ static async Task TryExerciseObjectIoAsync(Access access, Settings settings, int
         }
 
         var objectService = new ObjectService(access);
-        var fileSizeBytes = PickRandomFileSizeBytes(settings);
-        var objectKey = $"uplink-repro/{DateTimeOffset.UtcNow:yyyyMMddHHmmssfff}-{Guid.NewGuid():N}.bin";
-        var tempFilePath = Path.Combine(Path.GetTempPath(), $"uplink-repro-{Guid.NewGuid():N}.bin");
+        var stressObjects = await CreateStressObjectsAsync(settings, round).ConfigureAwait(false);
 
         try
         {
-            await CreateRandomFileAsync(tempFilePath, fileSizeBytes).ConfigureAwait(false);
-            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: generated random file {tempFilePath} ({fileSizeBytes / (1024d * 1024d):F1} MiB)");
-
-            await using (var uploadStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 1024, useAsync: true))
-            using (var uploadOperation = await objectService.UploadObjectAsync(bucket, objectKey, new UploadOptions(), uploadStream, false).ConfigureAwait(false))
+            await Task.WhenAll(stressObjects.Select(stressObject => UploadStressObjectAsync(objectService, bucket, stressObject, round))).ConfigureAwait(false);
+            var uploadedObjects = stressObjects.Where(stressObject => stressObject.Uploaded).ToList();
+            if (uploadedObjects.Count == 0)
             {
-                await RequireStarted(uploadOperation.StartUploadAsync(), "Upload").ConfigureAwait(false);
-                if (!uploadOperation.Completed || uploadOperation.Failed)
-                {
-                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: upload failed non-fatally: {uploadOperation.ErrorMessage}");
-                    return;
-                }
-
-                Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: uploaded {uploadOperation.BytesSent} bytes to {bucket.Name}/{objectKey}");
+                Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: all parallel uploads failed non-fatally; skipping downloads");
+                return;
             }
 
             if (settings.ObjectIoWaitMs > 0)
@@ -191,10 +181,14 @@ static async Task TryExerciseObjectIoAsync(Access access, Settings settings, int
             }
 
             var serializedAccess = access.Serialize();
-            var workers = StartDownloadWorkers(settings, serializedAccess, bucket.Name, objectKey, round);
+            var workers = new List<Process>(uploadedObjects.Count * settings.ParallelDownloadProcesses);
+            foreach (var uploadedObject in uploadedObjects)
+            {
+                workers.AddRange(StartDownloadWorkers(settings, serializedAccess, bucket.Name, uploadedObject.ObjectKey, round));
+            }
             try
             {
-                await MonitorWorkersWithListingsAsync(access, bucket, objectKey, settings, round, workers).ConfigureAwait(false);
+                await MonitorWorkersWithListingsAsync(access, bucket, uploadedObjects.Select(uploadedObject => uploadedObject.ObjectKey).ToList(), settings, round, workers).ConfigureAwait(false);
 
                 foreach (var worker in workers)
                 {
@@ -212,32 +206,82 @@ static async Task TryExerciseObjectIoAsync(Access access, Settings settings, int
         }
         finally
         {
-            try
+            foreach (var stressObject in stressObjects)
             {
-                await objectService.DeleteObjectAsync(bucket, objectKey).ConfigureAwait(false);
-                Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: deleted uploaded object {bucket.Name}/{objectKey}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: object cleanup failed non-fatally: {ex.Message}");
-            }
-
-            try
-            {
-                if (File.Exists(tempFilePath))
+                try
                 {
-                    File.Delete(tempFilePath);
+                    if (stressObject.Uploaded)
+                    {
+                        await objectService.DeleteObjectAsync(bucket, stressObject.ObjectKey).ConfigureAwait(false);
+                        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: deleted uploaded object {bucket.Name}/{stressObject.ObjectKey}");
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: temp file cleanup failed non-fatally: {ex.Message}");
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: object cleanup failed non-fatally for {stressObject.ObjectKey}: {ex.Message}");
+                }
+
+                try
+                {
+                    if (File.Exists(stressObject.TempFilePath))
+                    {
+                        File.Delete(stressObject.TempFilePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: temp file cleanup failed non-fatally for {stressObject.TempFilePath}: {ex.Message}");
+                }
             }
         }
     }
     catch (Exception ex)
     {
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: object I/O stress failed non-fatally: {ex.Message}");
+    }
+}
+
+static async Task<List<StressObjectPlan>> CreateStressObjectsAsync(Settings settings, int round)
+{
+    var stressObjects = Enumerable.Range(1, settings.ParallelUploadObjects)
+        .Select(index => new StressObjectPlan
+        {
+            Index = index,
+            FileSizeBytes = PickRandomFileSizeBytes(settings),
+            ObjectKey = $"uplink-repro/{DateTimeOffset.UtcNow:yyyyMMddHHmmssfff}-{index}-{Guid.NewGuid():N}.bin",
+            TempFilePath = Path.Combine(Path.GetTempPath(), $"uplink-repro-{Guid.NewGuid():N}.bin")
+        })
+        .ToList();
+
+    await Task.WhenAll(stressObjects.Select(async stressObject =>
+    {
+        await CreateRandomFileAsync(stressObject.TempFilePath, stressObject.FileSizeBytes).ConfigureAwait(false);
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: generated random file {stressObject.TempFilePath} ({stressObject.FileSizeBytes / (1024d * 1024d):F1} MiB) for object #{stressObject.Index}");
+    })).ConfigureAwait(false);
+
+    return stressObjects;
+}
+
+static async Task UploadStressObjectAsync(ObjectService objectService, Bucket bucket, StressObjectPlan stressObject, int round)
+{
+    try
+    {
+        await using var uploadStream = new FileStream(stressObject.TempFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 1024, useAsync: true);
+        using var uploadOperation = await objectService.UploadObjectAsync(bucket, stressObject.ObjectKey, new UploadOptions(), uploadStream, false).ConfigureAwait(false);
+        await RequireStarted(uploadOperation.StartUploadAsync(), "Upload").ConfigureAwait(false);
+
+        if (!uploadOperation.Completed || uploadOperation.Failed)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: upload failed non-fatally for object #{stressObject.Index}: {uploadOperation.ErrorMessage}");
+            return;
+        }
+
+        stressObject.Uploaded = true;
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: uploaded {uploadOperation.BytesSent} bytes to {bucket.Name}/{stressObject.ObjectKey}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: upload failed non-fatally for object #{stressObject.Index}: {ex.Message}");
     }
 }
 
@@ -512,14 +556,14 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
     return workers;
 }
 
-static async Task MonitorWorkersWithListingsAsync(Access access, Bucket bucket, string objectKey, Settings settings, int round, List<Process> workers)
+static async Task MonitorWorkersWithListingsAsync(Access access, Bucket bucket, IReadOnlyCollection<string> objectKeys, Settings settings, int round, List<Process> workers)
 {
     var objectService = new ObjectService(access);
 
     while (workers.Any(worker => !worker.HasExited))
     {
         await TryListBucketsAsync(access, "object-io-monitor", round, settings.ChurnPerRound).ConfigureAwait(false);
-        await TryListObjectsAsync(objectService, bucket, objectKey, "object-io-monitor", round).ConfigureAwait(false);
+        await TryListObjectsForKeysAsync(objectService, bucket, objectKeys, "object-io-monitor", round).ConfigureAwait(false);
 
         using var extraAccess = new Access(access.Serialize());
         _ = SerializeRepeatedly(extraAccess, settings.SerializeRepeats);
@@ -595,11 +639,19 @@ static async Task TryListBucketsAsync(Access access, string label, int round, in
 
 static async Task TryListObjectsAsync(ObjectService objectService, Bucket bucket, string objectKey, string label, int round)
 {
+    await TryListObjectsForKeysAsync(objectService, bucket, new[] { objectKey }, label, round).ConfigureAwait(false);
+}
+
+static async Task TryListObjectsForKeysAsync(ObjectService objectService, Bucket bucket, IReadOnlyCollection<string> objectKeys, string label, int round)
+{
     try
     {
         var objectList = await objectService.ListObjectsAsync(bucket, new ListObjectsOptions()).ConfigureAwait(false);
-        var foundObject = objectList.Items.Any(item => string.Equals(item.Key, objectKey, StringComparison.Ordinal));
-        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}, {label}: listed {objectList.Items.Count} objects in {bucket.Name}; target present={foundObject}");
+        var targetKeys = objectKeys.Count == 0
+            ? new HashSet<string>(StringComparer.Ordinal)
+            : new HashSet<string>(objectKeys, StringComparer.Ordinal);
+        var foundTargets = objectList.Items.Count(item => targetKeys.Contains(item.Key));
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}, {label}: listed {objectList.Items.Count} objects in {bucket.Name}; foundTargets={foundTargets}/{targetKeys.Count}");
     }
     catch (Exception ex)
     {
@@ -672,6 +724,7 @@ internal sealed class Settings
     public string CrashArtifactBucketName { get; private init; } = "s-drive";
     public string CrashArtifactDirectory { get; private init; } = Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts");
     public string CrashArtifactPrefix { get; private init; } = "uplink-repro/crash-artifacts";
+    public int ParallelUploadObjects { get; private init; } = 1;
     public int Rounds { get; private init; } = 10;
     public int ChurnPerRound { get; private init; } = 100;
     public int StatusEvery { get; private init; } = 25;
@@ -728,6 +781,7 @@ internal sealed class Settings
                 case "--serialize-repeats":
                 case "--dispose-batch-size":
                 case "--object-io-every-rounds":
+                case "--parallel-upload-objects":
                 case "--min-file-size-mb":
                 case "--max-file-size-mb":
                 case "--parallel-download-processes":
@@ -772,6 +826,7 @@ internal sealed class Settings
             SerializeRepeats = ParsePositiveInt(values, "--serialize-repeats", "UPLINK_REPRO_SERIALIZE_REPEATS", 1),
             DisposeBatchSize = ParsePositiveInt(values, "--dispose-batch-size", "UPLINK_REPRO_DISPOSE_BATCH_SIZE", 1),
             ObjectIoEveryRounds = ParsePositiveInt(values, "--object-io-every-rounds", "UPLINK_REPRO_OBJECT_IO_EVERY_ROUNDS", 1),
+            ParallelUploadObjects = ParsePositiveInt(values, "--parallel-upload-objects", "UPLINK_REPRO_PARALLEL_UPLOAD_OBJECTS", 1),
             MinFileSizeMb = ParsePositiveInt(values, "--min-file-size-mb", "UPLINK_REPRO_MIN_FILE_SIZE_MB", 1),
             MaxFileSizeMb = ParsePositiveInt(values, "--max-file-size-mb", "UPLINK_REPRO_MAX_FILE_SIZE_MB", 100),
             ParallelDownloadProcesses = ParsePositiveInt(values, "--parallel-download-processes", "UPLINK_REPRO_PARALLEL_DOWNLOAD_PROCESSES", 2),
@@ -834,11 +889,12 @@ Options:
   --dispose-batch-size <count>        Dispose throwaway accesses in batches of this size. Default: 1.
   --list-buckets                      Also exercise project-backed bucket operations through BucketService.ListBucketsAsync.
   --reparse-after-serialize           Reparse each serialized throwaway access and serialize it again before disposal.
-  --object-io                         Generate a random 1-100 MiB file, upload it, wait, then spawn parallel download workers while listings continue.
+  --object-io                         Generate random files, upload them in parallel, wait, then spawn parallel download workers while listings continue.
   --object-io-every-rounds <count>    Run the object I/O stress every N rounds. Default: 1.
+  --parallel-upload-objects <n>       Number of objects uploaded in parallel during each object-I/O round. Default: 1.
   --min-file-size-mb <count>          Minimum random object size in MiB. Default: 1.
   --max-file-size-mb <count>          Maximum random object size in MiB. Default: 100.
-  --parallel-download-processes <n>   Number of worker processes that download the uploaded object in parallel. Default: 2.
+  --parallel-download-processes <n>   Number of worker processes per uploaded object. Default: 2.
   --object-io-wait-ms <count>         Delay after upload before parallel downloads begin. Default: 2000.
   --object-io-listing-delay-ms <n>    Delay between listing/serialize passes during object I/O stress. Default: 250.
   --crash-artifact-bucket <name>      Bucket used for uploaded crash dumps/error files. Default: s-drive.
@@ -912,4 +968,13 @@ internal sealed class CrashRoundState
     public string OsDescription { get; init; } = string.Empty;
     public string WorkingDirectory { get; init; } = string.Empty;
     public string CommandLine { get; init; } = string.Empty;
+}
+
+internal sealed class StressObjectPlan
+{
+    public int Index { get; init; }
+    public long FileSizeBytes { get; init; }
+    public string ObjectKey { get; init; } = string.Empty;
+    public string TempFilePath { get; init; } = string.Empty;
+    public bool Uploaded { get; set; }
 }
