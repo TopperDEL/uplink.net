@@ -1,7 +1,7 @@
 # uplink.NET Linux repro harness
 
 This console app is meant to make the Linux/.NET 6+ native crash easier to reproduce with a specific `uplink.NET` NuGet version by running a .NET 9 harness against it.
-The underlying bug was reported against Linux on .NET 6+, and the same lifetime issue is what this harness is trying to surface; the harness itself now targets `net9.0` so you can stress the older package with a newer Linux runtime as well.
+The underlying bug was reported against Linux on .NET 6+, and the harness itself now targets `net9.0` so you can stress the older package with a newer Linux runtime as well.
 
 It intentionally:
 

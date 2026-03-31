@@ -1421,6 +1421,7 @@ internal struct RLimit
 
 internal static class NativeMethods
 {
+    // Linux uses RLIMIT_CORE resource 4; this interop is only used on Linux to raise the native core-dump limit.
     internal const int RlimitCoreResource = 4;
 
     [DllImport("libc", SetLastError = true)]
