@@ -8,6 +8,7 @@ using uplink.NET.Models;
 using uplink.NET.Services;
 
 Settings settings;
+var originalArgs = args;
 
 try
 {
@@ -48,88 +49,12 @@ if (!IsCrashDumpCollectionConfigured(settings))
     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash dump collection is not explicitly enabled in the environment. Set DOTNET_DbgEnableMiniDump=1 and DOTNET_DbgMiniDumpName={settings.CrashArtifactDirectory}/coredump.%p.%e.%h.%t.dmp to capture dumps automatically.");
 }
 
-var startedAtUtc = DateTimeOffset.UtcNow;
-await UploadPendingCrashArtifactsAsync(settings, "startup").ConfigureAwait(false);
-
-for (var round = 1; round <= settings.Rounds; round++)
+if (settings.SupervisorChildMode)
 {
-    await UploadPendingCrashArtifactsAsync(settings, $"before-round-{round}").ConfigureAwait(false);
-    WriteRoundState(settings, round);
-    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}/{settings.Rounds}: creating primary access");
-
-    using var primary = CreateAccess(settings);
-    ApplyManagedMemoryPressure();
-    var pendingDisposals = new List<Access>(settings.DisposeBatchSize);
-
-    try
-    {
-        for (var churn = 1; churn <= settings.ChurnPerRound; churn++)
-        {
-            Access? throwaway = null;
-            try
-            {
-                throwaway = CreateAccess(settings);
-                var serializedThrowaway = SerializeRepeatedly(throwaway, settings.SerializeRepeats);
-
-                if (settings.ReparseAfterSerialize)
-                {
-                    using var reparsed = new Access(serializedThrowaway);
-                    _ = SerializeRepeatedly(reparsed, settings.SerializeRepeats);
-                }
-
-                if (settings.ExerciseBucketListing && churn % settings.BucketListEvery == 0)
-                {
-                    await TryListBucketsAsync(throwaway, "throwaway", round, churn);
-                }
-
-                pendingDisposals.Add(throwaway);
-                throwaway = null;
-
-                if (pendingDisposals.Count >= settings.DisposeBatchSize)
-                {
-                    DisposeBatch(pendingDisposals);
-                    ApplyManagedMemoryPressure();
-                }
-
-                if (churn % settings.StatusEvery == 0 || churn == settings.ChurnPerRound)
-                {
-                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: churned {churn}/{settings.ChurnPerRound} accesses");
-                }
-            }
-            finally
-            {
-                throwaway?.Dispose();
-            }
-        }
-    }
-    finally
-    {
-        DisposeBatch(pendingDisposals);
-    }
-
-    if (settings.ExerciseObjectIo && round % settings.ObjectIoEveryRounds == 0)
-    {
-        await TryExerciseObjectIoAsync(primary, settings, round);
-    }
-
-    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: using primary access after churn");
-    var serialized = SerializeRepeatedly(primary, settings.SerializeRepeats);
-    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: serialize() returned {serialized.Length} characters");
-
-    if (settings.ExerciseBucketListing)
-    {
-        await TryListBucketsAsync(primary, "primary", round, settings.ChurnPerRound);
-    }
-
-    GC.Collect();
-    GC.WaitForPendingFinalizers();
-    GC.Collect();
-    TryClearRoundState(settings);
+    return await RunSupervisorChildAsync(settings).ConfigureAwait(false);
 }
 
-Console.WriteLine($"Completed without a native crash after {(DateTimeOffset.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
-Console.WriteLine("If the old package did not segfault yet, rerun with larger --rounds/--churn values or enable more object I/O stress.");
-return 0;
+return await RunSupervisorAsync(settings, originalArgs).ConfigureAwait(false);
 
 static Access CreateAccess(Settings settings)
 {
@@ -310,6 +235,114 @@ static async Task UploadPendingCrashArtifactsAsync(Settings settings, string pha
     {
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Crash artifact scan/upload failed non-fatally during {phase}: {ex.Message}");
     }
+}
+
+static async Task<int> RunSupervisorAsync(Settings settings, IReadOnlyList<string> originalArgs)
+{
+    var startedAtUtc = DateTimeOffset.UtcNow;
+    await UploadPendingCrashArtifactsAsync(settings, "startup").ConfigureAwait(false);
+
+    for (var round = 1; round <= settings.Rounds; round++)
+    {
+        await UploadPendingCrashArtifactsAsync(settings, $"before-round-{round}").ConfigureAwait(false);
+
+        using var child = StartSupervisorChild(settings, originalArgs, round);
+        await child.WaitForExitAsync().ConfigureAwait(false);
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Supervisor: child PID={child.Id} for round {round}/{settings.Rounds} exited with code {child.ExitCode}");
+
+        await UploadPendingCrashArtifactsAsync(settings, $"after-round-{round}").ConfigureAwait(false);
+        if (child.ExitCode != 0)
+        {
+            Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Supervisor: stopping after round {round} because the child failed or crashed.");
+            return child.ExitCode;
+        }
+    }
+
+    Console.WriteLine($"Completed without a native crash after {(DateTimeOffset.UtcNow - startedAtUtc).TotalSeconds:F1}s.");
+    Console.WriteLine("If the old package did not segfault yet, rerun with larger --rounds/--churn values or enable more object I/O stress.");
+    return 0;
+}
+
+static async Task<int> RunSupervisorChildAsync(Settings settings)
+{
+    var round = settings.ChildRoundNumber ?? 1;
+    await ExecuteRoundAsync(settings, round, settings.Rounds).ConfigureAwait(false);
+    return 0;
+}
+
+static async Task ExecuteRoundAsync(Settings settings, int round, int totalRounds)
+{
+    WriteRoundState(settings, round);
+    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}/{totalRounds}: creating primary access");
+
+    using var primary = CreateAccess(settings);
+    ApplyManagedMemoryPressure();
+    var pendingDisposals = new List<Access>(settings.DisposeBatchSize);
+
+    try
+    {
+        for (var churn = 1; churn <= settings.ChurnPerRound; churn++)
+        {
+            Access? throwaway = null;
+            try
+            {
+                throwaway = CreateAccess(settings);
+                var serializedThrowaway = SerializeRepeatedly(throwaway, settings.SerializeRepeats);
+
+                if (settings.ReparseAfterSerialize)
+                {
+                    using var reparsed = new Access(serializedThrowaway);
+                    _ = SerializeRepeatedly(reparsed, settings.SerializeRepeats);
+                }
+
+                if (settings.ExerciseBucketListing && churn % settings.BucketListEvery == 0)
+                {
+                    await TryListBucketsAsync(throwaway, "throwaway", round, churn).ConfigureAwait(false);
+                }
+
+                pendingDisposals.Add(throwaway);
+                throwaway = null;
+
+                if (pendingDisposals.Count >= settings.DisposeBatchSize)
+                {
+                    DisposeBatch(pendingDisposals);
+                    ApplyManagedMemoryPressure();
+                }
+
+                if (churn % settings.StatusEvery == 0 || churn == settings.ChurnPerRound)
+                {
+                    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: churned {churn}/{settings.ChurnPerRound} accesses");
+                }
+            }
+            finally
+            {
+                throwaway?.Dispose();
+            }
+        }
+    }
+    finally
+    {
+        DisposeBatch(pendingDisposals);
+    }
+
+    if (settings.ExerciseObjectIo && round % settings.ObjectIoEveryRounds == 0)
+    {
+        await TryExerciseObjectIoAsync(primary, settings, round).ConfigureAwait(false);
+    }
+
+    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: using primary access after churn");
+    var serialized = SerializeRepeatedly(primary, settings.SerializeRepeats);
+    Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: serialize() returned {serialized.Length} characters");
+
+    if (settings.ExerciseBucketListing)
+    {
+        await TryListBucketsAsync(primary, "primary", round, settings.ChurnPerRound).ConfigureAwait(false);
+    }
+
+    GC.Collect();
+    GC.WaitForPendingFinalizers();
+    GC.Collect();
+    TryClearRoundState(settings);
 }
 
 static IEnumerable<string> GetPendingCrashArtifactFiles(Settings settings)
@@ -556,6 +589,59 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
     return workers;
 }
 
+static Process StartSupervisorChild(Settings settings, IReadOnlyList<string> originalArgs, int round)
+{
+    var startInfo = CreateCurrentProcessStartInfo();
+    foreach (var arg in originalArgs)
+    {
+        if (string.Equals(arg, "--supervisor-child", StringComparison.OrdinalIgnoreCase))
+        {
+            continue;
+        }
+
+        startInfo.ArgumentList.Add(arg);
+    }
+
+    startInfo.ArgumentList.Add("--supervisor-child");
+    startInfo.ArgumentList.Add("--child-round");
+    startInfo.ArgumentList.Add(round.ToString());
+
+    try
+    {
+        var child = Process.Start(startInfo) ?? throw new InvalidOperationException("Process.Start returned null for the supervised round child.");
+        Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Supervisor: started child PID={child.Id} for round {round}/{settings.Rounds}");
+        return child;
+    }
+    catch (Exception ex)
+    {
+        throw new InvalidOperationException($"Failed to start the supervised round child for round {round}: {ex.Message}", ex);
+    }
+}
+
+static ProcessStartInfo CreateCurrentProcessStartInfo()
+{
+    var processPath = Environment.ProcessPath ?? throw new InvalidOperationException("Could not determine the current process path. Run the repro via dotnet run or a published executable so child processes can be spawned.");
+    var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+    var startInfo = new ProcessStartInfo
+    {
+        UseShellExecute = false,
+        WorkingDirectory = Directory.GetCurrentDirectory()
+    };
+
+    if (string.Equals(Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.OrdinalIgnoreCase)
+        && !string.IsNullOrWhiteSpace(entryAssemblyPath))
+    {
+        startInfo.FileName = processPath;
+        startInfo.ArgumentList.Add(entryAssemblyPath);
+    }
+    else
+    {
+        startInfo.FileName = processPath;
+    }
+
+    return startInfo;
+}
+
 static async Task MonitorWorkersWithListingsAsync(Access access, Bucket bucket, IReadOnlyCollection<string> objectKeys, Settings settings, int round, List<Process> workers)
 {
     var objectService = new ObjectService(access);
@@ -721,6 +807,7 @@ internal sealed class Settings
     public string? WorkerBucketName { get; private init; }
     public string? WorkerObjectKey { get; private init; }
     public string? WorkerLabel { get; private init; }
+    public int? ChildRoundNumber { get; private init; }
     public string CrashArtifactBucketName { get; private init; } = "s-drive";
     public string CrashArtifactDirectory { get; private init; } = Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts");
     public string CrashArtifactPrefix { get; private init; } = "uplink-repro/crash-artifacts";
@@ -741,6 +828,7 @@ internal sealed class Settings
     public bool ReparseAfterSerialize { get; private init; }
     public bool ExerciseObjectIo { get; private init; }
     public bool WorkerDownloadMode { get; private init; }
+    public bool SupervisorChildMode { get; private init; }
     public bool ShowHelp { get; private init; }
 
     public static Settings Parse(string[] args)
@@ -769,6 +857,9 @@ internal sealed class Settings
                 case "--worker-download":
                     flags.Add("worker-download");
                     break;
+                case "--supervisor-child":
+                    flags.Add("supervisor-child");
+                    break;
                 case "--access-grant":
                 case "--satellite":
                 case "--api-key":
@@ -790,6 +881,7 @@ internal sealed class Settings
                 case "--worker-bucket":
                 case "--worker-object-key":
                 case "--worker-label":
+                case "--child-round":
                 case "--crash-artifact-bucket":
                 case "--crash-artifact-dir":
                 case "--crash-artifact-prefix":
@@ -816,6 +908,7 @@ internal sealed class Settings
             WorkerBucketName = FirstNonEmpty(values, "--worker-bucket", "UPLINK_REPRO_WORKER_BUCKET"),
             WorkerObjectKey = FirstNonEmpty(values, "--worker-object-key", "UPLINK_REPRO_WORKER_OBJECT_KEY"),
             WorkerLabel = FirstNonEmpty(values, "--worker-label", "UPLINK_REPRO_WORKER_LABEL"),
+            ChildRoundNumber = ParseOptionalPositiveInt(values, "--child-round"),
             CrashArtifactBucketName = FirstNonEmpty(values, "--crash-artifact-bucket", "UPLINK_REPRO_CRASH_ARTIFACT_BUCKET") ?? "s-drive",
             CrashArtifactDirectory = FirstNonEmpty(values, "--crash-artifact-dir", "UPLINK_REPRO_CRASH_ARTIFACT_DIR") ?? Path.Combine(Path.GetTempPath(), "uplink-repro-crash-artifacts"),
             CrashArtifactPrefix = FirstNonEmpty(values, "--crash-artifact-prefix", "UPLINK_REPRO_CRASH_ARTIFACT_PREFIX") ?? "uplink-repro/crash-artifacts",
@@ -835,7 +928,8 @@ internal sealed class Settings
             ExerciseBucketListing = flags.Contains("list-buckets") || ParseBool("UPLINK_REPRO_LIST_BUCKETS"),
             ReparseAfterSerialize = flags.Contains("reparse-after-serialize") || ParseBool("UPLINK_REPRO_REPARSE_AFTER_SERIALIZE"),
             ExerciseObjectIo = flags.Contains("object-io") || ParseBool("UPLINK_REPRO_OBJECT_IO"),
-            WorkerDownloadMode = flags.Contains("worker-download")
+            WorkerDownloadMode = flags.Contains("worker-download"),
+            SupervisorChildMode = flags.Contains("supervisor-child")
         };
 
         if (settings.ShowHelp)
@@ -854,6 +948,11 @@ internal sealed class Settings
             {
                 throw new ArgumentException("Worker download mode requires both --worker-bucket and --worker-object-key.");
             }
+        }
+
+        if (settings.SupervisorChildMode && settings.ChildRoundNumber is null)
+        {
+            throw new ArgumentException("Supervisor child mode requires --child-round.");
         }
 
         var hasGrant = !string.IsNullOrWhiteSpace(settings.AccessGrant);
@@ -934,6 +1033,21 @@ Exit behavior:
         if (string.IsNullOrWhiteSpace(value))
         {
             return fallback;
+        }
+
+        if (!int.TryParse(value, out var parsed) || parsed <= 0)
+        {
+            throw new ArgumentException($"Invalid positive integer for {argumentName}: {value}");
+        }
+
+        return parsed;
+    }
+
+    private static int? ParseOptionalPositiveInt(Dictionary<string, string?> values, string argumentName)
+    {
+        if (!values.TryGetValue(argumentName, out var value) || string.IsNullOrWhiteSpace(value))
+        {
+            return null;
         }
 
         if (!int.TryParse(value, out var parsed) || parsed <= 0)
