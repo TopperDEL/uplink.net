@@ -21,28 +21,30 @@ namespace uplink.NET.Services
 
         public async Task<Bucket> CreateBucketAsync(string bucketName)
         {
-            using (SWIG.UplinkBucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_create_bucket(_access._project, bucketName)).ConfigureAwait(false))
+            var bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_create_bucket(_access._project, bucketName)).ConfigureAwait(false);
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
             {
-                if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
-                    throw new BucketCreationException(bucketName, bucketResult.error.message);
-
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
-
-                return bucket;
+                var errMsg = bucketResult.error.message;
+                SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                bucketResult.Dispose();
+                throw new BucketCreationException(bucketName, errMsg);
             }
+
+            return Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
         }
 
         public async Task<Bucket> EnsureBucketAsync(string bucketName)
         {
-            using (SWIG.UplinkBucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_ensure_bucket(_access._project, bucketName)).ConfigureAwait(false))
+            var bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_ensure_bucket(_access._project, bucketName)).ConfigureAwait(false);
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
             {
-                if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
-                    throw new BucketCreationException(bucketName, bucketResult.error.message);
-
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
-
-                return bucket;
+                var errMsg = bucketResult.error.message;
+                SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                bucketResult.Dispose();
+                throw new BucketCreationException(bucketName, errMsg);
             }
+
+            return Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
         }
 
         public async Task DeleteBucketAsync(string bucketName)
@@ -65,15 +67,16 @@ namespace uplink.NET.Services
 
         public async Task<Bucket> GetBucketAsync(string bucketName)
         {
-            using (SWIG.UplinkBucketResult bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_bucket(_access._project, bucketName)).ConfigureAwait(false))
+            var bucketResult = await Task.Run(() => SWIG.storj_uplink.uplink_stat_bucket(_access._project, bucketName)).ConfigureAwait(false);
+            if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
             {
-                if (bucketResult.error != null && !string.IsNullOrEmpty(bucketResult.error.message))
-                    throw new BucketNotFoundException(bucketName, bucketResult.error.message);
-
-                var bucket = Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
-
-                return bucket;
+                var errMsg = bucketResult.error.message;
+                SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                bucketResult.Dispose();
+                throw new BucketNotFoundException(bucketName, errMsg);
             }
+
+            return Bucket.FromSWIG(bucketResult.bucket, _access._project, bucketResult);
         }
 
         public async Task<BucketList> ListBucketsAsync(ListBucketsOptions listBucketsOptions)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using uplink.NET.Exceptions;
-using uplink.NET.SWIGHelpers;
 using uplink.SWIG;
 
 namespace uplink.NET.Models
@@ -78,7 +77,8 @@ namespace uplink.NET.Models
                     if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                         throw new AccessException(projectResult.error.message);
 
-                    _project = projectResult.project;
+                    _project = new SWIG.UplinkProject();
+                    _project._handle = projectResult.project._handle;
                 }
             }
             catch (Exception ex)
@@ -113,7 +113,8 @@ namespace uplink.NET.Models
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                         throw new AccessException(accessResult.error.message);
 
-                    _access = accessResult.access;
+                    _access = new SWIG.UplinkAccess();
+                    _access._handle = accessResult.access._handle;
 
                     var uplinkConfigSWIG = GetUplinkConfig(config);
                     using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
@@ -121,7 +122,8 @@ namespace uplink.NET.Models
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                             throw new AccessException(projectResult.error.message);
 
-                        _project = projectResult.project;
+                        _project = new SWIG.UplinkProject();
+                        _project._handle = projectResult.project._handle;
                     }
                 }
             }
@@ -148,7 +150,8 @@ namespace uplink.NET.Models
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                         throw new AccessException(accessResult.error.message);
 
-                    _access = accessResult.access;
+                    _access = new SWIG.UplinkAccess();
+                    _access._handle = accessResult.access._handle;
 
                     var uplinkConfigSWIG = GetUplinkConfig();
                     using (var projectResult = SWIG.storj_uplink.uplink_config_open_project(uplinkConfigSWIG, _access))
@@ -156,7 +159,8 @@ namespace uplink.NET.Models
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                             throw new AccessException(projectResult.error.message);
 
-                        _project = projectResult.project;
+                        _project = new SWIG.UplinkProject();
+                        _project._handle = projectResult.project._handle;
                     }
                 }
             }
@@ -185,14 +189,16 @@ namespace uplink.NET.Models
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                         throw new AccessException(accessResult.error.message);
 
-                    _access = accessResult.access;
+                    _access = new SWIG.UplinkAccess();
+                    _access._handle = accessResult.access._handle;
 
                     using (var projectResult = SWIG.storj_uplink.uplink_open_project(_access))
                     {
                         if (projectResult.error != null && !string.IsNullOrEmpty(projectResult.error.message))
                             throw new AccessException(projectResult.error.message);
 
-                        _project = projectResult.project;
+                        _project = new SWIG.UplinkProject();
+                        _project._handle = projectResult.project._handle;
                     }
                 }
             }
@@ -244,8 +250,6 @@ namespace uplink.NET.Models
                 string serializedAccess = serializedAccessResult.string_;
 
                 SWIG.storj_uplink.uplink_free_string_result(serializedAccessResult);
-                // Clear ownership to prevent double-free when using block exits
-                DisposalHelper.ClearOwnership(serializedAccessResult);
 
                 return serializedAccess;
             }
@@ -271,7 +275,9 @@ namespace uplink.NET.Models
                     if (accessResult.error != null && !string.IsNullOrEmpty(accessResult.error.message))
                         throw new AccessShareException(accessResult.error.message);
 
-                    return new Access(accessResult.access);
+                    var standaloneAccess = new SWIG.UplinkAccess();
+                    standaloneAccess._handle = accessResult.access._handle;
+                    return new Access(standaloneAccess);
                 }
             }
         }
@@ -345,11 +351,14 @@ namespace uplink.NET.Models
             {
                 using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_project(_project))
                 {
-                    // Clear ownership to prevent double-free when Dispose() is called
-                    DisposalHelper.ClearOwnership(_project);
                     _project.Dispose();
                     _project = null;
                 }
+            }
+            if (_access != null)
+            {
+                _access.Dispose();
+                _access = null;
             }
         }
     }
