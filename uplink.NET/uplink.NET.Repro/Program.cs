@@ -14,7 +14,7 @@ try
 }
 catch (ArgumentException ex)
 {
-    Console.Error.WriteLine(ex.Message);
+    Console.Error.WriteLine($"{ex.Message} Use --help to see the supported options and environment variables.");
     Settings.PrintUsage();
     return 2;
 }
@@ -163,7 +163,7 @@ static async Task TryExerciseObjectIoAsync(Access access, Settings settings, int
             await using (var uploadStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 1024, useAsync: true))
             using (var uploadOperation = await objectService.UploadObjectAsync(bucket, objectKey, new UploadOptions(), uploadStream, false).ConfigureAwait(false))
             {
-                await (uploadOperation.StartUploadAsync() ?? Task.CompletedTask).ConfigureAwait(false);
+                await RequireStarted(uploadOperation.StartUploadAsync(), "Upload").ConfigureAwait(false);
                 if (!uploadOperation.Completed || uploadOperation.Failed)
                 {
                     Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: upload failed non-fatally: {uploadOperation.ErrorMessage}");
@@ -240,7 +240,7 @@ static async Task<int> RunDownloadWorkerAsync(Settings settings)
         var objectService = new ObjectService(access);
 
         using var downloadOperation = await objectService.DownloadObjectAsync(bucket, settings.WorkerObjectKey!, new DownloadOptions(), false).ConfigureAwait(false);
-        var downloadTask = downloadOperation.StartDownloadAsync() ?? Task.CompletedTask;
+        var downloadTask = RequireStarted(downloadOperation.StartDownloadAsync(), "Download");
         var listingTask = KeepListingWhileDownloadingAsync(access, bucket, settings.WorkerObjectKey!, downloadOperation, settings, settings.WorkerLabel ?? "worker");
 
         await downloadTask.ConfigureAwait(false);
@@ -282,7 +282,7 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
 
     for (var workerIndex = 1; workerIndex <= settings.ParallelDownloadProcesses; workerIndex++)
     {
-        var processPath = Environment.ProcessPath ?? throw new InvalidOperationException("Could not determine the current process path.");
+        var processPath = Environment.ProcessPath ?? throw new InvalidOperationException("Could not determine the current process path. Run the repro via dotnet run or a published executable so worker downloads can be spawned.");
         var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
         var startInfo = new ProcessStartInfo
         {
@@ -312,7 +312,16 @@ static List<Process> StartDownloadWorkers(Settings settings, string serializedAc
         startInfo.ArgumentList.Add(settings.ObjectIoListingDelayMs.ToString());
         startInfo.Environment["UPLINK_ACCESS_GRANT"] = serializedAccess;
 
-        var worker = Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start the download worker process.");
+        Process worker;
+        try
+        {
+            worker = Process.Start(startInfo) ?? throw new InvalidOperationException("Process.Start returned null for the download worker.");
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to start the download worker process for {bucketName}/{objectKey}: {ex.Message}", ex);
+        }
+
         Console.WriteLine($"[{DateTimeOffset.UtcNow:O}] Round {round}: started download worker PID={worker.Id} for {bucketName}/{objectKey}");
         workers.Add(worker);
     }
@@ -439,6 +448,7 @@ static long PickRandomFileSizeBytes(Settings settings)
 
 static void ApplyManagedMemoryPressure()
 {
+    // Deliberately create extra managed allocations so finalizers/GC run more often while native handles are churning.
     var buffers = new byte[128][];
     for (var i = 0; i < buffers.Length; i++)
     {
@@ -459,6 +469,11 @@ static void DisposeBatch(List<Access> accesses)
     GC.Collect();
     GC.WaitForPendingFinalizers();
     GC.Collect();
+}
+
+static Task RequireStarted(Task? task, string operationName)
+{
+    return task ?? throw new InvalidOperationException($"{operationName} did not start because the operation was already completed, failed, or cancelled.");
 }
 
 internal sealed class Settings
@@ -543,7 +558,7 @@ internal sealed class Settings
                     values[arg] = args[++i];
                     break;
                 default:
-                    throw new ArgumentException($"Unknown argument: {arg}");
+                    throw new ArgumentException($"Unknown argument: {arg}. Use --help to see the available options.");
             }
         }
 
