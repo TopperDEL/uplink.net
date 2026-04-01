@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +22,7 @@ namespace uplink.NET.Test
         public void Init()
         {
             Access.SetTempDirectory(System.IO.Path.GetTempPath());
-            _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
+            _access = TestConstants.CreateAccess();
             _bucketService = new BucketService(_access);
             _objectService = new ObjectService(_access);
         }
@@ -44,7 +44,7 @@ namespace uplink.NET.Test
         {
             try
             {
-                using (Access access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+                using (Access access = TestConstants.CreateAccess())
                 {
                     return;
                 }
@@ -58,7 +58,7 @@ namespace uplink.NET.Test
         {
             try
             {
-                using (Access access = new Access(TestConstants.SATELLITE_URL, TestConstants.INVALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+                using (Access access = TestConstants.CreateInvalidAccess())
                 {
                     Assert.IsTrue(false, "Invalid API-Key not checked");
                 }
@@ -74,7 +74,7 @@ namespace uplink.NET.Test
         [TestMethod]
         public void AccessShare_Creates_ValidAccess()
         {
-            using (Access access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access access = TestConstants.CreateAccess())
             {
                 Permission permission = new Permission() { AllowDelete = false };
                 List<SharePrefix> sharePrefixes = new List<SharePrefix>();
@@ -91,7 +91,7 @@ namespace uplink.NET.Test
             string bucketname = "revoke-access-makes-access-unusable";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access scope = TestConstants.CreateAccess())
             {
                 await _bucketService.CreateBucketAsync(bucketname);
 
@@ -143,7 +143,7 @@ namespace uplink.NET.Test
             string bucketname = "accessshare-creates-usablesharedaccessforupload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access scope = TestConstants.CreateAccess())
             {
                 await _bucketService.CreateBucketAsync(bucketname);
 
@@ -185,7 +185,7 @@ namespace uplink.NET.Test
             string bucketname = "accessshare-creates-usablesharedaccessforupload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access scope = TestConstants.CreateAccess())
             {
                 await _bucketService.CreateBucketAsync(bucketname);
 
@@ -228,7 +228,7 @@ namespace uplink.NET.Test
             string bucketname = "accessshare-creates-usablesharedaccessforuploaddeep";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access scope = TestConstants.CreateAccess())
             {
                 await _bucketService.CreateBucketAsync(bucketname);
 
@@ -271,7 +271,7 @@ namespace uplink.NET.Test
             string bucketname = "accessshare-creates-usablesharedaccessfordownload";
             byte[] bytesToUpload = ObjectServiceTest.GetRandomBytes(2048);
 
-            using (Access scope = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET))
+            using (Access scope = TestConstants.CreateAccess())
             {
                 await _bucketService.CreateBucketAsync(bucketname);
                 var bucket = await _bucketService.GetBucketAsync(bucketname);
