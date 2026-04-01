@@ -14,7 +14,7 @@ namespace uplink.NET.Test
         public static string ENCRYPTION_SECRET => GetEnvironmentVariable("UPLINK_TEST_ENCRYPTION_SECRET", DefaultEncryptionSecret);
         public static string INVALID_API_KEY => GetEnvironmentVariable("UPLINK_TEST_INVALID_API_KEY", DefaultInvalidApiKey);
         public static string SATELLITE_URL => GetEnvironmentVariable("UPLINK_TEST_SATELLITE_URL", DefaultSatelliteUrl);
-        public static string ACCESS_GRANT => Environment.GetEnvironmentVariable("UPLINK_TEST_ACCESS_GRANT")?.Trim();
+        public static string ACCESS_GRANT => GetOptionalEnvironmentVariable("UPLINK_TEST_ACCESS_GRANT");
 
         public static Access CreateAccess()
         {
@@ -42,8 +42,13 @@ namespace uplink.NET.Test
 
         private static string GetEnvironmentVariable(string name, string fallback)
         {
+            return GetOptionalEnvironmentVariable(name) ?? fallback;
+        }
+
+        private static string GetOptionalEnvironmentVariable(string name)
+        {
             var value = Environment.GetEnvironmentVariable(name);
-            return string.IsNullOrWhiteSpace(value) ? fallback : value.Trim();
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
     }
 }
