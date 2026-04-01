@@ -92,6 +92,8 @@ namespace uplink.NET.Models
             {
                 using (var abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
                 {
+                    if (abortError != null && !string.IsNullOrEmpty(abortError.message) && string.IsNullOrEmpty(_errorMessage))
+                        _errorMessage = abortError.message;
                 }
             }
 
