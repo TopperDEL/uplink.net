@@ -51,13 +51,21 @@ namespace uplink.NET.Services
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
+            IDisposable transferLifetime = _access.RetainTransfer();
+            try
             {
-                UploadOperation upload = new UploadOperation(stream, uploadResult, targetPath, customMetadata);
+                SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false);
+                UploadOperation upload = new UploadOperation(stream, uploadResult, transferLifetime, targetPath, customMetadata);
+                transferLifetime = null;
                 if (immediateStart)
-                    upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
+                    _ = upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
                 return upload;
+            }
+            catch
+            {
+                transferLifetime?.Dispose();
+                throw;
             }
         }
 
@@ -71,13 +79,21 @@ namespace uplink.NET.Services
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
 
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
+            IDisposable transferLifetime = _access.RetainTransfer();
+            try
             {
-                UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, targetPath, customMetadata);
+                SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false);
+                UploadOperation upload = new UploadOperation(bytesToUpload, uploadResult, transferLifetime, targetPath, customMetadata);
+                transferLifetime = null;
                 if (immediateStart)
-                    upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
+                    _ = upload.StartUploadAsync(); //Don't await it, otherwise it would "block" UploadObjectAsync
 
                 return upload;
+            }
+            catch
+            {
+                transferLifetime?.Dispose();
+                throw;
             }
         }
 
@@ -85,11 +101,19 @@ namespace uplink.NET.Services
         {
             var uploadOptionsSWIG = uploadOptions.ToSWIG();
             _uploadOptions.Add(uploadOptionsSWIG);
-            using (SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false))
+            IDisposable transferLifetime = _access.RetainTransfer();
+            try
             {
-                ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, targetPath, customMetadata);
+                SWIG.UplinkUploadResult uploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_object(_access._project, bucket.Name, targetPath, uploadOptionsSWIG)).ConfigureAwait(false);
+                ChunkedUploadOperation upload = new ChunkedUploadOperation(uploadResult, transferLifetime, targetPath, customMetadata);
+                transferLifetime = null;
 
                 return upload;
+            }
+            catch
+            {
+                transferLifetime?.Dispose();
+                throw;
             }
         }
 
@@ -102,8 +126,11 @@ namespace uplink.NET.Services
         {
             using (var downloadOptionsSWIG = downloadOptions.ToSWIG())
             {
-                using (SWIG.UplinkDownloadResult downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG)).ConfigureAwait(false))
+                IDisposable transferLifetime = _access.RetainTransfer();
+                SWIG.UplinkDownloadResult downloadResult = null;
+                try
                 {
+                    downloadResult = await Task.Run(() => SWIG.storj_uplink.uplink_download_object(_access._project, bucket.Name, targetPath, downloadOptionsSWIG)).ConfigureAwait(false);
 
                     if (downloadResult.error != null && !string.IsNullOrEmpty(downloadResult.error.message))
                         throw new ObjectNotFoundException(targetPath, downloadResult.error.message);
@@ -113,12 +140,20 @@ namespace uplink.NET.Services
                         if (objectResult.error != null && !string.IsNullOrEmpty(objectResult.error.message))
                             throw new ObjectNotFoundException(targetPath, objectResult.error.message);
 
-                        DownloadOperation download = new DownloadOperation(downloadResult, objectResult.object_.system.content_length, targetPath);
+                        DownloadOperation download = new DownloadOperation(downloadResult, transferLifetime, objectResult.object_.system.content_length, targetPath);
+                        downloadResult = null;
+                        transferLifetime = null;
                         if (immediateStart)
-                            download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
+                            _ = download.StartDownloadAsync(); //Don't await it, otherwise it would "block" DownloadObjectAsync
 
                         return download;
                     }
+                }
+                catch
+                {
+                    downloadResult?.Dispose();
+                    transferLifetime?.Dispose();
+                    throw;
                 }
             }
         }

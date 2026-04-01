@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
 using uplink.NET.Models;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Services
 {
@@ -26,6 +27,7 @@ namespace uplink.NET.Services
             {
                 var errMsg = bucketResult.error.message;
                 SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                DisposalHelper.ClearOwnership(bucketResult);
                 bucketResult.Dispose();
                 throw new BucketCreationException(bucketName, errMsg);
             }
@@ -40,6 +42,7 @@ namespace uplink.NET.Services
             {
                 var errMsg = bucketResult.error.message;
                 SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                DisposalHelper.ClearOwnership(bucketResult);
                 bucketResult.Dispose();
                 throw new BucketCreationException(bucketName, errMsg);
             }
@@ -72,6 +75,7 @@ namespace uplink.NET.Services
             {
                 var errMsg = bucketResult.error.message;
                 SWIG.storj_uplink.uplink_free_bucket_result(bucketResult);
+                DisposalHelper.ClearOwnership(bucketResult);
                 bucketResult.Dispose();
                 throw new BucketNotFoundException(bucketName, errMsg);
             }

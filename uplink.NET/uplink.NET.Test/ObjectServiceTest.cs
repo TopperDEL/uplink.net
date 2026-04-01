@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using uplink.NET.Exceptions;
 using uplink.NET.Interfaces;
@@ -82,6 +83,27 @@ namespace uplink.NET.Test
             await Upload_X_Bytes_AsStream(256);
         }
 
+        [TestMethod]
+        public async Task UploadObject_ParallelUploads_Complete()
+        {
+            string bucketname = "uploadtest-parallel";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(524288);
+            byte[] bytesToUpload2 = GetRandomBytes(524288);
+
+            var uploadOperation1 = await _objectService.UploadObjectAsync(bucket, "parallel-1.txt", new UploadOptions(), bytesToUpload1, false);
+            var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "parallel-2.txt", new UploadOptions(), bytesToUpload2, false);
+
+            await Task.WhenAll(uploadOperation1.StartUploadAsync(), uploadOperation2.StartUploadAsync());
+
+            Assert.IsTrue(uploadOperation1.Completed, uploadOperation1.ErrorMessage);
+            Assert.IsTrue(uploadOperation2.Completed, uploadOperation2.ErrorMessage);
+            Assert.AreEqual(bytesToUpload1.Length, uploadOperation1.BytesSent);
+            Assert.AreEqual(bytesToUpload2.Length, uploadOperation2.BytesSent);
+        }
+
         private async Task Upload_X_Bytes(long bytes)
         {
             string bucketname = "uploadtest";
@@ -159,6 +181,53 @@ namespace uplink.NET.Test
             await Download_X_Bytes(1024 * 512, "downloadtest-large");
         }
 
+        [TestMethod]
+        public async Task DownloadObject_ParallelDownloads_Complete()
+        {
+            string bucketname = "downloadtest-parallel";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] bytesToUpload1 = GetRandomBytes(262144);
+            byte[] bytesToUpload2 = GetRandomBytes(262144);
+
+            var uploadOperation1 = await _objectService.UploadObjectAsync(bucket, "parallel-1.txt", new UploadOptions(), bytesToUpload1, false);
+            var uploadOperation2 = await _objectService.UploadObjectAsync(bucket, "parallel-2.txt", new UploadOptions(), bytesToUpload2, false);
+            await Task.WhenAll(uploadOperation1.StartUploadAsync(), uploadOperation2.StartUploadAsync());
+
+            var downloadOperation1 = await _objectService.DownloadObjectAsync(bucket, "parallel-1.txt", new DownloadOptions(), false);
+            var downloadOperation2 = await _objectService.DownloadObjectAsync(bucket, "parallel-2.txt", new DownloadOptions(), false);
+            await Task.WhenAll(downloadOperation1.StartDownloadAsync(), downloadOperation2.StartDownloadAsync());
+
+            Assert.IsTrue(downloadOperation1.Completed, downloadOperation1.ErrorMessage);
+            Assert.IsTrue(downloadOperation2.Completed, downloadOperation2.ErrorMessage);
+            CollectionAssert.AreEqual(bytesToUpload1, downloadOperation1.DownloadedBytes);
+            CollectionAssert.AreEqual(bytesToUpload2, downloadOperation2.DownloadedBytes);
+        }
+
+        [TestMethod]
+        public async Task UploadAndDownload_CanOverlap()
+        {
+            string bucketname = "transfer-overlap";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+            byte[] existingObjectBytes = GetRandomBytes(262144);
+            byte[] uploadingObjectBytes = GetRandomBytes(262144);
+
+            var seedUpload = await _objectService.UploadObjectAsync(bucket, "existing.txt", new UploadOptions(), existingObjectBytes, false);
+            await seedUpload.StartUploadAsync();
+
+            var uploadOperation = await _objectService.UploadObjectAsync(bucket, "uploading.txt", new UploadOptions(), uploadingObjectBytes, false);
+            var downloadOperation = await _objectService.DownloadObjectAsync(bucket, "existing.txt", new DownloadOptions(), false);
+
+            await Task.WhenAll(uploadOperation.StartUploadAsync(), downloadOperation.StartDownloadAsync());
+
+            Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
+            Assert.IsTrue(downloadOperation.Completed, downloadOperation.ErrorMessage);
+            CollectionAssert.AreEqual(existingObjectBytes, downloadOperation.DownloadedBytes);
+        }
+
         /// <summary>
         /// This test is supposed to be run manually (with debugger attached) in order to test the up- and download
         /// of very large files - in this case 1 GB!
@@ -181,6 +250,38 @@ namespace uplink.NET.Test
         {
             if (!System.Diagnostics.Debugger.IsAttached) return;
             await Download_X_Bytes(1073741824 / 4, "downloadtest-very-large");
+        }
+
+        [TestMethod]
+        public async Task DisposeAccess_WaitsForActiveUpload()
+        {
+            string bucketname = "access-dispose-active-upload";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+
+            var access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
+            var objectService = new ObjectService(access);
+            byte[] bytesToUpload = GetRandomBytes(524288);
+
+            using (var stream = new BlockingReadStream(bytesToUpload))
+            {
+                var uploadOperation = await objectService.UploadObjectAsync(bucket, "blocked-upload.txt", new UploadOptions(), stream, true);
+                stream.WaitUntilReadStarted();
+
+                var disposeTask = Task.Run(() => access.Dispose());
+
+                await Task.Delay(100);
+                Assert.IsFalse(disposeTask.IsCompleted, "Access.Dispose should wait while the upload is active.");
+
+                stream.Release();
+
+                await uploadOperation.StartUploadAsync();
+                await disposeTask;
+
+                Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
+                Assert.AreEqual(bytesToUpload.Length, uploadOperation.BytesSent);
+            }
         }
 
         private async Task Download_X_Bytes(long bytes, string bucketname)
@@ -289,6 +390,31 @@ namespace uplink.NET.Test
             for (int i = 0; i < 50; i++)
             {
                 Assert.AreEqual(i, Convert.ToInt32(bytesReceived[i]));
+            }
+        }
+
+        [TestMethod]
+        public async Task TransferOperations_CanRepeat_OnSameAccess()
+        {
+            string bucketname = "transfer-repeat-cycles";
+
+            await _bucketService.CreateBucketAsync(bucketname);
+            var bucket = await _bucketService.GetBucketAsync(bucketname);
+
+            for (int i = 0; i < 5; i++)
+            {
+                string objectKey = $"cycle-{i}.txt";
+                byte[] bytesToUpload = GetRandomBytes(131072);
+
+                var uploadOperation = await _objectService.UploadObjectAsync(bucket, objectKey, new UploadOptions(), bytesToUpload, false);
+                await uploadOperation.StartUploadAsync();
+
+                var downloadOperation = await _objectService.DownloadObjectAsync(bucket, objectKey, new DownloadOptions(), false);
+                await downloadOperation.StartDownloadAsync();
+
+                Assert.IsTrue(uploadOperation.Completed, uploadOperation.ErrorMessage);
+                Assert.IsTrue(downloadOperation.Completed, downloadOperation.ErrorMessage);
+                CollectionAssert.AreEqual(bytesToUpload, downloadOperation.DownloadedBytes);
             }
         }
 
@@ -619,12 +745,17 @@ namespace uplink.NET.Test
         public async Task CleanupAsync()
         {
             await DeleteBucketAsync("uploadtest");
+            await DeleteBucketAsync("uploadtest-parallel");
             await DeleteBucketAsync("downloadtest-4");
             await DeleteBucketAsync("downloadtest-256");
             await DeleteBucketAsync("downloadtest-2048");
             await DeleteBucketAsync("downloadtest-2500");
             await DeleteBucketAsync("downloadtest-large");
+            await DeleteBucketAsync("downloadtest-parallel");
             await DeleteBucketAsync("downloadtest-very-large");
+            await DeleteBucketAsync("transfer-overlap");
+            await DeleteBucketAsync("access-dispose-active-upload");
+            await DeleteBucketAsync("transfer-repeat-cycles");
             await DeleteBucketAsync("downloadstreamtest1");
             await DeleteBucketAsync("downloadstreamtest2");
             await DeleteBucketAsync("listobject-lists-existingobjects");
@@ -661,6 +792,63 @@ namespace uplink.NET.Test
             }
             catch
             { }
+        }
+
+        private sealed class BlockingReadStream : Stream
+        {
+            private readonly MemoryStream _inner;
+            private readonly ManualResetEventSlim _readStarted = new ManualResetEventSlim(false);
+            private readonly ManualResetEventSlim _allowRead = new ManualResetEventSlim(false);
+            private bool _firstRead = true;
+
+            public BlockingReadStream(byte[] bytes)
+            {
+                _inner = new MemoryStream(bytes);
+            }
+
+            public void WaitUntilReadStarted()
+            {
+                _readStarted.Wait(TimeSpan.FromSeconds(10));
+            }
+
+            public void Release()
+            {
+                _allowRead.Set();
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                if (_firstRead)
+                {
+                    _firstRead = false;
+                    _readStarted.Set();
+                    _allowRead.Wait(TimeSpan.FromSeconds(10));
+                }
+
+                return _inner.Read(buffer, offset, count);
+            }
+
+            public override bool CanRead => _inner.CanRead;
+            public override bool CanSeek => _inner.CanSeek;
+            public override bool CanWrite => false;
+            public override long Length => _inner.Length;
+            public override long Position { get => _inner.Position; set => _inner.Position = value; }
+            public override void Flush() => _inner.Flush();
+            public override long Seek(long offset, SeekOrigin origin) => _inner.Seek(offset, origin);
+            public override void SetLength(long value) => _inner.SetLength(value);
+            public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    _readStarted.Dispose();
+                    _allowRead.Dispose();
+                    _inner.Dispose();
+                }
+
+                base.Dispose(disposing);
+            }
         }
     }
 }

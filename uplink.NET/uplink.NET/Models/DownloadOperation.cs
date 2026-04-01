@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using uplink.SWIG;
 
 namespace uplink.NET.Models
 {
@@ -24,6 +21,13 @@ namespace uplink.NET.Models
     public unsafe class DownloadOperation : IDisposable
     {
         private readonly byte[] _bytesToDownload;
+        private readonly SWIG.UplinkDownload _download;
+        private SWIG.UplinkDownloadResult _downloadResult;
+        private IDisposable _transferLifetime;
+        private Task _downloadTask;
+        private bool _cancelled;
+        private bool _disposed;
+
         /// <summary>
         /// The downloaded bytes - get's filled while the download progresses.
         /// </summary>
@@ -34,10 +38,6 @@ namespace uplink.NET.Models
                 return _bytesToDownload;
             }
         }
-        private readonly SWIG.UplinkDownload _download;
-        private Task _downloadTask;
-        private bool _cancelled;
-
         /// <summary>
         /// The name of the object downloading
         /// </summary>
@@ -96,10 +96,11 @@ namespace uplink.NET.Models
             }
         }
 
-        internal DownloadOperation(SWIG.UplinkDownloadResult downloadResult, long totalBytes, string objectName)
+        internal DownloadOperation(SWIG.UplinkDownloadResult downloadResult, IDisposable transferLifetime, long totalBytes, string objectName)
         {
-            _download = new SWIG.UplinkDownload();
-            _download._handle = downloadResult.download._handle;
+            _downloadResult = downloadResult;
+            _download = downloadResult.download;
+            _transferLifetime = transferLifetime;
             TotalBytes = totalBytes;
             _bytesToDownload = new byte[TotalBytes];
             ObjectName = objectName;
@@ -140,53 +141,22 @@ namespace uplink.NET.Models
                 Running = true;
                 while (BytesReceived < TotalBytes)
                 {
-                    if (TotalBytes - BytesReceived > tenth)
-                    {
-                        //Fetch next bytes in batch
+                    var bytesToRead = TotalBytes - BytesReceived > tenth ? tenth : (int)(TotalBytes - BytesReceived);
 
-                        fixed (byte* arrayPtr = part)
+                    fixed (byte* arrayPtr = part)
+                    {
+                        using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)bytesToRead))
                         {
-                            using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)tenth))
+                            if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
                             {
-                                if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
-                                {
-                                    _errorMessage = readResult.error.message;
-                                    Failed = true;
-                                    Running = false;
-                                    DownloadOperationEnded?.Invoke(this);
-                                    return;
-                                }
-                                if (readResult.bytes_read != 0)
-                                {
-                                    Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
-                                    BytesReceived += readResult.bytes_read;
-                                }
+                                _errorMessage = readResult.error.message;
+                                Failed = true;
+                                return;
                             }
-                        }
-
-                    }
-                    else
-                    {
-                        //Fetch only the remaining bytes
-                        var remaining = TotalBytes - BytesReceived;
-
-                        fixed (byte* arrayPtr = part)
-                        {
-                            using (SWIG.UplinkReadResult readResult = SWIG.storj_uplink.uplink_download_read(_download, new SWIG.SWIGTYPE_p_void(new IntPtr(arrayPtr), true), (uint)remaining))
+                            if (readResult.bytes_read != 0)
                             {
-                                if (readResult.error != null && !string.IsNullOrEmpty(readResult.error.message))
-                                {
-                                    _errorMessage = readResult.error.message;
-                                    Failed = true;
-                                    Running = false;
-                                    DownloadOperationEnded?.Invoke(this);
-                                    return;
-                                }
-                                if (readResult.bytes_read != 0)
-                                {
-                                    Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
-                                    BytesReceived += readResult.bytes_read;
-                                }
+                                Array.Copy(part, 0, _bytesToDownload, BytesReceived, readResult.bytes_read);
+                                BytesReceived += readResult.bytes_read;
                             }
                         }
                     }
@@ -201,22 +171,15 @@ namespace uplink.NET.Models
                                 Failed = true;
                             }
                             else
+                            {
                                 Cancelled = true;
+                            }
                         }
 
-                        Running = false;
-                        DownloadOperationEnded?.Invoke(this);
-                        return;
-                    }
-                    DownloadOperationProgressChanged?.Invoke(this);
-                    if (!string.IsNullOrEmpty(_errorMessage))
-                    {
-                        Failed = true;
-                        Running = false;
-                        DownloadOperationEnded?.Invoke(this);
                         return;
                     }
 
+                    DownloadOperationProgressChanged?.Invoke(this);
                 }
 
                 using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_download(_download))
@@ -225,27 +188,58 @@ namespace uplink.NET.Models
                     {
                         _errorMessage = closeError.message;
                         Failed = true;
-                        Running = false;
-                        DownloadOperationEnded?.Invoke(this);
                         return;
                     }
                 }
 
                 Completed = true;
-                Running = false;
-                DownloadOperationEnded?.Invoke(this);
             }
             finally
             {
+                Running = false;
+                CleanupNativeResources();
                 shared.Return(part);
+                DownloadOperationEnded?.Invoke(this);
             }
         }
 
         public void Dispose()
         {
-            if (_download != null)
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            if (!Completed && !Failed && !Cancelled && _downloadTask != null && !_downloadTask.IsCompleted)
             {
-                _download.Dispose();
+                _cancelled = true;
+                return;
+            }
+
+            if (!Completed && !Failed && !Cancelled && _download != null)
+            {
+                using (var closeError = SWIG.storj_uplink.uplink_close_download(_download))
+                {
+                    if (closeError == null || string.IsNullOrEmpty(closeError.message))
+                        Cancelled = true;
+                }
+            }
+
+            CleanupNativeResources();
+        }
+
+        private void CleanupNativeResources()
+        {
+            if (_downloadResult != null)
+            {
+                _downloadResult.Dispose();
+                _downloadResult = null;
+            }
+
+            if (_transferLifetime != null)
+            {
+                _transferLifetime.Dispose();
+                _transferLifetime = null;
             }
         }
     }

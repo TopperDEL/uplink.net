@@ -24,14 +24,18 @@ namespace uplink.NET.SWIGHelpers
 
             try
             {
-                // Use reflection to set the protected swigCMemOwn field to false
-                // This tells SWIG that it no longer owns the memory and shouldn't try to free it
                 var type = swigObject.GetType();
-                var field = type.GetField("swigCMemOwn", BindingFlags.Instance | BindingFlags.NonPublic);
+                var ownershipField = type.GetField("swigCMemOwn", BindingFlags.Instance | BindingFlags.NonPublic);
+                var handleField = type.GetField("swigCPtr", BindingFlags.Instance | BindingFlags.NonPublic);
                 
-                if (field != null && field.FieldType == typeof(bool))
+                if (ownershipField != null && ownershipField.FieldType == typeof(bool))
                 {
-                    field.SetValue(swigObject, false);
+                    ownershipField.SetValue(swigObject, false);
+                }
+
+                if (handleField != null && handleField.FieldType == typeof(System.Runtime.InteropServices.HandleRef))
+                {
+                    handleField.SetValue(swigObject, new System.Runtime.InteropServices.HandleRef(null, IntPtr.Zero));
                 }
             }
             catch
