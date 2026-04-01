@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using uplink.NET.SWIGHelpers;
 using uplink.SWIG;
 
 namespace uplink.NET.Models
@@ -201,7 +202,10 @@ namespace uplink.NET.Models
                                 Failed = true;
                             }
                             else
+                            {
+                                DisposalHelper.ClearOwnership(_download);
                                 Cancelled = true;
+                            }
                         }
 
                         Running = false;
@@ -230,6 +234,7 @@ namespace uplink.NET.Models
                         return;
                     }
                 }
+                DisposalHelper.ClearOwnership(_download);
 
                 Completed = true;
                 Running = false;

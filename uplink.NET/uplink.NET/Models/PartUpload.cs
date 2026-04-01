@@ -10,7 +10,8 @@ namespace uplink.NET.Models
 
         internal PartUpload(SWIG.UplinkPartUpload partUpload)
         {
-            _partUpload = partUpload;
+            _partUpload = new SWIG.UplinkPartUpload();
+            _partUpload._handle = partUpload._handle;
         }
 
         public void Dispose()

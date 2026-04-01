@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Net.NetworkInformation;
 using System.Buffers;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -195,7 +196,10 @@ namespace uplink.NET.Models
                                                 _errorMessage = abortError.message;
                                             }
                                             else
+                                            {
+                                                DisposalHelper.ClearOwnership(_upload);
                                                 Cancelled = true;
+                                            }
                                         }
 
                                         Running = false;
@@ -252,6 +256,7 @@ namespace uplink.NET.Models
                             return;
                         }
                     }
+                    DisposalHelper.ClearOwnership(_upload);
                 }
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {

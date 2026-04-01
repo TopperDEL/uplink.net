@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -77,6 +78,7 @@ namespace uplink.NET.Models
                     return false;
                 }
             }
+            DisposalHelper.ClearOwnership(_upload);
             return true;
         }
 

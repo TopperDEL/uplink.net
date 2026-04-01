@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using uplink.NET.Exceptions;
+using uplink.NET.SWIGHelpers;
 using uplink.SWIG;
 
 namespace uplink.NET.Models
@@ -250,6 +251,7 @@ namespace uplink.NET.Models
                 string serializedAccess = serializedAccessResult.string_;
 
                 SWIG.storj_uplink.uplink_free_string_result(serializedAccessResult);
+                DisposalHelper.ClearOwnership(serializedAccessResult);
 
                 return serializedAccess;
             }
@@ -351,6 +353,7 @@ namespace uplink.NET.Models
             {
                 using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_project(_project))
                 {
+                    DisposalHelper.ClearOwnership(_project);
                     _project.Dispose();
                     _project = null;
                 }

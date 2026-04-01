@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
@@ -70,6 +71,7 @@ namespace uplink.NET.Models
                 // uplink_free_bucket_result frees bucket.name and error resources.
                 // Do NOT call uplink_free_bucket separately — it would double-free the name string.
                 SWIG.storj_uplink.uplink_free_bucket_result(_bucketResultRef);
+                DisposalHelper.ClearOwnership(_bucketResultRef);
                 _bucketResultRef.Dispose();
                 _bucketResultRef = null;
                 _bucketRef = null;
@@ -78,6 +80,7 @@ namespace uplink.NET.Models
             {
                 // Iterator item: no result wrapper, free directly
                 SWIG.storj_uplink.uplink_free_bucket(_bucketRef);
+                DisposalHelper.ClearOwnership(_bucketRef);
                 _bucketRef.Dispose();
                 _bucketRef = null;
             }
