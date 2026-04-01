@@ -30,7 +30,7 @@ app.Run();
 
 internal sealed class TestRunService
 {
-    private readonly object sync = new();
+    private readonly object syncLock = new();
     private readonly ILogger<TestRunService> logger;
     private readonly Dictionary<Guid, TestRunState> runs = new();
     private Guid? activeRunId;
@@ -50,7 +50,7 @@ internal sealed class TestRunService
             throw new BadHttpRequestException("Provide an access grant in the request body, or configure the server-side UPLINK_TEST_ACCESS_GRANT environment variable.", StatusCodes.Status400BadRequest);
         }
 
-        lock (sync)
+        lock (syncLock)
         {
             if (activeRunId is Guid runningId && runs.TryGetValue(runningId, out var existing) && existing.Status == "running")
             {
@@ -75,7 +75,7 @@ internal sealed class TestRunService
 
     public TestRunSnapshot? Get(Guid id)
     {
-        lock (sync)
+        lock (syncLock)
         {
             return runs.TryGetValue(id, out var run) ? run.ToSnapshot() : null;
         }
@@ -142,9 +142,9 @@ internal sealed class TestRunService
             var trxPath = Path.Combine(resultsRoot, trxFileName);
             var report = File.Exists(trxPath)
                 ? TrxParser.Parse(trxPath)
-                : TrxReport.Empty(process.ExitCode == 0 ? "Tests finished without a TRX file." : "dotnet test failed before producing a TRX file.");
+                : TrxReport.Empty(process.ExitCode == 0 ? "Tests finished without a TRX file." : $"dotnet test failed with exit code {process.ExitCode} before producing a TRX file.");
 
-            lock (sync)
+            lock (syncLock)
             {
                 run.CompletedAtUtc = DateTimeOffset.UtcNow;
                 run.ExitCode = process.ExitCode;
@@ -162,7 +162,7 @@ internal sealed class TestRunService
         catch (Exception ex)
         {
             logger.LogError(ex, "Test run {RunId} failed.", run.Id);
-            lock (sync)
+            lock (syncLock)
             {
                 run.CompletedAtUtc = DateTimeOffset.UtcNow;
                 run.Status = "failed";
@@ -340,7 +340,7 @@ internal static class HtmlPage
 
       const response = await fetch(`/api/test-runs/${id}`);
       if (!response.ok) {
-        message.textContent = 'Could not refresh the test run status.';
+        message.textContent = `Could not refresh the test run status (HTTP ${response.status}).`;
         runButton.disabled = false;
         return;
       }
