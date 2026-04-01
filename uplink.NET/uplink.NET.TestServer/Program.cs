@@ -47,7 +47,7 @@ internal sealed class TestRunService
         accessGrant = string.IsNullOrWhiteSpace(accessGrant) ? GetDefaultAccessGrant() : accessGrant.Trim();
         if (string.IsNullOrWhiteSpace(accessGrant))
         {
-            throw new BadHttpRequestException("Provide an access grant or configure UPLINK_TEST_ACCESS_GRANT.", StatusCodes.Status400BadRequest);
+            throw new BadHttpRequestException("Provide an access grant in the request body, or configure the server-side UPLINK_TEST_ACCESS_GRANT environment variable.", StatusCodes.Status400BadRequest);
         }
 
         lock (sync)
@@ -215,7 +215,7 @@ internal static class TrxParser
             ParseCounter(counters, "total"),
             ParseCounter(counters, "passed"),
             ParseCounter(counters, "failed"),
-            ParseCounter(counters, "notExecuted") + ParseCounter(counters, "warning") + ParseCounter(counters, "inconclusive"),
+            ParseSkippedCount(counters),
             results,
             null);
     }
@@ -223,6 +223,11 @@ internal static class TrxParser
     private static int ParseCounter(XElement? counters, string name)
     {
         return int.TryParse(counters?.Attribute(name)?.Value, out var value) ? value : 0;
+    }
+
+    private static int ParseSkippedCount(XElement? counters)
+    {
+        return ParseCounter(counters, "notExecuted") + ParseCounter(counters, "warning") + ParseCounter(counters, "inconclusive");
     }
 }
 

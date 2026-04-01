@@ -45,7 +45,7 @@ namespace uplink.NET.Test
             return GetOptionalEnvironmentVariable(name) ?? fallback;
         }
 
-        private static string GetOptionalEnvironmentVariable(string name)
+        private static string? GetOptionalEnvironmentVariable(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
             return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
