@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +23,7 @@ namespace uplink.NET.Test
         public void Init()
         {
             Access.SetTempDirectory(System.IO.Path.GetTempPath());
-            _access = new Access(TestConstants.SATELLITE_URL, TestConstants.VALID_API_KEY, TestConstants.ENCRYPTION_SECRET);
+            _access = TestConstants.CreateAccess();
             _bucketService = new BucketService(_access);
             _objectService = new ObjectService(_access);
             _uploadQueueService = new UploadQueueService();
