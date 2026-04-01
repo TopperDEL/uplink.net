@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Threading;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Net.NetworkInformation;
 using System.Buffers;
-using uplink.NET.SWIGHelpers;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace uplink.NET.Models
 {
@@ -25,11 +19,15 @@ namespace uplink.NET.Models
     public unsafe class UploadOperation : IDisposable
     {
         internal static readonly SemaphoreSlim customMetadataSemaphore = new SemaphoreSlim(1);
+
         private readonly Stream _byteStreamToUpload;
+        private readonly CustomMetadata _customMetadata;
         private SWIG.UplinkUpload _upload;
+        private SWIG.UplinkUploadResult _uploadResult;
+        private IDisposable _transferLifetime;
         private Task _uploadTask;
         private bool _cancelled;
-        private readonly CustomMetadata _customMetadata;
+        private bool _disposed;
 
         /// <summary>
         /// The name of the object uploading
@@ -104,11 +102,13 @@ namespace uplink.NET.Models
                 return (float)BytesSent / (float)TotalBytes * 100f;
             }
         }
-        internal UploadOperation(Stream stream, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+
+        internal UploadOperation(Stream stream, SWIG.UplinkUploadResult uploadResult, IDisposable transferLifetime, string objectName, CustomMetadata customMetadata = null)
         {
             _byteStreamToUpload = stream;
-            _upload = new SWIG.UplinkUpload();
-            _upload._handle = uploadResult.upload._handle;
+            _uploadResult = uploadResult;
+            _upload = uploadResult.upload;
+            _transferLifetime = transferLifetime;
             ObjectName = objectName;
             _customMetadata = customMetadata;
 
@@ -117,11 +117,12 @@ namespace uplink.NET.Models
                 _errorMessage = uploadResult.error.message;
                 Failed = true;
                 Running = false;
+                CleanupNativeResources();
             }
         }
 
-        internal UploadOperation(byte[] bytesToUpload, SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null) :
-            this(new MemoryStream(bytesToUpload), uploadResult, objectName, customMetadata)
+        internal UploadOperation(byte[] bytesToUpload, SWIG.UplinkUploadResult uploadResult, IDisposable transferLifetime, string objectName, CustomMetadata customMetadata = null) :
+            this(new MemoryStream(bytesToUpload), uploadResult, transferLifetime, objectName, customMetadata)
         {
         }
 
@@ -179,42 +180,34 @@ namespace uplink.NET.Models
                                         {
                                             _errorMessage = sentResult.error.message;
                                             Failed = true;
-                                            Running = false;
-                                            UploadOperationEnded?.Invoke(this);
                                             return;
                                         }
                                         else
-                                            BytesSent += sentResult.bytes_written;
-                                    }
-                                    if (_cancelled)
-                                    {
-                                        using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
                                         {
-                                            if (abortError != null && !string.IsNullOrEmpty(abortError.message))
-                                            {
-                                                Failed = true;
-                                                _errorMessage = abortError.message;
-                                            }
-                                            else
-                                            {
-                                                DisposalHelper.ClearOwnership(_upload);
-                                                Cancelled = true;
-                                            }
+                                            BytesSent += sentResult.bytes_written;
                                         }
-
-                                        Running = false;
-                                        UploadOperationEnded?.Invoke(this);
-                                        return;
-                                    }
-                                    UploadOperationProgressChanged?.Invoke(this);
-                                    if (!string.IsNullOrEmpty(_errorMessage))
-                                    {
-                                        Failed = true;
-                                        UploadOperationEnded?.Invoke(this);
-                                        return;
                                     }
                                 }
 
+                                if (_cancelled)
+                                {
+                                    using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                                    {
+                                        if (abortError != null && !string.IsNullOrEmpty(abortError.message))
+                                        {
+                                            Failed = true;
+                                            _errorMessage = abortError.message;
+                                        }
+                                        else
+                                        {
+                                            Cancelled = true;
+                                        }
+                                    }
+
+                                    return;
+                                }
+
+                                UploadOperationProgressChanged?.Invoke(this);
                             }
                         }
                         finally
@@ -235,7 +228,6 @@ namespace uplink.NET.Models
                                 {
                                     _errorMessage = customMetadataError.message;
                                     Failed = true;
-                                    UploadOperationEnded?.Invoke(this);
                                     return;
                                 }
                             }
@@ -252,20 +244,18 @@ namespace uplink.NET.Models
                         {
                             _errorMessage = commitError.message;
                             Failed = true;
-                            UploadOperationEnded?.Invoke(this);
                             return;
                         }
                     }
-                    DisposalHelper.ClearOwnership(_upload);
                 }
+
                 if (!string.IsNullOrEmpty(_errorMessage))
                 {
                     Failed = true;
-                    UploadOperationEnded?.Invoke(this);
                     return;
                 }
+
                 Completed = true;
-                UploadOperationEnded?.Invoke(this);
             }
             catch (Exception ex)
             {
@@ -275,16 +265,50 @@ namespace uplink.NET.Models
             finally
             {
                 Running = false;
+                CleanupNativeResources();
                 UploadOperationEnded?.Invoke(this);
             }
         }
 
         public void Dispose()
         {
-            if (_upload != null)
+            if (_disposed)
+                return;
+
+            _disposed = true;
+
+            if (!Completed && !Failed && !Cancelled && _uploadTask != null && !_uploadTask.IsCompleted)
             {
-                _upload.Dispose();
-                _upload = null;
+                _cancelled = true;
+                return;
+            }
+
+            if (!Completed && !Failed && !Cancelled && _upload != null)
+            {
+                using (SWIG.UplinkError abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                {
+                    if (abortError == null || string.IsNullOrEmpty(abortError.message))
+                        Cancelled = true;
+                }
+            }
+
+            CleanupNativeResources();
+        }
+
+        private void CleanupNativeResources()
+        {
+            if (_uploadResult != null)
+            {
+                _uploadResult.Dispose();
+                _uploadResult = null;
+            }
+
+            _upload = null;
+
+            if (_transferLifetime != null)
+            {
+                _transferLifetime.Dispose();
+                _transferLifetime = null;
             }
         }
     }

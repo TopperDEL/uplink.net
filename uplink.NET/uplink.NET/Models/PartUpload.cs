@@ -7,19 +7,30 @@ namespace uplink.NET.Models
     public class PartUpload : IDisposable
     {
         internal SWIG.UplinkPartUpload _partUpload { get; set; }
+        internal SWIG.UplinkPartUploadResult _partUploadResult { get; set; }
+        private IDisposable _transferLifetime;
 
-        internal PartUpload(SWIG.UplinkPartUpload partUpload)
+        internal PartUpload(SWIG.UplinkPartUploadResult partUploadResult, IDisposable transferLifetime)
         {
-            _partUpload = new SWIG.UplinkPartUpload();
-            _partUpload._handle = partUpload._handle;
+            _partUploadResult = partUploadResult;
+            _partUpload = partUploadResult.part_upload;
+            _transferLifetime = transferLifetime;
         }
 
         public void Dispose()
         {
-            if (_partUpload != null)
+            if (_partUploadResult != null)
             {
-                _partUpload.Dispose();
-                _partUpload = null;
+                _partUploadResult.Dispose();
+                _partUploadResult = null;
+            }
+
+            _partUpload = null;
+
+            if (_transferLifetime != null)
+            {
+                _transferLifetime.Dispose();
+                _transferLifetime = null;
             }
         }
     }

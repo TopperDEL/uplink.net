@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using uplink.NET.SWIGHelpers;
 
 namespace uplink.NET.Models
 {
     public unsafe class ChunkedUploadOperation : IDisposable
     {
         private SWIG.UplinkUpload _upload;
+        private SWIG.UplinkUploadResult _uploadResult;
+        private IDisposable _transferLifetime;
         private readonly string _objectName;
         private readonly CustomMetadata _customMetadata;
         private string _errorMessage;
         public string ErrorMessage { get { return _errorMessage; } }
 
-        internal ChunkedUploadOperation(SWIG.UplinkUploadResult uploadResult, string objectName, CustomMetadata customMetadata = null)
+        internal ChunkedUploadOperation(SWIG.UplinkUploadResult uploadResult, IDisposable transferLifetime, string objectName, CustomMetadata customMetadata = null)
         {
-            _upload = new SWIG.UplinkUpload();
-            _upload._handle = uploadResult.upload._handle;
+            _uploadResult = uploadResult;
+            _upload = uploadResult.upload;
+            _transferLifetime = transferLifetime;
             _objectName = objectName;
             _customMetadata = customMetadata;
         }
@@ -36,6 +36,7 @@ namespace uplink.NET.Models
                         if (sentResult.error != null && !string.IsNullOrEmpty(sentResult.error.message))
                         {
                             _errorMessage = sentResult.error.message;
+                            CleanupNativeResources();
                             return false;
                         }
                         else
@@ -60,6 +61,7 @@ namespace uplink.NET.Models
                         if (customMetadataError != null && !string.IsNullOrEmpty(customMetadataError.message))
                         {
                             _errorMessage = customMetadataError.message;
+                            CleanupNativeResources();
                             return false;
                         }
                     }
@@ -75,10 +77,12 @@ namespace uplink.NET.Models
                 if (commitError != null && !string.IsNullOrEmpty(commitError.message))
                 {
                     _errorMessage = commitError.message;
+                    CleanupNativeResources();
                     return false;
                 }
             }
-            DisposalHelper.ClearOwnership(_upload);
+
+            CleanupNativeResources();
             return true;
         }
 
@@ -86,8 +90,28 @@ namespace uplink.NET.Models
         {
             if (_upload != null)
             {
-                _upload.Dispose();
-                _upload = null;
+                using (var abortError = SWIG.storj_uplink.uplink_upload_abort(_upload))
+                {
+                }
+            }
+
+            CleanupNativeResources();
+        }
+
+        private void CleanupNativeResources()
+        {
+            if (_uploadResult != null)
+            {
+                _uploadResult.Dispose();
+                _uploadResult = null;
+            }
+
+            _upload = null;
+
+            if (_transferLifetime != null)
+            {
+                _transferLifetime.Dispose();
+                _transferLifetime = null;
             }
         }
     }

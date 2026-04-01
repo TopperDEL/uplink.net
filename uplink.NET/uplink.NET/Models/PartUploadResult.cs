@@ -10,9 +10,13 @@ namespace uplink.NET.Models
         public string Error { get; internal set; }
         public uint BytesWritten { get; internal set; }
 
-        internal PartUploadResult(SWIG.UplinkPartUpload partUpload)
+        internal PartUploadResult()
         {
-            PartUpload = new PartUpload(partUpload);
+        }
+
+        internal PartUploadResult(SWIG.UplinkPartUploadResult partUploadResult, IDisposable transferLifetime)
+        {
+            PartUpload = new PartUpload(partUploadResult, transferLifetime);
         }
 
         public void Dispose()

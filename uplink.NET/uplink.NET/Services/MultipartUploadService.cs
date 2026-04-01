@@ -37,19 +37,24 @@ namespace uplink.NET.Services
 
         public async Task<PartUploadResult> UploadPartAsync(string bucketName, string objectKey, string uploadId, uint partNumber, byte[] partBytes)
         {
-            using (var partUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_part(_access._project, bucketName, objectKey, uploadId, partNumber)).ConfigureAwait(false))
+            IDisposable transferLifetime = _access.RetainTransfer();
+            SWIG.UplinkPartUploadResult partUploadResult = null;
+            try
             {
-                PartUploadResult result = new PartUploadResult(partUploadResult.part_upload);
+                partUploadResult = await Task.Run(() => SWIG.storj_uplink.uplink_upload_part(_access._project, bucketName, objectKey, uploadId, partNumber)).ConfigureAwait(false);
+                PartUploadResult result = new PartUploadResult(partUploadResult, transferLifetime);
+                partUploadResult = null;
+                transferLifetime = null;
 
-                if (partUploadResult.error != null && !string.IsNullOrEmpty(partUploadResult.error.message))
+                if (result.PartUpload._partUploadResult.error != null && !string.IsNullOrEmpty(result.PartUpload._partUploadResult.error.message))
                 {
-                    result.Error = partUploadResult.error.message;
+                    result.Error = result.PartUpload._partUploadResult.error.message;
                 }
                 else
                 {
                     try
                     {
-                        result.BytesWritten = await Task.Run(() => DoUnsafeUpload(partUploadResult.part_upload, objectKey, partBytes)).ConfigureAwait(false);
+                        result.BytesWritten = await Task.Run(() => DoUnsafeUpload(result.PartUpload._partUpload, objectKey, partBytes)).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -57,6 +62,12 @@ namespace uplink.NET.Services
                     }
                 }
                 return result;
+            }
+            catch
+            {
+                partUploadResult?.Dispose();
+                transferLifetime?.Dispose();
+                throw;
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using uplink.NET.Exceptions;
 using uplink.NET.SWIGHelpers;
 using uplink.SWIG;
@@ -63,6 +64,11 @@ namespace uplink.NET.Models
 
         internal SWIG.UplinkAccess _access { get; set; }
         internal SWIG.UplinkProject _project { get; set; }
+
+        private readonly object _transferLifetimeLock = new object();
+        private int _activeTransfers;
+        private bool _disposeRequested;
+        private bool _disposed;
 
         internal Access(SWIG.UplinkAccess access)
         {
@@ -347,8 +353,44 @@ namespace uplink.NET.Models
             }
         }
 
+        internal IDisposable RetainTransfer()
+        {
+            lock (_transferLifetimeLock)
+            {
+                if (_disposeRequested || _disposed)
+                    throw new ObjectDisposedException(nameof(Access));
+
+                _activeTransfers++;
+                return new TransferLifetime(this);
+            }
+        }
+
+        private void ReleaseTransfer()
+        {
+            lock (_transferLifetimeLock)
+            {
+                if (_activeTransfers > 0)
+                    _activeTransfers--;
+
+                if (_activeTransfers == 0)
+                    Monitor.PulseAll(_transferLifetimeLock);
+            }
+        }
+
         public void Dispose()
         {
+            lock (_transferLifetimeLock)
+            {
+                if (_disposed)
+                    return;
+
+                _disposeRequested = true;
+                while (_activeTransfers > 0)
+                    Monitor.Wait(_transferLifetimeLock);
+
+                _disposed = true;
+            }
+
             if (_project != null)
             {
                 using (SWIG.UplinkError closeError = SWIG.storj_uplink.uplink_close_project(_project))
@@ -362,6 +404,22 @@ namespace uplink.NET.Models
             {
                 _access.Dispose();
                 _access = null;
+            }
+        }
+
+        private sealed class TransferLifetime : IDisposable
+        {
+            private Access _owner;
+
+            public TransferLifetime(Access owner)
+            {
+                _owner = owner;
+            }
+
+            public void Dispose()
+            {
+                var owner = Interlocked.Exchange(ref _owner, null);
+                owner?.ReleaseTransfer();
             }
         }
     }
