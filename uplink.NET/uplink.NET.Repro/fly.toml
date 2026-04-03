@@ -1,0 +1,43 @@
+app = "uplink-net-repro"
+primary_region = "ams"
+kill_signal = "SIGINT"
+kill_timeout = "30s"
+
+[build]
+  dockerfile = "Dockerfile"
+
+  [build.args]
+    UPLINK_NUGET_VERSION = "2.14.3736"
+
+[env]
+  UPLINK_REPRO_ROUNDS = "200"
+  UPLINK_REPRO_CHURN = "2000"
+  UPLINK_REPRO_STATUS_EVERY = "100"
+  UPLINK_REPRO_BUCKET_LIST_EVERY = "10"
+  UPLINK_REPRO_SERIALIZE_REPEATS = "4"
+  UPLINK_REPRO_DISPOSE_BATCH_SIZE = "32"
+  UPLINK_REPRO_LIST_BUCKETS = "true"
+  UPLINK_REPRO_REPARSE_AFTER_SERIALIZE = "true"
+  UPLINK_REPRO_OBJECT_IO = "true"
+  UPLINK_REPRO_OBJECT_IO_EVERY_ROUNDS = "1"
+  UPLINK_REPRO_PARALLEL_UPLOAD_OBJECTS = "8"
+  UPLINK_REPRO_MIN_FILE_SIZE_MB = "1"
+  UPLINK_REPRO_MAX_FILE_SIZE_MB = "4"
+  UPLINK_REPRO_PARALLEL_DOWNLOAD_PROCESSES = "8"
+  UPLINK_REPRO_OBJECT_IO_WAIT_MS = "2000"
+  UPLINK_REPRO_OBJECT_IO_LISTING_DELAY_MS = "250"
+  UPLINK_REPRO_CRASH_ARTIFACT_BUCKET = "s-drive"
+  UPLINK_REPRO_CRASH_ARTIFACT_DIR = "/tmp/uplink-repro-crash-artifacts"
+  UPLINK_REPRO_CRASH_ARTIFACT_PREFIX = "uplink-repro/crash-artifacts"
+  DOTNET_DbgEnableMiniDump = "1"
+  DOTNET_DbgMiniDumpType = "4"
+  DOTNET_DbgMiniDumpName = "/tmp/uplink-repro-crash-artifacts/coredump.%p.%e.%h.%t.dmp"
+  DOTNET_EnableCrashReport = "1"
+  DOTNET_CreateDumpDiagnostics = "1"
+  DOTNET_CreateDumpVerboseDiagnostics = "1"
+  DOTNET_CreateDumpLogToFile = "/tmp/uplink-repro-crash-artifacts/createdump.%p.%e.%h.%t.log"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
