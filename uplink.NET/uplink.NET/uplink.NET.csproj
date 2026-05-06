@@ -6,6 +6,7 @@
     <Authors>
     </Authors>
     <TargetFramework>net8.0</TargetFramework>
+    <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
